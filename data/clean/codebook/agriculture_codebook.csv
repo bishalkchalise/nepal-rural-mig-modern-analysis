@@ -1,0 +1,31 @@
+variable,unit,reference,source,definition
+agro_hh,HH × year,past year,9a1/9b/9d presence,"1 if HH has any plot, any crop row, or any livestock > 0; 0 otherwise."
+owned_plots_n,HH × year,current,count 9a1 rows,Number of owned plots reported by HH.
+cultivated_area_sqm,HH × year,past year,9a1 + 9a2 area_sqm,Total area cultivated = area of own self-cropped plots + area of rented/shared-in plots.
+plots_self_cropped_n,HH × year,past year,9a1 s09q07/s09q11,Count of owned plots cultivated by HH themselves in wet OR dry season.
+plots_rented_out_n,HH × year,past year,9a1 s09q07/s09q11,Count of owned plots sharecropped OR rented out to others.
+plots_fallow_n,HH × year,past year,9a1 s09q07/s09q11,Count of owned plots reported fallow in wet OR dry season.
+plots_abandoned_share,HH × year,past year,derived,(rented_out + fallow) / owned — disengagement index (0-1).
+plots_both_seasons_share,HH × year,past year,derived,Share of owned plots self-cropped in BOTH wet and dry seasons — intensity index.
+land_sold_any,HH × year,12 months,9a3 s09q26,1 if HH sold or gave away any land in past 12 months.
+land_bought_any,HH × year,12 months,9a3 s09q29,1 if HH bought or received any land in past 12 months.
+land_sold_12m_rs,HH × year,12 months,9a3 s09q28a,Rs. received from land sales in past 12 months.
+land_bought_12m_rs,HH × year,12 months,9a3 s09q31a,Rs. paid for land bought in past 12 months.
+input_total_12m_rs,HH × year,12 months,9c s09q52/53 b/d/f/h/j,"Total Rs. on agricultural inputs (seed + fertiliser + insecticide + equipment hire + hired labour), wet+dry combined."
+input_intensity_per_sqm,HH × year,12 months,derived,input_total_12m_rs / cultivated_area_sqm. NA when cultivated area = 0.
+use_fertiliser,HH × year,past year,9c s09q52c/q53c,1 if HH paid for fertiliser in either season.
+use_insecticide,HH × year,past year,9c s09q52e/q53e,1 if HH paid for insecticide in either season.
+use_hired_equipment,HH × year,past year,9c s09q52g/q53g,1 if HH paid to hire equipment in either season.
+use_hired_labour,HH × year,past year,9c s09q52i/q53i,1 if HH paid for hired labour in either season.
+n_crop_types,HH × year,past year,9b1+9b2 cropid,Count of distinct crops grown (wet + dry seasons combined).
+grows_staple,HH × year,past year,9b1+9b2 cropid,"1 if HH grew any of: paddy/rice, wheat, maize, millet, barley, beaten rice."
+grows_cashcrop,HH × year,past year,9b1+9b2 cropid,"1 if HH grew any of: sugarcane, jute, tobacco, cardamom, tea, oilseeds."
+grows_horticulture,HH × year,past year,9b1+9b2 cropid,1 if HH grew any vegetables or fruits.
+any_crop_sold,HH × year,past year,9b1 s09q41e + 9b2 s09q50e,1 if HH sold any portion of any crop.
+crop_sale_rs_12m,HH × year,past year,qty × price,Total Rs. from crop sales = Σ (sold_qty × price_per_unit) across crops and seasons.
+crop_sale_share,HH × year,past year,derived,Mean across crops of (sold_qty / harvested_qty). Unit-invariant. NA if no harvest.
+owns_plough,HH × year,current,9f equipmentid,1 if HH owns a plough (n_owned > 0).
+owns_modern_equip,HH × year,current,9f equipmentid,"1 if HH owns any of: tractor, water pump, tubewell, thresher, drip/sprinkler, generator."
+n_modern_equip_types,HH × year,current,9f equipmentid,Count of distinct modern equipment types owned.
+equip_stock_value_rs,HH × year,current,9f s09q66,Rs. total value of agricultural equipment owned (label says 'sales' but data pattern indicates stock value).
+livestock_has,HH × year,current,9d livestockid,1 if HH has any livestock (excluding 'None' rows).
