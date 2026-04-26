@@ -1,0 +1,239 @@
+{
+  "updated_on": "2026-04-26",
+  "headline_metrics": [
+    {
+      "metric": "edu_literate_female",
+      "label": "Female literacy",
+      "base_year": 2001,
+      "last_year": 2021,
+      "base": 0.3341,
+      "last": 0.6537,
+      "change_pp": 31.959999999999994
+    },
+    {
+      "metric": "work_share_agriculture",
+      "label": "Work in agriculture",
+      "base_year": 2001,
+      "last_year": 2021,
+      "base": 0.5172,
+      "last": 0.4842,
+      "change_pp": -3.299999999999997
+    },
+    {
+      "metric": "head_female_share",
+      "label": "Female-headed households",
+      "base_year": 2001,
+      "last_year": 2021,
+      "base": 0.1409,
+      "last": 0.2933,
+      "change_pp": 15.24
+    }
+  ],
+  "province_improvement_female_literacy": [
+    {
+      "province": "Sudurpashchim",
+      "improvement_pp": 41.080000000000005
+    },
+    {
+      "province": "Karnali",
+      "improvement_pp": 40.27
+    },
+    {
+      "province": "Lumbini",
+      "improvement_pp": 33.970000000000006
+    },
+    {
+      "province": "Madhesh",
+      "improvement_pp": 31.620000000000005
+    },
+    {
+      "province": "Bagmati",
+      "improvement_pp": 29.169999999999995
+    },
+    {
+      "province": "Koshi",
+      "improvement_pp": 28.32
+    },
+    {
+      "province": "Gandaki",
+      "improvement_pp": 23.610000000000003
+    }
+  ],
+  "rvs_files": [
+    {
+      "file": "agriculture_hh_year.csv",
+      "rows": 18056,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "consumption_hh_year.csv",
+      "rows": 18056,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "education_hh_year.csv",
+      "rows": 17539,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "enterprise_hh_year.csv",
+      "rows": 18056,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "health_hh_year.csv",
+      "rows": 17539,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "labour_hh_year.csv",
+      "rows": 18056,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "labour_job_year.csv",
+      "rows": 47966,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "labour_member_year.csv",
+      "rows": 87182,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "migration_hh_year.csv",
+      "rows": 18056,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "migration_migrant_year.csv",
+      "rows": 14319,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "shocks_coping_hh_year.csv",
+      "rows": 8091,
+      "year_min": 2016,
+      "year_max": 2018
+    },
+    {
+      "file": "social_protection_hh_year.csv",
+      "rows": 18056,
+      "year_min": 2016,
+      "year_max": 2018
+    }
+  ],
+  "nec_summary": {
+    "municipalities": 754,
+    "districts": 77,
+    "firms_total": 923356,
+    "employment_total": 3228457,
+    "formality_index_mean": 0.5074167371272039,
+    "entry_panel_rows": 25708
+  },
+  "national_series": [
+    {
+      "year": 2001,
+      "n_municipalities": "2229",
+      "edu_literate_female": "0.3341",
+      "edu_literate_male": "0.5764",
+      "edu_school_attend_6_16_female": "0.6447",
+      "edu_school_attend_6_16_male": "0.764",
+      "edu_attain_secondary_plus": "0.2654",
+      "mar_female_married_by_18": "0.4914",
+      "mar_female_age_first_mean": "17.5085",
+      "fert_birth_mean": "2.8729",
+      "fert_birth_son_mean": "1.4971",
+      "fert_birth_dau_mean": "1.3759",
+      "flfp_all": "0.6471",
+      "mlfp_all": "0.8272",
+      "fem_employment_rate": "0.6432",
+      "flfp_wage": "0.0469",
+      "fem_wage_share_of_employment": "0.1",
+      "fem_share_of_ag_workers": "0.4694",
+      "fem_ag_specialization_ratio": "0.8957",
+      "work_share_agriculture": "0.5172",
+      "work_share_household_chores": "0.1281",
+      "fem_ownership_house": "0.0443",
+      "fem_ownership_land": "0.0939",
+      "fem_ownership_both": "0.0384",
+      "head_female_share": "0.1409",
+      "head_female_elderly": "0.0307",
+      "left_not_with_both": "0.1166",
+      "left_father_only": "0.0123",
+      "absent_hh_share": "0.132"
+    },
+    {
+      "year": 2011,
+      "n_municipalities": "753",
+      "edu_literate_female": "0.5309",
+      "edu_literate_male": "0.7304",
+      "edu_school_attend_6_16_female": "0.8292",
+      "edu_school_attend_6_16_male": "0.8592",
+      "edu_attain_secondary_plus": "0.2968",
+      "mar_female_married_by_18": "0.4631",
+      "mar_female_age_first_mean": "17.6674",
+      "fert_birth_mean": "2.4939",
+      "fert_birth_son_mean": "1.2972",
+      "fert_birth_dau_mean": "1.1968",
+      "flfp_all": "0.5566",
+      "mlfp_all": "0.7437",
+      "fem_employment_rate": "0.5524",
+      "flfp_wage": "0.054",
+      "fem_wage_share_of_employment": "0.1239",
+      "fem_share_of_ag_workers": "0.538",
+      "fem_ag_specialization_ratio": "1.0628",
+      "work_share_agriculture": "0.4381",
+      "work_share_household_chores": "0.1494",
+      "fem_ownership_house": "0.0784",
+      "fem_ownership_land": "0.1546",
+      "fem_ownership_both": "0.0784",
+      "head_female_share": "0.24",
+      "head_female_elderly": "0.0449",
+      "left_not_with_both": "0.1248",
+      "left_father_only": "0.0073",
+      "absent_hh_share": "0.2569"
+    },
+    {
+      "year": 2021,
+      "n_municipalities": "753",
+      "edu_literate_female": "0.6537",
+      "edu_literate_male": "0.8119",
+      "edu_school_attend_6_16_female": "0.914",
+      "edu_school_attend_6_16_male": "0.9119",
+      "edu_attain_secondary_plus": "0.4009",
+      "mar_female_married_by_18": "0.3483",
+      "mar_female_age_first_mean": "18.4786",
+      "fert_birth_mean": "2.2287",
+      "fert_birth_son_mean": "1.1637",
+      "fert_birth_dau_mean": "1.065",
+      "flfp_all": "0.7448",
+      "mlfp_all": "0.8321",
+      "fem_employment_rate": "0.7135",
+      "flfp_wage": "0.1113",
+      "fem_wage_share_of_employment": "0.179",
+      "fem_share_of_ag_workers": "0.5427",
+      "fem_ag_specialization_ratio": "1.1052",
+      "work_share_agriculture": "0.4842",
+      "work_share_household_chores": "0.2135",
+      "fem_ownership_house": "0.1054",
+      "fem_ownership_land": "0.1697",
+      "fem_ownership_both": "0.0896",
+      "head_female_share": "0.2933",
+      "head_female_elderly": "0.0584",
+      "left_not_with_both": "0.2181",
+      "left_father_only": "0.0106",
+      "absent_hh_share": "0.2292"
+    }
+  ]
+}
