@@ -70,227 +70,471 @@ if ("enterpriseid" %in% names(sec10) && !"nonagid" %in% names(sec10)) {
 }
 
 
-##############################################################################
-# 1. ENTERPRISE-LEVEL PREP
-##############################################################################
-#
-# Ensure numeric conversion (Stage 1 wrote labelled factors to CSV as strings).
-# For s10q02 (sector), values are the factor-label text — map back to codes.
+library(tidyverse)
 
-# Sector label → code (from schema labels)
-sector_label_to_code <- c(
-  "Agriculture"                             = 1,
-  "Fishing"                                 = 2,
-  "Mining And Quarrying"                    = 3,
-  "Manufacturing"                           = 4,
-  "Electricity, Gas And Water Supply"       = 5,
-  "Construction"                            = 6,
-  # Literal label varies slightly — capture both forms safely below via str_detect
-  "Hotels And Restaurants"                  = 8,
-  "Financial Intermediation"                = 10,
-  "Real Estate, Renting And Business Activities" = 11,
-  "Public Administration And Defence, Compulsory Social Security" = 12,
-  "Education"                               = 13,
-  "Health And Social Work"                  = 14,
-  "Other Community, Social And Personal Service Activities" = 15,
-  "Private Households With Employed Persons" = 16,
-  "Extra Territorial Organizations And Bodies" = 17,
-  "Other"                                   = 18
-)
+##############################################################################
+# 1. CLEAN + MAP NON-AGRICULTURAL ENTERPRISE DATA
+##############################################################################
 
-# Robust sector-to-code mapping using regex — handles the two tricky labels
-# (wholesale/retail with slashes; transport/storage/communications) and is
-# resilient to minor wording drift across waves.
 sector_code <- function(x) {
-  s <- tolower(as.character(x))
-  dplyr::case_when(
-    is.na(s)                                           ~ NA_integer_,
-    stringr::str_detect(s, "^agriculture")             ~ 1L,
-    stringr::str_detect(s, "^fishing")                 ~ 2L,
-    stringr::str_detect(s, "^mining")                  ~ 3L,
-    stringr::str_detect(s, "^manufacturing")           ~ 4L,
-    stringr::str_detect(s, "electricity.*gas.*water")  ~ 5L,
-    stringr::str_detect(s, "^construction")            ~ 6L,
-    stringr::str_detect(s, "wholesale|retail")         ~ 7L,
-    stringr::str_detect(s, "hotels|restaurant")        ~ 8L,
-    stringr::str_detect(s, "transport.*storage|transport.*communicat") ~ 9L,
-    stringr::str_detect(s, "financial")                ~ 10L,
-    stringr::str_detect(s, "real estate")              ~ 11L,
-    stringr::str_detect(s, "public admin")             ~ 12L,
-    stringr::str_detect(s, "^education")               ~ 13L,
-    stringr::str_detect(s, "health.*social")           ~ 14L,
-    stringr::str_detect(s, "community.*social|personal service") ~ 15L,
-    stringr::str_detect(s, "private households")      ~ 16L,
-    stringr::str_detect(s, "extra territorial|extraterritorial") ~ 17L,
-    stringr::str_detect(s, "^other$") | s == "other"   ~ 18L,
-    TRUE                                               ~ NA_integer_
+  s <- str_squish(str_to_lower(as.character(x)))
+  
+  case_when(
+    is.na(s) | s == "" ~ NA_integer_,
+    
+    str_detect(s, "^agriculture|^fishing") ~ 1L,
+    str_detect(s, "^mining") ~ 2L,
+    str_detect(s, "^manufacturing") ~ 3L,
+    str_detect(s, "electricity|gas.*water supply") ~ 4L,
+    str_detect(s, "water supply|waste") ~ 5L,
+    str_detect(s, "^construction") ~ 6L,
+    str_detect(s, "wholesale|retail") ~ 7L,
+    str_detect(s, "hotel|restaurant") ~ 8L,
+    str_detect(s, "transport|storage") ~ 9L,
+    str_detect(s, "communication") ~ 10L,
+    str_detect(s, "financial") ~ 11L,
+    str_detect(s, "real estate|renting") ~ 12L,
+    str_detect(s, "professional|business activit") ~ 13L,
+    str_detect(s, "public administration|defence") ~ 14L,
+    str_detect(s, "^education") ~ 15L,
+    str_detect(s, "health|social work") ~ 16L,
+    TRUE ~ 17L
   )
 }
 
 ent <- sec10 %>%
   mutate(
     sector_code = sector_code(s10q02),
-    ownership_full    = tolower(as.character(s10q02a)) == "full",
-    ownership_partial = tolower(as.character(s10q02a)) == "partial",
-    n_workers  = coalesce(as.numeric(s10q03), 0),
-    revenue_12m  = coalesce(as.numeric(s10q04), 0),
-    wages        = coalesce(as.numeric(s10q05), 0),
-    fuel         = coalesce(as.numeric(s10q06), 0),
-    raw_mat      = coalesce(as.numeric(s10q07), 0),
-    other_exp    = coalesce(as.numeric(s10q08), 0),
-    expenses_12m = wages + fuel + raw_mat + other_exp,
-    profit_12m   = revenue_12m - expenses_12m,
-    capex_12m    = coalesce(as.numeric(s10q09), 0),
-    asset_sales_12m = coalesce(as.numeric(s10q10), 0)
-  )
-
+    
+    has_valid_enterprise = !is.na(s10q02),
+    
+    ownership_full = str_to_lower(as.character(s10q02a)) == "full",
+    ownership_partial = str_to_lower(as.character(s10q02a)) == "partial",
+    
+    n_workers = coalesce(as.numeric(s10q03), 0),
+    revenue_12m = coalesce(as.numeric(s10q04), 0),
+    wages_12m = coalesce(as.numeric(s10q05), 0),
+    fuel_12m = coalesce(as.numeric(s10q06), 0),
+    rawmat_12m = coalesce(as.numeric(s10q07), 0),
+    otherexp_12m = coalesce(as.numeric(s10q08), 0),
+    capex_12m = coalesce(as.numeric(s10q09), 0),
+    asset_sales_12m = coalesce(as.numeric(s10q10), 0),
+    
+    expenses_12m = wages_12m + fuel_12m + rawmat_12m + otherexp_12m,
+    profit_12m = revenue_12m - expenses_12m,
+    
+    valid_sector = !is.na(sector_code)
+  ) %>%
+  filter(has_valid_enterprise)
 
 ##############################################################################
-# 2. AGGREGATE TO HH × YEAR
+# 2. AGGREGATE ENTERPRISE DATA TO HH × YEAR
 ##############################################################################
 
 ent_hh <- ent %>%
   group_by(hhid, year) %>%
   summarise(
-    has_enterprise   = 1L,
-    n_enterprises    = dplyr::n(),
-    n_workers_total  = sum(n_workers, na.rm = TRUE),
-    revenue_12m      = sum(revenue_12m,    na.rm = TRUE),
-    expenses_12m     = sum(expenses_12m,   na.rm = TRUE),
-    profit_12m       = sum(profit_12m,     na.rm = TRUE),
-    capex_12m        = sum(capex_12m,      na.rm = TRUE),
-    asset_sales_12m  = sum(asset_sales_12m, na.rm = TRUE),
-    n_partial_owned  = sum(ownership_partial, na.rm = TRUE),
+    has_nonag_enterprise = 1L,
+    n_nonag_enterprises = n(),
+    n_enterprises_valid_sector = sum(valid_sector, na.rm = TRUE),
     
-    sector_manufacturing = as.integer(any(sector_code == 4,  na.rm = TRUE)),
-    sector_trade         = as.integer(any(sector_code == 7,  na.rm = TRUE)),
-    sector_hotels        = as.integer(any(sector_code == 8,  na.rm = TRUE)),
-    sector_transport     = as.integer(any(sector_code == 9,  na.rm = TRUE)),
-    sector_services      = as.integer(any(sector_code %in% c(13, 14, 15), na.rm = TRUE)),
-    sector_other         = as.integer(any(!sector_code %in% c(4, 7, 8, 9, 13, 14, 15),
-                                          na.rm = TRUE)),
+    n_full_owned = sum(ownership_full, na.rm = TRUE),
+    n_partial_owned = sum(ownership_partial, na.rm = TRUE),
+    
+    enterprise_workers_total = sum(n_workers, na.rm = TRUE),
+    enterprise_workers_mean = mean(n_workers, na.rm = TRUE),
+    
+    enterprise_revenue_12m = sum(revenue_12m, na.rm = TRUE),
+    enterprise_expenses_12m = sum(expenses_12m, na.rm = TRUE),
+    enterprise_profit_12m = sum(profit_12m, na.rm = TRUE),
+    enterprise_capex_12m = sum(capex_12m, na.rm = TRUE),
+    enterprise_asset_sales_12m = sum(asset_sales_12m, na.rm = TRUE),
+    
+    enterprise_rev_per_firm = mean(revenue_12m, na.rm = TRUE),
+    enterprise_profit_per_firm = mean(profit_12m, na.rm = TRUE),
+    
+    enterprise_rev_per_worker = if_else(
+      sum(n_workers, na.rm = TRUE) > 0,
+      sum(revenue_12m, na.rm = TRUE) / sum(n_workers, na.rm = TRUE),
+      NA_real_
+    ),
+    
+    enterprise_profit_margin = if_else(
+      sum(revenue_12m, na.rm = TRUE) > 0,
+      sum(profit_12m, na.rm = TRUE) / sum(revenue_12m, na.rm = TRUE),
+      NA_real_
+    ),
+    
+    ind_agri_forestry_fish = sum(sector_code == 1, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_mining_quarrying = sum(sector_code == 2, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_manufacturing = sum(sector_code == 3, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_electricity_gas_water = sum(sector_code == 4, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_water_waste = sum(sector_code == 5, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_construction = sum(sector_code == 6, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_wholesale_retail = sum(sector_code == 7, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_accommodation_food = sum(sector_code == 8, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_transport_storage = sum(sector_code == 9, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_information_comm = sum(sector_code == 10, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_financial_insurance = sum(sector_code == 11, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_real_estate = sum(sector_code == 12, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_professional_technical = sum(sector_code == 13, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_public_admin_defence = sum(sector_code == 14, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_education = sum(sector_code == 15, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_health_social = sum(sector_code == 16, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    ind_others = sum(sector_code == 17, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    
+    sector_agriculture_share =
+      sum(sector_code == 1, na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    
+    sector_manufacturing_construction_share =
+      sum(sector_code %in% c(2, 3, 4, 5, 6), na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    
+    sector_services_share =
+      sum(sector_code %in% c(7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17), na.rm = TRUE) / pmax(sum(valid_sector), 1),
+    
     .groups = "drop"
   )
 
-
 ##############################################################################
-# 3. BALANCE TO ALL HH × YEAR (fill zeros for HHs with no enterprise)
+# 3. CREATE HH × YEAR UNIVERSE
 ##############################################################################
-#
-# Non-enterprise HHs are absent from Section 10 entirely. Any consumption of
-# the output with a subsequent "share of HHs with enterprise" calculation will
-# want those HHs present with zeros. We reconstruct the HH universe from the
-# id_match produced in Stage 1.
 
 idmap_path <- file.path(base_in, "id_match_long.csv")
-if (file_exists(idmap_path)) {
+
+if (file.exists(idmap_path)) {
   id_match <- read_csv(idmap_path, show_col_types = FALSE, progress = FALSE)
 } else {
-  # Fallback: build HH×year universe from section_10 hhids plus any other
-  # section you have. Minimally it covers enterprise HHs only.
-  warning("id_match_long.csv not found; balanced panel will cover only ",
-          "HHs observed in Section 10.")
-  id_match <- ent %>% distinct(hhid, year)
+  stop("id_match_long.csv not found. Need HH universe to assign zeros to non-enterprise HHs.")
 }
 
-# Keep id_match column set minimal for this output
 id_min <- id_match %>%
-  select(hhid, year,
-         any_of(c("wt_hh", "psu", "district", "vdc",
-                  "vmun_code", "lgname", "district77", "district_name",
-                  "s00q03a", "s00q03b", "s00q03c")))
+  distinct(hhid, year, .keep_all = TRUE) %>%
+  select(
+    hhid, year,
+    any_of(c(
+      "wt_hh", "psu", "district", "vdc",
+      "vmun_code", "lgname",
+      "district77", "district_name",
+      "s00q03a", "s00q03b", "s00q03c"
+    ))
+  )
+
+##############################################################################
+# 4. FINAL HH × YEAR ENTERPRISE PANEL
+##############################################################################
+
+zero_vars <- c(
+  "n_nonag_enterprises",
+  "n_enterprises_valid_sector",
+  "n_full_owned",
+  "n_partial_owned",
+  "enterprise_workers_total",
+  "enterprise_workers_mean",
+  "enterprise_revenue_12m",
+  "enterprise_expenses_12m",
+  "enterprise_profit_12m",
+  "enterprise_capex_12m",
+  "enterprise_asset_sales_12m",
+  "sector_agriculture_share",
+  "sector_manufacturing_construction_share",
+  "sector_services_share",
+  "ind_agri_forestry_fish",
+  "ind_mining_quarrying",
+  "ind_manufacturing",
+  "ind_electricity_gas_water",
+  "ind_water_waste",
+  "ind_construction",
+  "ind_wholesale_retail",
+  "ind_accommodation_food",
+  "ind_transport_storage",
+  "ind_information_comm",
+  "ind_financial_insurance",
+  "ind_real_estate",
+  "ind_professional_technical",
+  "ind_public_admin_defence",
+  "ind_education",
+  "ind_health_social",
+  "ind_others"
+)
 
 enterprise_hh_year <- id_min %>%
   left_join(ent_hh, by = c("hhid", "year")) %>%
   mutate(
-    has_enterprise = coalesce(has_enterprise, 0L),
-    across(c(n_enterprises, n_workers_total,
-             revenue_12m, expenses_12m, profit_12m,
-             capex_12m, asset_sales_12m, n_partial_owned,
-             sector_manufacturing, sector_trade, sector_hotels,
-             sector_transport, sector_services, sector_other),
-           ~ coalesce(., 0))
+    has_nonag_enterprise = coalesce(has_nonag_enterprise, 0L),
+    
+    across(
+      any_of(zero_vars),
+      ~ coalesce(.x, 0)
+    ),
+    
+    enterprise_rev_per_firm = if_else(
+      has_nonag_enterprise == 1,
+      enterprise_rev_per_firm,
+      NA_real_
+    ),
+    
+    enterprise_profit_per_firm = if_else(
+      has_nonag_enterprise == 1,
+      enterprise_profit_per_firm,
+      NA_real_
+    ),
+    
+    enterprise_rev_per_worker = if_else(
+      has_nonag_enterprise == 1 & enterprise_workers_total > 0,
+      enterprise_rev_per_worker,
+      NA_real_
+    ),
+    
+    enterprise_profit_margin = if_else(
+      has_nonag_enterprise == 1 & enterprise_revenue_12m > 0,
+      enterprise_profit_margin,
+      NA_real_
+    )
   ) %>%
   arrange(hhid, year)
 
-
 ##############################################################################
-# 4. SAVE + SANITY REPORT
+# 5. SAVE
 ##############################################################################
 
-write_csv(enterprise_hh_year,
-          file.path(base_out, "enterprise_hh_year.csv"), na = "")
-
-# Codebook
-codebook <- tribble(
-  ~variable,                ~unit,       ~reference,   ~source,              ~definition,
-  "has_enterprise",         "HH × year", "past year",  "sec 10 presence",    "1 if HH ran any non-ag enterprise this year; 0 otherwise.",
-  "n_enterprises",          "HH × year", "past year",  "count sec 10 rows",  "Number of non-ag enterprises operated by HH.",
-  "n_workers_total",        "HH × year", "past year",  "sum s10q03",         "Total workers across all HH enterprises (includes unpaid family).",
-  "revenue_12m",            "HH × year", "12 months",  "sum s10q04",         "Total gross revenue (Rs.) across all HH enterprises, past 12 months.",
-  "expenses_12m",           "HH × year", "12 months",  "sum s10q05..08",     "Total operating expenses = wages + fuel/utilities + raw materials + other operations.",
-  "profit_12m",             "HH × year", "12 months",  "revenue − expenses", "Operating profit. Capex (s10q09) NOT subtracted.",
-  "capex_12m",              "HH × year", "12 months",  "sum s10q09",         "Capital expenditure: cash or in-kind value spent on assets for the business.",
-  "asset_sales_12m",        "HH × year", "12 months",  "sum s10q10",         "Value received from selling business assets.",
-  "n_partial_owned",        "HH × year", "past year",  "count s10q02a=Partial","Count of enterprises with partial ownership (vs full). Missing in 2017.",
-  "sector_manufacturing",   "HH × year", "past year",  "s10q02 == 4",        "1 if HH operated any manufacturing enterprise.",
-  "sector_trade",           "HH × year", "past year",  "s10q02 == 7",        "1 if HH operated any wholesale/retail enterprise.",
-  "sector_hotels",          "HH × year", "past year",  "s10q02 == 8",        "1 if HH operated any hotel/restaurant enterprise.",
-  "sector_transport",       "HH × year", "past year",  "s10q02 == 9",        "1 if HH operated any transport/storage/communications enterprise.",
-  "sector_services",        "HH × year", "past year",  "s10q02 ∈ {13,14,15}", "1 if HH operated any education, health, or community/social service.",
-  "sector_other",           "HH × year", "past year",  "s10q02 other",       "1 if HH operated any enterprise in sectors 1,2,3,5,6,10,11,12,16,17,18."
+write_csv(
+  enterprise_hh_year,
+  file.path(base_out, "enterprise_hh_year.csv"),
+  na = ""
 )
-write_csv(codebook, file.path(base_out, "enterprise_codebook.csv"))
 
-# Sanity
+##############################################################################
+# 6. CODEBOOK
+##############################################################################
+
+enterprise_codebook <- tribble(
+  ~variable, ~unit, ~reference, ~source, ~definition,
+  
+  "has_nonag_enterprise", "HH × year", "past year", "Section 10 presence",
+  "1 if household operated any non-agricultural enterprise; 0 otherwise.",
+  
+  "n_nonag_enterprises", "HH × year", "past year", "count Section 10 rows",
+  "Number of non-agricultural enterprises operated by household.",
+  
+  "n_enterprises_valid_sector", "HH × year", "past year", "s10q02 non-missing",
+  "Number of household enterprises with a valid non-missing sector code.",
+  
+  "n_full_owned", "HH × year", "past year", "s10q02a",
+  "Number of household enterprises reported as fully owned by the household.",
+  
+  "n_partial_owned", "HH × year", "past year", "s10q02a",
+  "Number of household enterprises reported as partially owned by the household.",
+  
+  "enterprise_workers_total", "HH × year", "past year", "sum s10q03",
+  "Total workers across all household non-agricultural enterprises.",
+  
+  "enterprise_workers_mean", "enterprise-owner HH × year", "past year", "mean s10q03",
+  "Average number of workers per enterprise, defined for households with enterprises.",
+  
+  "enterprise_revenue_12m", "HH × year", "12 months", "sum s10q04",
+  "Total gross revenue across all household non-agricultural enterprises.",
+  
+  "enterprise_expenses_12m", "HH × year", "12 months", "sum s10q05–s10q08",
+  "Total operating expenses: wages, fuel/utilities, raw materials, and other expenses.",
+  
+  "enterprise_profit_12m", "HH × year", "12 months", "revenue minus expenses",
+  "Operating profit across all household enterprises. Capital expenditure is not subtracted.",
+  
+  "enterprise_capex_12m", "HH × year", "12 months", "sum s10q09",
+  "Capital expenditure on business assets.",
+  
+  "enterprise_asset_sales_12m", "HH × year", "12 months", "sum s10q10",
+  "Value received from selling business assets.",
+  
+  "enterprise_rev_per_firm", "enterprise-owner HH × year", "12 months", "derived",
+  "Average revenue per enterprise, defined only for households with enterprises.",
+  
+  "enterprise_profit_per_firm", "enterprise-owner HH × year", "12 months", "derived",
+  "Average profit per enterprise, defined only for households with enterprises.",
+  
+  "enterprise_rev_per_worker", "enterprise-owner HH × year", "12 months", "derived",
+  "Revenue per worker, defined only for enterprise households with positive workers.",
+  
+  "enterprise_profit_margin", "enterprise-owner HH × year", "ratio", "derived",
+  "Profit divided by revenue, defined only for enterprise households with positive revenue.",
+  
+  "ind_agri_forestry_fish", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in agriculture, forestry, or fishing.",
+  
+  "ind_mining_quarrying", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in mining and quarrying.",
+  
+  "ind_manufacturing", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in manufacturing.",
+  
+  "ind_electricity_gas_water", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in electricity, gas, and water supply.",
+  
+  "ind_water_waste", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in water or waste-related services.",
+  
+  "ind_construction", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in construction.",
+  
+  "ind_wholesale_retail", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in wholesale and retail trade, including repair of vehicles and household goods.",
+  
+  "ind_accommodation_food", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in hotels, restaurants, accommodation, and food services.",
+  
+  "ind_transport_storage", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in transport and storage.",
+  
+  "ind_information_comm", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in communications or information-related activities.",
+  
+  "ind_financial_insurance", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in financial intermediation, finance, or insurance.",
+  
+  "ind_real_estate", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in real estate, renting, or business activities.",
+  
+  "ind_professional_technical", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in professional, technical, or business service activities.",
+  
+  "ind_public_admin_defence", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in public administration, defence, or compulsory social security.",
+  
+  "ind_education", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in education.",
+  
+  "ind_health_social", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in health and social work.",
+  
+  "ind_others", "HH × year", "share", "derived from s10q02",
+  "Residual share of household enterprises in other sectors.",
+  
+  "sector_agriculture_share", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in agriculture, forestry, or fishing.",
+  
+  "sector_manufacturing_construction_share", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in mining, manufacturing, utilities, water/waste, or construction.",
+  
+  "sector_services_share", "HH × year", "share", "derived from s10q02",
+  "Share of household enterprises in trade, accommodation/food, transport, communication, finance, real estate, professional services, public administration, education, health, and other services."
+)
+
+write_csv(
+  enterprise_codebook,
+  file.path(base_out, "enterprise_codebook.csv")
+)
+
+##############################################################################
+# 7. SANITY REPORT
+##############################################################################
+
 cat("\n=============================================================\n")
 cat("enterprise_hh_year.csv:", nrow(enterprise_hh_year), "rows,",
     ncol(enterprise_hh_year), "cols\n")
-cat("Rows per year: ",
-    paste0(enterprise_hh_year %>% count(year) %>%
-             mutate(x = paste0(year, "=", n)) %>% pull(x), collapse = "  "),
-    "\n")
+
+cat("Rows per year:",
+    paste0(
+      enterprise_hh_year %>%
+        count(year) %>%
+        mutate(x = paste0(year, "=", n)) %>%
+        pull(x),
+      collapse = "  "
+    ),
+    "\n"
+)
 
 cat("\n---- Enterprise ownership by year ----\n")
 enterprise_hh_year %>%
   group_by(year) %>%
   summarise(
-    n_hh            = dplyr::n(),
-    share_with_ent  = round(mean(has_enterprise == 1), 3),
-    mean_n_ent      = round(mean(n_enterprises), 3),
+    n_hh = n(),
+    share_with_nonag_enterprise = round(mean(has_nonag_enterprise, na.rm = TRUE), 3),
+    mean_n_enterprises_all_hh = round(mean(n_nonag_enterprises, na.rm = TRUE), 3),
+    mean_n_enterprises_conditional = round(
+      mean(n_nonag_enterprises[has_nonag_enterprise == 1], na.rm = TRUE),
+      3
+    ),
     .groups = "drop"
-  ) %>% print()
+  ) %>%
+  print()
 
-cat("\n---- Outcome means (among HHs with has_enterprise = 1) ----\n")
+cat("\n---- Outcome means among enterprise households only ----\n")
 enterprise_hh_year %>%
-  filter(has_enterprise == 1) %>%
+  filter(has_nonag_enterprise == 1) %>%
   summarise(
-    n_ent_hh     = dplyr::n(),
-    mean_workers = mean(n_workers_total,  na.rm = TRUE),
-    mean_revenue = mean(revenue_12m,      na.rm = TRUE),
-    mean_expense = mean(expenses_12m,     na.rm = TRUE),
-    mean_profit  = mean(profit_12m,       na.rm = TRUE),
-    mean_capex   = mean(capex_12m,        na.rm = TRUE)
-  ) %>% print()
+    n_ent_hh = n(),
+    mean_workers = mean(enterprise_workers_total, na.rm = TRUE),
+    mean_revenue = mean(enterprise_revenue_12m, na.rm = TRUE),
+    mean_expense = mean(enterprise_expenses_12m, na.rm = TRUE),
+    mean_profit = mean(enterprise_profit_12m, na.rm = TRUE),
+    mean_capex = mean(enterprise_capex_12m, na.rm = TRUE),
+    mean_rev_per_worker = mean(enterprise_rev_per_worker, na.rm = TRUE),
+    mean_profit_margin = mean(enterprise_profit_margin, na.rm = TRUE)
+  ) %>%
+  print()
 
-cat("\n---- Sector prevalence (share of HHs with enterprise in each sector) ----\n")
+cat("\n---- Broad sector shares among enterprise households ----\n")
 enterprise_hh_year %>%
-  filter(has_enterprise == 1) %>%
-  summarise(across(starts_with("sector_"),
-                   ~ round(mean(.x), 3))) %>%
-  print(width = Inf)
+  filter(has_nonag_enterprise == 1) %>%
+  summarise(
+    agriculture = mean(sector_agriculture_share, na.rm = TRUE),
+    manufacturing_construction = mean(sector_manufacturing_construction_share, na.rm = TRUE),
+    services = mean(sector_services_share, na.rm = TRUE)
+  ) %>%
+  print()
 
-cat("\n---- Overall outcome summary ----\n")
+cat("\n---- Detailed industry shares among enterprise households ----\n")
 enterprise_hh_year %>%
-  select(starts_with("has_"), starts_with("n_"),
-         ends_with("_12m"), starts_with("sector_")) %>%
-  summarise(across(everything(),
-                   list(n_nonNA = ~sum(!is.na(.x)),
-                        median  = ~median(.x, na.rm = TRUE),
-                        mean    = ~mean(.x, na.rm = TRUE)),
-                   .names = "{.col}__{.fn}")) %>%
-  pivot_longer(everything(), names_sep = "__", names_to = c("var", "stat")) %>%
+  filter(has_nonag_enterprise == 1) %>%
+  summarise(
+    across(
+      starts_with("ind_"),
+      ~ round(mean(.x, na.rm = TRUE), 3)
+    )
+  ) %>%
+  pivot_longer(
+    everything(),
+    names_to = "industry",
+    values_to = "mean_share"
+  ) %>%
+  arrange(desc(mean_share)) %>%
+  print(n = Inf)
+
+cat("\n---- Overall enterprise outcome summary ----\n")
+enterprise_hh_year %>%
+  select(
+    has_nonag_enterprise,
+    n_nonag_enterprises,
+    enterprise_workers_total,
+    enterprise_revenue_12m,
+    enterprise_expenses_12m,
+    enterprise_profit_12m,
+    enterprise_capex_12m,
+    enterprise_rev_per_firm,
+    enterprise_profit_per_firm,
+    enterprise_rev_per_worker,
+    enterprise_profit_margin,
+    sector_agriculture_share,
+    sector_manufacturing_construction_share,
+    sector_services_share
+  ) %>%
+  summarise(
+    across(
+      everything(),
+      list(
+        n_nonNA = ~ sum(!is.na(.x)),
+        median = ~ median(.x, na.rm = TRUE),
+        mean = ~ mean(.x, na.rm = TRUE)
+      ),
+      .names = "{.col}__{.fn}"
+    )
+  ) %>%
+  pivot_longer(
+    everything(),
+    names_sep = "__",
+    names_to = c("var", "stat")
+  ) %>%
   pivot_wider(names_from = stat, values_from = value) %>%
-  print(n = 40)
+  print(n = Inf)
 
 cat("=============================================================\n")

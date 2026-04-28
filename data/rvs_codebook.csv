@@ -1,0 +1,169 @@
+category,variable,unit,reference,source,definition
+agriculture,agri_hh,HH × year,past year,9a/9b/9d presence,"1 if household appears in land, crop, or livestock agriculture modules; 0 otherwise."
+agriculture,owned_plots_n,HH × year,current,9a1,Number of owned plots reported by household.
+agriculture,owned_area_sqm,HH × year,current,9a1 area_sqm,Total area of owned plots in square metres.
+agriculture,cultivated_area_sqm,HH × year,past year,9a1 + 9a2,Total cultivated area: own self-cultivated area plus rented/sharecropped-in area.
+agriculture,rented_in_area_sqm,HH × year,past year,9a2 area_sqm,Total area rented or sharecropped in by household.
+agriculture,rented_in_any,HH × year,past year,9a2,1 if household rented or sharecropped in any agricultural land.
+agriculture,plot_wet_farmed_share,HH × year,wet season,9a1 s09q07,Share of owned plots self-cultivated by household in the wet season.
+agriculture,plot_wet_rented_share,HH × year,wet season,9a1 s09q07,Share of owned plots rented out in the wet season.
+agriculture,plot_wet_shared_share,HH × year,wet season,9a1 s09q07,Share of owned plots sharecropped out in the wet season.
+agriculture,plot_wet_fallow_share,HH × year,wet season,9a1 s09q07,Share of owned plots kept fallow in the wet season.
+agriculture,plot_dry_farmed_share,HH × year,dry season,9a1 s09q11,Share of owned plots self-cultivated by household in the dry season.
+agriculture,plot_dry_rented_share,HH × year,dry season,9a1 s09q11,Share of owned plots rented out in the dry season.
+agriculture,plot_dry_shared_share,HH × year,dry season,9a1 s09q11,Share of owned plots sharecropped out in the dry season.
+agriculture,plot_dry_fallow_share,HH × year,dry season,9a1 s09q11,Share of owned plots kept fallow in the dry season.
+agriculture,double_crop_share,HH × year,past year,9a1 s09q07/s09q11,Share of owned plots self-cultivated in both wet and dry seasons.
+agriculture,wet_use_seed,HH × year,wet season,9c s09q52a,1 if household used purchased seed in the wet season.
+agriculture,wet_use_fertiliser,HH × year,wet season,9c s09q52c,1 if household used fertiliser in the wet season.
+agriculture,wet_use_pesticide,HH × year,wet season,9c s09q52e,1 if household used pesticide/insecticide in the wet season.
+agriculture,wet_use_equipment,HH × year,wet season,9c s09q52g,1 if household hired agricultural equipment in the wet season.
+agriculture,wet_use_hired_labour,HH × year,wet season,9c s09q52i,1 if household hired agricultural labour in the wet season.
+agriculture,dry_use_seed,HH × year,dry season,9c s09q53a,1 if household used purchased seed in the dry season.
+agriculture,dry_use_fertiliser,HH × year,dry season,9c s09q53c,1 if household used fertiliser in the dry season.
+agriculture,dry_use_pesticide,HH × year,dry season,9c s09q53e,1 if household used pesticide/insecticide in the dry season.
+agriculture,dry_use_equipment,HH × year,dry season,9c s09q53g,1 if household hired agricultural equipment in the dry season.
+agriculture,dry_use_hired_labour,HH × year,dry season,9c s09q53i,1 if household hired agricultural labour in the dry season.
+agriculture,input_total_12m_rs,HH × year,12 months,9c s09q52/53,Total agricultural input spending across wet and dry seasons.
+agriculture,input_intensity_per_sqm,HH × year,12 months,derived,Agricultural input spending per square metre of cultivated area. NA if cultivated area is zero.
+agriculture,n_crop_types,HH × year,past year,9b1/9b2 cropid,Number of distinct crops grown across wet and dry seasons.
+agriculture,grows_staple,HH × year,past year,9b1/9b2 cropid,"1 if household grew any staple crop such as rice/paddy, wheat, maize, millet, or barley."
+agriculture,grows_cashcrop,HH × year,past year,9b1/9b2 cropid,"1 if household grew any cash crop such as sugarcane, jute, tobacco, cardamom, tea, mustard, or oilseed."
+agriculture,grows_horticulture,HH × year,past year,9b1/9b2 cropid,1 if household grew any fruits or vegetables.
+agriculture,wet_grows_staple,HH × year,wet season,9b1 cropid,1 if household grew any staple crop in the wet season.
+agriculture,dry_grows_staple,HH × year,dry season,9b2 cropid,1 if household grew any staple crop in the dry season.
+agriculture,crop_sold_any,HH × year,past year,9b1/9b2 sold quantity,1 if household sold any crop output in either season.
+agriculture,crop_sales_12m_rs,HH × year,past year,9b1/9b2 sold quantity × price,Total crop sales value across wet and dry seasons.
+agriculture,crop_sale_share,HH × year,past year,derived,Mean crop-level share of harvest sold. NA if no crop harvest quantity is observed.
+agriculture,owns_tractor,HH × year,current,9f equipmentid/s09q65,1 if household owns a tractor or power tiller.
+agriculture,owns_pump,HH × year,current,9f equipmentid/s09q65,"1 if household owns a water pump, tubewell, or borewell equipment."
+agriculture,owns_modern_equip,HH × year,current,9f equipmentid/s09q65,1 if household owns any modern agricultural equipment.
+agriculture,n_modern_equip_types,HH × year,current,9f equipmentid/s09q65,Number of modern agricultural equipment types owned.
+agriculture,ag_equip_stock_value_rs,HH × year,current,9f s09q66,Total value of agricultural equipment owned.
+agriculture,livestock_has,HH × year,current,9d livestockid/s09q57a,1 if household owns any livestock.
+consumption,food_homeprod_7day,HH × year,7 days,5a s05q03,Rs. market value of food consumed from household own production in the past 7 days.
+consumption,food_purchased_7day,HH × year,7 days,5a s05q06,Rs. value of food purchased from the market in the past 7 days.
+consumption,food_total_7day,HH × year,7 days,5a s05q03 + s05q06,Total food value excluding gifts/in-kind: home-produced plus purchased food.
+consumption,food_gift_7day,HH × year,7 days,5a s05q09,Rs. value of food received as gifts or in-kind transfers in the past 7 days.
+consumption,food_homeprod_share,HH × year,share,derived,Share of food value sourced from own production: home-produced / (home-produced + purchased). Excludes gifts/in-kind.
+consumption,food_purchased_share,HH × year,share,derived,Share of food value sourced from market purchases: purchased / (home-produced + purchased). Excludes gifts/in-kind.
+consumption,food_staples_7day,HH × year,7 days,5a subset,"Rs. value of staples: rice, wheat flour, maize, maize flour, millet, barley, beaten rice, potatoes."
+consumption,food_protein_7day,HH × year,7 days,5a subset,"Rs. value of protein foods: pulses, meat/fish, dairy, and eggs."
+consumption,food_animal_7day,HH × year,7 days,5a subset,"Rs. value of animal-source foods: meat/fish, dairy, and eggs."
+consumption,food_vegfruit_7day,HH × year,7 days,5a subset,"Rs. value of vegetables, fruits, and dried fruits/nuts."
+consumption,food_oils_sugar_7day,HH × year,7 days,5a subset,Rs. value of oils/fats and sugar/sweets.
+consumption,food_temptation_7day,HH × year,7 days,5a subset,"Rs. value of vice, sugar/sweets, and beverages."
+consumption,food_staples_share,HH × year,share,derived,Share of total food value spent on staples.
+consumption,food_protein_share,HH × year,share,derived,Share of total food value spent on protein foods.
+consumption,food_animal_share,HH × year,share,derived,Share of total food value spent on animal-source foods.
+consumption,food_vegfruit_share,HH × year,share,derived,"Share of total food value spent on vegetables, fruits, and dried fruits/nuts."
+consumption,food_oils_sugar_share,HH × year,share,derived,Share of total food value spent on oils/fats and sugar/sweets.
+consumption,food_temptation_share,HH × year,share,derived,"Share of total food value spent on vice, sugar/sweets, and beverages."
+consumption,food_groups_consumed,HH × year,count,derived,Number of detailed food groups with positive consumption value.
+consumption,perceived_food_insecurity,HH × year,12 months,5b s05q10,Binary indicator equal to 1 if household worried about food availability during the reference period; 0 otherwise.
+consumption,food_insec_any,HH × year,12 months,5b s05q12 to s05q19,Binary indicator equal to 1 if household reported any realized food insecurity experience at least rarely on one or more of the 8 items.
+consumption,food_insec_index,HH × year,0 to 1 index,derived from 5b s05q12 to s05q19,Breadth index: number of affirmed food insecurity items divided by number of valid answered items. Ranges from 0 to 1.
+consumption,severe_food_insecurity,HH × year,12 months,5b s05q17 to s05q19,"Binary indicator equal to 1 if household reported severe hardship: no food, went to sleep hungry, or went a whole day/night without eating."
+consumption,food_insec_severity,HH × year,0 to 1 index,derived from 5b s05q12 to s05q19,"Severity-frequency index using Never=0, Rarely=1, Sometimes=2, Often=3, divided by maximum possible score."
+consumption,food_security_status,HH × year,category,derived,"Four-category status: Food secure, Vulnerable/worried, Moderate insecurity, Severe insecurity."
+consumption,nonfood_exp_30day,HH × year,30 days,6a s06q01a,Total frequent non-food spending over the past 30 days.
+consumption,nonfood_exp_12m,HH × year,12 months,6a s06q01b + 6b s06q02,Total non-food spending over the past 12 months.
+consumption,nonfood_cat_sum_12m,HH × year,12 months,derived,Sum of broad non-food category columns; used to validate against total non-food spending.
+consumption,nonfood_basic_nonfood_12m,HH × year,12 months,6a+6b subset,Basic recurrent non-food goods: personal care and household cleaning items.
+consumption,nonfood_energy_fuel_lighting_12m,HH × year,12 months,6a+6b subset,"Energy, fuel, and lighting: LPG, kerosene, wood, coal, candles, matches, bulbs, batteries."
+consumption,nonfood_clothing_personal_12m,HH × year,12 months,6a subset,"Clothing, footwear, personal grooming, and clothing-related services."
+consumption,nonfood_transport_communication_12m,HH × year,12 months,6a+6b subset,"Transport, fuel for vehicles, vehicle purchase/repair, public transport, telephone, mobile, postal, fax."
+consumption,nonfood_housing_household_12m,HH × year,12 months,6b subset,"Housing repairs, home improvement, household goods, furniture, appliances, utensils, bedding, and household repairs."
+consumption,nonfood_education_leisure_12m,HH × year,12 months,6a+6b subset,"Books, newspapers, stationery, entertainment, toys, sports, holidays, TV/radio/camera/computer-related leisure goods."
+consumption,nonfood_social_ceremonial_financial_12m,HH × year,12 months,6a+6b subset,"Religious ceremonies, marriage/birth/funeral expenses, taxes, legal/insurance, domestic wages, and pocket money."
+consumption,nonfood_luxury_valuables_12m,HH × year,12 months,6b subset,Jewelry and watches.
+consumption,nonfood_other_nonfood_12m,HH × year,12 months,6a+6b residual,Residual non-food category for unclassified or miscellaneous non-food items.
+consumption,durables_stock_value,HH × year,stock,6c s06q03b,Rs. current market value of all durable goods owned by household.
+consumption,durables_use_value_12m,HH × year,12 months,derived from 6c,"Imputed annual consumption flow from durables, calculated as 10 percent of durable stock value."
+consumption,selfprod_nonfood_count,HH × year,past year,6d s06q04a,Count of non-food items self-produced by the household.
+enterprise,has_nonag_enterprise,HH × year,past year,Section 10 presence,1 if household operated any non-agricultural enterprise; 0 otherwise.
+enterprise,n_nonag_enterprises,HH × year,past year,count Section 10 rows,Number of non-agricultural enterprises operated by household.
+enterprise,n_enterprises_valid_sector,HH × year,past year,s10q02 non-missing,Number of household enterprises with a valid non-missing sector code.
+enterprise,n_full_owned,HH × year,past year,s10q02a,Number of household enterprises reported as fully owned by the household.
+enterprise,n_partial_owned,HH × year,past year,s10q02a,Number of household enterprises reported as partially owned by the household.
+enterprise,enterprise_workers_total,HH × year,past year,sum s10q03,Total workers across all household non-agricultural enterprises.
+enterprise,enterprise_workers_mean,enterprise-owner HH × year,past year,mean s10q03,"Average number of workers per enterprise, defined for households with enterprises."
+enterprise,enterprise_revenue_12m,HH × year,12 months,sum s10q04,Total gross revenue across all household non-agricultural enterprises.
+enterprise,enterprise_expenses_12m,HH × year,12 months,sum s10q05–s10q08,"Total operating expenses: wages, fuel/utilities, raw materials, and other expenses."
+enterprise,enterprise_profit_12m,HH × year,12 months,revenue minus expenses,Operating profit across all household enterprises. Capital expenditure is not subtracted.
+enterprise,enterprise_capex_12m,HH × year,12 months,sum s10q09,Capital expenditure on business assets.
+enterprise,enterprise_asset_sales_12m,HH × year,12 months,sum s10q10,Value received from selling business assets.
+enterprise,enterprise_rev_per_firm,enterprise-owner HH × year,12 months,derived,"Average revenue per enterprise, defined only for households with enterprises."
+enterprise,enterprise_profit_per_firm,enterprise-owner HH × year,12 months,derived,"Average profit per enterprise, defined only for households with enterprises."
+enterprise,enterprise_rev_per_worker,enterprise-owner HH × year,12 months,derived,"Revenue per worker, defined only for enterprise households with positive workers."
+enterprise,enterprise_profit_margin,enterprise-owner HH × year,ratio,derived,"Profit divided by revenue, defined only for enterprise households with positive revenue."
+enterprise,ind_agri_forestry_fish,HH × year,share,derived from s10q02,"Share of household enterprises in agriculture, forestry, or fishing."
+enterprise,ind_mining_quarrying,HH × year,share,derived from s10q02,Share of household enterprises in mining and quarrying.
+enterprise,ind_manufacturing,HH × year,share,derived from s10q02,Share of household enterprises in manufacturing.
+enterprise,ind_electricity_gas_water,HH × year,share,derived from s10q02,"Share of household enterprises in electricity, gas, and water supply."
+enterprise,ind_water_waste,HH × year,share,derived from s10q02,Share of household enterprises in water or waste-related services.
+enterprise,ind_construction,HH × year,share,derived from s10q02,Share of household enterprises in construction.
+enterprise,ind_wholesale_retail,HH × year,share,derived from s10q02,"Share of household enterprises in wholesale and retail trade, including repair of vehicles and household goods."
+enterprise,ind_accommodation_food,HH × year,share,derived from s10q02,"Share of household enterprises in hotels, restaurants, accommodation, and food services."
+enterprise,ind_transport_storage,HH × year,share,derived from s10q02,Share of household enterprises in transport and storage.
+enterprise,ind_information_comm,HH × year,share,derived from s10q02,Share of household enterprises in communications or information-related activities.
+enterprise,ind_financial_insurance,HH × year,share,derived from s10q02,"Share of household enterprises in financial intermediation, finance, or insurance."
+enterprise,ind_real_estate,HH × year,share,derived from s10q02,"Share of household enterprises in real estate, renting, or business activities."
+enterprise,ind_professional_technical,HH × year,share,derived from s10q02,"Share of household enterprises in professional, technical, or business service activities."
+enterprise,ind_public_admin_defence,HH × year,share,derived from s10q02,"Share of household enterprises in public administration, defence, or compulsory social security."
+enterprise,ind_education,HH × year,share,derived from s10q02,Share of household enterprises in education.
+enterprise,ind_health_social,HH × year,share,derived from s10q02,Share of household enterprises in health and social work.
+enterprise,ind_others,HH × year,share,derived from s10q02,Residual share of household enterprises in other sectors.
+enterprise,sector_agriculture_share,HH × year,share,derived from s10q02,"Share of household enterprises in agriculture, forestry, or fishing."
+enterprise,sector_manufacturing_construction_share,HH × year,share,derived from s10q02,"Share of household enterprises in mining, manufacturing, utilities, water/waste, or construction."
+enterprise,sector_services_share,HH × year,share,derived from s10q02,"Share of household enterprises in trade, accommodation/food, transport, communication, finance, real estate, professional services, public administration, education, health, and other services."
+health_education,n_enrolled,,,s02q01,Count of HH members currently attending school
+health_education,n_school_age,,,s02q01,Count of HH members who ever attended or currently attend
+health_education,any_enrolled,,,derived,1 if any HH member currently attending
+health_education,n_private_school,,,s02q04,Count of currently-attending members in private/institutional schools
+health_education,n_scholarship,,,s02q05,Count of members receiving scholarship
+health_education,scholarship_amt_12m,,,s02q08,"Sum of scholarship amounts (Rs., 12m)"
+health_education,edu_spend_tuition_12m,,,s02q09a,"Tuition / admission fees (Rs., 12m)"
+health_education,edu_spend_books_12m,,,s02q09b,"Books & stationery (Rs., 12m)"
+health_education,edu_spend_uniforms_12m,,,s02q09c,"Uniforms & clothing (Rs., 12m)"
+health_education,edu_spend_transport_12m,,,s02q09d,"Transport to school (Rs., 12m)"
+health_education,edu_spend_food_lodging_12m,,,s02q09e,"Food & lodging / hostel (Rs., 12m)"
+health_education,edu_spend_other_12m,,,s02q09f,"Other education expenses (Rs., 12m)"
+health_education,edu_spend_total_12m,,,derived,Sum of all six education sub-categories
+health_education,edu_spend_per_enrolled,,,derived,Total education spend / n_enrolled (NA if 0)
+health_education,n_insured,,,s03q01,Count of members with health card
+health_education,any_insured,,,derived,1 if any member has health card
+health_education,n_chronic,,,s03q02a,Count of members with chronic illness
+health_education,n_acute_illness,,,s03q04,Count of members with acute illness (past 30d)
+health_education,any_health_spending,,,derived,1 if HH had any medical spending
+health_education,hlt_spend_fees,,,s03q06a,Consultation / doctor fees (Rs.)
+health_education,hlt_spend_medicines,,,s03q06b,Medicines (Rs.)
+health_education,hlt_spend_hospital,,,s03q06c,Hospital / inpatient costs (Rs.)
+health_education,hlt_spend_tests,,,s03q06d,Diagnostic tests (Rs.)
+health_education,hlt_spend_other,,,s03q06e,Other medical expenses (Rs.)
+health_education,hlt_spend_total,,,derived,Sum of all five health sub-categories
+labour,n_jobs_total,HH × year,12 months,Section 7,Total number of jobs across all HH members.
+labour,share_wage_agri,HH × year,12 months,s07q06,Share of HH's jobs that are wage employment in agriculture.
+labour,share_wage_nonagri,HH × year,12 months,s07q06,Share of HH's jobs that are wage employment not in agriculture.
+labour,share_self_agri,HH × year,12 months,s07q06,Share of HH's jobs that are self-employment in agriculture.
+labour,share_self_nonagri,HH × year,12 months,s07q06,Share of HH's jobs that are self-employment not in agriculture.
+labour,hh_has_wage_job,HH × year,12 months,Section 8,1 if any HH member has a Section 8 wage job record.
+labour,n_wage_jobs_hh,HH × year,12 months,Section 8,Total number of Section 8 wage jobs in the HH.
+labour,wage_total_income_12m_rs,HH × year,12 months,s08q06/12/13,Total wage Rs. = daily (s08q06×days) + long-term (12·s08q12a + s08q12b..e) + contract (s08q13).
+labour,wage_sector_primary_any,HH × year,12 months,s08q02,"1 if any member has a wage job in primary sector (Agriculture, Fishing, Mining)."
+labour,wage_sector_secondary_any,HH × year,12 months,s08q02,"1 if any member in secondary sector (Manufacturing, Utilities, Construction)."
+labour,wage_sector_tertiary_any,HH × year,12 months,s08q02,"1 if any member in tertiary sector (Trade, Hotels, Transport, Finance, Public, Community)."
+migration,has_migrant,HH × year,present,Section 11 presence,"1 if household has at least one migrant, either internal or overseas; 0 otherwise."
+migration,has_migrant_internal,HH × year,present,s11q02 = Locally,1 if household has at least one internal migrant within Nepal; 0 otherwise.
+migration,remit_received,HH × year,12 months,s11q07a,1 if any migrant sent remittance to the household in the past 12 months; 0 otherwise.
+migration,remit_amount_12m_rs,HH × year,12 months,sum s11q07c,"Total remittance amount received by the household from all migrants in the past 12 months, in rupees."
+migration,remit_amount_intl_12m_rs,HH × year,12 months,sum s11q07c for overseas migrants,"Total remittance amount received from international migrants only in the past 12 months, in rupees."
+migration,remit_via_formal_any,HH × year,12 months,s11q07d_1,1 if any migrant sent remittance through bank or IME/formal channel; 0 otherwise.
+migration,remit_via_hundi_any,HH × year,12 months,s11q07d_3,1 if any migrant sent remittance through hundi/informal channel; 0 otherwise.
+migration,remit_use_consumption_any,HH × year,12 months,s11q07e_1 or s11q07e_12,1 if any remittance was used for non-durable consumption or ceremonies; 0 otherwise.
+migration,remit_use_education_any,HH × year,12 months,s11q07e_3,1 if any remittance was used for education expenses; 0 otherwise.
+migration,remit_use_business_any,HH × year,12 months,s11q07e_5 to s11q07e_9,"1 if any remittance was used for productive investment, including business inputs, business equipment, land, livestock, or other business purposes; 0 otherwise."
+migration,mig_cost_financed_by_loan_any,HH × year,past migration episode,s11q08c_1,1 if any migrant in the household financed migration costs using a loan; 0 otherwise.
+shocks,any_shock,,,15a presence,1 if HH reported any shock in past 12m.
+shocks,coped_self,,,15a s15q07a/08a/09a,"1 if HH used own resources to cope (savings/reduced consumption, selling assets, or borrowing) for any shock."
+shocks,coped_external,,,15a s15q06/10a/11a,"1 if HH used outside resources to cope (private transfers from family/community, govt/NGO assistance, or remittances) for any shock."
