@@ -2,11 +2,13 @@
 # Replica of script/build_results.py in R, to diagnose website vs local
 # coefficient differences.
 #
-# UPDATED specs (interaction-based — coefficient of interest in [brackets]):
-#   S1: y ~ fx_z + [fx_z:mig_int_z]                                          | FE
-#       (interaction with linear migint, NO year × migint control)
-#   S2: y ~ fx_z + [fx_z:log_migint_z] + i(year, mig_int_z, ref)             | FE   ← MAIN
-#   S3: y ~ fx_z + [fx_z:mig_int_z]    + i(year, log_migint_z, ref)          | FE
+# Specs (coefficient of interest in [brackets]):
+#   S1: y ~ [fx_z]              + i(year, mig_int_z,    ref) | FE
+#       (average FX shock effect, with linear migint × year trend control)
+#   S2: y ~ [fx_z:log_migint_z] + i(year, mig_int_z,    ref) | FE   ← MAIN
+#       (heterogeneous slope on log migint, with linear migint × year control)
+#   S3: y ~ [fx_z:mig_int_z]    + i(year, log_migint_z, ref) | FE
+#       (heterogeneous slope on linear migint, with log migint × year control)
 #
 # Run from project root:
 #   source("script/estimate/_match_python.R")
@@ -70,17 +72,18 @@ fit_cell <- function(panel, y, spec, entity, year_col, ref_year, cluster_col) {
   if (nrow(d) < 50 || sd(d[[y]], na.rm = TRUE) == 0) return(NULL)
 
   if (spec == "S1") {
-    fml <- as.formula(sprintf("`%s` ~ fx_z + fx_z:mig_int_z | %s + %s",
-                              y, entity, year_col))
-    report <- "fx_z:mig_int_z"
+    fml <- as.formula(sprintf(
+      "`%s` ~ fx_z + i(year, mig_int_z, ref = %d) | %s + %s",
+      y, ref_year, entity, year_col))
+    report <- "fx_z"
   } else if (spec == "S2") {
     fml <- as.formula(sprintf(
-      "`%s` ~ fx_z + fx_z:log_migint_z + i(year, mig_int_z, ref = %d) | %s + %s",
+      "`%s` ~ fx_z:log_migint_z + i(year, mig_int_z, ref = %d) | %s + %s",
       y, ref_year, entity, year_col))
     report <- "fx_z:log_migint_z"
   } else if (spec == "S3") {
     fml <- as.formula(sprintf(
-      "`%s` ~ fx_z + fx_z:mig_int_z + i(year, log_migint_z, ref = %d) | %s + %s",
+      "`%s` ~ fx_z:mig_int_z + i(year, log_migint_z, ref = %d) | %s + %s",
       y, ref_year, entity, year_col))
     report <- "fx_z:mig_int_z"
   } else stop("unknown spec ", spec)

@@ -5,12 +5,12 @@ Build docs/results.json — three datasets (census, hh, plot), three specs
 Mirrors script/estimate/{estimate_census, estimate_hh, estimate_plot}.R.
 
 Specs (coefficient of interest in [brackets]):
-  S1: y ~ fx_z + [fx_z:mig_int_z]                                          | FE
-      (interaction with linear migint, NO separate year×migint control)
-  S2: y ~ fx_z + [fx_z:log_migint_z] + i(year, mig_int_z, ref)             | FE   ← MAIN
-      (interaction with log migint + linear year×migint trend control)
-  S3: y ~ fx_z + [fx_z:mig_int_z]    + i(year, log_migint_z, ref)          | FE
-      (interaction with linear migint + log year×migint trend control)
+  S1: y ~ [fx_z]              + i(year, mig_int_z, ref)     | FE
+      (average FX shock effect, with linear year×migint trend)
+  S2: y ~ [fx_z:log_migint_z] + i(year, mig_int_z, ref)     | FE   ← MAIN
+      (heterogeneous slope by log migration intensity)
+  S3: y ~ [fx_z:mig_int_z]    + i(year, log_migint_z, ref)  | FE
+      (heterogeneous slope by linear migration intensity)
 
 Datasets:
   census : lgcode × year (2001/2011/2021), FE = lgcode + year, ref = 2001
@@ -244,25 +244,24 @@ def fit_one(df, y, spec, entity_col, year_col, ref_year, cluster_col):
     if d[y].nunique() < 2 or len(d) < 50: return None
     if d[y].std(ddof=1) == 0: return None
 
-    # Always include the FX-shock main effect
-    rhs = ["fx_z"]
-
-    # Build the interaction term (the treatment of interest)
+    # Build the spec — exactly as in estimate_census.R:
+    #   S1: y ~ fx_z + i(year, mig_int_z, ref) | FE          → report fx_z
+    #   S2: y ~ fx_z:log_migint_z + i(year, mig_int_z, ref)  → report interaction
+    #   S3: y ~ fx_z:mig_int_z + i(year, log_migint_z, ref)  → report interaction
     if spec == "S1":
-        d["fx_x_mig"]    = d["fx_z"] * d["mig_int_z"]
-        rhs.append("fx_x_mig")
-        report_var = "fx_x_mig"
-        ctrl_cols = []   # NO year × migint control
+        rhs = ["fx_z"]
+        report_var = "fx_z"
+        ctrl_cols  = _build_year_interactions(d, "mig_int_z", ref_year)
     elif spec == "S2":
         d["fx_x_logmig"] = d["fx_z"] * d["log_migint_z"]
-        rhs.append("fx_x_logmig")
+        rhs = ["fx_x_logmig"]
         report_var = "fx_x_logmig"
-        ctrl_cols = _build_year_interactions(d, "mig_int_z", ref_year)
+        ctrl_cols  = _build_year_interactions(d, "mig_int_z", ref_year)
     elif spec == "S3":
         d["fx_x_mig"]    = d["fx_z"] * d["mig_int_z"]
-        rhs.append("fx_x_mig")
+        rhs = ["fx_x_mig"]
         report_var = "fx_x_mig"
-        ctrl_cols = _build_year_interactions(d, "log_migint_z", ref_year)
+        ctrl_cols  = _build_year_interactions(d, "log_migint_z", ref_year)
     else:
         return {"err": f"unknown spec {spec}"}
 
@@ -369,9 +368,9 @@ def main():
             "plot":   {"label": "HRVS plot × year (agriculture)"},
         },
         "specs": {
-            "S1": "fx + [fx × mig_intensity] (no year × migint control)",
-            "S2": "fx + [fx × log mig_intensity] + year × mig_intensity   [main]",
-            "S3": "fx + [fx × mig_intensity] + year × log mig_intensity",
+            "S1": "fx + year × mig_intensity   (average FX effect)",
+            "S2": "fx × log(mig_intensity) + year × mig_intensity   [main]",
+            "S3": "fx × mig_intensity + year × log(mig_intensity)",
         },
         "thresholds": {
             "0":   "All munis",
