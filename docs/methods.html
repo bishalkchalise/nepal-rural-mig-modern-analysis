@@ -95,44 +95,53 @@ treatment.
 <h2 id="specs">Three specifications</h2>
 
 <p>
-The explorer reports three specifications S1–S3, all with municipality and
-year fixed effects ($\alpha_m,\gamma_t$ — replaced with HH FE for the
-household and plot panels), standard errors clustered at the municipality.
-$\boldsymbol{\tau}_t = (\mathbf{1}\{t=t_1\},\dots,\mathbf{1}\{t=t_T\})'$
-denotes the year-period indicator vector relative to a reference year (2001
-for the census, 2016 for the household and plot panels).
+The treatment of interest is the <em>heterogeneous-treatment slope</em> —
+how strongly the FX shock's effect on outcome $y$ scales with each
+municipality's baseline migration intensity. All three specifications have
+two-way fixed effects ($\alpha_i, \gamma_t$) and standard errors clustered
+at the municipality. The reported $\beta$ is the bracketed interaction term.
 </p>
 
 \begin{equation}
 \textbf{S1:}\quad
-y_{it} = \beta\,\mathrm{fxshock}_{m(i),t} + \boldsymbol{\lambda}'\bigl(\log\mathrm{mig\_intensity}_{m(i),0}\;\boldsymbol{\tau}_t\bigr)
+y_{it} = \alpha\,\mathrm{fxshock}_{m(i),t}
+       + \beta\bigl[\mathrm{fxshock}_{m(i),t}\cdot\mathrm{mig\_intensity}_{m(i),0}\bigr]
        + \alpha_i + \gamma_t + \varepsilon_{it}
 \label{eq:s1}
 \end{equation}
 
 \begin{equation}
-\textbf{S2:}\quad
-y_{it} = \beta\,\mathrm{fxshock}_{m(i),t} + \boldsymbol{\lambda}'\bigl(\mathrm{mig\_intensity}_{m(i),0}\;\boldsymbol{\tau}_t\bigr)
+\textbf{S2 (main):}\quad
+y_{it} = \alpha\,\mathrm{fxshock}_{m(i),t}
+       + \beta\bigl[\mathrm{fxshock}_{m(i),t}\cdot\log\mathrm{mig\_intensity}_{m(i),0}\bigr]
+       + \boldsymbol{\lambda}'\bigl(\mathrm{mig\_intensity}_{m(i),0}\,\boldsymbol{\tau}_t\bigr)
        + \alpha_i + \gamma_t + \varepsilon_{it}
 \label{eq:s2}
 \end{equation}
 
 \begin{equation}
 \textbf{S3:}\quad
-y_{it} = \beta\,\mathrm{fxshock\_x\_mig\_intensity}_{m(i),t}
-       + \alpha\,\mathrm{fxshock}_{m(i),t}
-       + \boldsymbol{\lambda}_1' (\log\mathrm{mig\_intensity}\,\boldsymbol{\tau}_t)
-       + \boldsymbol{\lambda}_2' (\mathrm{mig\_intensity}\,\boldsymbol{\tau}_t)
+y_{it} = \alpha\,\mathrm{fxshock}_{m(i),t}
+       + \beta\bigl[\mathrm{fxshock}_{m(i),t}\cdot\mathrm{mig\_intensity}_{m(i),0}\bigr]
+       + \boldsymbol{\lambda}'\bigl(\log\mathrm{mig\_intensity}_{m(i),0}\,\boldsymbol{\tau}_t\bigr)
        + \alpha_i + \gamma_t + \varepsilon_{it}
 \label{eq:s3}
 \end{equation}
 
 <ul>
-  <li><strong>S1</strong> — FX shock with year × log mig-intensity heterogeneity.</li>
-  <li><strong>S2</strong> — same with linear mig-intensity (this is the <em>main</em> spec).</li>
-  <li><strong>S3</strong> — SSIV with both heterogeneity terms; $\beta$ is on the SSIV
-      ($\mathrm{fxshock} \times \mathrm{mig\_intensity}$).</li>
+  <li><strong>S1</strong> — FX shock × <em>linear</em> mig-intensity, no year × migint trend control.</li>
+  <li><strong>S2</strong> — FX shock × <em>log</em> mig-intensity, with linear year × mig-intensity controls. (Main spec.)</li>
+  <li><strong>S3</strong> — FX shock × <em>linear</em> mig-intensity, with log year × mig-intensity controls.</li>
 </ul>
+
+<p>
+$\boldsymbol{\tau}_t = (\mathbf{1}\{t=t_1\},\dots,\mathbf{1}\{t=t_T\})'$ is
+the year-period indicator vector relative to a reference year (2001 for the
+census, 2016 for the household and plot panels). All four treatment
+quantities (fxshock, mig_intensity, log mig_intensity) are z-scored on the
+working sample at the muni-year level before estimation, so $\beta$ is the
+differential response per 1 SD of the interaction term.
+</p>
 
 <h3>Sample threshold</h3>
 
