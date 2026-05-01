@@ -26,8 +26,8 @@ window.MathJax = {
     <li><a href="methods.html" class="active">Method</a>
       <ul class="subnav">
         <li><a href="#shock">Shock construction</a></li>
-        <li><a href="#preferred">Specification</a></li>
-        <li><a href="#robust">Robustness</a></li>
+        <li><a href="#specs">Specifications</a></li>
+        <li><a href="#datasets">Datasets &amp; FE</a></li>
         <li><a href="#refs">References</a></li>
       </ul>
     </li>
@@ -39,119 +39,127 @@ window.MathJax = {
 <header class="page-header">
   <h1>Method</h1>
   <div class="sub">
-    Construction of the FX-driven shift-share instrument and the reduced-form
-    specification, following Khanna et al. (2026).
+    Construction of the FX-driven shift-share instrument and three reduced-form
+    specifications, following Khanna et al. (2026).
   </div>
 </header>
 
 <h2 id="shock">Shock construction</h2>
 
 <p>
-The instrument follows Khanna et al. (2026) for the Philippines, adapted for
-Nepal where individual migrant income is unobserved. We use migrant
-<em>counts</em> as exposure weights instead. Let $m$ index municipalities,
-$d$ destination countries, $t$ years.
+We follow Khanna et al. (2026) for the Philippines, adapted for Nepal where
+individual migrant income is unobserved. Migrant <em>counts</em> serve as
+exposure weights. Let $m$ index municipalities, $d$ destination countries,
+$t$ years.
 </p>
-
-<p>Define the per-capita baseline migrant exposure:</p>
 
 \begin{equation}
 \omega_{md,0} = \frac{N_{md,2001}}{\mathrm{Pop}_{m,2001}}
 \qquad
-\mathrm{MI}_{m,0} = \sum_d \omega_{md,0}
+\mathrm{mig\_intensity}_{m,0} = \sum_d \omega_{md,0}
 \qquad
-s_{md,0} = \frac{\omega_{md,0}}{\mathrm{MI}_{m,0}}
+s_{md,0} = \frac{\omega_{md,0}}{\mathrm{mig\_intensity}_{m,0}}
 \label{eq:weights}
 \end{equation}
 
-<p>
-where $\mathrm{MI}_{m,0}$ is the total per-capita baseline migration
-intensity and $s_{md,0}$ is the destination composition (sums to 1 within
-$m$). The destination-country shifter is the FX index relative to 2001:
-</p>
+<p>The destination-country shifter is the FX index relative to 2001:</p>
 
 \begin{equation}
-\mathrm{FXshock}_{dt} = \frac{\mathrm{FX}_{dt}}{\mathrm{FX}_{d,2001}}
+\mathrm{fxshock}_{dt} = \frac{\mathrm{FX}_{dt}}{\mathrm{FX}_{d,2001}}
 \label{eq:shifter}
 \end{equation}
 
-<p>From these we build three regressors:</p>
+<p>Aggregating to muni-year level gives three regressors:</p>
 
 \begin{align}
-\mathrm{SSIV}_{mt}      &= \sum_d \omega_{md,0} \, \mathrm{FXshock}_{dt}
-                         \;=\; \mathrm{MI}_{m,0} \cdot \mathrm{ShareShock}_{mt}\\
-\mathrm{ShareShock}_{mt}&= \sum_d s_{md,0} \, \mathrm{FXshock}_{dt}\\
-\mathrm{AbsExp}_{mt}    &= \sum_d N_{md,2001} \, \mathrm{FXshock}_{dt}
-\label{eq:regressors}
+\mathrm{fxshock}_{mt}
+   &\;=\; \sum_d s_{md,0} \, \mathrm{fxshock}_{dt}
+   \qquad \text{(share-weighted FX shock)}\\
+\mathrm{fxshock\_x\_mig\_intensity}_{mt}
+   &\;=\; \sum_d \omega_{md,0} \, \mathrm{fxshock}_{dt}
+   \;=\; \mathrm{mig\_intensity}_{m,0}\,\cdot\,\mathrm{fxshock}_{mt}\\
+\mathrm{absexp}_{mt}
+   &\;=\; \sum_d N_{md,2001}\,\mathrm{fxshock}_{dt}
 \end{align}
 
 <p>
-The headline regressor is $\mathrm{SSIV}_{mt}$. The identity
-$\mathrm{SSIV} = \mathrm{MI} \cdot \mathrm{ShareShock}$ is enforced and
-verified in <code>script/vars/instrument.R §8</code>.
+The two shocks used in the explorer are
+<code>fxshock</code> (composition-only, share-weighted) and
+<code>fxshock_x_mig_intensity</code> (the SSIV — the
+<code>fxshock</code> scaled by per-capita baseline migration intensity).
+All treatments are z-scored on the working sample at the muni-year level
+before estimation, so β is the response per 1 SD of the standardised
+treatment.
 </p>
 
-<h2 id="preferred">Reduced-form specification</h2>
-
-<p>The headline panel regression is</p>
-
-\begin{equation}
-y_{mt} \;=\; \alpha_m + \gamma_t
-   + \beta\,\mathrm{SSIV}_{m,t-\ell}
-   + \boldsymbol{\lambda}_1' \bigl(\mathrm{MI}_{m,0}\,\boldsymbol{\tau}_t\bigr)
-   + \boldsymbol{\lambda}_2' \bigl(\mathrm{ShareShock}_{m,0}\,\boldsymbol{\tau}_t\bigr)
-   + \varepsilon_{mt},
-\label{eq:main}
-\end{equation}
-
-<p>where</p>
-
-<ul>
-  <li>$\alpha_m$ is a municipality fixed effect;</li>
-  <li>$\gamma_t$ is a year fixed effect;</li>
-  <li>$\boldsymbol{\tau}_t = (\mathbf{1}\{t=t_1\},\ldots,\mathbf{1}\{t=t_T\})'$ is the vector of year-period indicators;</li>
-  <li>$\ell\in\{0,1,2\}$ is the lag set in the explorer.</li>
-</ul>
+<h2 id="specs">Three specifications</h2>
 
 <p>
-Standard errors are clustered at the municipality (<code>lgcode</code>)
-level — the unit of observation, following Khanna et al. (2026, p. 1561) who
-cluster at the province level (their unit of observation). The headline
-cell that matches the basic <code>script/baseline_census.R</code> spec is
-<a href="explorer.html#dataset=census&amp;panel=P2_ref2011&amp;lag=lag0&amp;shock=ssiv_index&amp;ctrl=mi"><strong>census /
-P2_ref2011 / lag0 / ssiv_index / mi</strong></a>.
+The explorer reports three specifications S1–S3, all with municipality and
+year fixed effects ($\alpha_m,\gamma_t$ — replaced with HH FE for the
+household and plot panels), standard errors clustered at the municipality.
+$\boldsymbol{\tau}_t = (\mathbf{1}\{t=t_1\},\dots,\mathbf{1}\{t=t_T\})'$
+denotes the year-period indicator vector relative to a reference year (2001
+for the census, 2016 for the household and plot panels).
 </p>
 
-<h2 id="robust">Robustness dimensions</h2>
+\begin{equation}
+\textbf{S1:}\quad
+y_{it} = \beta\,\mathrm{fxshock}_{m(i),t} + \boldsymbol{\lambda}'\bigl(\log\mathrm{mig\_intensity}_{m(i),0}\;\boldsymbol{\tau}_t\bigr)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:s1}
+\end{equation}
 
-<h3>Panel and reference year</h3>
+\begin{equation}
+\textbf{S2:}\quad
+y_{it} = \beta\,\mathrm{fxshock}_{m(i),t} + \boldsymbol{\lambda}'\bigl(\mathrm{mig\_intensity}_{m(i),0}\;\boldsymbol{\tau}_t\bigr)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:s2}
+\end{equation}
+
+\begin{equation}
+\textbf{S3:}\quad
+y_{it} = \beta\,\mathrm{fxshock\_x\_mig\_intensity}_{m(i),t}
+       + \alpha\,\mathrm{fxshock}_{m(i),t}
+       + \boldsymbol{\lambda}_1' (\log\mathrm{mig\_intensity}\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\lambda}_2' (\mathrm{mig\_intensity}\,\boldsymbol{\tau}_t)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:s3}
+\end{equation}
+
 <ul>
-  <li><strong>P2_ref2011</strong>: 2011 + 2021 only. Headline.</li>
-  <li><strong>P3_ref2001</strong>: full panel (2001, 2011, 2021), anchored at the pre-shock baseline.</li>
-  <li><strong>P3_ref2011</strong>: full panel anchored at 2011.</li>
+  <li><strong>S1</strong> — FX shock with year × log mig-intensity heterogeneity.</li>
+  <li><strong>S2</strong> — same with linear mig-intensity (this is the <em>main</em> spec).</li>
+  <li><strong>S3</strong> — SSIV with both heterogeneity terms; $\beta$ is on the SSIV
+      ($\mathrm{fxshock} \times \mathrm{mig\_intensity}$).</li>
 </ul>
 
-<h3>Shock timing</h3>
-<ul>
-  <li><strong>$\mathrm{FXshock}_t$</strong>: contemporaneous shifter.</li>
-  <li><strong>$\mathrm{FXshock}_{t-1}$, $\mathrm{FXshock}_{t-2}$</strong>: lagged 1 / 2 years; addresses contemporaneity in the FX panel.</li>
-</ul>
+<h3>Sample threshold</h3>
 
-<h3>Shock variant</h3>
-<ul>
-  <li><strong>$\mathrm{SSIV}$ (level index)</strong>: main spec.</li>
-  <li><strong>$\mathrm{SSIV}$ winsorised at 99%</strong>: outlier-robust version that caps the SSIV at its 99th percentile to limit top-1% leverage.</li>
-</ul>
+<p>
+The threshold dropdown restricts the sample to municipalities with at
+least <em>k</em> total migrants in 2001 ($k\in\{0,25,50,100\}$). $k=0$ keeps
+the full panel; raising $k$ trims thin-coverage municipalities and
+re-z-scores the treatments on the working sample.
+</p>
 
-<h3>Control sets</h3>
+<h2 id="datasets">Datasets &amp; fixed effects</h2>
+
 <table class="var-table">
   <thead>
-    <tr><th style="text-align:left">Tag</th><th style="text-align:left">What it adds</th><th style="text-align:left">Khanna et al. analog</th></tr>
+    <tr>
+      <th style="text-align:left">Dataset</th>
+      <th style="text-align:left">Source</th>
+      <th style="text-align:left">Unit</th>
+      <th style="text-align:left">FE</th>
+      <th style="text-align:left">Ref year</th>
+      <th style="text-align:left">Cluster</th>
+    </tr>
   </thead>
   <tbody>
-    <tr><td><code>none</code></td><td>fixed effects only (HH FE + year FE for the HRVS panel; municipality FE + year FE elsewhere)</td><td>—</td></tr>
-    <tr><td><code>mi</code></td><td>$+\;\mathrm{MI}_{m,0}\,\boldsymbol{\tau}_t$ (basic Khanna baseline)</td><td>incomplete-share control</td></tr>
-    <tr><td><code>khanna_full</code></td><td>$+\;\mathrm{ShareShock}\,\boldsymbol{\tau}_t$ + region-share × $t$ + destination GDP × $t$ + trade-SSIV (Comtrade × FX)</td><td>blocks A + C + D</td></tr>
+    <tr><td><strong>Census</strong></td><td><code>census_outcomes_municipality.csv</code></td><td>muni × year</td><td>lgcode + year</td><td>2001</td><td>lgcode</td></tr>
+    <tr><td><strong>Household</strong></td><td><code>agriculture_hh_year.csv</code></td><td>HH × year</td><td>hhid + year</td><td>2016</td><td>lgcode</td></tr>
+    <tr><td><strong>Plot</strong></td><td><code>agriculture_plot_year.csv</code></td><td>plot × year</td><td>hhid + year</td><td>2016</td><td>lgcode</td></tr>
   </tbody>
 </table>
 

@@ -18,9 +18,8 @@
     <li><a href="summary.html" class="active">Summary statistics</a>
       <ul class="subnav">
         <li><a href="#ds-census">Census (2001/11/21)</a></li>
-        <li><a href="#ds-rvs">HRVS (2016–18)</a></li>
-        <li><a href="#ds-nec_cs">NEC firms (2018)</a></li>
-        <li><a href="#ds-nec_panel">NEC firm panel</a></li>
+        <li><a href="#ds-hh">Household (2016–18)</a></li>
+        <li><a href="#ds-plot">Plot (2016–18)</a></li>
       </ul>
     </li>
     <li><a href="methods.html">Method</a></li>
@@ -59,18 +58,15 @@
 
 <script>
 const DATASETS = [
-  {key:"census",    label:"Census panel — Population &amp; Housing",
+  {key:"census", label:"Census panel — Population &amp; Housing",
    src:"data/clean/census/census_outcomes_municipality.csv",
    unit:"municipality"},
-  {key:"rvs",       label:"HRVS — Household Risk &amp; Vulnerability Survey",
-   src:"data/clean/rvs_outcomes/*.csv",
-   unit:"household-year"},
-  {key:"nec_cs",    label:"NEC 2018 — Firm cross-section",
-   src:"data/clean/nec2018/municipality_analysis.csv",
-   unit:"municipality"},
-  {key:"nec_panel", label:"NEC firm panel — muni × founding-year",
-   src:"data/clean/nec2018/entry_cohort_panel.csv",
-   unit:"muni-cohort"},
+  {key:"hh",     label:"Household agriculture (HH × year)",
+   src:"data/clean/rvs_outcomes/agriculture_hh_year.csv",
+   unit:"HH-year"},
+  {key:"plot",   label:"Plot agriculture (plot × year)",
+   src:"data/clean/rvs_outcomes/agriculture_plot_year.csv",
+   unit:"plot-year"},
 ];
 
 // Format a number nicely:

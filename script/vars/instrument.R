@@ -700,7 +700,23 @@
       ward_fx_panel <- ward_ssiv %>% select(-starts_with("check_"), -starts_with("diff_"))
       mun_fx_panel  <- mun_ssiv  %>% select(-starts_with("check_"), -starts_with("diff_"))
       dist_fx_panel <- dist_ssiv %>% select(-starts_with("check_"), -starts_with("diff_"))
-      
+
+      # ---- Add intuitive aliases used by script/estimate/*.R ----------------
+      # These are 1:1 aliases of the technical names, exposed under names that
+      # the estimation scripts and explorer use (clearer about what each term
+      # represents — and SSIV is literally fxshock × mig_intensity).
+      add_intuitive_aliases <- function(df) {
+        df %>% mutate(
+          fxshock                 = shareshock_index_2001,
+          mig_intensity           = geog_intensity_2001,
+          fxshock_x_mig_intensity = ssiv_index_2001,
+          total_migrants          = geog_total_mig_2001
+        )
+      }
+      ward_fx_panel <- add_intuitive_aliases(ward_fx_panel)
+      mun_fx_panel  <- add_intuitive_aliases(mun_fx_panel)
+      dist_fx_panel <- add_intuitive_aliases(dist_fx_panel)
+
       cat("\n--- FINAL PANEL DIMENSIONS ---\n")
       cat("Ward:         ", nrow(ward_fx_panel), "rows,",
           n_distinct(ward_fx_panel$lgcode, ward_fx_panel$new_ward), "wards\n")
