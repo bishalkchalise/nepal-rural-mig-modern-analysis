@@ -178,17 +178,17 @@ function renderNote(){
   const refYear = D.ref_year || ({census:2001, hh:2016, plot:2016})[dsKey];
 
   let specEqn = "";
-  if (spec === "S1") specEqn = "y = β·fxshock + Σ_t λ_t · log(mig_intensity)·𝟙{t} + α + γ_t + ε";
-  if (spec === "S2") specEqn = "y = β·fxshock + Σ_t λ_t · mig_intensity·𝟙{t} + α + γ_t + ε   (main spec)";
-  if (spec === "S3") specEqn = "y = β·SSIV + α·fxshock + heterogeneity (log + linear) × year + α + γ_t + ε";
+  if (spec === "S1") specEqn = "y = α·fxshock + β·fxshock·mig_intensity + α_i + γ_t + ε   (S1: linear interaction, no year×migint control)";
+  if (spec === "S2") specEqn = "y = α·fxshock + β·fxshock·log(mig_intensity) + Σ_t λ_t·mig_intensity·𝟙{t} + α_i + γ_t + ε   (S2: MAIN — log interaction)";
+  if (spec === "S3") specEqn = "y = α·fxshock + β·fxshock·mig_intensity + Σ_t λ_t·log(mig_intensity)·𝟙{t} + α_i + γ_t + ε   (S3: linear interaction with log control)";
 
   const thrLabel = DATA.thresholds[thr];
 
+  const reportedTerm = spec === "S2" ? "fxshock × log(mig_intensity)" : "fxshock × mig_intensity";
   return `
     <strong>Notes.</strong> ${D.label}. <em>${specEqn}</em>.
-    Treatments z-scored on the working sample at muni-year level;
-    β is the response per 1 SD of the reported treatment
-    (${spec === "S3" ? "fxshock × mig_intensity" : "fxshock"}).
+    Reported coefficient β: <strong>${reportedTerm}</strong> — the heterogeneous-treatment slope.
+    Treatments z-scored on the working sample at muni-year level.
     Sample: <strong>${thrLabel}</strong>; reference year ${refYear};
     fixed effects ${fe}; SE clustered at ${cluster}.
     Significance: *** p<0.01, ** p<0.05, * p<0.1.
