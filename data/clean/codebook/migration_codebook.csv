@@ -1,0 +1,31 @@
+variable,unit,reference,source,definition
+has_migrant,HH × year,present,s11q02 non-empty,1 if HH has at least one migrant (internal or overseas).
+has_migrant_internal,HH × year,present,s11q02 = 'Locally',1 if HH has at least one migrant within Nepal.
+has_migrant_international,HH × year,present,s11q02 = 'Overseas',1 if HH has at least one migrant abroad.
+n_migrants_total,HH × year,present,count Section 11 rows,Total migrants from this HH.
+n_migrants_international,HH × year,present,count overseas,Number of international migrants.
+n_migrants_male,HH × year,present,s11q01c = Male,Count of male migrants.
+n_migrants_female,HH × year,present,s11q01c = Female,Count of female migrants.
+migrant_mean_age,HH × year,present,mean(s11q01d),Mean age of migrants at survey. NA if no migrants.
+migrant_mean_months_away,HH × year,present,mean(s11q03),"Mean months since first leaving, capped at 600. NA if no migrants."
+mig_reason_work,HH × year,12 months,s11q04a_6 OR _7,1 if any migrant moved for 'look for work' or 'start new job/business'.
+mig_reason_education,HH × year,12 months,s11q04a_4 OR _5,1 if any migrant moved for education or training.
+mig_reason_marriage_family,HH × year,12 months,s11q04a_1/2/3,"1 if any migrant moved for marriage, to follow family, or family reasons."
+mig_reason_disaster,HH × year,12 months,s11q04a_10,1 if any migrant moved due to natural disaster.
+dest_india_share,HH × year,present,s11q02b = India,Share of international migrants in India. NA if no international migrants.
+dest_gulf_share,HH × year,present,s11q02b/d Gulf,"Share in Gulf countries: Qatar, Saudi Arabia, UAE, Kuwait, Bahrain, Oman (s11q02b + s11q02d free-text in 2018)."
+dest_malaysia_share,HH × year,present,s11q02b Malaysia,Share in Malaysia (catches 'Malayasia' typo in data).
+remit_received,HH × year,12 months,s11q07a = Yes,1 if any migrant sent remittance in past 12 months.
+remit_amount_12m_rs,HH × year,12 months,sum s11q07c,Total remittance received (Rs.) across all migrants.
+remit_amount_intl_12m_rs,HH × year,12 months,sum s11q07c if intl,Remittance received from international migrants only.
+remit_frequency_avg,HH × year,12 months,mean s11q07b,"Mean frequency of remittance sends per year, across migrants who sent (capped at 12 = monthly; excludes '998' don't-know)."
+remit_via_formal_any,HH × year,12 months,s11q07d_1 = Yes,1 if any migrant used bank / IME (formal channel).
+remit_via_hundi_any,HH × year,12 months,s11q07d_3 = Yes,1 if any migrant used hundi (informal transfer).
+remit_use_consumption_any,HH × year,12 months,s11q07e_1/12,1 if remittance used for non-durable consumption or ceremonies.
+remit_use_education_any,HH × year,12 months,s11q07e_3,1 if remittance used for education costs.
+remit_use_health_any,HH × year,12 months,s11q07e_4,1 if remittance used for health costs.
+remit_use_productive_any,HH × year,12 months,s11q07e_5..9,"1 if remittance used for productive investment (business inputs/equipment, land, livestock, other business)."
+mig_cost_12m_rs,HH × year,past,sum s11q08b,Total Rs. spent on migration costs (across all HH migrants).
+mig_cost_financed_by_loan_any,HH × year,past,s11q08c_1 = Yes,1 if any HH migrant financed migration cost via a loan.
+migrant_monthly_earning_total_rs,HH × year,present,s11q05c + s11q06c,Sum of monthly earnings (primary + secondary job) across all HH migrants.
+migrant_has_secondary_job_any,HH × year,present,s11q06a = Yes,1 if any HH migrant reported a secondary job.

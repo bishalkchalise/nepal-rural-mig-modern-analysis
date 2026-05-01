@@ -1,0 +1,288 @@
+/* Quarto-minimal styling for the SSIV explorer site
+   References Quarto's default html theme: serif body, narrow text column,
+   plain rules. Data-heavy pages use .content-wide for full-page tables. */
+
+:root{
+  --fg:#212529;
+  --muted:#6c757d;
+  --bg:#ffffff;
+  --panel:#f8f9fa;
+  --border:#dee2e6;
+  --rule:#ced4da;
+  --accent:#2780e3;
+  --pos:#1e6e3a;
+  --neg:#c0392b;
+  --serif:'Source Serif Pro', Charter, 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --sans:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono:'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+*{box-sizing:border-box}
+html,body{
+  margin:0; padding:0;
+  background:var(--bg); color:var(--fg);
+  font-family:var(--serif);
+  font-size:18px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+code, kbd, samp{
+  font-family:var(--mono); font-size:.92em;
+  background:var(--panel); padding:1px 5px; border-radius:2px;
+}
+pre code{background:none; padding:0}
+hr{border:0; border-top:1px solid var(--rule); margin:2rem 0}
+blockquote{
+  margin:1.2rem 0; padding:.4rem 0 .4rem 1.1rem;
+  border-left:3px solid var(--rule); color:#495057;
+}
+
+/* === Layout === */
+.layout{display:flex; min-height:100vh}
+nav.sidebar{
+  flex:0 0 240px;
+  border-right:1px solid var(--rule);
+  padding:2rem 1.4rem;
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+  font-family:var(--sans); font-size:14px;
+  background:var(--bg);
+}
+nav.sidebar h2{
+  font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--muted); font-weight:600; margin:1.6rem 0 .4rem;
+}
+nav.sidebar h2:first-child{margin-top:0}
+nav.sidebar ul{list-style:none; padding:0; margin:0}
+nav.sidebar li{margin:0}
+nav.sidebar a{
+  display:block; padding:5px 8px; border-radius:3px;
+  color:var(--fg);
+  border-left:2px solid transparent;
+}
+nav.sidebar a:hover{background:var(--panel); text-decoration:none}
+nav.sidebar a.active{
+  border-left-color:var(--accent); background:var(--panel);
+  font-weight:600; color:var(--accent);
+}
+
+/* nested sub-nav under the currently active page */
+nav.sidebar ul.subnav{
+  margin:.2rem 0 .4rem .4rem;
+  border-left:1px solid var(--rule);
+  padding-left:.4rem;
+}
+nav.sidebar ul.subnav li{margin:0}
+nav.sidebar ul.subnav a{
+  font-size:13px; padding:3px 8px;
+  color:var(--muted);
+  border-left:2px solid transparent;
+}
+nav.sidebar ul.subnav a:hover{color:var(--fg); background:var(--panel)}
+nav.sidebar ul.subnav a.active{
+  color:var(--accent); font-weight:500;
+  background:transparent; border-left-color:var(--accent);
+}
+
+/* main content — narrow for paper-style pages */
+main.content{
+  flex:1; padding:3rem 3.5rem 4rem;
+  max-width:840px;
+  min-width:0;
+}
+/* wide variant for data-heavy pages (explorer, summary, definitions) */
+main.content-wide{
+  flex:1; padding:3rem 3rem 4rem;
+  max-width:none;
+  min-width:0;
+}
+
+/* paper-like header */
+header.page-header{
+  margin:0 0 2.4rem; padding-bottom:1rem;
+  border-bottom:1px solid var(--rule);
+}
+header.page-header h1{
+  font-family:var(--serif);
+  font-size:32px; font-weight:600; line-height:1.25;
+  margin:0 0 .5rem; letter-spacing:-.01em;
+}
+header.page-header .sub{
+  color:var(--muted); font-size:16px; line-height:1.55;
+  font-style:italic;
+}
+header.page-header .authors{
+  margin-top:1rem; font-size:15px; color:var(--fg);
+  font-style:normal;
+}
+header.page-header .affil{
+  font-size:13px; color:var(--muted); font-style:italic;
+}
+header.page-header .abstract{
+  margin-top:1.6rem; padding:1rem 1.2rem;
+  background:var(--panel); border-left:3px solid var(--rule);
+  font-size:15px; line-height:1.6; font-style:normal;
+}
+header.page-header .abstract h3{
+  margin:0 0 .4rem; font-size:11px; text-transform:uppercase;
+  letter-spacing:.08em; color:var(--muted); font-weight:600;
+  font-family:var(--sans);
+}
+
+/* === Headings (paper style) === */
+h2{
+  font-family:var(--serif);
+  font-size:22px; font-weight:600; margin:2.4rem 0 .8rem;
+  padding-bottom:.3rem; border-bottom:1px solid var(--rule);
+  letter-spacing:-.005em;
+}
+h3{
+  font-family:var(--serif);
+  font-size:18px; font-weight:600; margin:1.8rem 0 .6rem;
+}
+h4{
+  font-family:var(--serif);
+  font-size:16px; font-style:italic; font-weight:600; margin:1.4rem 0 .4rem;
+}
+
+/* === Body === */
+p{margin:0 0 1rem}
+ul, ol{margin:0 0 1rem; padding-left:1.4rem}
+li{margin:.15rem 0}
+
+/* === Equations (Overleaf style via MathJax) === */
+mjx-container[display="true"]{margin:1.2rem 0 !important}
+.equation, .display-equation{
+  margin:1.2rem auto; padding:.6rem 0;
+  text-align:center; font-family:var(--serif);
+}
+
+/* === Tables === */
+table{
+  width:100%; border-collapse:collapse;
+  font-family:var(--sans); font-size:14px;
+  margin:1.2rem 0;
+}
+th, td{
+  padding:8px 12px; text-align:right;
+  border-bottom:1px solid var(--rule);
+}
+thead th{
+  border-top:1.5px solid var(--fg);
+  border-bottom:1px solid var(--fg);
+  font-weight:600; text-transform:none; letter-spacing:0;
+  background:transparent; color:var(--fg);
+  font-size:13px; position:sticky; top:0;
+}
+tbody tr:last-child td{border-bottom:1.5px solid var(--fg)}
+th:first-child, td:first-child{text-align:left}
+tr:hover{background:var(--panel)}
+
+/* explorer table cells */
+table.results td.outcome-cell{position:relative; cursor:help}
+.pos{color:var(--pos); font-weight:500}
+.neg{color:var(--neg); font-weight:500}
+.stars{font-weight:700}
+.nsig{color:var(--muted)}
+.se{color:var(--muted); font-size:12px}
+
+/* var-table for definitions / summary */
+.var-table{font-size:14px}
+.var-table th{font-size:13px}
+.var-table td:first-child{font-family:var(--mono); font-size:13px}
+.group-header td{
+  background:transparent;
+  border-top:1.5px solid var(--rule); border-bottom:1px solid var(--rule);
+  font-weight:600; text-transform:uppercase;
+  letter-spacing:.05em; font-size:11px; color:var(--muted);
+  padding:14px 12px; font-family:var(--sans);
+}
+
+/* === Explorer controls === */
+.controls{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+  gap:14px;
+  background:var(--panel); padding:1rem; border:1px solid var(--rule);
+  border-radius:3px; margin-bottom:1.2rem;
+}
+.ctrl label{
+  display:block; font-family:var(--sans);
+  font-weight:600; font-size:11px; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--muted); margin-bottom:5px;
+}
+.ctrl select{
+  width:100%; padding:7px 9px;
+  border:1px solid var(--rule); border-radius:3px;
+  background:var(--bg); font-size:14px;
+  font-family:var(--sans);
+}
+.ctrl select:focus{
+  outline:2px solid var(--accent); outline-offset:-1px;
+  border-color:var(--accent);
+}
+.ctrl .desc{
+  font-size:12px; color:var(--muted);
+  margin-top:5px; font-style:italic; min-height:16px;
+  font-family:var(--sans);
+}
+
+.meta{
+  display:flex; flex-wrap:wrap; gap:18px;
+  font-size:12px; color:var(--muted);
+  margin-bottom:14px; padding:8px 12px;
+  background:var(--panel); border-radius:3px;
+  border:1px solid var(--rule); font-family:var(--mono);
+}
+
+/* table footnote */
+.table-note{
+  margin-top:14px; padding:12px 14px;
+  background:transparent; border:0; border-top:1px solid var(--rule);
+  font-size:13px; line-height:1.6; color:var(--muted);
+  font-family:var(--sans);
+}
+.table-note strong{color:var(--fg)}
+
+details{
+  margin:1rem 0; padding:.6rem 1rem;
+  background:var(--panel); border:1px solid var(--rule);
+  border-radius:3px;
+}
+summary{cursor:pointer; font-weight:600; font-size:14px; font-family:var(--sans)}
+details[open] summary{margin-bottom:.5rem}
+details > div{font-size:14px; line-height:1.6}
+
+footer{
+  padding:1.5rem 3rem 2rem;
+  border-top:1px solid var(--rule); margin-top:3rem;
+  color:var(--muted); font-size:12px;
+  text-align:center; font-family:var(--sans);
+}
+.err{
+  color:var(--neg); padding:1.5rem;
+  text-align:center; font-family:var(--mono); font-size:13px;
+}
+
+.callout{
+  margin:1.4rem 0; padding:1rem 1.2rem;
+  border-left:3px solid var(--accent);
+  background:var(--panel); font-size:15px;
+}
+.callout-title{
+  font-family:var(--sans);
+  font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--muted); font-weight:600; margin-bottom:.4rem;
+}
+
+@media (max-width:900px){
+  .layout{flex-direction:column}
+  nav.sidebar{
+    flex:auto; height:auto; position:static;
+    border-right:0; border-bottom:1px solid var(--rule);
+    padding:1rem;
+  }
+  main.content, main.content-wide{padding:1.5rem 1.2rem 3rem; max-width:100%}
+  footer{padding:1.5rem 1.2rem}
+  header.page-header h1{font-size:26px}
+}

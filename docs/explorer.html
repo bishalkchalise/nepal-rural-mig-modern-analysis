@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Results — Nepal SSIV</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <h2>Pages</h2>
+  <ul>
+    <li><a href="index.html">Intro</a></li>
+    <li><a href="explorer.html" class="active">Results</a>
+      <ul class="subnav">
+        <li><a href="#" id="nav-dataset">Active dataset</a></li>
+        <li><a href="#" id="nav-group">Active group</a></li>
+      </ul>
+    </li>
+    <li><a href="definitions.html">Variable definitions</a></li>
+    <li><a href="summary.html">Summary statistics</a></li>
+    <li><a href="methods.html">Method</a></li>
+  </ul>
+</nav>
+
+<main class="content-wide">
+
+<header class="page-header">
+  <h1>Results</h1>
+  <div class="sub">
+    Pick a dataset (Census, HRVS HH Panel, NEC-Enterprise Census) and outcome
+    groups from the dropdowns just above the table. Adjust the controls and
+    shock construction for robustness. Baseline includes the SSIV index
+    referenced to 2001 with municipality and year fixed effects.
+  </div>
+</header>
+
+<div class="controls">
+  <div class="ctrl">
+    <label for="panel">Panel &amp; reference</label>
+    <select id="panel"></select>
+    <div class="desc" id="panel-desc"></div>
+  </div>
+  <div class="ctrl">
+    <label for="lag">Shock timing</label>
+    <select id="lag"></select>
+    <div class="desc" id="lag-desc"></div>
+  </div>
+  <div class="ctrl">
+    <label for="shock">Shock variant</label>
+    <select id="shock"></select>
+    <div class="desc" id="shock-desc"></div>
+  </div>
+  <div class="ctrl">
+    <label for="control">Control set</label>
+    <select id="control"></select>
+    <div class="desc" id="control-desc"></div>
+  </div>
+  <div class="ctrl">
+    <label for="display">Coefficient display</label>
+    <select id="display">
+      <option value="z">Standardised (per 1 SD shock)</option>
+      <option value="pct">% of outcome mean</option>
+    </select>
+    <div class="desc">All shocks pre-standardised; β is the response per 1 SD.</div>
+  </div>
+</div>
+
+<!-- Dataset + outcome group go just above the table per request -->
+<div class="controls" style="margin-top:.4rem">
+  <div class="ctrl">
+    <label for="dataset">Dataset</label>
+    <select id="dataset"></select>
+    <div class="desc" id="dataset-desc"></div>
+  </div>
+  <div class="ctrl">
+    <label for="group">Outcome group</label>
+    <select id="group"></select>
+    <div class="desc" id="group-desc"></div>
+  </div>
+</div>
+
+<div class="meta" id="meta"></div>
+
+<div id="table-wrap">
+  <table id="results">
+    <thead><tr id="thead-row"></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div class="table-note" id="table-note"></div>
+
+</main>
+</div>
+
+<footer>
+  Generated from
+  <code>data/clean/{instrument, census, rvs_outcomes, nec2018}/</code>.
+</footer>
+
+<script>
+let DATA = null, META = null;
+
+function fmtCoef(b, p, digits=4){
+  if (b == null || isNaN(b)) return "";
+  const sign = b >= 0 ? "+" : "";
+  const stars = p == null ? "" : (p<0.01?"***":(p<0.05?"**":(p<0.1?"*":"")));
+  const cls = (p == null || p>=0.1) ? "nsig" : (b>=0?"pos":"neg");
+  return `<span class="${cls}">${sign}${b.toFixed(digits)}</span><span class="stars">${stars}</span>`;
+}
+function fmtSE(se, digits=4){
+  if (se == null || isNaN(se)) return "";
+  return `<span class="se">(${se.toFixed(digits)})</span>`;
+}
+
+function ds(){ return DATA.datasets[document.getElementById("dataset").value]; }
+function unitName(){
+  const k = document.getElementById("dataset").value;
+  return ({census:"muni", rvs:"HH", nec_cs:"muni", nec_panel:"muni-cohort"})[k] || "unit";
+}
+
+function fmtRaw(x, units){
+  if (x == null || isNaN(x)) return "";
+  if (units && (units === "rupees" || units.startsWith("rupees"))){
+    if (x >= 1e7)   return `NPR ${(x/1e7).toFixed(1)} cr`;
+    if (x >= 1e5)   return `NPR ${(x/1e5).toFixed(1)} lakh`;
+    if (x >= 1e3)   return `NPR ${(x/1e3).toFixed(0)}k`;
+    return `NPR ${Math.round(x).toLocaleString()}`;
+  }
+  if (x >= 1e3) return `${Math.round(x).toLocaleString()} ${units || ""}`;
+  return `${x.toFixed(1)} ${units || ""}`;
+}
+
+function rowFor(yKey, est, displayMode){
+  const meta = ds().outcomes[yKey];
+  const def  = META?.definitions?.[yKey] || {};
+  const label = meta ? meta.label : yKey;
+  const tooltip = (def.short || label).replace(/"/g,'&quot;');
+  const cell = `<td><span class="outcome-cell" title="${tooltip}"><a href="definitions.html#${yKey}">${label}</a></span></td>`;
+  if (!est){
+    return `<tr>${cell}<td colspan="5" class="se">— no estimate —</td></tr>`;
+  }
+  if (est.err){
+    return `<tr>${cell}<td colspan="5" class="se">err: ${est.err}</td></tr>`;
+  }
+  let beta = est.beta, se = est.se, digits = 4;
+  if (displayMode === "pct" && est.mean_y){
+    beta = (est.beta / est.mean_y) * 100;
+    se   = (est.se   / Math.abs(est.mean_y)) * 100;
+    digits = 1;
+  }
+  const nUnit = est.n_unit ?? est.n_mun ?? "";
+
+  let meanCell = est.mean_y?.toFixed(3) ?? "";
+  const rs = def.raw_stats;
+  if (rs && rs.units && rs.units !== "share" && est.mean_y != null && Math.abs(est.mean_y) >= 100){
+    meanCell = `${fmtRaw(est.mean_y, rs.units)}<br><span class="se">[${meanCell}]</span>`;
+  }
+
+  return `<tr>
+    ${cell}
+    <td>${meanCell}</td>
+    <td>${fmtCoef(beta, est.pval, digits)}<br>${fmtSE(se, digits)}</td>
+    <td>${est.n}</td>
+    <td>${nUnit}</td>
+    <td>${est.r2_within != null ? est.r2_within.toFixed(3) : ""}</td>
+  </tr>`;
+}
+
+function renderNote(){
+  const D = ds();
+  const dsKey = document.getElementById("dataset").value;
+  const panel = document.getElementById("panel").value;
+  const lag   = document.getElementById("lag").value;
+  const shock = document.getElementById("shock").value;
+  const ctrl  = document.getElementById("control").value;
+  const grp   = document.getElementById("group").value;
+  const pi = D.panel_info?.[panel]?.[lag] || {};
+
+  let specLine = "";
+  let cluster = "municipality";
+  let unit = unitName();
+  if (dsKey === "census") {
+    specLine = "y<sub>mt</sub> = α<sub>m</sub> + γ<sub>t</sub> + β · shock<sub>m,t-lag</sub> + λ' · controls<sub>m,t≠ref</sub> + ε<sub>mt</sub>";
+  } else if (dsKey === "rvs") {
+    specLine = "y<sub>imt</sub> = α<sub>i</sub> + γ<sub>t</sub> + β · shock<sub>m,t</sub> + λ' · controls<sub>m,t-2001</sub> + ε<sub>imt</sub> &nbsp; (HH FE + year FE)";
+    cluster = "municipality (vmun_code)";
+  } else if (dsKey === "nec_cs") {
+    specLine = "y<sub>m</sub> = α + β · shock<sub>m,2018</sub> + λ' · controls<sub>m</sub> + δ<sub>district</sub> + ε<sub>m</sub> &nbsp; (district FE; cross-section)";
+    cluster = "district";
+  } else if (dsKey === "nec_panel") {
+    specLine = "y<sub>mt</sub> = α<sub>m</sub> + γ<sub>t</sub> + β · shock<sub>m,t</sub> + λ' · controls<sub>m,t-2001</sub> + ε<sub>mt</sub> &nbsp; (muni FE + founding-year FE)";
+  }
+
+  const yrs = (pi.years || []).join("–");
+  return `
+    <strong>Notes.</strong> ${D.label}.
+    Estimating equation: <em>${specLine}</em>.
+    ${pi.n_obs ? `${pi.n_obs.toLocaleString()} observations` : ""}
+    ${(pi.n_unit ?? pi.n_muni) ? `across ${(pi.n_unit ?? pi.n_muni).toLocaleString()} ${unit}s` : ""}
+    ${yrs ? `(years ${yrs})` : ""}.
+    Shock: <strong>${lab(D.shocks[shock], shock)}</strong>, ${lab(D.lags[lag], lag).toLowerCase()}.
+    Controls: <strong>${D.controls[ctrl]}</strong>.
+    SSIV is standardised within the panel pool, so β is the response per 1 SD of the shock.
+    Standard errors clustered at the ${cluster} level.
+    Significance: *** p&lt;0.01, ** p&lt;0.05, * p&lt;0.1.
+    Click an outcome name for its definition; hover for the short version.
+  `;
+}
+
+function render(){
+  const D = ds();
+  if (!D) return;
+  const panel = document.getElementById("panel").value;
+  const lag   = document.getElementById("lag").value;
+  const shock = document.getElementById("shock").value;
+  const ctrl  = document.getElementById("control").value;
+  const grp   = document.getElementById("group").value;
+  const disp  = document.getElementById("display").value;
+
+  document.getElementById("dataset-desc").textContent = D.label;
+  const pInfo = D.panels?.[panel];
+  document.getElementById("panel-desc").textContent = pInfo
+    ? `${(pInfo.years || []).join(", ")}${pInfo.ref ? " · ref " + pInfo.ref : ""}`
+    : "";
+  document.getElementById("lag-desc").textContent = lab(D.lags[lag], lag);
+  const sv = D.shocks[shock];
+  const shockDesc = sv && typeof sv === "object" && !Array.isArray(sv)
+                      ? (sv.desc || "")
+                      : (Array.isArray(sv) ? (sv[1] || "") : "");
+  document.getElementById("shock-desc").textContent = shockDesc;
+  document.getElementById("control-desc").textContent = lab(D.controls[ctrl], ctrl);
+
+  // sidebar nav: show active dataset & group
+  document.getElementById("nav-dataset").textContent = "Dataset: " + (D.label || "—");
+  document.getElementById("nav-group").textContent   = "Group: " + grp;
+
+  const colHeader = (disp === "pct") ? "β (% of mean)" : "β (per 1 SD shock)";
+  const unitHeader = `#${unitName()}`;
+  document.getElementById("thead-row").innerHTML = `
+    <th style="text-align:left">Outcome</th>
+    <th>mean(y)</th>
+    <th>${colHeader}</th>
+    <th>N</th>
+    <th>${unitHeader}</th>
+    <th>R²</th>`;
+
+  const ests = D.estimates?.[panel]?.[lag]?.[shock]?.[ctrl] || {};
+  const allYs = Object.keys(D.outcomes).filter(y => D.outcomes[y].group === grp);
+  document.getElementById("tbody").innerHTML =
+    allYs.map(y => rowFor(y, ests[y], disp)).join("") ||
+    `<tr><td colspan="6" class="se" style="text-align:center;padding:20px">No outcomes in this group.</td></tr>`;
+
+  const pi = D.panel_info?.[panel]?.[lag] || {};
+  const nUnit = pi.n_unit ?? pi.n_muni ?? "?";
+  const nWithEst = allYs.filter(y => ests[y] && !ests[y].err).length;
+  document.getElementById("meta").innerHTML = `
+    <span><b>${D.label}</b></span>
+    <span>${pi.n_obs?.toLocaleString() || "?"} obs · ${nUnit.toLocaleString ? nUnit.toLocaleString() : nUnit} ${unitName()}</span>
+    <span>Panel: <b>${pInfo?.label || panel}</b></span>
+    <span>Shock: <b>${lab(D.shocks[shock], shock)}</b></span>
+    <span>Timing: <b>${lab(D.lags[lag], lag)}</b></span>
+    <span>Controls: <b>${lab(D.controls[ctrl], ctrl)}</b></span>
+    <span>Outcomes shown: <b>${nWithEst}/${allYs.length}</b></span>
+  `;
+  document.getElementById("table-note").innerHTML = renderNote();
+
+  const params = new URLSearchParams({
+    ds: document.getElementById("dataset").value, panel, lag, shock, ctrl, grp, disp
+  });
+  history.replaceState(null, "", "#" + params.toString());
+}
+
+function fillSelect(id, items){
+  const el = document.getElementById(id);
+  el.innerHTML = items.map(([v, lab]) => `<option value="${v}">${lab}</option>`).join("");
+}
+
+function lab(v, k){
+  if (v == null) return k;
+  if (typeof v === "string") return v;
+  if (Array.isArray(v)) return v[0] ?? k;
+  return v.label ?? k;
+}
+function repopulateForDataset(){
+  const D = ds();
+  fillSelect("panel",   Object.entries(D.panels).map(([k,v]) => [k, lab(v, k)]));
+  fillSelect("lag",     Object.entries(D.lags).map(([k,v]) => [k, lab(v, k)]));
+  fillSelect("shock",   Object.entries(D.shocks).map(([k,v]) => [k, lab(v, k)]));
+  fillSelect("control", Object.entries(D.controls).map(([k,v]) => [k, lab(v, k)]));
+  fillSelect("group",   D.groups.map(g => [g, g]));
+}
+
+async function init(){
+  try {
+    const v = Date.now();
+    const [r1, r2] = await Promise.all([
+      fetch(`results.json?v=${v}`, {cache:"no-store"}),
+      fetch(`meta.json?v=${v}`,    {cache:"no-store"}),
+    ]);
+    if (!r1.ok) throw new Error("results.json: HTTP "+r1.status);
+    DATA = await r1.json();
+    META = r2.ok ? await r2.json() : null;
+  } catch (e) {
+    document.getElementById("table-wrap").innerHTML =
+      `<div class="err">Failed to load data: ${e.message}<br><br>
+       If you opened this file directly, run <code>python3 -m http.server</code> in the docs/ folder.</div>`;
+    return;
+  }
+
+  if (!DATA.datasets){
+    document.getElementById("table-wrap").innerHTML =
+      `<div class="err">results.json is in legacy format (no <code>datasets</code> key). Re-run <code>python3 script/build_results.py</code>.</div>`;
+    return;
+  }
+  fillSelect("dataset",
+    Object.entries(DATA.datasets_meta).map(([k,v]) => [k, v.label]));
+
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const dsv = hash.get("ds");
+  if (dsv && DATA.datasets[dsv]) document.getElementById("dataset").value = dsv;
+
+  repopulateForDataset();
+
+  const map = {panel:"panel", lag:"lag", shock:"shock", ctrl:"control", grp:"group", disp:"display"};
+  for (const [k, elId] of Object.entries(map)){
+    const v = hash.get(k);
+    if (v && document.querySelector(`#${elId} option[value="${CSS.escape(v)}"]`)){
+      document.getElementById(elId).value = v;
+    }
+  }
+
+  document.getElementById("dataset").addEventListener("change", () => {
+    repopulateForDataset();
+    render();
+  });
+  for (const id of ["panel","lag","shock","control","group","display"]){
+    document.getElementById(id).addEventListener("change", render);
+  }
+
+  render();
+}
+init();
+</script>
+</body>
+</html>

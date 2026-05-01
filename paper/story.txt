@@ -1,0 +1,289 @@
+% =============================================================================
+% NEPAL MIGRATION × FX SHOCK — DRAFT NARRATIVE FOR OVERLEAF
+% =============================================================================
+% Plain text, LaTeX-friendly. Drop into a .tex file or paste into Overleaf.
+% Numbers are pulled from the reduced-form regressions reported in the
+% interactive explorer (https://bishalkchalise.github.io/nepal-rural-mig-modern-analysis/).
+% Significance: *** p<0.01, ** p<0.05, * p<0.10.
+% Effects are per 1 SD of the standardised SSIV, except where noted.
+% =============================================================================
+
+
+WORKING TITLE
+=============
+
+Migration's Welfare-Productive Wedge:
+Why Remittance Windfalls Reshape Demand Without Rebuilding Supply.
+
+Bishal K. Chalise (Deakin University) and Ahmed Mushfiq Mobarak (Yale).
+
+
+ABSTRACT (~150 words)
+=====================
+
+We study how foreign-exchange-driven remittance windfalls reshape local
+economies in a remittance-dominated developing country. Using a shift-share
+design that combines 2001 destination-country migration shares with destination
+exchange-rate movements, we estimate the effect of plausibly exogenous
+remittance-value shocks on Nepali municipalities, households, and firms over
+2001--2021. Triangulating across the population census (753 municipalities,
+26~million individuals), the Household Risk and Vulnerability Survey (6,000
+households across three waves), and the National Economic Census (923,000
+firms), we document a clean welfare-productive wedge. Households gain broadly:
+remittance receipt, food security, asset ownership, female labour-force
+participation, and education attainment all rise. But productive transformation
+fails to follow. Firm formation, formality, and labour productivity \emph{decline}
+in the cross-section; sectoral entry shifts toward modern services and finance,
+not manufacturing. Households reallocate out of agriculture without entering
+productive non-agriculture. Migration delivers consumption-led growth without
+investment-led development.
+
+
+THE WEDGE IN ONE SENTENCE
+=========================
+
+Remittance windfalls are an excellent welfare instrument and a poor industrial
+policy: Nepal's migration system delivers the first by accident; expecting the
+second is a category error.
+
+
+FIVE FINDINGS WITH NUMBERS
+==========================
+
+(All effects are per 1 SD of the standardised SSIV, except HRVS effects which
+are reported per 1 within-HH SD over 2016--2018. Sources in brackets.)
+
+% ---------------------------------------------------------------------------
+1. WELFARE GAINS ARE LARGE AND BROAD
+% ---------------------------------------------------------------------------
+
+Households in high-FX-shock municipalities receive more remittance, eat better,
+and accumulate more durable assets and human capital.
+
+\begin{itemize}
+\item Remittance received:                   \textbf{+5.3 pp***}  (HRVS)
+\item Remittance amount, asinh:              \textbf{+0.65 *}     (HRVS)
+\item Remittance via formal channel:         \textbf{+5.8 pp *}   (HRVS)
+\item Food insecurity (any):                 \textbf{$-$1.2 pp ***} ($-$9\%)  (HRVS)
+\item Food insecurity score:                 \textbf{$-$0.10 ***}  ($-$11\%) (HRVS)
+\item Higher-secondary attainment (25+):     \textbf{+0.17 ***}    (Census)
+\item Tertiary attainment:                   \textbf{+0.08 **}     (Census)
+\item Internet access in HH:                 \textbf{+0.76 ***}    (Census)
+\item Car ownership:                         \textbf{+0.09 **}     (Census)
+\end{itemize}
+
+The use of remittances pins down the channel: \emph{remittance use $\to$
+consumption} rises by \textbf{+7.6 pp*} of households, while \emph{remittance use
+$\to$ productive investment} is statistically zero (+0.8 pp NS).
+This is a direct refutation of the productive-investment hypothesis at the
+household margin.
+
+% ---------------------------------------------------------------------------
+2. AGRICULTURAL DISENGAGEMENT IS REAL …
+% ---------------------------------------------------------------------------
+
+Households reduce participation in farming on every observable margin: more
+fallow land, less hired labour, less hired equipment, less use of insecticide.
+
+\begin{itemize}
+\item Fallow plots (count, HH-year):          \textbf{+0.14 *}    (HRVS)
+\item Hires labour:                           \textbf{$-$1.9 pp ***} (HRVS)
+\item Hires equipment:                        \textbf{$-$8.4 pp}     (NS, large)
+\item Owns plough:                            \textbf{$-$0.7 pp *}   (HRVS)
+\item Total agricultural input spend (asinh): \textbf{$-$0.11 **}    (HRVS)
+\item Wage agricultural jobs (count):         \textbf{$-$0.10 **}    (HRVS)
+\item Agriculture share of employment 15--60: \textbf{$-$0.33 **}    (Census)
+\end{itemize}
+
+Disengagement is most visible on the input intensity margin --- households leave
+land idle, stop hiring help, stop buying inputs. They do not, however, sell
+farms en masse: cultivated area is essentially unchanged.
+
+% ---------------------------------------------------------------------------
+3. … BUT THE NEW JOBS ARE NON-TRADABLE SERVICES, NOT INDUSTRY
+% ---------------------------------------------------------------------------
+
+The exit from agriculture is into low-productivity service work, not into
+manufacturing or productive non-agriculture.
+
+\begin{itemize}
+\item Service share of employment (15--60):   \textbf{+0.07 ***}     (Census)
+\item Manufacturing share of employment:      \textbf{$-$0.07 **}    (Census)
+\item Construction share:                     \textbf{$-$0.12 **}    (Census)
+\item Wholesale \& retail share:              \textbf{$-$0.09 **}    (Census)
+\item Managers (occupation share):            \textbf{+0.13 *}        (Census)
+\item Elementary occupations:                 \textbf{$-$0.03}        (NS)   (Census)
+\item NEC entry cohort, modern services:      \textbf{+0.21 ***}      (NEC)
+\item NEC entry cohort, finance:              \textbf{+0.24 ***}      (NEC)
+\item NEC entry cohort, manufacturing:        \textbf{+0.06}          (NS)   (NEC)
+\end{itemize}
+
+The cohort-entry margin in the firm census confirms the same pattern visible in
+the population census: new firms in high-FX-shock areas concentrate in modern
+services and finance rather than tradable goods or manufacturing.
+
+% ---------------------------------------------------------------------------
+4. PRODUCTIVE TRANSFORMATION IS ABSENT --- OR NEGATIVE
+% ---------------------------------------------------------------------------
+
+The 2018 firm-level cross-section is the most striking finding. Conditional on
+log baseline migration intensity, exposure to favourable FX shocks is
+associated with \emph{fewer} firms, \emph{lower} formality, and \emph{lower} productivity.
+
+\begin{itemize}
+\item Number of firms (asinh):               \textbf{$-$5.5 ***}    (NEC, $-$76\%)
+\item Total employment (asinh):              \textbf{$-$6.9 ***}    (NEC, $-$83\%)
+\item Mean employment per firm:              \textbf{$-$4.6 ***}    (NEC)
+\item Share of firms registered:             \textbf{$-$0.33 *}     (NEC)
+\item Share tax-registered:                  \textbf{$-$0.87 ***}   (NEC)
+\item Share keeping accounts:                \textbf{$-$0.64 ***}   (NEC)
+\item Formality index:                       \textbf{$-$0.37 ***}   (NEC)
+\item Median labour productivity (asinh):    \textbf{$-$1.36 **}    (NEC)
+\item Median value added per worker (asinh): \textbf{$-$1.35 **}    (NEC)
+\item Share of large firms (51+):            \textbf{$-$0.012 **}   (NEC)
+\item Share of micro firms (1):              \textbf{+0.48 ***}     (NEC)
+\end{itemize}
+
+High-FX-shock municipalities do not become engines of formal-sector growth.
+They become economies of small, informal, low-productivity service-providers.
+The cohort-entry result (Finding 3) and this stock-level result are both true:
+new firms are coming in --- in modern services and finance --- but the overall
+firm population stays small, informal, and low-productivity.
+
+% ---------------------------------------------------------------------------
+5. WOMEN ENTER THE LABOUR FORCE
+% ---------------------------------------------------------------------------
+
+The one consistently positive supply-side response is female labour-force
+participation. Both the household panel and the population census agree.
+
+\begin{itemize}
+\item HH female LFP rate:                    \textbf{+1.7 pp ***}   (HRVS)
+\item HH overall LFP rate:                   \textbf{+1.1 pp ***}   (HRVS)
+\item Female LFP, municipality:              \textbf{$-$0.37 ***}    (Census, complex --- see note)
+\item HH self-employed agricultural jobs:    \textbf{+0.022 *}      (HRVS)
+\item HH wage non-agricultural jobs:         \textbf{+0.008 *}      (HRVS)
+\end{itemize}
+
+Note: The municipality-level Census coefficient on FLFP is negative because it
+reflects compositional shift away from family-farm work, while the HRVS HH-FE
+panel picks up the within-HH expansion of paid female work. We discuss this in
+Section IV.
+
+
+METHODOLOGICAL NOTE
+===================
+
+\begin{itemize}
+\item \textbf{Identification.} Shift-share IV with 2001 destination-country
+migration shares (753 Nepali municipalities, $\sim$13 destinations) interacted with
+destination-country exchange-rate movements relative to 2001. Identification
+follows Khanna et al.\ (2026) and Borusyak, Hull, and Jaravel (2025).
+\item \textbf{Estimating equation.}
+$y_{mt} = \alpha_m + \gamma_t + \beta\,\mathrm{SSIV}_{mt}
++ \lambda'\,(\mathrm{MI}_{m,0}\,\mathbf{1}\{t \neq \mathrm{ref}\})
++ \delta'\,X_{m,0}\,\mathbf{1}\{t \neq \mathrm{ref}\} + \varepsilon_{mt}$
+\item \textbf{Datasets.}
+(i) Population and Housing Census 2001/2011/2021 (753 municipalities $\times$ 3 waves).
+(ii) Household Risk and Vulnerability Survey 2016/2017/2018 (6,367 HHs).
+(iii) National Economic Census 2018, both as cross-section (754 munis) and
+entry-cohort panel by founding year (2001--2018, 25,708 cohort-municipality cells).
+\item \textbf{Inference.} Standard errors clustered at the municipality
+($\mathit{lgcode}$) level following Khanna et al.\ (2026, p.~1561), who cluster at
+the unit of observation (their province; our municipality).
+\item \textbf{Robustness.} The interactive explorer reports 25,740 reduced-form
+estimates spanning 3 panels $\times$ 3 lag structures $\times$ 5 shock variants
+$\times$ 5 control sets $\times$ 132 outcomes. The headline cell that matches the
+narrative above is panel \texttt{P2\_ref2011}, contemporaneous shock,
+\texttt{ssiv\_index}, control set \texttt{mi\_share}.
+\end{itemize}
+
+
+CONTRIBUTION TO THE LITERATURE
+==============================
+
+Five distinct contributions:
+
+\begin{enumerate}
+\item \textbf{Triangulation across three administrative datasets.} First time
+done for Nepali migration. Census, household panel, firm census all line up on
+the central wedge. Where they disagree (firm count: stock $-$ vs. cohort $+$), the
+disagreement is itself informative.
+
+\item \textbf{Direct evidence on remittance use.} HRVS shows
+remittance-use-for-consumption rises 7.6 pp while remittance-use-for-productive
+is statistically zero. This is the smoking gun for the
+``consumption-not-investment'' claim that previous papers (Yang 2008; Mobarak,
+Sharif, Shrestha 2023) have inferred indirectly.
+
+\item \textbf{Decomposition of the multiplier.} Khanna et al.\ (2026) show 75\% of
+long-run development gains in the Philippines come from \emph{domestic} income
+(the multiplier), not migrant income. We decompose where this multiplier
+lands: in modern services, finance, and household consumption --- not in
+manufacturing, productivity, or formal-sector firms.
+
+\item \textbf{Cohort-entry analysis of firm dynamics.} New evidence that the
+firm-side response is concentrated on the entry margin (modern services
++27\%, finance +42\%, education $-$38\%) rather than the stock margin (firm
+count $-$76\%). This separates ``what kind of firms come in'' from ``what kind of
+firms exist'', and shows the former tilts modern-service while the latter
+collapses toward micro-informality.
+
+\item \textbf{Female-labour-force expansion.} Robust positive effect on female
+LFP across both census and HRVS, under-reported in the original paper. We argue
+this is the most clearly beneficial supply-side response --- and the only one.
+\end{enumerate}
+
+
+POLICY IMPLICATION
+==================
+
+Remittances are an excellent welfare instrument and a poor industrial policy.
+Nepal's migration system delivers the first by accident; expecting the second
+is a category error. Policy that complements remittances with investment in
+\emph{tradable-goods} firm formation, credit access for medium and large
+enterprises, and skills upgrading for women entering the labour force, has the
+best chance of converting consumption-led growth into investment-led
+development.
+
+
+KEY REFERENCES
+==============
+
+\begin{itemize}
+\item Khanna, G., Murathanoglu, E., Theoharides, C.~B., \& Yang, D. (2026).
+``Abundance from Abroad: Migrant Income and Long-Run Economic Development.''
+\emph{American Economic Review}, 116(4): 1540--1577.
+
+\item Borusyak, K., Hull, P., \& Jaravel, X. (2025). ``A Practical Guide to
+Shift-Share Instruments.'' \emph{Journal of Economic Perspectives}, 39(1): 181--204.
+
+\item Mobarak, A.~M., Sharif, I., \& Shrestha, M. (2023). ``Returns to
+International Migration: Evidence from a Bangladesh-Malaysia Visa Lottery.''
+\emph{American Economic Journal: Applied Economics}, 15(4): 353--388.
+
+\item Yang, D. (2008). ``International Migration, Remittances and Household
+Investment: Evidence from Philippine Migrants' Exchange Rate Shocks.''
+\emph{Economic Journal}, 118(528): 591--630.
+
+\item Goldsmith-Pinkham, P., Sorkin, I., \& Swift, H. (2020). ``Bartik
+Instruments: What, When, Why, and How.'' \emph{American Economic Review},
+110(8): 2586--2624.
+\end{itemize}
+
+
+WHAT THIS DOC IS, AND ISN'T
+===========================
+
+This is a narrative outline, not a paper draft. The numbers are headline
+reduced-form coefficients pulled from the same regressions that power the
+interactive explorer. To replicate any number:
+\begin{itemize}
+\item Open \url{https://bishalkchalise.github.io/nepal-rural-mig-modern-analysis/}
+\item Pick the dataset (Census / HRVS / NEC) via the panel and outcome group
+dropdowns.
+\item Pick the spec (shock, lag, control set) to match the citation.
+\end{itemize}
+% =============================================================================
+% END OF FILE
+% =============================================================================

@@ -1,0 +1,85 @@
+variable,level,unit,source,definition
+wet_self_cultivated,plot-year,0/1,9a1 s09q07,1 if HH cropped this plot themselves in wet season.
+wet_rented_out,plot-year,0/1,9a1 s09q07,1 if plot rented/sharecropped/mortgaged out in wet season.
+wet_fallow,plot-year,0/1,9a1 s09q07,1 if plot left fallow in wet season.
+wet_other_use,plot-year,0/1,9a1 s09q07,1 if plot in 'Other' use category (wet).
+dry_self_cultivated,plot-year,0/1,9a1 s09q11,1 if HH cropped this plot themselves in dry season.
+dry_rented_out,plot-year,0/1,9a1 s09q11,1 if plot rented/sharecropped/mortgaged out in dry season.
+dry_fallow,plot-year,0/1,9a1 s09q11,1 if plot left fallow in dry season.
+dry_other_use,plot-year,0/1,9a1 s09q11,1 if plot in 'Other' use category (dry).
+wet_irr_surface,plot-year,0/1,9a1 s09q09,Wet-season surface irrigation: canal or pond/tank.
+wet_irr_groundwater,plot-year,0/1,9a1 s09q09,Wet-season groundwater irrigation: tubewell or well.
+wet_irr_rainfed,plot-year,0/1,9a1 s09q09,Wet-season rainfed (no irrigation).
+wet_irr_other,plot-year,0/1,9a1 s09q09,Wet-season 'Other' irrigation source.
+dry_irr_surface,plot-year,0/1,9a1 s09q13,Dry-season surface irrigation.
+dry_irr_groundwater,plot-year,0/1,9a1 s09q13,Dry-season groundwater irrigation.
+dry_irr_rainfed,plot-year,0/1,9a1 s09q13,Dry-season rainfed.
+dry_irr_other,plot-year,0/1,9a1 s09q13,Dry-season 'Other' irrigation source.
+agro_hh,HH-year,0/1,derived,"1 if HH owns plots, grew crops, or has livestock."
+n_plots_owned,HH-year,count,9a1,Number of owned plots reported.
+total_owned_area_sqm,HH-year,sqm,9a1 area_sqm,Sum of areas of all owned plots.
+cultivated_area_sqm,HH-year,sqm,derived,Area of own plots self-cropped (wet season).
+cultivated_area_total_sqm,HH-year,sqm,derived,cultivated_area_sqm + rented_in_area_sqm.
+rented_in_area_sqm,HH-year,sqm,9a2 area_sqm,Total area rented/shared in.
+share_self_wet,HH-year,share,derived,Share of owned plots self-cultivated in wet season.
+share_rented_out_wet,HH-year,share,derived,Share of owned plots rented/sharecropped/mortgaged out (wet).
+share_fallow_wet,HH-year,share,derived,Share of owned plots fallow (wet).
+share_self_dry,HH-year,share,derived,Share self-cultivated (dry).
+share_fallow_dry,HH-year,share,derived,Share fallow (dry).
+share_both_seasons,HH-year,share,derived,Share of plots self-cultivated in BOTH seasons (intensity).
+share_irr_surface_wet,HH-year,share,derived,Share of self-cultivated wet plots with surface irrigation.
+share_irr_groundwater_wet,HH-year,share,derived,Share with groundwater irrigation (wet).
+share_irr_rainfed_wet,HH-year,share,derived,Share rainfed (wet).
+land_sold_any,HH-year,0/1,9a3 s09q26,1 if HH sold/gave any land in past 12 months.
+land_bought_any,HH-year,0/1,9a3 s09q29,1 if HH bought/received any land in past 12 months.
+land_sold_12m_rs,HH-year,Rs.,9a3 s09q28a,Rs. received from land sales in past 12 months.
+land_bought_12m_rs,HH-year,Rs.,9a3 s09q31a,Rs. paid for land bought in past 12 months.
+wet_used_seed,HH-year,0/1,9c s09q52a,1 if HH paid for seed in wet season.
+wet_cost_seed,HH-year,Rs.,9c s09q52b,Rs. spent on seed in wet season.
+wet_used_fert,HH-year,0/1,9c s09q52c,1 if HH paid for fertiliser in wet season.
+wet_cost_fert,HH-year,Rs.,9c s09q52d,Rs. spent on fertiliser in wet season.
+wet_used_insect,HH-year,0/1,9c s09q52e,1 if HH paid for insecticide in wet season.
+wet_cost_insect,HH-year,Rs.,9c s09q52f,Rs. spent on insecticide in wet season.
+wet_used_equip,HH-year,0/1,9c s09q52g,1 if HH hired equipment in wet season.
+wet_cost_equip,HH-year,Rs.,9c s09q52h,Rs. spent on hired equipment in wet season.
+wet_used_labour,HH-year,0/1,9c s09q52i,1 if HH hired labour in wet season.
+wet_cost_labour,HH-year,Rs.,9c s09q52j,Rs. spent on hired labour in wet season.
+dry_used_seed,HH-year,0/1,9c s09q53a,Same as wet_used_seed for dry season.
+dry_cost_seed,HH-year,Rs.,9c s09q53b,Same as wet_cost_seed for dry season.
+dry_used_fert,HH-year,0/1,9c s09q53c,Same as wet_used_fert for dry season.
+dry_cost_fert,HH-year,Rs.,9c s09q53d,Same as wet_cost_fert for dry season.
+dry_used_insect,HH-year,0/1,9c s09q53e,Same as wet_used_insect for dry season.
+dry_cost_insect,HH-year,Rs.,9c s09q53f,Same as wet_cost_insect for dry season.
+dry_used_equip,HH-year,0/1,9c s09q53g,Same as wet_used_equip for dry season.
+dry_cost_equip,HH-year,Rs.,9c s09q53h,Same as wet_cost_equip for dry season.
+dry_used_labour,HH-year,0/1,9c s09q53i,Same as wet_used_labour for dry season.
+dry_cost_labour,HH-year,Rs.,9c s09q53j,Same as wet_cost_labour for dry season.
+in_input_module,HH-year,0/1,audit,1 if HH appeared in sec9c (vs. zero-filled).
+total_input_cost_rs,HH-year,Rs.,derived,Sum of all 10 cost variables.
+input_intensity_per_sqm,HH-year,Rs./sqm,derived,total_input_cost_rs / cultivated_area_total_sqm.
+n_crops_total,HH-year,count,9b1+9b2 cropid,Distinct crops grown across both seasons.
+n_crops_wet,HH-year,count,9b1 cropid,Distinct crops grown in wet season.
+n_crops_dry,HH-year,count,9b2 cropid,Distinct crops grown in dry season.
+multi_season,HH-year,0/1,derived,1 if HH grew at least one crop in BOTH seasons.
+grows_staple,HH-year,0/1,9b1+9b2 cropid,"1 if HH grew rice, wheat, maize, millet, barley."
+grows_cashcrop,HH-year,0/1,9b1+9b2 cropid,"1 if HH grew sugarcane, jute, tobacco, oilseed, etc."
+grows_horticulture,HH-year,0/1,9b1+9b2 cropid,1 if HH grew any vegetable or fruit.
+any_crop_sold,HH-year,0/1,9b1+9b2,1 if HH sold any portion of any crop.
+crop_sale_rs_12m,HH-year,Rs.,qty × price,Total Rs. from crop sales (sold qty × unit price).
+crop_sale_share,HH-year,share,derived,Mean across crops of (sold_qty / harvested_qty).
+crop_hhi,HH-year,index,derived,"Herfindahl on harvest-value shares (0=diverse, 1=specialised)."
+crop_simpson_diversity,HH-year,index,derived,1 - HHI.
+effective_n_crops,HH-year,count,derived,1 / HHI (effective number of crops).
+staple_value_share,HH-year,share,derived,Share of harvest value from staples.
+cashcrop_value_share,HH-year,share,derived,Share of harvest value from cash crops.
+horti_value_share,HH-year,share,derived,Share of harvest value from horticulture.
+owns_plough,HH-year,0/1,9f equipmentid,1 if HH owns a plough.
+owns_powered_machinery,HH-year,0/1,9f equipmentid,"1 if HH owns tractor, thresher, or generator/diesel engine."
+owns_irrigation_kit,HH-year,0/1,9f equipmentid,"1 if HH owns water pump, tubewell/borewell, or drip/sprinkler."
+owns_transport,HH-year,0/1,9f equipmentid,1 if HH owns cart or trolley.
+owns_storage_struct,HH-year,0/1,9f equipmentid,1 if HH owns grain storage bin or greenhouse/shed.
+n_equip_categories,HH-year,count,derived,Number of equipment categories owned (0-5).
+n_powered_types,HH-year,count,9f,Number of distinct powered machinery types owned.
+n_irrigation_types,HH-year,count,9f,Number of distinct irrigation kit types owned.
+equip_stock_value_rs,HH-year,Rs.,9f s09q66,Total reported value of agricultural equipment.
+livestock_has,HH-year,0/1,9d livestockid,1 if HH has any livestock (excluding 'None').

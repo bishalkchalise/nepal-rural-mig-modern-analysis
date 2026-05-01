@@ -1,0 +1,28 @@
+# Ignore raw data only
+data/raw/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+
+
+# raw inputs (>100 MB)
+data/clean/nec2018/firm_level.csv
+data/raw/
+*.parquet
+
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

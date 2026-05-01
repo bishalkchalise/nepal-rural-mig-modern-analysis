@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Method — Nepal SSIV</title>
+<link rel="stylesheet" href="style.css">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']], tags: 'ams' },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <h2>Pages</h2>
+  <ul>
+    <li><a href="index.html">Intro</a></li>
+    <li><a href="explorer.html">Results</a></li>
+    <li><a href="definitions.html">Variable definitions</a></li>
+    <li><a href="summary.html">Summary statistics</a></li>
+    <li><a href="methods.html" class="active">Method</a>
+      <ul class="subnav">
+        <li><a href="#shock">Shock construction</a></li>
+        <li><a href="#preferred">Specification</a></li>
+        <li><a href="#robust">Robustness</a></li>
+        <li><a href="#refs">References</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+<main class="content">
+
+<header class="page-header">
+  <h1>Method</h1>
+  <div class="sub">
+    Construction of the FX-driven shift-share instrument and the reduced-form
+    specification, following Khanna et al. (2026).
+  </div>
+</header>
+
+<h2 id="shock">Shock construction</h2>
+
+<p>
+The instrument follows Khanna et al. (2026) for the Philippines, adapted for
+Nepal where individual migrant income is unobserved. We use migrant
+<em>counts</em> as exposure weights instead. Let $m$ index municipalities,
+$d$ destination countries, $t$ years.
+</p>
+
+<p>Define the per-capita baseline migrant exposure:</p>
+
+\begin{equation}
+\omega_{md,0} = \frac{N_{md,2001}}{\mathrm{Pop}_{m,2001}}
+\qquad
+\mathrm{MI}_{m,0} = \sum_d \omega_{md,0}
+\qquad
+s_{md,0} = \frac{\omega_{md,0}}{\mathrm{MI}_{m,0}}
+\label{eq:weights}
+\end{equation}
+
+<p>
+where $\mathrm{MI}_{m,0}$ is the total per-capita baseline migration
+intensity and $s_{md,0}$ is the destination composition (sums to 1 within
+$m$). The destination-country shifter is the FX index relative to 2001:
+</p>
+
+\begin{equation}
+\mathrm{FXshock}_{dt} = \frac{\mathrm{FX}_{dt}}{\mathrm{FX}_{d,2001}}
+\label{eq:shifter}
+\end{equation}
+
+<p>From these we build three regressors:</p>
+
+\begin{align}
+\mathrm{SSIV}_{mt}      &= \sum_d \omega_{md,0} \, \mathrm{FXshock}_{dt}
+                         \;=\; \mathrm{MI}_{m,0} \cdot \mathrm{ShareShock}_{mt}\\
+\mathrm{ShareShock}_{mt}&= \sum_d s_{md,0} \, \mathrm{FXshock}_{dt}\\
+\mathrm{AbsExp}_{mt}    &= \sum_d N_{md,2001} \, \mathrm{FXshock}_{dt}
+\label{eq:regressors}
+\end{align}
+
+<p>
+The headline regressor is $\mathrm{SSIV}_{mt}$. The identity
+$\mathrm{SSIV} = \mathrm{MI} \cdot \mathrm{ShareShock}$ is enforced and
+verified in <code>script/vars/instrument.R §8</code>.
+</p>
+
+<h2 id="preferred">Reduced-form specification</h2>
+
+<p>The headline panel regression is</p>
+
+\begin{equation}
+y_{mt} \;=\; \alpha_m + \gamma_t
+   + \beta\,\mathrm{SSIV}_{m,t-\ell}
+   + \boldsymbol{\lambda}_1' \bigl(\mathrm{MI}_{m,0}\,\boldsymbol{\tau}_t\bigr)
+   + \boldsymbol{\lambda}_2' \bigl(\mathrm{ShareShock}_{m,0}\,\boldsymbol{\tau}_t\bigr)
+   + \varepsilon_{mt},
+\label{eq:main}
+\end{equation}
+
+<p>where</p>
+
+<ul>
+  <li>$\alpha_m$ is a municipality fixed effect;</li>
+  <li>$\gamma_t$ is a year fixed effect;</li>
+  <li>$\boldsymbol{\tau}_t = (\mathbf{1}\{t=t_1\},\ldots,\mathbf{1}\{t=t_T\})'$ is the vector of year-period indicators;</li>
+  <li>$\ell\in\{0,1,2\}$ is the lag set in the explorer.</li>
+</ul>
+
+<p>
+Standard errors are clustered at the municipality (<code>lgcode</code>)
+level — the unit of observation, following Khanna et al. (2026, p. 1561) who
+cluster at the province level (their unit of observation). The headline
+cell that matches the basic <code>script/baseline_census.R</code> spec is
+<a href="explorer.html#dataset=census&amp;panel=P2_ref2011&amp;lag=lag0&amp;shock=ssiv_index&amp;ctrl=mi"><strong>census /
+P2_ref2011 / lag0 / ssiv_index / mi</strong></a>.
+</p>
+
+<h2 id="robust">Robustness dimensions</h2>
+
+<h3>Panel and reference year</h3>
+<ul>
+  <li><strong>P2_ref2011</strong>: 2011 + 2021 only. Headline.</li>
+  <li><strong>P3_ref2001</strong>: full panel (2001, 2011, 2021), anchored at the pre-shock baseline.</li>
+  <li><strong>P3_ref2011</strong>: full panel anchored at 2011.</li>
+</ul>
+
+<h3>Shock timing</h3>
+<ul>
+  <li><strong>$\mathrm{FXshock}_t$</strong>: contemporaneous shifter.</li>
+  <li><strong>$\mathrm{FXshock}_{t-1}$, $\mathrm{FXshock}_{t-2}$</strong>: lagged 1 / 2 years; addresses contemporaneity in the FX panel.</li>
+</ul>
+
+<h3>Shock variant</h3>
+<ul>
+  <li><strong>$\mathrm{SSIV}$ (level index)</strong>: main spec.</li>
+  <li><strong>$\mathrm{SSIV}$ winsorised at 99%</strong>: outlier-robust version that caps the SSIV at its 99th percentile to limit top-1% leverage.</li>
+</ul>
+
+<h3>Control sets</h3>
+<table class="var-table">
+  <thead>
+    <tr><th style="text-align:left">Tag</th><th style="text-align:left">What it adds</th><th style="text-align:left">Khanna et al. analog</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>none</code></td><td>fixed effects only (HH FE + year FE for the HRVS panel; municipality FE + year FE elsewhere)</td><td>—</td></tr>
+    <tr><td><code>mi</code></td><td>$+\;\mathrm{MI}_{m,0}\,\boldsymbol{\tau}_t$ (basic Khanna baseline)</td><td>incomplete-share control</td></tr>
+    <tr><td><code>khanna_full</code></td><td>$+\;\mathrm{ShareShock}\,\boldsymbol{\tau}_t$ + region-share × $t$ + destination GDP × $t$ + trade-SSIV (Comtrade × FX)</td><td>blocks A + C + D</td></tr>
+  </tbody>
+</table>
+
+<h2 id="refs">References</h2>
+<ul>
+  <li>Khanna, G., Murathanoglu, E., Theoharides, C. and Yang, D. (2026).
+    "Abundance from Abroad: Migrant Income and Long-Run Economic Development."
+    <em>American Economic Review</em>, 116(7), 1543–1583.</li>
+  <li>Borusyak, K., Hull, P. and Jaravel, X. (2025).
+    "A Practical Guide to Shift-Share Instruments."
+    <em>Journal of Economic Perspectives</em>, 39(1).</li>
+  <li>Borusyak, K. and Hull, P. (2023).
+    "Nonrandom Exposure to Exogenous Shocks: Theory and Applications."
+    <em>Econometrica</em>, 91(6), 2155–2185.</li>
+  <li>Goldsmith-Pinkham, P., Sorkin, I. and Swift, H. (2020).
+    "Bartik Instruments: What, When, Why, and How."
+    <em>American Economic Review</em>, 110(8), 2586–2624.</li>
+</ul>
+
+</main>
+</div>
+
+<footer>
+  Source: <a href="https://github.com/bishalkchalise/nepal-rural-mig-modern-analysis" target="_blank" rel="noopener">bishalkchalise/nepal-rural-mig-modern-analysis</a>.
+</footer>
+
+</body>
+</html>

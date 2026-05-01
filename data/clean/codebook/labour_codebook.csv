@@ -1,0 +1,39 @@
+variable,unit,reference,source,definition
+hh_any_worker,HH × year,12 months,sec 7 presence,1 if any HH member has any Section 7 job row this year.
+hh_n_workers,HH × year,12 months,count worked members,Number of HH members who worked (any job) this year.
+hh_n_working_age,HH × year,current,roster s01q03,Number of HH members aged 15–64 (working-age population denominator).
+hh_lfp_rate,HH × year,12 months,derived,hh_n_workers / hh_n_working_age. NA if no working-age members.
+hh_female_lfp_rate,HH × year,12 months,derived,Share of female 15–64 members who worked. NA if no female working-age members.
+hh_child_workers,HH × year,12 months,roster + s07,Count of workers aged 5–14 (child labour indicator).
+n_jobs_total,HH × year,12 months,sum Section 7 rows,Total number of jobs held across all HH members.
+n_jobs_wage_agri,HH × year,12 months,s07q06 category,Number of jobs that are wage employment in agriculture.
+n_jobs_wage_nonagri,HH × year,12 months,s07q06 category,Number of jobs that are wage employment not in agriculture.
+n_jobs_self_agri,HH × year,12 months,s07q06 category,Number of jobs that are self-employment in agriculture.
+n_jobs_self_nonagri,HH × year,12 months,s07q06 category,Number of jobs that are self-employment not in agriculture.
+hh_has_wage_nonagri,HH × year,12 months,derived,1 if any member has a non-agricultural wage job.
+hh_total_days_worked_12m,HH × year,12 months,sum s07q04_1..14,Total person-days of work across all members and jobs.
+hh_total_hours_12m,HH × year,12 months,days × s07q05,Total person-hours = Σ (days × hours-per-day). Approximate; assumes hours-per-day constant.
+hh_work_intensity_per_worker,HH × year,12 months,derived,Mean days worked per worker = hh_total_days_worked_12m / hh_n_workers. NA if no workers.
+hh_has_wage_job,HH × year,12 months,sec 8 presence,1 if any HH member has a Section 8 wage job record.
+wage_daily_income_12m_rs,HH × year,12 months,s08q06 × days,Total Rs. from daily-wage jobs = s08q06 × days worked (Section 7).
+wage_longterm_income_12m_rs,HH × year,12 months,s08q12a..e,Total Rs. from long-term jobs = 12·s08q12a + s08q12b + s08q12c + s08q12d + s08q12e.
+wage_contract_income_12m_rs,HH × year,12 months,s08q13,Total Rs. from contract/piece-rate jobs.
+wage_total_income_12m_rs,HH × year,12 months,sum of above,Sum of daily + long-term + contract wage income.
+wage_sector_agri,HH × year,12 months,s08q02 = Agriculture,1 if any HH member has a wage job in agriculture.
+wage_sector_fish_mine,HH × year,12 months,s08q02,1 if any member in Fishing OR Mining sector.
+wage_sector_manufacturing,HH × year,12 months,s08q02,1 if any member in Manufacturing.
+wage_sector_utilities,HH × year,12 months,s08q02,1 if any member in Electricity/Gas/Water Supply.
+wage_sector_construction,HH × year,12 months,s08q02,1 if any member in Construction.
+wage_sector_trade,HH × year,12 months,s08q02,1 if any member in Wholesale/Retail Trade.
+wage_sector_hotels,HH × year,12 months,s08q02,1 if any member in Hotels/Restaurants.
+wage_sector_transport,HH × year,12 months,s08q02,1 if any member in Transport/Storage/Communications.
+wage_sector_finance,HH × year,12 months,s08q02,1 if any member in Financial Intermediation OR Real Estate/Business.
+wage_sector_public,HH × year,12 months,s08q02,"1 if any member in Public Admin, Education, or Health/Social Work."
+wage_sector_community,HH × year,12 months,s08q02,1 if any member in Other Community/Social/Personal Services.
+wage_sector_primary_any,HH × year,12 months,derived,"1 if any member in primary sector (Agriculture, Fishing, Mining) — extraction from nature."
+wage_sector_secondary_any,HH × year,12 months,derived,"1 if any member in secondary sector (Manufacturing, Utilities, Construction) — transformation of materials."
+wage_sector_tertiary_any,HH × year,12 months,derived,"1 if any member in tertiary sector (services: Trade, Hotels, Transport, Finance, Public, Community)."
+wage_sector_tradable_any,HH × year,12 months,derived,"1 if any member in internationally-tradable sector: Manufacturing, Mining, Finance. Agriculture kept OUT since rural ag wage labour is hyper-local."
+wage_sector_nontradable_any,HH × year,12 months,derived,"1 if any member in location-bound sector: Utilities, Construction, Trade, Hotels, Transport, Public, Community."
+hh_foreign_worker_any,HH × year,12 months,s07q03a,1 if any member worked outside Nepal this year. NA for 2016 (variable not in wave 1).
+hh_returned_foreign_any,HH × year,12 months,s07q03b_i,1 if any member reported a reason for returning from foreign work. NA for 2016.

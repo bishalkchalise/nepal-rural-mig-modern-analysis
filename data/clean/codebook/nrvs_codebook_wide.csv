@@ -1,0 +1,1255 @@
+variable,first_var_label,first_value_labels,datasets,n_datasets,any_numeric
+area_dry_sqm,NA,NA,crop_production/section_9b2,1,TRUE
+area_sqm,NA,NA,land/section_9a1; land/section_9a2,2,TRUE
+area_sqm_bought,NA,NA,land/section_9a3,1,TRUE
+area_sqm_sold,NA,NA,land/section_9a3,1,TRUE
+area_wet_sqm,NA,NA,crop_production/section_9b1,1,TRUE
+assetid,Asset Id,"1=Bank (Current/Savings Account), 2=Fixed Deposit, 3=Stocks, Shares, Treasury Bills, 4=Employee Provident Fund/Citizen Investment Fund, 5=Other Cash in Hand, 6=Saving Cooperative/Savings group, 7=Life Insurance, 8=Livestock and other agriculture related insurance, 9=Government health insurance, 10=Private health insurance, 998=None",borrowing_lending/section_12c,1,TRUE
+cropid,Crop id,"1=Paddy, 2=Wheat, 3=Maize, 4=Millet, 5=Barley, 6=Buckwheat, 7=Other Cereals, 8=Soybeans, 9=Black Gram, 10=Red Gram, 11=Grass Pea, 12=Lentil, 13=Gram, 14=Pea, 15=Green Gram, 16=Coarse Gram, 17=Cow Pea, 18=Other Legumes, 19=Potato, 20=Sweet Potato, 21=Colocasia, 22=Other Tubers, 23=Mustard, 24=Ground Nut, 25=LINSEED, 26=Sesame, 27=Other Oilseed, 28=Sugarcane, 29=Jute, 30=Tobacco, 31=Other Cash Crops, 32=Chilies, 33=Onions, 34=Garlic, 35=Ginger, 36=Turmeric, 37=Cardamom, 38=Coriander Seed, 39=Other Spices, 40=Vegetables, 41=Orange, 42=Lemon, 43=Lime, 44=Sweet Lime, 45=Other Citrus, 46=Mango, 47=Banana, 48=Guava, 49=Jack Fruit, 50=Pineapple, 51=Lichee, 52=Pear, 53=Apple, 54=Plum, 55=Papaya, 56=Pomegranate, 57=Other Fruit, 58=Tea, 59=Thatch, 60=Fodder Trees, 61=Bamboo, 62=Other Trees, 401=Cucumber, 402=Squash, 403=Cauliflower, 404=Cabbage, 405=Pointed Gourd, 406=Raddish, 407=Spinach, 408=Mushroom, 409=Tomato, 410=Bitter Gourd, 411=Long Bean, 412=Brinjal, 413=Sponge Gouurd, 414=Pumpkin, 415=Carrot, 416=Jack Fruit, 417=Okra, 418=Tamarind, 419=Broccoli, 998=None",crop_production/section_9b1; crop_production/section_9b2,2,TRUE
+district,Name of District,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula",ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; household_header/section_0; housing_amenities/section_4; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,39,TRUE
+district77,New district breakdown 77 districts,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi West, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum West, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula, 76=Nawalparasi East, 77=Rukum East",ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; housing_amenities/section_4; id_match_long; id_match_wide; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,40,TRUE
+district77_x,New district breakdown 77 districts,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi West, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum West, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula, 76=Nawalparasi East, 77=Rukum East",household_header/section_0,1,TRUE
+district77_y,New district breakdown 77 districts,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi West, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum West, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula, 76=Nawalparasi East, 77=Rukum East",household_header/section_0,1,TRUE
+district_code,District Code,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula",household_header/section_0,1,TRUE
+district_name,NA,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; household_header/section_0; housing_amenities/section_4; id_match_long; id_match_wide; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,41,FALSE
+districtname77,NA,NA,id_match_wide,1,FALSE
+equipmentid,Agriculture equipment,"1=Tractor, 2=Plough, 3=Cart, 4=Thresher, 5=Trolley, 6=Water Pump, 7=Generator/Diesel Engine, 8=Grain Storage Bin, 9=Tubewell/Borewell, 10=Greenhouse/Shed, 11=Drip Irrigation/Sprinkler, 12=Other machinery, 998=None",ag_equipment/section_9f,1,TRUE
+f_type,Survey Type,"1=Panel Data, 2=Replace Data",education/section_2; health/section_3,2,TRUE
+foodid,Food id,"11=Rice, 12=Beaten, flattened rice, 13=Maize, 14=Maize flour, 15=Wheat flour, 16=Millet, 17=Barley, 18=Other, 21=Lentil (Black gram), 22=Horse Gram, 23=Beans (Green gram, masyaura), 31=Eggs, 32=Milk, 33=Powder milk, 34=Curd / Whey, 35=Other milk products (cheese, paneer), 41=Ghee, 42=Vegetable oil, 43=Mustard oil, 44=Other oil (soya, sunflower, corn etc), 51=Potatoes, 52=Onions, 53=Tomatoes, 54=Green leafy vegetables, 55=Other vegetables, 61=Fruits, 62=Dried fruits and nuts (coconut, cashew, dates etc), 71=Fish, 72=Mutton, 73=Buffalo meat, 74=Chicken, 75=Other meats (Pig, Boar, Duck), 81=Salt, 82=Other spices and condiments (Coriander, nutmeg), 91=Sugar, 92=Gur (Sakhar), 93=Sweets (Mithai), 101=Tea (dried leaves)/Coffee (ground, instant), 102=Other Non Alcohoblic (Fruit Juice,Coca cola, Pepsi), 111=All Type of Alcohol, 121=Cigarettes, 122=Tobacco,jarda, khan, beetle, 131=Misc. other food expenditures, 998=None",food_consumption/section_5a,1,TRUE
+giftid,NA,NA,transfers/section_13a; transfers/section_13b,2,TRUE
+group,NA,NA,variable_coverage,1,FALSE
+height_difference,NA,NA,anthropometrics/section_16,1,TRUE
+hhid,Household ID number,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; household_header/section_0; housing_amenities/section_4; id_match_long; id_match_wide; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,41,TRUE
+hhtype,household type,"1=panel, 2=replacement, 3=split",ag_equipment/section_9f; ag_inputs/section_9c; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; food_consumption/section_5a; housing_amenities/section_4; land/section_9a1; land/section_9a3; land/section_9a4; livestock/section_9e; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; transfers/section_13b; transfers/section_13c; wage_jobs/section_8,23,TRUE
+house_id,NA,NA,transfers/section_13a,1,FALSE
+inventoryid,Inventory id,"501=Radio/cassette/CD player, 502=Camera (still/movie), 503=Bicycle, 504=Motorcycle/scooter, 505=Motor car, etc, 506=Refrigerator or freezer, 507=Washing machine, 508=Fans, 509=Heaters, 510=Television/VCR/VCDPlayer, 511=Pressure lamps/ petromax, 512=Telephone sets cordless/mobile, 513=Sewing machine, 514=Furniture, rugs, clocks, 515=Jewelry (including watches, 516=Computer/Printer, 998=None",nonfood_consumption/section_6c,1,TRUE
+jobid,NA,NA,labor_jobs/section_7,1,TRUE
+joblist,NA,NA,labor_jobs/section_7; wage_jobs/section_8,2,FALSE
+lenderid,NA,NA,borrowing_lending/section_12b,1,TRUE
+lgname,NA,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; household_header/section_0; housing_amenities/section_4; id_match_long; id_match_wide; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,41,FALSE
+livestockid,Owns livestock,"1=Bullocks/Cows, 2=He/She Buffaloes, 3=Goats/Castrated Goat, 4=He/She Sheep, 5=Yaks/Naks, 6=Pigs/Pork, 7=Horses/Donkeys/Mules, 8=Poultry/Ducks/Pigeons, 9=Honeybee, 10=Fish, 11=Other Livestock, 998=None",livestock/section_9d,1,TRUE
+loanid,NA,NA,borrowing_lending/section_12a,1,TRUE
+member_id,NA,NA,anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; education/section_2; health/section_3; labor_jobs/section_7; migration/section_11; roster/section_1; transfers/section_13a; transfers/section_13b; wage_jobs/section_8,11,TRUE
+n_vars,NA,NA,variable_coverage,1,TRUE
+ngoid,NA,NA,transfers/section_13c,1,TRUE
+nonagid,NA,NA,nonag_enterprise/section_10,1,TRUE
+nonfoodid,Non food id,"211=Wood (bundle wood, logwood, sawdust), 212=Kerosene oil, 213=Coal, charcoal, 214=Cylinder gas (LPG), 215=Matches, candles, lighters., lanterns, etc, 221=Ready-made clothing and apparel, 222=Shoes, slippers, sandals, etc., 223=Personal care items like shampoo, cosmetics, soap, 224=Dry cleaning and washing expenses, 225=Personal services (haircuts, shaving, shoeshine), 231=Public transportation (buses, taxis, rickshaws, train tickets, 232=Petrol, diesel, motor oil (for personal vehicle only), 233=Entertainment (cinema, CD/cassette rentals, etc.), 234=Newspapers, books, stationery  supplies(except educational expenses), 235=Pocket money to children, 236=Wages paid to watchman, servant, gardener, driver, etc, 237=Light bulbs, shades, batteries, etc, 238=Household cleaning articles (soap, bleach, washing powder), 239=Other frequent expenses not mentioned, 998=None of them",nonfood_consumption/section_6a; nonfood_consumption/section_6b,2,TRUE
+nyear,NA,NA,education/section_2; health/section_3; land/section_9a1; transfers/section_13b,4,TRUE
+plotid,NA,NA,land/section_9a1,1,TRUE
+psu,NA,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; household_header/section_0; housing_amenities/section_4; id_match_long; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,40,TRUE
+pubcashid,Cash transfer id,"1=Old Age Pension, 2=Widow Pension, 3=Disability Allowance, 4=Child Grant, 5=Maternal Incentive Scheme, 6=Martyr's Family Benefits, 7=Endangered Ethnicities, 8=Earthquake Relief from government, 9=Earthquake Relief from non-governmental sources, 10=People's Movement Victims Benefits, 11=Health Assistance (heart disease, alzheimers, cancer etc), 12=Emergency ad-hoc assistance (health/house destruction), 13=Emergency ad-hoc assistance from non-governmental sources (health/house destruction), 998=Aware of None",social_protection/section_14a,1,TRUE
+pubkindid,Inkind id,"1=Public Food Distribution System (Food subsidy), 2=Nutritional Supplement Program for Children, 3=Nutritional Supplement Program for Mothers, 4=Scholarship Program, 998=Aware of None",social_protection/section_14b,1,TRUE
+publicworkid,Public work id,"1=Rural Community Infrastructure Works Program, 2=Karnali Employment Project (KEP), 3=Rural Access Program (RAP), 4=Cash for Work Programs, 5=Food for Work Program (supported by Government or other organizations like WFP), 998=Aware of None",social_protection/section_14c,1,TRUE
+s00q00b,Willing to participate in this survey,"1=Yes, 2=No",household_header/section_0,1,TRUE
+s00q00c,NA,NA,household_header/section_0,1,FALSE
+s00q00d,NA,NA,household_header/section_0,1,FALSE
+s00q01,District Code,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula",household_header/section_0,1,TRUE
+s00q01a,Province,"1=Province No.1, 2=Province No. 2, 3=Province No. 3, 4=Province No. 4, 5=Province No. 5, 6=Province No. 6, 7=Province No. 7",household_header/section_0,1,TRUE
+s00q02a,NA,NA,household_header/section_0,1,TRUE
+s00q02b,NA,NA,household_header/section_0,1,FALSE
+s00q03,Previous ward number,"1=1, 2=2, 3=3, 4=4, 5=5, 6=6, 7=7, 8=8, 9=9",household_header/section_0,1,TRUE
+s00q03a,Local body Type,"1=Rural municipality, 2=Municipality, 3=Sub-metropolitan area, 4=Metropolitan area",ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; housing_amenities/section_4; id_match_long; id_match_wide; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,40,TRUE
+s00q03a_x,Local body Type,"1=Rural municipality, 2=Municipality, 3=Sub-metropolitan area, 4=Metropolitan area",household_header/section_0,1,TRUE
+s00q03a_y,Local body Type,"1=Rural municipality, 2=Municipality, 3=Sub-metropolitan area, 4=Metropolitan area",household_header/section_0,1,TRUE
+s00q03b,Local body name,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; housing_amenities/section_4; id_match_long; id_match_wide; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,40,FALSE
+s00q03b_x,NA,NA,household_header/section_0,1,FALSE
+s00q03b_y,Local body name,NA,household_header/section_0,1,FALSE
+s00q03c,Current Ward No.,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; housing_amenities/section_4; id_match_long; id_match_wide; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,40,TRUE
+s00q03c_x,NA,NA,household_header/section_0,1,TRUE
+s00q03c_y,Current Ward No.,NA,household_header/section_0,1,TRUE
+s00q07,NA,NA,household_header/section_0,1,TRUE
+s00q09,Is the Respondent the Household Head?,"1=Yes, 2=No",household_header/section_0,1,TRUE
+s00q15,Ethnicity,"1=Adibasi/Janajati, 2=Badhae, 3=Badi, 4=Bangali, 5=Baniya, 6=Bantar, 7=Meche, 8=Bhediyar/Gaderi, 9=Bhote, 10=Bing/Binda, 11=Bote, 12=Brahman (Hill), 13=Brahman (Tarai), 14=Brahmu/Baramu, 15=Byangsi, 16=Chamar/Harijan/Ram, 17=Chepang/Praja, 18=Chhantal, 19=Chhetri, 20=Chidimar, 21=Churaute, 22=Damain/Dholi, 23=Danuwar, 24=Darai, 25=Dhagar/Jhagar, 26=Dhanuk, 27=Dhimal, 28=Dhobi, 29=Dhunia, 30=Dom, 31=Dura, 32=Dusadh/Paswan/Pasi, 33=Gaine, 34=Gangai, 35=Gharti/Bhujel, 36=Gurung, 37=Hajam/Thakur, 38=Halkhor, 39=Haluwai, 40=Hayu, 41=Jain, 42=Jirel, 43=Kahar, 44=Kalwar, 45=Kamar, 46=Kami, 47=Kanu, 48=Kayastha, 49=Kewat, 50=Khatwe, 51=Kisan, 52=Koche, 53=Koiri, 54=Kumal, 55=Kumhar, 56=Kurmi, 57=Kusunda, 58=Lepcha, 59=Limbu, 60=Lodh, 61=Lohar, 62=Magar, 63=Majhi, 64=Mali, 65=Mallah, 66=Marwadi, 68=Munda, 69=Musahar, 70=Muslim, 71=Newar, 72=Nuniya, 73=Nurang, 74=Pahari, 75=Patharkata/Kuswadiya, 76=Punjabi/Sikh, 77=Rai, 78=Rajbansi, 79=Rajbhar, 80=Raji, 81=Rajput, 82=Raute, 83=Santhal/Satar, 84=Sanyasi, 85=Sarki, 86=Sherpa, 87=Sonar, 88=Sudhi, 89=Sunuwar, 90=Tajpuriya, 91=Tamang, 92=Tatma, 93=Teli, 94=Thakali, 95=Thakuri, 96=Thami, 97=Tharu, 98=Walung, 99=Yadav, 100=Yakkha, 101=Yehlmo, 102=Other Dalit, 103=Other Caste, 104=Don'T Know, 105=Refused",household_header/section_0,1,TRUE
+s00q16,Primary Language Spoken in Household,"1=Nepali, 2=Angika, 3=Assamise, 4=Awadhi, 5=Bahing, 6=Bajika, 7=Bangla, 8=Bantawa, 9=Baram, 10=Bhojpuri, 11=Bhujel/Khawas, 12=Bote, 13=Byangshi, 14=Chamling, 15=Chantyal/Chantel, 16=Chepang, 17=Chhiling, 18=Chhitang, 19=Chinese, 20=Churauti, 21=Danuwar, 22=Darai, 23=Dhimal, 24=Dumi, 25=Dungmali, 26=Dura, 27=Dzonhkha, 28=English, 29=Ghale, 30=Gurung, 31=Hariyanwi, 32=Hayu, 33=Hindi, 34=Jero/Jerung, 35=Jhangar/Dhangar, 36=Jirel, 37=Kagate, 38=Kaike, 39=Khaling, 40=Khariya, 41=Kisan, 42=Koche, 43=Koi/Koyu, 44=Kuki, 45=Kulumh, 46=Kumal, 47=Kurmali, 48=Kusunda, 49=Lepcha/Lapche, 50=Lhomi, 51=Lhorung, 52=Limbu, 53=Lingkhim, 54=Magahi, 55=Magar, 56=Maithili, 57=Manjhih, 58=Marwari, 59=Meche, 60=Mewahang, 61=Mizo, 62=Nachhiring, 63=Nagamese, 64=Nepali Sign Language, 65=Newar, 66=Oriya, 67=Pahari, 68=Puma, 69=Punjabi, 70=Rajbansi, 71=Raji, 72=Raute, 73=Sadhani, 74=Sam, 75=Sangpang, 76=Sanskrit, 77=Santhali, 78=Sherpa, 79=Sindhi, 80=Sunuwar, 81=Tamang, 82=Thakali, 83=Thami, 84=Tharu, 85=Thulung, 86=Tibetan, 87=Tilung, 88=Urdu, 89=Wambule/Umbule, 90=Yakkha, 91=Yamphu/Yamphe, 92=Yholmo, 93=Others",household_header/section_0,1,TRUE
+s00q17,Religion of Household,"1=Hindu, 2=Buddhist, 3=Islam, 4=Kirant, 5=Jain, 6=Christian, 7=Sikh, 8=Bahai, 9=Other Religion, 10=None, 999=Unwilling To Disclose",household_header/section_0,1,TRUE
+s01q00a,Still Member,"1=Yes, 2=No, 3=New Member",roster/section_1,1,TRUE
+s01q00b,Place Move to,"1=Married, 2=Migrated, 3=Deceased, 4=Started separate household, 5=Others, 998=Other",roster/section_1,1,TRUE
+s01q00c,NA,NA,roster/section_1,1,FALSE
+s01q01,Relationship to the Household Head,"1=Household Head, 2=Husband-Wife, 3=Son-Daughter, 4=Grand Son-Daugher, 5=Mother-Father, 6=Brother-Sister, 7=Niece-Nephew, 8=Son/Daughter-in-Law, 9=Brother / Sister-in-Law, 10=Mother/Father-in-Law, 11=Grand-Father / Grand Mother, 12=Uncle – Aunt, 13=Other Family Member, 14=Servant or Servant's Relatives, 15=Tenant or Tenant's Relatives, 16=Other Person not Related",roster/section_1,1,TRUE
+s01q02,Sex,"1=Female, 2=Male, 3=Third Gender",roster/section_1,1,TRUE
+s01q03,NA,NA,roster/section_1,1,TRUE
+s01q03a,NA,NA,roster/section_1,1,TRUE
+s01q03c,Is Age Under 5 Year,"1=Yes, 2=No",roster/section_1,1,TRUE
+s01q05a,Was born in this same district,"1=Yes, 2=No",roster/section_1,1,TRUE
+s01q05b,District where born Other,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula, 76=Born in another country",roster/section_1,1,TRUE
+s01q05c,NA,NA,roster/section_1,1,FALSE
+s01q06a,Currently living in this house,"1=Yes, 2=No",roster/section_1,1,TRUE
+s01q06b,Currently living location,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula, 76=Other, 81=India, 82=Bhutan, 83=China, 84=Bangladesh, 85=Hongkong, 86=Malayasia, 87=Japan, 88=Saudi Arabia, 89=Qatar, 90=United Arab Emirates, 91=United Kingdom, 92=United States, 93=South Korea, 94=Australia, 95=Israel, 96=Other, 97=Other",roster/section_1,1,TRUE
+s01q06b_s,NA,NA,roster/section_1,1,FALSE
+s01q07,Present marital status,"0=N/A, 1=Never Married, 2=Single Married, 3=Poly Married, 4=Re-Married, 5=Widow/Widower, 6=Divorced, 7=Separated",roster/section_1,1,TRUE
+s02q01,Educational background,"1=Never Attended School, 2=Attended School in the Past (no longer attending), 3=Currently Attending School",education/section_2,1,TRUE
+s02q02,Highest grade completed,"0=Pre school, 1=Class 1, 2=Class 2, 3=Class 3, 4=Class 4, 5=Class 5, 6=Class 6, 7=Class 7, 8=Class 8, 9=Class 9, 10=Class 10, 11=SLC, 12=Intermediate/+2, 13=Bachelors, 14=Masters or Higher, 15=Professional Degree, 16=Literate (Level less), 17=No Education",education/section_2,1,TRUE
+s02q03,Currently attending grade,"0=Pre school, 1=Class 1, 2=Class 2, 3=Class 3, 4=Class 4, 5=Class 5, 6=Class 6, 7=Class 7, 8=Class 8, 9=Class 9, 10=Class 10, 11=SLC, 12=Intermediate/+2, 13=Bachelors, 14=Masters or Higher, 15=Professional Degree, 16=Literate (Level less), 17=No Education",education/section_2,1,TRUE
+s02q04,Type of school or college last attended,"1=Community/ Government School, 2=Institutional/ Private School, 3=Technical/ Vocational, 4=Gurukul / Madarsha/ Gumba, 5=Community (Public) Campus, 6=Private Campus, 7=Constituent (Angik) Campus, 8=Other, 9=Adult Education",education/section_2,1,TRUE
+s02q05,Receiving a scholarship to help pay for educational expenses,"1=Yes, 2=No",education/section_2,1,TRUE
+s02q06,Source of scholarship,"1=Government, 2=School or College, 3=NGO, 4=Individual, 5=Other, 998=Don’t Know",education/section_2,1,TRUE
+s02q06_1,NA,NA,education/section_2,1,TRUE
+s02q06_2,NA,NA,education/section_2,1,TRUE
+s02q06_3,NA,NA,education/section_2,1,TRUE
+s02q06_4,NA,NA,education/section_2,1,TRUE
+s02q06_5,NA,NA,education/section_2,1,TRUE
+s02q06_s,NA,NA,education/section_2,1,TRUE
+s02q07,Type of scholarship,"1=Cash, 2=In Kind, 3=Both",education/section_2,1,TRUE
+s02q08,NA,NA,education/section_2,1,TRUE
+s02q09,School-related expenses in the past academic year,"1=Yes, 2=No",education/section_2,1,TRUE
+s02q09a,NA,NA,education/section_2,1,TRUE
+s02q09b,NA,NA,education/section_2,1,TRUE
+s02q09c,NA,NA,education/section_2,1,TRUE
+s02q09d,NA,NA,education/section_2,1,TRUE
+s02q09e,NA,NA,education/section_2,1,TRUE
+s02q09f,NA,NA,education/section_2,1,TRUE
+s02q10,Transportation method to go to school or college,"1=Walking, 2=Cycle or Rickshaw, 3=Motorcycle or Tempo, 4=Bus, 5=Car",education/section_2,1,TRUE
+s02q11a,Percentage of days absent from school or college in past year,"1=None, 2=1-25%, 3=25%-50%, 4=50%-75%, 5=More than 75%",education/section_2,1,TRUE
+s02q11b,Cause for missing school or college,"1=Work at Home, 2=Illness, 3=Other",education/section_2,1,TRUE
+s02q11b_s,NA,NA,education/section_2,1,FALSE
+s02q11b_s_eng,NA,NA,education/section_2,1,FALSE
+s02q11c,NA,NA,education/section_2,1,TRUE
+s02q11d,Cause for not going to school or college,"1=Work at Home, 2=Illness, 3=Other",education/section_2,1,TRUE
+s02q11d_s,NA,NA,education/section_2,1,FALSE
+s02q11d_s_eng,NA,NA,education/section_2,1,FALSE
+s03q01,Any kind of disability,"1=No, 2=Yes (red card), 3=Yes (blue card), 4=Yes (yellow card), 5=Yes (white card), 6=Yes (no card), 7=had a disability, but got treatment",health/section_3,1,TRUE
+s03q02a,Suffered from health conditions prevented usual activity in the last 12 months,"1=Yes, 2=No, 998=Don't Know",health/section_3,1,TRUE
+s03q02b_1,Usual activity prevented in Shrawan 2072(Jul/Aug 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_10,Usual activity prevented in Baishak 2073(Apr/May 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_11,Usual activity prevented in Jestha 2073(May/Jun 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_12,Usual activity prevented in Ashad 2073(Jun/Jul 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_13,Usual activity prevented in Shrawan 2073(Jul/Aug 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_14,Usual activity prevented in Bhadra 2073 (Aug/Sep 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_2,Usual activity prevented in Bhadra 2072(Aug/Sep 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_3,Usual activity prevented in Ashwin 2072(Sept/Oct 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_4,Usual activity prevented in Kartik 2072(Oct/Nov 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_5,Usual activity prevented in Mangshir 2072(Nov/Dec 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_6,Usual activity prevented in Poush 2072(Dec/Jan 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_7,Usual activity prevented in Magh 2072(Jan/Feb 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_8,Usual activity prevented in Falgun 2072(Feb/Mar 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q02b_9,Usual activity prevented in Chitra 2072(Mar/Apr 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q03_1,NA,NA,health/section_3,1,TRUE
+s03q03_10,NA,NA,health/section_3,1,TRUE
+s03q03_11,NA,NA,health/section_3,1,TRUE
+s03q03_12,NA,NA,health/section_3,1,TRUE
+s03q03_13,NA,NA,health/section_3,1,TRUE
+s03q03_14,NA,NA,health/section_3,1,TRUE
+s03q03_2,NA,NA,health/section_3,1,TRUE
+s03q03_3,NA,NA,health/section_3,1,TRUE
+s03q03_4,NA,NA,health/section_3,1,TRUE
+s03q03_5,NA,NA,health/section_3,1,TRUE
+s03q03_6,NA,NA,health/section_3,1,TRUE
+s03q03_7,NA,NA,health/section_3,1,TRUE
+s03q03_8,NA,NA,health/section_3,1,TRUE
+s03q03_9,NA,NA,health/section_3,1,TRUE
+s03q04,Consulted for treatment of health condition,"1=Yes, 2=No",health/section_3,1,TRUE
+s03q05a,Consulted with Doctor (Government Health Institute),"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",health/section_3,1,TRUE
+s03q05b,"Consulted with Paramedic (HA, SAHW, AHW, ANM) ((Govt)","0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",health/section_3,1,TRUE
+s03q05c,Consulted with Kaviraj / Vaidya (Govt Health Institute),"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",health/section_3,1,TRUE
+s03q05d,"Consulted with Paramedic (HA, SAHW, AHW, ANM) ((Govt)","0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",health/section_3,1,TRUE
+s03q05e,Consulted with Doctor (Private),"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",health/section_3,1,TRUE
+s03q05f,Consulted with Pharmacist,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",health/section_3,1,TRUE
+s03q05g,"Consulted with Paramedic (HA, SAHW, AHW, ANM (Private)","0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",health/section_3,1,TRUE
+s03q05h,Consulted with Traditional healer,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",health/section_3,1,TRUE
+s03q05i,Consulted with Other,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",health/section_3,1,TRUE
+s03q06a,NA,NA,health/section_3,1,TRUE
+s03q06b,NA,NA,health/section_3,1,TRUE
+s03q06c,NA,NA,health/section_3,1,TRUE
+s03q06d,NA,NA,health/section_3,1,TRUE
+s03q06e,NA,NA,health/section_3,1,TRUE
+s03q07a,Suffered from diarrhea in the last 12 months,"1=Yes, 2=No",health/section_3,1,TRUE
+s03q07b_1,Sufffered from diarrhea in Shrawan 2072(Jul/Aug 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_10,Sufffered from diarrhea in Baishak 2073(Apr/May 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_11,Sufffered from diarrhea in Jestha 2073(May/Jun 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_12,Sufffered from diarrhea in Ashad 2073(Jun/Jul 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_13,Sufffered from diarrhea in Shrawan 2073(Jul/Aug 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_14,Sufffered from diarrhea in Bhadra 2073 (Aug/Sep 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_2,Sufffered from diarrhea in Bhadra 2072(Aug/Sep 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_3,Sufffered from diarrhea in Ashwin 2072(Sept/Oct 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_4,Sufffered from diarrhea in Kartik 2072(Oct/Nov 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_5,Sufffered from diarrhea in Mangshir 2072(Nov/Dec 2015),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_6,Sufffered from diarrhea in Poush 2072(Dec/Jan 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_7,Sufffered from diarrhea in Magh 2072(Jan/Feb 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_8,Sufffered from diarrhea in Falgun 2072(Feb/Mar 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q07b_9,Sufffered from diarrhea in Chitra 2072(Mar/Apr 2016),"0=No, 1=Yes",health/section_3,1,TRUE
+s03q08,ORS given to treat the diarrhea,"1=Yes, 2=No",health/section_3,1,TRUE
+s04q00,Living in same House,"0=No, 1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q00a,reason for moving to different house,"1=Better house, 2=Due to work, 3=Due to family, 4=To cut costs, 5=Area not fit to live in due to natural disaster, 998=Others",housing_amenities/section_4,1,TRUE
+s04q01,Slope of housing plot,"1=Flat, 2=Moderate, 3=Steep",housing_amenities/section_4,1,TRUE
+s04q02,NA,NA,housing_amenities/section_4,1,TRUE
+s04q03,Dwelling ownership by household member,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q04a,Dwelling rented,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q04b,NA,NA,housing_amenities/section_4,1,TRUE
+s04q05,Occupancy status,"1=Renter, 2=Provided free of charge by relatives/employer, 3=Squatting, 4=Other",housing_amenities/section_4,1,TRUE
+s04q05a,NA,NA,housing_amenities/section_4,1,TRUE
+s04q06,NA,NA,housing_amenities/section_4,1,TRUE
+s04q07,Dwelling occupancy by household only,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q08,NA,NA,housing_amenities/section_4,1,TRUE
+s04q09a,Always lived in this house,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q09b,Always lived in this VDC,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q09c,Always lived in this District,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q10,NA,NA,housing_amenities/section_4,1,TRUE
+s04q10a,Separate Kitchen,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q11,Kitchen garden,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q12,Increase or Decrese in Plot or household,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q12a,Unit of housing plot,"1=Ropani, 2=Bigha",housing_amenities/section_4,1,TRUE
+s04q12b_a,NA,NA,housing_amenities/section_4,1,TRUE
+s04q12b_b,NA,NA,housing_amenities/section_4,1,TRUE
+s04q12b_d,NA,NA,housing_amenities/section_4,1,TRUE
+s04q12b_k,NA,NA,housing_amenities/section_4,1,TRUE
+s04q12b_p,NA,NA,housing_amenities/section_4,1,TRUE
+s04q12b_r,NA,NA,housing_amenities/section_4,1,TRUE
+s04q13,NA,NA,housing_amenities/section_4,1,TRUE
+s04q14,NA,NA,housing_amenities/section_4,1,TRUE
+s04q15,Main construction material of outside walls,"1=Cement Bonded Bricks/Stones, 2=Mud Bonded Bricks/Stones, 3=Wood, 4=Bamboo\Leaves, 5=Unbaked Bricks, 6=Tin/Temporary Wall, 7=No Outside Walls, 8=Other Material",housing_amenities/section_4,1,TRUE
+s04q16,Foundation of dwelling,"1=Pillar bonded, 2=Cement bonded, 3=Mud Bonded, 4=Wooden Pillar, 5=Other",housing_amenities/section_4,1,TRUE
+s04q17,Main construction material of roof,"1=Straw/Hatch, 2=Earth/Mud, 3=Wood/Planks, 4=Galvanized Iron, 5=Temp. Galvanized Iron, 6=Concrete/Cement, 7=Tile Or Slate, 8=Tent Or Other Temporary, 9=Others",housing_amenities/section_4,1,TRUE
+s04q18,NA,NA,housing_amenities/section_4,1,TRUE
+s04q19,NA,NA,housing_amenities/section_4,1,TRUE
+s04q20_1,Source of drinking water: Piped Watersupply,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q20_2,Source of drinking water: Coveredwell,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q20_3,Source of drinking water: Hand Pump/Tubewell,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q20_4,Source of drinking water: Open Well,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q20_5,Source of drinking water: Springwater,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q20_6,Source of drinking water: River,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q20_7,Source of drinking water: Others,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q21,NA,NA,housing_amenities/section_4,1,TRUE
+s04q22,Type of toilet,"1=Household Flush (Connected to municipal Skewer), 2=Household Flush (Connected to Septic Tank), 3=Household Non-Flush, 4=Communal Latrine, 5=No Toilet",housing_amenities/section_4,1,TRUE
+s04q23,NA,NA,housing_amenities/section_4,1,TRUE
+s04q24a_1,facilities-Telephone in dwelling unit,"0=No, 1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q24a_2,facilities-Mobile Phone in dwelling unit,"0=No, 1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q24a_3,facilities-Cable TV in dwelling unit,"0=No, 1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q24a_4,facilities-Email/internet in dwelling unit,"0=No, 1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q24a_998,facilities-None,"0=No, 1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q24b,Amount paid for communication facilities on a typical month,"0=No, 1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q25,Type of fuel used for cooking,"1=Firewood, 2=Dung, 3=Leaves/Rubbish, 4=Straw/Thatch, 5=Cylinder Gas, 6=Kerosene, 7=Bio-gas, 8=Other",housing_amenities/section_4,1,TRUE
+s04q26,Type of stove used for cooking,"1=Open Fire place, 2=Mud, 3=SmokelessOven, 4=Kerosene Stove, 5=Gas  Stove, 6=Other",housing_amenities/section_4,1,TRUE
+s04q27a,Firewood used in the last 12 months,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q27b,Firewood collected in the last 12 months,"1=Yes, 2=No",housing_amenities/section_4,1,TRUE
+s04q27c,Connected to sanitary system for liquid and solid waste,"1=Yes, underground drains, 2=Yes, open drains, 3=Yes, soak pits, 4=Yes, other, 5=No",housing_amenities/section_4,1,TRUE
+s04q27d,Garbage disposal method,"1=Yes, underground drains, 2=Yes, open drains, 3=Yes, soak pits, 4=Yes, other, 5=No",housing_amenities/section_4,1,TRUE
+s04q27e,NA,NA,housing_amenities/section_4,1,FALSE
+s04q28a,NA,NA,housing_amenities/section_4,1,TRUE
+s04q28b_1,Nearest daily market by Foot,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q28b_2,Nearest daily market by Bicycle/Rickshaw,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q28b_3,Nearest daily market by Motor cycle/Tempo,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q28b_4,Nearest daily market by Car /Bus,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q28c,NA,NA,housing_amenities/section_4,1,FALSE
+s04q29a,NA,NA,housing_amenities/section_4,1,TRUE
+s04q29b_1,Bank by Foot,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q29b_2,Bank by Bicycle/Rickshaw,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q29b_3,Bank by Motor cycle/Tempo,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q29b_4,Bank by Car /Bus,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q29c,NA,NA,housing_amenities/section_4,1,FALSE
+s04q30a,NA,NA,housing_amenities/section_4,1,TRUE
+s04q30b_1,Black topped Road by Foot,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q30b_2,Black topped Road by Bicycle/Rickshaw,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q30b_3,Black topped Road by Motor cycle/Tempo,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q30b_4,Black topped Road by Car /Bus,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q30c,NA,NA,housing_amenities/section_4,1,FALSE
+s04q31a,NA,NA,housing_amenities/section_4,1,TRUE
+s04q31b_1,Motorable road by Foot,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q31b_2,Motorable road by Bicycle/Rickshaw,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q31b_3,Motorable road by Motor cycle/Tempo,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q31b_4,Motorable road by Car /Bus,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q31c,NA,NA,housing_amenities/section_4,1,FALSE
+s04q32a,NA,NA,housing_amenities/section_4,1,TRUE
+s04q32b_1,Primary School Foot,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q32b_2,Primary School Bicycle/Rickshaw,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q32b_3,Primary School Motor cycle/Tempo,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q32b_4,Primary School Car /Bus,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q32c,NA,NA,housing_amenities/section_4,1,FALSE
+s04q33a,NA,NA,housing_amenities/section_4,1,TRUE
+s04q33b_1,Secondary School By Foot,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q33b_2,Secondary School By Bicycle/Rickshaw,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q33b_3,Secondary School By cycle/Tempo,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q33b_4,Secondary School By Car /Bus,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q33c,NA,NA,housing_amenities/section_4,1,FALSE
+s04q34a,NA,NA,housing_amenities/section_4,1,TRUE
+s04q34b_1,Healthpost by Foot,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q34b_2,Healthpost by Bicycle/Rickshaw,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q34b_3,Healthpost by Motor cycle/Tempo,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q34b_4,Healthpost by Car /Bus,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes",housing_amenities/section_4,1,TRUE
+s04q34c,NA,NA,housing_amenities/section_4,1,FALSE
+s05q01,NA,NA,food_consumption/section_5a,1,TRUE
+s05q02,Unit of quantity,"1=Kilogram, 2=Gram, 3=Maund, 4=Liter, 5=Muri, 6=Pathi, 7=Manna, 8=Kuruwa, 9=Number/Pieces, 10=Dozen, 11=Quintal",food_consumption/section_5a,1,TRUE
+s05q03,NA,NA,food_consumption/section_5a,1,TRUE
+s05q04,NA,NA,food_consumption/section_5a,1,TRUE
+s05q05,Unit of quantity,"1=Kilogram, 2=Gram, 3=Maund, 4=Liter, 5=Muri, 6=Pathi, 7=Manna, 8=Kuruwa, 9=Number/Pieces, 10=Dozen, 11=Quintal",food_consumption/section_5a,1,TRUE
+s05q06,NA,NA,food_consumption/section_5a,1,TRUE
+s05q07,NA,NA,food_consumption/section_5a,1,TRUE
+s05q08,Unit of quantity,"1=Kilogram, 2=Gram, 3=Maund, 4=Liter, 5=Muri, 6=Pathi, 7=Manna, 8=Kuruwa, 9=Number/Pieces, 10=Dozen, 11=Quintal",food_consumption/section_5a,1,TRUE
+s05q09,NA,NA,food_consumption/section_5a,1,TRUE
+s05q10,Worried that family might not have enough to eat in any month in the past year,"1=Yes, 2=No",food_consumption/section_5b,1,TRUE
+s05q11a,Month in which this was of most concern,"1=Shrawan 2072(Jul/Aug 2015), 2=Bhadra 2072(Aug/Sep 2015), 3=Ashwin 2072(Sept/Oct 2015), 4=Kartik 2072(Oct/Nov 2015), 5=Mangshir 2072(Nov/Dec 2015), 6=Poush 2072(Dec/Jan 2016), 7=Magh 2072(Jan/Feb 2016), 8=Falgun 2072(Feb/Mar 2016), 9=Chitra 2072(Mar/Apr 2016), 10=Baishak 2073(Apr/May 2016), 11=Jestha 2073(May/Jun 2016), 12=Ashad 2073(Jun/Jul 2016), 13=Shrawan 2073(Jul/Aug 2016), 14=Bhadra 2073 (Aug/Sep 2016)",food_consumption/section_5b,1,TRUE
+s05q11b,Number of times worried that your family might not have enough to eat in that mo,"1=Never, 2=Rarely (once or twice in the month), 3=Sometimes (three to ten times in the month), 4=Often (more than ten times in the month)",food_consumption/section_5b,1,TRUE
+s05q12,Number of times hh member was not able to eat the kinds of foods preferred becau,"1=Never, 2=Rarely (once or twice in the month), 3=Sometimes (three to ten times in the month), 4=Often (more than ten times in the month)",food_consumption/section_5b,1,TRUE
+s05q13,Number of times hh member had to eat a limited variety of foods due to a lack of,"1=Never, 2=Rarely (once or twice in the month), 3=Sometimes (three to ten times in the month), 4=Often (more than ten times in the month)",food_consumption/section_5b,1,TRUE
+s05q14,Number of times hh member had to eat some foods that he/she really did not want,"1=Never, 2=Rarely (once or twice in the month), 3=Sometimes (three to ten times in the month), 4=Often (more than ten times in the month)",food_consumption/section_5b,1,TRUE
+s05q15,Number of times hh member had to eat a smaller meal than needed in that month,"1=Never, 2=Rarely (once or twice in the month), 3=Sometimes (three to ten times in the month), 4=Often (more than ten times in the month)",food_consumption/section_5b,1,TRUE
+s05q16,Number of times hh member had to eat fewer meals in a day because there was not,"1=Never, 2=Rarely (once or twice in the month), 3=Sometimes (three to ten times in the month), 4=Often (more than ten times in the month)",food_consumption/section_5b,1,TRUE
+s05q17,Number of times there was no food to eat of any kind in your household because o,"1=Never, 2=Rarely (once or twice in the month), 3=Sometimes (three to ten times in the month), 4=Often (more than ten times in the month)",food_consumption/section_5b,1,TRUE
+s05q18,Number of times hh member had to go to sleep at night hungry because there was n,"1=Never, 2=Rarely (once or twice in the month), 3=Sometimes (three to ten times in the month), 4=Often (more than ten times in the month)",food_consumption/section_5b,1,TRUE
+s05q19,Number of times hh member had to go a whole day and night without eating anythin,"1=Never, 2=Rarely (once or twice in the month), 3=Sometimes (three to ten times in the month), 4=Often (more than ten times in the month)",food_consumption/section_5b,1,TRUE
+s06q01a,NA,NA,nonfood_consumption/section_6a,1,TRUE
+s06q01b,NA,NA,nonfood_consumption/section_6a,1,TRUE
+s06q02,NA,NA,nonfood_consumption/section_6b,1,TRUE
+s06q03a,NA,NA,nonfood_consumption/section_6c,1,TRUE
+s06q03b,NA,NA,nonfood_consumption/section_6c,1,TRUE
+s06q04a,Self Owned Items,"1=Yes, 2=No",nonfood_consumption/section_6d,1,TRUE
+s06q04b,NA,NA,nonfood_consumption/section_6d,1,TRUE
+s06q04c,NA,NA,nonfood_consumption/section_6d,1,TRUE
+s07q01a,Job within 12 months,"1=Yes, 2=No",labor_jobs/section_7,1,TRUE
+s07q03_1,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_10,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_11,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_12,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_13,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_14,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_2,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_3,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_4,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_5,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_6,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_7,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_8,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03_9,NA,NA,labor_jobs/section_7,1,TRUE
+s07q03a,Working Place,"1=In Nepal, 2=Outside Nepal",labor_jobs/section_7,1,TRUE
+s07q03b,Out side nepal - Types of work,"1=Seasonal Worker, 2=Remittance Worker, 3=Other",labor_jobs/section_7,1,TRUE
+s07q03b_i,Reason behind return from foreign work,"1=contract period ended, 2=fired from job, 3=left job due to harassment/mistreatment, 4=family emergency, 998=other 998, 999=don't know",labor_jobs/section_7,1,TRUE
+s07q03b_ii,NA,NA,labor_jobs/section_7,1,FALSE
+s07q03b_iii,looking for foreign employment,"1=Yes, 2=No",labor_jobs/section_7,1,TRUE
+s07q04_1,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_10,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_11,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_12,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_13,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_14,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_2,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_3,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_4,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_5,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_6,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_7,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_8,NA,NA,labor_jobs/section_7,1,TRUE
+s07q04_9,NA,NA,labor_jobs/section_7,1,TRUE
+s07q05,NA,NA,labor_jobs/section_7,1,TRUE
+s07q06,Type of work,"1=Wage Employment in Agriculture, 2=Wage Employment Not in Agriculture, 3=Self Employment in Agriculture, 4=Self Employment Not in Agriculture",labor_jobs/section_7,1,TRUE
+s08q02,Sector of Employeement,"1=Agriculture, 2=Fishing, 3=Mining And Quarrying, 4=Manufacturing, 5=Electricity, Gas And Water Supply, 6=Construction, 7=Wholesale And Retail Trade/Repair Of Motor Vehicles, Motorcycles And Personal And Household Goods, 8=Hotels And Restaurants, 9=Transport, Storage And Communications, 10=Financial Intermediation, 11=Real Estate, Renting And Business Activities, 12=Public Administration And Defence, Compulsory Social Security, 13=Education, 14=Health And Social Work, 15=Other Community, Social And Personal Service Activities, 16=Private Households With Employed Persons, 17=Extra Territorial Organizations And Bodies, 18=Other",wage_jobs/section_8,1,TRUE
+s08q03,Reside elsewhere,"1=Yes, 2=No",wage_jobs/section_8,1,TRUE
+s08q04,Place of residence,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula, 76=Other, 81=India, 82=Bhutan, 83=China, 84=Bangladesh, 85=Hongkong, 86=Malayasia, 87=Japan, 88=Saudi Arabia, 89=Qatar, 90=United Arab Emirates, 91=United Kingdom, 92=United States, 93=South Korea, 94=Australia, 95=Israel, 96=Other, 97=Other",wage_jobs/section_8,1,TRUE
+s08q04a,NA,NA,wage_jobs/section_8,1,FALSE
+s08q05,Type of contract,"1=Daily Basis, 2=Long Term Basis, 3=Contract/Piece Rate",wage_jobs/section_8,1,TRUE
+s08q06,NA,NA,wage_jobs/section_8,1,TRUE
+s08q07a_1,In Kind value Paddy/Rice,"0=No, 1=Yes, first, 2=Yes, second, 3=Yes, third, 4=yes, fourth, 5=yes, fifth option",wage_jobs/section_8,1,TRUE
+s08q07a_2,In Kind value Wheat,"0=No, 1=Yes, first, 2=Yes, second, 3=Yes, third, 4=yes, fourth, 5=yes, fifth option",wage_jobs/section_8,1,TRUE
+s08q07a_3,In Kind value Maize,"0=No, 1=Yes, first, 2=Yes, second, 3=Yes, third, 4=yes, fourth, 5=yes, fifth option",wage_jobs/section_8,1,TRUE
+s08q07a_4,In Kind value Meals,"0=No, 1=Yes, first, 2=Yes, second, 3=Yes, third, 4=yes, fourth, 5=yes, fifth option",wage_jobs/section_8,1,TRUE
+s08q07a_5,In Kind value Clothing,"0=No, 1=Yes, first, 2=Yes, second, 3=Yes, third, 4=yes, fourth, 5=yes, fifth option",wage_jobs/section_8,1,TRUE
+s08q07a_6,In Kind value Other,"0=No, 1=Yes, first, 2=Yes, second, 3=Yes, third, 4=yes, fourth, 5=yes, fifth option",wage_jobs/section_8,1,TRUE
+s08q07a_7,Received nothing in kind,"0=No, 1=Yes, first, 2=Yes, second, 3=Yes, third, 4=yes, fourth, 5=yes, fifth option",wage_jobs/section_8,1,TRUE
+s08q07a_s,NA,NA,wage_jobs/section_8,1,FALSE
+s08q08,NA,NA,wage_jobs/section_8,1,TRUE
+s08q09,Sector which the job is related to,"1=Agriclture, 2=Non Agriculture",wage_jobs/section_8,1,TRUE
+s08q10,NA,NA,wage_jobs/section_8,1,TRUE
+s08q11a_1,Long term jobs  In Kind value Paddy/Rice,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",wage_jobs/section_8,1,TRUE
+s08q11a_2,Long term jobs  In Kind value Wheat,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",wage_jobs/section_8,1,TRUE
+s08q11a_3,Long term jobs  In Kind value Maize,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",wage_jobs/section_8,1,TRUE
+s08q11a_4,Long term jobs  In Kind value Meals,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",wage_jobs/section_8,1,TRUE
+s08q11a_5,Long term jobs  In Kind value Clothing,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",wage_jobs/section_8,1,TRUE
+s08q11a_6,Long term jobs  In Kind value Other,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",wage_jobs/section_8,1,TRUE
+s08q11a_7,Long term jobs Received nothing in kind,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes, 7=Yes",wage_jobs/section_8,1,TRUE
+s08q11b,NA,NA,wage_jobs/section_8,1,TRUE
+s08q12a,NA,NA,wage_jobs/section_8,1,TRUE
+s08q12b,NA,NA,wage_jobs/section_8,1,TRUE
+s08q12c,NA,NA,wage_jobs/section_8,1,TRUE
+s08q12d,NA,NA,wage_jobs/section_8,1,TRUE
+s08q12e,NA,NA,wage_jobs/section_8,1,TRUE
+s08q13,NA,NA,wage_jobs/section_8,1,TRUE
+s09q02a,Is Any change in previouse same Plot,"1=Yes, 2=No, 3=New Plot",land/section_9a1,1,TRUE
+s09q03a,Plot Area - Unit,"1=Ropani-Aana-Paisa, 2=Bigha-Kattha-Dhur",land/section_9a1,1,TRUE
+s09q03b_a,NA,NA,land/section_9a1,1,TRUE
+s09q03b_b,NA,NA,land/section_9a1,1,TRUE
+s09q03b_d,NA,NA,land/section_9a1,1,TRUE
+s09q03b_k,NA,NA,land/section_9a1,1,TRUE
+s09q03b_p,NA,NA,land/section_9a1,1,TRUE
+s09q03b_r,NA,NA,land/section_9a1,1,TRUE
+s09q04a,District where plot is located,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula, 76=Other",land/section_9a1,1,TRUE
+s09q04b,NA,NA,land/section_9a1,1,FALSE
+s09q05,Type of land,"1=Upland, 2=Lowland",land/section_9a1,1,TRUE
+s09q06,NA,NA,land/section_9a1,1,TRUE
+s09q07,Use of land in last wet season,"1=Cropped Oneself, 2=Sharecropped Out, 3=Fixed Rent Out, 4=Mortgaged Out, 5=Left Fallow, 6=Other",land/section_9a1,1,TRUE
+s09q08a,NA,NA,land/section_9a1,1,TRUE
+s09q08b,NA,NA,land/section_9a1,1,TRUE
+s09q09,Mode of irrigation in wet season,"1=Well, 2=Tubewell/Boring, 3=Canal, 4=Pond/Tank, 5=Rainfed, 6=Other",land/section_9a1,1,TRUE
+s09q10,Type of irrigation in wet season,"1=Seasonal, 2=Year-round",land/section_9a1,1,TRUE
+s09q11,Use of land in the last dry season,"1=Cropped Oneself, 2=Sharecropped Out, 3=Fixed Rent Out, 4=Mortgaged Out, 5=Left Fallow, 6=Other",land/section_9a1,1,TRUE
+s09q12a,NA,NA,land/section_9a1,1,TRUE
+s09q12b,NA,NA,land/section_9a1,1,TRUE
+s09q13,Mode of irrigation in dry season,"1=Well, 2=Tubewell/Boring, 3=Canal, 4=Pond/Tank, 5=Rainfed, 6=Other",land/section_9a1,1,TRUE
+s09q14,Type of irrigation in dry season,"1=Seasonal, 2=Year-round",land/section_9a1,1,TRUE
+s09q15,IS a share Plot,"1=Yes, 2=No",land/section_9a2,1,TRUE
+s09q16,NA,NA,land/section_9a2,1,FALSE
+s09q17,Contractual arrangement for the plot,"1=Sharecropped, 2=Rented-in, 3=Mortgaged-in, 4=Other",land/section_9a2,1,TRUE
+s09q18,NA,NA,land/section_9a2,1,TRUE
+s09q19__1,Paddy,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__10,Red Gram,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__11,Grass Pea,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__12,Lentil,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__13,Gram,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__14,Pea,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__15,Green Gram,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__16,Crop shared with landowner,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__17,Coarse Gram,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__18,Other Legumes,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__19,Potato,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__2,Wheat,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__20,Sweet Potato,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__21,Colocasia,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__22,Other Tubers,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__23,Mustard,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__24,Ground Nut,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__25,Linseed,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__26,Sesame,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__27,Other Oilseed,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__28,Sugarcane,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__29,Jute,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__3,Maize,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__30,Tobacco,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__31,Other Cash Crops,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__32,Chilies,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__33,Onions,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__34,Garlic,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__35,Ginger,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__36,Turmeric,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__37,Cardamom,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__38,Coriander Seed,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__39,Other Spices,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__4,Millet,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__40,Vegetables,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__41,Orange,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__42,Lemon,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__43,Lime,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__44,Sweet Lime,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__45,Other Citrus,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__46,Mango,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__47,Banana,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__48,Guava,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__49,Jack Fruit,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__5,Barley,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__50,Pineapple,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__51,Lichee,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__52,Pear,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__53,Apple,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__54,Plum,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__55,Papaya,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__56,Pomegranate,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__57,Other Fruit,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__58,Tea,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__59,Thatch,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__6,Buckwheat,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__60,Fodder Trees,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__61,Bamboo,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__62,Other Trees,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__7,Other Cereals,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__8,Soybeans,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q19__9,Black Gram,"0=No, 1=Yes",land/section_9a2,1,TRUE
+s09q20,NA,NA,land/section_9a2,1,TRUE
+s09q21a,Unit of measurement,"1=Ropani-Aana-Paisa, 2=Bigha-Kattha-Dhur",land/section_9a2,1,TRUE
+s09q21b_a,NA,NA,land/section_9a2,1,TRUE
+s09q21b_b,NA,NA,land/section_9a2,1,TRUE
+s09q21b_d,NA,NA,land/section_9a2,1,TRUE
+s09q21b_k,NA,NA,land/section_9a2,1,TRUE
+s09q21b_p,NA,NA,land/section_9a2,1,TRUE
+s09q21b_r,NA,NA,land/section_9a2,1,TRUE
+s09q21b_sqm,NA,NA,land/section_9a2,1,TRUE
+s09q22,Type of land,"1=Upland, 2=Lowland",land/section_9a2,1,TRUE
+s09q23,Irrigated or rainfed,"1=Irrigated, 2=Not Irrigated",land/section_9a2,1,TRUE
+s09q24,Seasonal or nyear round irrigation,"1=Seasonal, 2=Year-round",land/section_9a2,1,TRUE
+s09q25a,Primary mode of irrigation in dry season,"1=Well, 2=Tubewell/Boring, 3=Canal, 4=Pond/Tank, 5=Rainfed, 6=Other",land/section_9a2,1,TRUE
+s09q25b,Primary mode of irrigation in wet season,"1=Well, 2=Tubewell/Boring, 3=Canal, 4=Pond/Tank, 5=Rainfed, 6=Other",land/section_9a2,1,TRUE
+s09q26,Household sold or gave away any land over the last 12 months,"1=Sold Land, 2=Gave Away Land, 3=Sold and Gave Away Land, 4=None",land/section_9a3,1,TRUE
+s09q27a,Unit of Sold/Transfer Land,"1=Ropani-Aana-Paisa, 2=Bigha-Kattha-Dhur",land/section_9a3,1,TRUE
+s09q27b_a,NA,NA,land/section_9a3,1,TRUE
+s09q27b_b,NA,NA,land/section_9a3,1,TRUE
+s09q27b_d,NA,NA,land/section_9a3,1,TRUE
+s09q27b_k,NA,NA,land/section_9a3,1,TRUE
+s09q27b_p,NA,NA,land/section_9a3,1,TRUE
+s09q27b_r,NA,NA,land/section_9a3,1,TRUE
+s09q28a,NA,NA,land/section_9a3,1,TRUE
+s09q28b,NA,NA,land/section_9a3,1,TRUE
+s09q29,Did your household buy or receive any land over the last 12 months?,"1=Bought Land, 2=Recieved Land for Free, 3=Bought and received Land, 4=Neither Bought Nor Received Land",land/section_9a3,1,TRUE
+s09q30a,Unit of land,"1=Ropani-Aana-Paisa, 2=Bigha-Kattha-Dhur",land/section_9a3,1,TRUE
+s09q30b_a,NA,NA,land/section_9a3,1,TRUE
+s09q30b_b,NA,NA,land/section_9a3,1,TRUE
+s09q30b_d,NA,NA,land/section_9a3,1,TRUE
+s09q30b_k,NA,NA,land/section_9a3,1,TRUE
+s09q30b_p,NA,NA,land/section_9a3,1,TRUE
+s09q30b_r,NA,NA,land/section_9a3,1,TRUE
+s09q31a,NA,NA,land/section_9a3,1,TRUE
+s09q31b,NA,NA,land/section_9a3,1,TRUE
+s09q32_1,Paddy_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_10,Red Gram_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_11,Grass Pea_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_12,Lentil_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_13,Gram_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_14,Pea_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_15,Green Gram_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_16,Wet season crop,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_17,Coarse Gram_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_18,Other Legumes_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_19,Potato_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_2,Wheat_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_20,Sweet Potato_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_21,Colocasia_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_22,Other Tubers_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_23,Mustard_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_24,Ground Nut_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_25,Linseed_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_26,Sesame_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_27,Other Oilseed_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_28,Sugarcane_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_29,Jute_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_3,Maize_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_30,Tobacco_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_31,Other Cash Crops_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_32,Chilies_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_33,Onions_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_34,Garlic_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_35,Ginger_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_36,Turmeric_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_37,Cardamom_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_38,Coriander Seed_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_39,Other Spices_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_4,Millet_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_40,Vegetables_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_401,CUCUMBER_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_402,SQUASH_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_403,CAULIFLOWER_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_404,CABBAGE_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_405,GOURD_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_406,RADDISH_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_407,SPINACH_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_408,MUSHROOM_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_409,TOMATO_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_41,Orange_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_410,GOURD_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_411,LONG BEAN_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_412,BRINGAL_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_413,SPONGEGROUD/SNAKE GROUD/ ASH GROUD/WAX GOURD / SERPENT OR SNAKE GROUD_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_414,PUMPKIN_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_415,CARROT_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_416,JACK FRUIT_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_417,OKRA/LADY FINGER_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_418,TAMARIND / NEPALSESE HOGPLUME_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_419,BROCCOLI_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_42,Lemon_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_43,Lime_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_44,Sweet Lime_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_45,Other Citrus_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_46,Mango_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_47,Banana_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_48,Guava_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_49,Jack Fruit_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_5,Barley_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_50,Pineapple_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_51,Lichee_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_52,Pear_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_53,Apple_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_54,Plum_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_55,Papaya_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_56,Pomegranate_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_57,Other Fruit_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_58,Tea_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_59,Thatch_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_6,Buckwheat_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_60,Fodder Trees_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_61,Bamboo_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_62,Other Trees_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_7,Other Cereals_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_8,Soybeans_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_9,Black Gram_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q32_998,None_wet,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_1,Paddy_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_10,Red Gram_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_11,Grass Pea_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_12,Lentil_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_13,Gram_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_14,Pea_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_15,Green Gram_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_16,Dry season crop,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_17,Coarse Gram_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_18,Other Legumes_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_19,Potato_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_2,Wheat_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_20,Sweet Potato_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_21,Colocasia_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_22,Other Tubers_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_23,Mustard_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_24,Ground Nut_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_25,Linseed_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_26,Sesame_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_27,Other Oilseed_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_28,Sugarcane_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_29,Jute_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_3,Maize_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_30,Tobacco_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_31,Other Cash Crops_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_32,Chilies_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_33,Onions_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_34,Garlic_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_35,Ginger_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_36,Turmeric_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_37,Cardamom_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_38,Coriander Seed_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_39,Other Spices_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_4,Millet_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_40,Vegetables_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_401,CUCUMBER_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_402,SQUASH_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_403,CAULIFLOWER_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_404,CABBAGE_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_405,GOURD_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_406,RADDISH_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_407,SPINACH_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_408,MUSHROOM_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_409,TOMATO_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_41,Orange_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_410,GOURD_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_411,LONG BEAN_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_412,BRINGAL_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_413,SPONGEGROUD/SNAKE GROUD/ ASH GROUD/WAX GOURD / SERPENT OR SNAKE GROUD_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_414,PUMPKIN_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_415,CARROT_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_416,JACK FRUIT_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_417,OKRA/LADY FINGER_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_418,TAMARIND / NEPALSESE HOGPLUME_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_419,BROCCOLI_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_42,Lemon_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_43,Lime_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_44,Sweet Lime_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_45,Other Citrus_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_46,Mango_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_47,Banana_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_48,Guava_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_49,Jack Fruit_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_5,Barley_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_50,Pineapple_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_51,Lichee_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_52,Pear_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_53,Apple_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_54,Plum_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_55,Papaya_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_56,Pomegranate_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_57,Other Fruit_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_58,Tea_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_59,Thatch_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_6,Buckwheat_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_60,Fodder Trees_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_61,Bamboo_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_62,Other Trees_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_7,Other Cereals_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_8,Soybeans_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q33_9,Black Gram_dry,"0=No, 1=Yes",land/section_9a4,1,TRUE
+s09q34a,Land Area used for production in wet season,"1=Ropani-Aana-Paisa, 2=Bigha-Kattha-Dhur",crop_production/section_9b1,1,TRUE
+s09q34b_a,NA,NA,crop_production/section_9b1,1,TRUE
+s09q34b_b,NA,NA,crop_production/section_9b1,1,TRUE
+s09q34b_d,NA,NA,crop_production/section_9b1,1,TRUE
+s09q34b_k,NA,NA,crop_production/section_9b1,1,TRUE
+s09q34b_p,NA,NA,crop_production/section_9b1,1,TRUE
+s09q34b_r,NA,NA,crop_production/section_9b1,1,TRUE
+s09q35,Late sowing in wet season,"1=Yes, 2=No",crop_production/section_9b1,1,TRUE
+s09q36,NA,NA,crop_production/section_9b1,1,TRUE
+s09q37,Crops damaged in wet season,"1=Yes, 2=No",crop_production/section_9b1,1,TRUE
+s09q38,Extent of crops damage in wet season,"1=Low Damage, 2=Mild Damage, 3=Medium Damage, 4=High Damage, 5=Total Damage",crop_production/section_9b1,1,TRUE
+s09q39,NA,NA,crop_production/section_9b1,1,TRUE
+s09q40a,Use of  improved variety of seed   in Wet season,"1=Yes, 2=No",crop_production/section_9b1,1,TRUE
+s09q40b,Use of fertilizer in wet season,"1=Yes, 2=No",crop_production/section_9b1,1,TRUE
+s09q40c,Use of pesticide in wet season,"1=Yes, 2=No",crop_production/section_9b1,1,TRUE
+s09q41a,NA,NA,crop_production/section_9b1,1,TRUE
+s09q41b,Unit of harvest in wet season,"1=Kilogram, 2=Gram, 3=Maund, 4=Liter, 5=Muri, 6=Pathi, 7=Manna, 8=Kuruwa, 9=Number/Pieces, 10=Dozen, 11=Quintal",crop_production/section_9b1,1,TRUE
+s09q41c,NA,NA,crop_production/section_9b1,1,TRUE
+s09q41d,Unit of harvest harvest given to landlord in wet season,"1=Kilogram, 2=Gram, 3=Maund, 4=Liter, 5=Muri, 6=Pathi, 7=Manna, 8=Kuruwa, 9=Number/Pieces, 10=Dozen, 11=Quintal",crop_production/section_9b1,1,TRUE
+s09q41e,NA,NA,crop_production/section_9b1,1,TRUE
+s09q41f,Unit of sold harvest in wet season,"1=Kilogram, 2=Gram, 3=Maund, 4=Liter, 5=Muri, 6=Pathi, 7=Manna, 8=Kuruwa, 9=Number/Pieces, 10=Dozen, 11=Quintal",crop_production/section_9b1,1,TRUE
+s09q42,NA,NA,crop_production/section_9b1,1,TRUE
+s09q43a,Land Area to used in production in dry season,"1=Ropani-Aana-Paisa, 2=Bigha-Kattha-Dhur",crop_production/section_9b2,1,TRUE
+s09q43b_a,NA,NA,crop_production/section_9b2,1,TRUE
+s09q43b_b,NA,NA,crop_production/section_9b2,1,TRUE
+s09q43b_d,NA,NA,crop_production/section_9b2,1,TRUE
+s09q43b_k,NA,NA,crop_production/section_9b2,1,TRUE
+s09q43b_p,NA,NA,crop_production/section_9b2,1,TRUE
+s09q43b_r,NA,NA,crop_production/section_9b2,1,TRUE
+s09q44,Late sowing in dry season,"1=Yes, 2=No",crop_production/section_9b2,1,TRUE
+s09q45,NA,NA,crop_production/section_9b2,1,TRUE
+s09q46,Crops damaged in dry season,"1=Yes, 2=No",crop_production/section_9b2,1,TRUE
+s09q47,Extent of crops damage in dry season,"1=Low Damage, 2=Mild Damage, 3=Medium Damage, 4=High Damage, 5=Total Damage",crop_production/section_9b2,1,TRUE
+s09q48,NA,NA,crop_production/section_9b2,1,TRUE
+s09q49a,Use of  improved variety of seed   in dry season,"1=Yes, 2=No",crop_production/section_9b2,1,TRUE
+s09q49b,Use of fertilizer in dry season,"1=Yes, 2=No",crop_production/section_9b2,1,TRUE
+s09q49c,Use of pesticide in dry season,"1=Yes, 2=No",crop_production/section_9b2,1,TRUE
+s09q50a,NA,NA,crop_production/section_9b2,1,TRUE
+s09q50b,Unit of harvest in dry season,"1=Kilogram, 2=Gram, 3=Maund, 4=Liter, 5=Muri, 6=Pathi, 7=Manna, 8=Kuruwa, 9=Number/Pieces, 10=Dozen, 11=Quintal",crop_production/section_9b2,1,TRUE
+s09q50c,NA,NA,crop_production/section_9b2,1,TRUE
+s09q50d,Unit of harvest harvest given to landlord in dry season,"1=Kilogram, 2=Gram, 3=Maund, 4=Liter, 5=Muri, 6=Pathi, 7=Manna, 8=Kuruwa, 9=Number/Pieces, 10=Dozen, 11=Quintal",crop_production/section_9b2,1,TRUE
+s09q50e,NA,NA,crop_production/section_9b2,1,TRUE
+s09q50f,Unit of sold harvest in dry season,"1=Kilogram, 2=Gram, 3=Maund, 4=Liter, 5=Muri, 6=Pathi, 7=Manna, 8=Kuruwa, 9=Number/Pieces, 10=Dozen, 11=Quintal",crop_production/section_9b2,1,TRUE
+s09q51,NA,NA,crop_production/section_9b2,1,TRUE
+s09q52a,Paid For seeds or young plants during the past agriculture nyear (wet),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q52b,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q52c,Paid For any fertilizer over the past agriculture year(wet),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q52d,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q52e,Paid For any insecticide over the past agriculture year(wet),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q52f,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q52g,Equipment rented in the past agriculture year(wet),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q52h,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q52i,Labor hired over the past agriculture year(wet),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q52j,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q53a,Paid For seeds or young plants during the past agriculture nyear (dry),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q53b,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q53c,Paid For any fertilizer over the past agriculture year(dry),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q53d,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q53e,Paid For any insecticide over the past agriculture year(dry),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q53f,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q53g,Equipment rented in the past agriculture year(dry),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q53h,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q53i,Labor hired over the past agriculture year(dry),"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q53j,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q54a,Rented draft animals in the past agricultural year,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q54b,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q54c,Rented equipment such as tractor/thresher in the past agriculture year,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q54d,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q54e,Other source of rental income,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q54f,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q55a,"Exp made on Irrigation charges/maintenance of watercourse, etc this agriculture","1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q55b,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q55c,Exp made over the last 12 months on transportation of crops to market,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q55d,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q55e,"Exp made over the agriculture nyear on sacks, twine, or other containers and sto","1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q55f,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q55g,Exp made on storage or cold store over the past 12 months?,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q55h,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q55i,Exp made over the past 12 months on repair and maintenance of equipment?,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q55j,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q55k,Exp made on the past 12 months on improvements of agricultural land or buildings,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q55l,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q55m,Payment made to rent draft animals this agriculture year?,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q55n,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q55o,Rent equipment such as tractor/thresher,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q55p,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q55q,Rent anything else for your agricultural work over the past 12 months,"1=Yes, 2=No",ag_inputs/section_9c,1,TRUE
+s09q55r,NA,NA,ag_inputs/section_9c,1,TRUE
+s09q57a,NA,NA,livestock/section_9d,1,TRUE
+s09q57b,NA,NA,livestock/section_9d,1,TRUE
+s09q58,NA,NA,livestock/section_9d,1,TRUE
+s09q59a,NA,NA,livestock/section_9d,1,TRUE
+s09q59b,NA,NA,livestock/section_9d,1,FALSE
+s09q60a,NA,NA,livestock/section_9d,1,TRUE
+s09q60b,NA,NA,livestock/section_9d,1,TRUE
+s09q61a,NA,NA,livestock/section_9d,1,TRUE
+s09q61b,NA,NA,livestock/section_9d,1,TRUE
+s09q62a,NA,NA,livestock/section_9e,1,TRUE
+s09q62b,NA,NA,livestock/section_9e,1,TRUE
+s09q62c,NA,NA,livestock/section_9e,1,TRUE
+s09q62d,NA,NA,livestock/section_9e,1,TRUE
+s09q62e,NA,NA,livestock/section_9e,1,TRUE
+s09q62f,NA,NA,livestock/section_9e,1,TRUE
+s09q62g,NA,NA,livestock/section_9e,1,TRUE
+s09q62h,NA,NA,livestock/section_9e,1,TRUE
+s09q62i,NA,NA,livestock/section_9e,1,TRUE
+s09q63a,NA,NA,livestock/section_9e,1,TRUE
+s09q63b,NA,NA,livestock/section_9e,1,TRUE
+s09q63c,NA,NA,livestock/section_9e,1,TRUE
+s09q63d,NA,NA,livestock/section_9e,1,TRUE
+s09q64_1,NA,NA,livestock/section_9e,1,TRUE
+s09q64_10,NA,NA,livestock/section_9e,1,TRUE
+s09q64_11,NA,NA,livestock/section_9e,1,TRUE
+s09q64_12,NA,NA,livestock/section_9e,1,TRUE
+s09q64_2,NA,NA,livestock/section_9e,1,TRUE
+s09q64_3,NA,NA,livestock/section_9e,1,TRUE
+s09q64_4,NA,NA,livestock/section_9e,1,TRUE
+s09q64_5,NA,NA,livestock/section_9e,1,TRUE
+s09q64_6,NA,NA,livestock/section_9e,1,TRUE
+s09q64_7,NA,NA,livestock/section_9e,1,TRUE
+s09q64_8,NA,NA,livestock/section_9e,1,TRUE
+s09q64_9,NA,NA,livestock/section_9e,1,TRUE
+s09q64_998,NA,NA,livestock/section_9e,1,TRUE
+s09q65,NA,NA,ag_equipment/section_9f,1,TRUE
+s09q66,NA,NA,ag_equipment/section_9f,1,TRUE
+s09q67,NA,NA,ag_equipment/section_9f,1,TRUE
+s09q68,NA,NA,ag_equipment/section_9f,1,TRUE
+s09q69,NA,NA,ag_equipment/section_9f,1,TRUE
+s09q70,NA,NA,ag_equipment/section_9f,1,TRUE
+s10q02,Sector firm is involved in,"1=Agriculture, 2=Fishing, 3=Mining And Quarrying, 4=Manufacturing, 5=Electricity, Gas And Water Supply, 6=Construction, 7=Wholesale And Retail Trade/Repair Of Motor Vehicles, Motorcycles And Personal And Household Goods, 8=Hotels And Restaurants, 9=Transport, Storage And Communications, 10=Financial Intermediation, 11=Real Estate, Renting And Business Activities, 12=Public Administration And Defence, Compulsory Social Security, 13=Education, 14=Health And Social Work, 15=Other Community, Social And Personal Service Activities, 16=Private Households With Employed Persons, 17=Extra Territorial Organizations And Bodies, 18=Other",nonag_enterprise/section_10,1,TRUE
+s10q02a,Ownership Type,"1=Full, 2=Partial",nonag_enterprise/section_10,1,TRUE
+s10q02b,Share of Firms,"1=Less than 11%, 2=11% to 25%, 3=26% to 50%, 4=51%to 75%, 5=More than 75%",nonag_enterprise/section_10,1,TRUE
+s10q03,NA,NA,nonag_enterprise/section_10,1,TRUE
+s10q04,NA,NA,nonag_enterprise/section_10,1,TRUE
+s10q05,NA,NA,nonag_enterprise/section_10,1,TRUE
+s10q06,NA,NA,nonag_enterprise/section_10,1,TRUE
+s10q07,NA,NA,nonag_enterprise/section_10,1,TRUE
+s10q08,NA,NA,nonag_enterprise/section_10,1,TRUE
+s10q09,NA,NA,nonag_enterprise/section_10,1,TRUE
+s10q10,NA,NA,nonag_enterprise/section_10,1,TRUE
+s11q00d,Still Migrant,"1=Yes, 2=No",migration/section_11,1,TRUE
+s11q00e,Present living Place,"1=Deceased, 2=Back home, 3=No longer part of the household, 4=Don't know, 998=Other",migration/section_11,1,TRUE
+s11q00f,NA,NA,migration/section_11,1,FALSE
+s11q01a,Name was included in the housing roster,"1=Yes, 2=No",migration/section_11,1,TRUE
+s11q01b,NA,NA,migration/section_11,1,FALSE
+s11q01c,Gender,"1=Female, 2=Male, 3=Third Gender",migration/section_11,1,TRUE
+s11q01d,NA,NA,migration/section_11,1,TRUE
+s11q01e,Educational background,"1=Never Attended School, 2=Attended School in the Past (no longer attending), 3=Currently Attending School",migration/section_11,1,TRUE
+s11q01f,Grade currently attending,"0=Pre school, 1=Class 1, 2=Class 2, 3=Class 3, 4=Class 4, 5=Class 5, 6=Class 6, 7=Class 7, 8=Class 8, 9=Class 9, 10=Class 10, 11=SLC, 12=Intermediate/+2, 13=Bachelors, 14=Masters or Higher, 15=Professional Degree",migration/section_11,1,TRUE
+s11q01g,Higest Grade attended,"0=Pre school, 1=Class 1, 2=Class 2, 3=Class 3, 4=Class 4, 5=Class 5, 6=Class 6, 7=Class 7, 8=Class 8, 9=Class 9, 10=Class 10, 11=SLC, 12=Intermediate/+2, 13=Bachelors, 14=Masters or Higher, 15=Professional Degree, 16=Literate (Level less), 17=No Education",migration/section_11,1,TRUE
+s11q02,Migrate locally or overseas,"1=Locally (in Nepal), 2=Overseas",migration/section_11,1,TRUE
+s11q02a,Destination-local,"1=Taplejung, 2=Panchthar, 3=Ilam, 4=Jhapa, 5=Morang, 6=Sunsari, 7=Dhankuta, 8=Tehrathum, 9=Sankhuwasabha, 10=Bhojpur, 11=Solukhumbu, 12=Okhaldhunga, 13=Khotang, 14=Udayapur, 15=Saptari, 16=Siraha, 17=Dhanusha, 18=Mahottari, 19=Sarlahi, 20=Sindhuli, 21=Ramechhap, 22=Dolakha, 23=Sindhupalchok, 24=Kabhrepalanchok, 25=Lalitpur, 26=Bhaktapur, 27=Kathmandu, 28=Nuwakot, 29=Rasuwa, 30=Dhading, 31=Makwanpur, 32=Rautahat, 33=Bara, 34=Parsa, 35=Chitwan, 36=Gorkha, 37=Lamjung, 38=Tanahun, 39=Syangja, 40=Kaski, 41=Manang, 42=Mustang, 43=Myagdi, 44=Parbat, 45=Baglung, 46=Gulmi, 47=Palpa, 48=Nawalparasi, 49=Rupandehi, 50=Kapilbastu, 51=Arghakhanchi, 52=Pyuthan, 53=Rolpa, 54=Rukum, 55=Salyan, 56=Dang, 57=Banke, 58=Bardiya, 59=Surkhet, 60=Dailekh, 61=Jajarkot, 62=Dolpa, 63=Jumla, 64=Kalikot, 65=Mugu, 66=Humla, 67=Bajura, 68=Bajhang, 69=Achham, 70=Doti, 71=Kailali, 72=Kanchanpur, 73=Dadeldhura, 74=Baitadi, 75=Darchula",migration/section_11,1,TRUE
+s11q02b,Destination-overseas,"81=India, 82=Bhutan, 83=China, 84=Bangladesh, 85=Hongkong, 86=Malayasia, 87=Japan, 88=Saudi Arabia, 89=Qatar, 90=United Arab Emirates, 91=United Kingdom, 92=United States, 93=South Korea, 94=Australia, 95=Israel, 96=Other",migration/section_11,1,TRUE
+s11q02b_s,NA,NA,migration/section_11,1,FALSE
+s11q02d,NA,NA,migration/section_11,1,FALSE
+s11q02e,NA,NA,migration/section_11,1,TRUE
+s11q03,NA,NA,migration/section_11,1,TRUE
+s11q04a_1,Reason for moving-marriage,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_10,Reason for moving-natuiral distaster,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_11,Reason for moving-easier life style,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_2,Reason for moving-follow family,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_3,Reason for moving-other family reasons,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_4,Reason for moving-education,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_5,Reason for moving-training,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_6,Reason for moving-look for work,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_7,Reason for moving-start new job or business,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_8,Reason for moving-job transfer,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_9,Reason for moving-conflict in family,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_998,Reason for moving-other,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q04a_s,NA,NA,migration/section_11,1,FALSE
+s11q05a,Current activity at the new place,"1=Education, 2=Training, 3=Working, 4=Looking for Work, 5=Household Chores, 6=Other, 998=I dont know",migration/section_11,1,TRUE
+s11q05a_s,NA,NA,migration/section_11,1,FALSE
+s11q05b,Primary job type,"1=Agriculture, 2=Fishing, 3=Mining And Quarrying, 4=Manufacturing, 5=Electricity, Gas And Water Supply, 6=Construction, 7=Wholesale And Retail Trade/Repair Of Motor Vehicles, Motorcycles And Personal And Household Goods, 8=Hotels And Restaurants, 9=Transport, Storage And Communications, 10=Financial Intermediation, 11=Real Estate, Renting And Business Activities, 12=Public Administration And Defence, Compulsory Social Security, 13=Education, 14=Health And Social Work, 15=Other Community, Social And Personal Service Activities, 16=Private Households With Employed Persons, 17=Extra Territorial Organizations And Bodies, 18=Other",migration/section_11,1,TRUE
+s11q05c,NA,NA,migration/section_11,1,TRUE
+s11q06a,Secondary job,"1=Education, 2=Training, 3=Working, 4=Looking for Work, 5=Household Chores, 6=Other, 7=No Secondary Activity, 998=I dont know",migration/section_11,1,TRUE
+s11q06a_s,NA,NA,migration/section_11,1,FALSE
+s11q06b,secondary job type,"1=Agriculture, 2=Fishing, 3=Mining And Quarrying, 4=Manufacturing, 5=Electricity, Gas And Water Supply, 6=Construction, 7=Wholesale And Retail Trade/Repair Of Motor Vehicles, Motorcycles And Personal And Household Goods, 8=Hotels And Restaurants, 9=Transport, Storage And Communications, 10=Financial Intermediation, 11=Real Estate, Renting And Business Activities, 12=Public Administration And Defence, Compulsory Social Security, 13=Education, 14=Health And Social Work, 15=Other Community, Social And Personal Service Activities, 16=Private Households With Employed Persons, 17=Extra Territorial Organizations And Bodies, 18=Other",migration/section_11,1,TRUE
+s11q06c,NA,NA,migration/section_11,1,TRUE
+s11q07a,Remittance sent to household in the past 12 months,"1=Yes, 2=No",migration/section_11,1,TRUE
+s11q07b,NA,NA,migration/section_11,1,TRUE
+s11q07c,NA,NA,migration/section_11,1,TRUE
+s11q07d_1,Method of transfer-Money Transfer (IME/BANK),"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07d_2,Method of transfer-Friends/family members/neighbors,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07d_3,Method of transfer-Hundi,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07d_4,Method of transfer- Other,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_1,Remittance funds used for non durable consumption,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_10,Remittance funds used for purchase of dwelling,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_11,Remittance funds used for improving existing dwelling,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_12,Remittance funds used for marriage/funeral/ceremony,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_13,Remittance funds used for migration,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_14,Remittance funds used for repayment of debts/interest,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_15,Remittance funds used for others,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_2,Remittance funds used for consumer durables,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_3,Remittance funds used for education costs,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_4,Remittance funds used for health costs,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_5,Remittance funds used for purchase of business inputs,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_6,Remittance funds used for purchase of business equipment,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_7,Remittance funds used for purchase of land,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_8,Remittance funds used for purchase of livestock,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_9,Remittance funds used for purchase of other business farm use,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q07e_f,NA,NA,migration/section_11,1,FALSE
+s11q08a,Migration costs involved,"1=Yes, 2=No",migration/section_11,1,TRUE
+s11q08b,NA,NA,migration/section_11,1,TRUE
+s11q08c_1,Source of money used to cover migration cost: Loans,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q08c_2,Source of money used to cover migration cost:Savings,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q08c_3,Source of money used to cover migration cost:Sold Assets,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q08c_4,Source of money used to cover migration cost:Others,"0=No, 1=Yes",migration/section_11,1,TRUE
+s11q09,Migrant suffered severe illness in the past 12 months,"1=Yes, 2=No, 998=Dont Know",migration/section_11,1,TRUE
+s11q10a,NA,NA,migration/section_11,1,TRUE
+s11q10b,NA,NA,migration/section_11,1,TRUE
+s11q11,Migrant expected to move back,"1=Yes, 2=No, 3=Dont Know",migration/section_11,1,TRUE
+s12q03a,Borrower included in roster,"1=Yes, 2=No",borrowing_lending/section_12a,1,TRUE
+s12q03b,Reason for not having borrower in roster,"1=Deceased, 2=Out of Home, 3=Married, 998=Others",borrowing_lending/section_12a,1,TRUE
+s12q04,Source of loan,"1=Relatives or friends, 2=Agricultural, 3=Bank, 4=Commercial Bank, 5=Grameen Bank, 6=Other Financial Institutions, 7=NGOs/Charity organiztions, 8=Land owner/employer/ Shopkeeper, 9=Money lender, 10=Cooperative/Saving groups, 11=Others",borrowing_lending/section_12a,1,TRUE
+s12q05,NA,NA,borrowing_lending/section_12a,1,TRUE
+s12q06,NA,NA,borrowing_lending/section_12a,1,TRUE
+s12q07_1,Purpose of Loan-Non-durable consumption,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_10,Purpose of Loan-Purchase of new dwelling,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_11,Purpose of Loan-Repair or improvement of existing dwelling,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_12,Purpose of Loan-Marriage/funeral/ceremon,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_13,Purpose of Loan-For migration,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_14,Purpose of Loan-Repayment of other debts/interest,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_15,Purpose of Loan-Other personal use,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_2,Purpose of Loan-Consumer durables,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_3,Purpose of Loan-Education costs,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_4,Purpose of Loan-Health costs,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_5,Purpose of Loan-Purchase of business inputs,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_6,Purpose of Loan-Purchase of businessequipment,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_7,Purpose of Loan-Purchase of land.,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_8,Purpose of Loan-Purchase of livestock,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q07_9,Purpose of Loan-Other business or farm use,"0=No, 1=Yes",borrowing_lending/section_12a,1,TRUE
+s12q08,NA,NA,borrowing_lending/section_12a,1,TRUE
+s12q09,NA,NA,borrowing_lending/section_12a,1,TRUE
+s12q10_1,Collateral-Agricultural Land,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12a,1,TRUE
+s12q10_2,Collateral-Buildings or Other Property,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12a,1,TRUE
+s12q10_3,Collateral-Gold/Silver,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12a,1,TRUE
+s12q10_4,Collateral-Property Documents,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12a,1,TRUE
+s12q10_5,Collateral-Personal Guarantee,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12a,1,TRUE
+s12q10_6,Collateral-Other,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12a,1,TRUE
+s12q10_7,No Collateral,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12a,1,TRUE
+s12q11,NA,NA,borrowing_lending/section_12a,1,TRUE
+s12q14a,Lender exists in roster,"1=Yes, 2=No",borrowing_lending/section_12b,1,TRUE
+s12q14b,Reason for lender not to exist in roster,"1=Deceased, 2=Out of Home, 3=Married, 998=Others",borrowing_lending/section_12b,1,TRUE
+s12q15,Relationship with borrower,"1=Employee or Tenant Farmer, 2=Business Customer, 3=Other Business Associate, 4=Friend/Neighbour, 5=Relative, 6=Other",borrowing_lending/section_12b,1,TRUE
+s12q16,NA,NA,borrowing_lending/section_12b,1,TRUE
+s12q17,NA,NA,borrowing_lending/section_12b,1,TRUE
+s12q18,NA,NA,borrowing_lending/section_12b,1,TRUE
+s12q19,NA,NA,borrowing_lending/section_12b,1,TRUE
+s12q20_1,Collateral-Agricultural Land,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12b,1,TRUE
+s12q20_2,Collateral-Buildings or Other Property,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12b,1,TRUE
+s12q20_3,Collateral-Gold/Silver,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12b,1,TRUE
+s12q20_4,Collateral-Property Documents,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12b,1,TRUE
+s12q20_5,Collateral-Personal Guarantee,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12b,1,TRUE
+s12q20_6,Collateral-Other,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12b,1,TRUE
+s12q20_7,No Collateral,"0=No, 1=Yes, First, 2=Yes, Second, 3=Yes, Third, 4=Yes, Fourth, 5=Yes, Fifth, 6=Yes, Sixth",borrowing_lending/section_12b,1,TRUE
+s12q21,NA,NA,borrowing_lending/section_12b,1,TRUE
+s12q23,NA,NA,borrowing_lending/section_12c,1,TRUE
+s12q24,NA,NA,borrowing_lending/section_12c,1,TRUE
+s12q25,Have Pension,"1=Yes, 2=No",borrowing_lending/section_12d,1,TRUE
+s12q26,NA,NA,borrowing_lending/section_12d,1,TRUE
+s12q27,NA,NA,borrowing_lending/section_12d,1,TRUE
+s13q03,Caste of the recipient,"1=CHHETRI, 2=BRAHMAN (HILL), 3=MAGAR, 4=THARU, 5=TAMANG, 6=NEWAR, 7=MUSLIM, 8=KAMI, 9=YADAV, 10=RAI, 11=GURUNG, 12=DAMAIN/DHOLI, 13=LIMBU, 14=THAKURI, 15=SARKI, 16=TELI, 17=CHAMAR/HARIJAN/RAM, 18=KOIRI, 19=KURMI, 20=SANYASI, 21=DHANUK, 22=MUSAHAR, 23=DUSADH/PASWAN/PASI, 24=SHERPA, 25=SONAR, 26=KEWAT, 27=BRAHMAN (TARAI), 28=BANIYA, 29=GHARTI/BHUJEL, 30=MALLAH, 31=KALWAR, 32=KUMAL, 33=HAJAM/THAKUR, 34=KANU, 35=RAJBANSI, 36=SUNUWAR, 37=SUDHI, 38=LOHAR, 39=TATMA, 40=KHATWE, 41=DHOBI, 42=MAJHI, 43=NUNIYA, 44=KUMHAR, 45=DANUWAR, 46=CHEPANG/PRAJA, 47=HALUWAI, 48=RAJPUT, 49=KAYASTHA, 50=BADHAE, 51=MARWADI, 52=SANTHAL/SATAR, 53=DHAGAR/JHAGAR, 54=BANTAR, 55=BARAE, 56=KAHAR, 57=GANGAI, 58=LODH, 59=RAJBHAR, 60=THAMI, 61=DHIMAL, 62=BHOTE, 63=BING/BINDA, 64=BHEDIYAR/GADERI, 65=NURANG, 66=YAKKHA, 67=DARAI, 68=TAJPURIYA, 69=THAKALI, 70=CHIDIMAR, 71=PAHARI, 72=MALI, 73=BANGALI, 74=CHHANTAL, 75=DOM, 76=KAMAR, 77=BOTE, 78=BRAHMU/BARAMU, 79=GAINE, 80=JIREL, 81=ADIBASI/JANAJATI, 82=DURA, 83=CHURAUTE, 84=BADI, 85=MECHE, 86=LEPCHA, 87=HALKHOR, 88=PUNJABI/SIKH, 89=KISAN, 90=RAJI, 91=BYANGSI, 92=HAYU, 93=KOCHE, 94=DHUNIA, 95=WALUNG, 96=JAIN, 97=MUNDA, 98=RAUTE, 99=YEHLMO, 100=PATHARKATA/KUSWADIYA, 101=KUSUNDA, 102=OTHER DALIT, 103=OTHER CASTE, 104=DONT KNOW",transfers/section_13a,1,TRUE
+s13q04a,Donor exists in the family roster,"1=Yes, 2=No",transfers/section_13a,1,TRUE
+s13q04c, Reason behind not having name in family roster,"1=Deceased, 2=Out of Home, 3=Married, 998=Others",transfers/section_13a,1,TRUE
+s13q05, Relationship with the recipient,"1=Friends, 2=Relatives, 3=None, 4=Other",transfers/section_13a,1,TRUE
+s13q06d,District of recipient,"1=Achham, 2=Arghakhanchi, 3=Baglung, 4=Baitadi, 5=Bajhang, 6=Bajura, 7=Banke, 8=Bara, 9=Bardiya, 10=Bhaktapur, 11=Bhojpur, 12=Chitwan, 13=Dadeldhura, 14=Dailekh, 15=Dang, 16=Darchula, 17=Dhading, 18=Dhankuta, 19=Dhanusa, 20=Dolakha, 21=Dolpa, 22=Doti, 23=Gorkha, 24=Gulmi, 25=Humla, 26=Illam, 27=Jajarkot, 28=Jhapa, 29=Jumla, 30=Kailali, 31=Kalikot, 32=Kanchanpur, 33=Kapilbastu, 34=Kaski, 35=Kathmandu, 36=Kavrepalanchowk, 37=Khotang, 38=Lalitpur, 39=Lamjung, 40=Mahottari, 41=Makwanpur, 42=Manang, 43=Morang, 44=Mugu, 45=Mustang, 46=Myagdi, 47=Nawalparasi, 48=Nuwakot, 49=Okhaldhunga, 50=Palpa, 51=Panchthar, 52=Parbat, 53=Parsa, 54=Pyuthan, 55=Ramechhap, 56=Rasuwa, 57=Rautahat, 58=Rolpa, 59=Rukum, 60=Rupandehi, 61=Salyan, 62=Sankhuwasabha, 63=Saptari, 64=Sarlahi, 65=Sindhuli, 66=Sindhupalchowk, 67=Siraha, 68=Solukhumbhu, 69=Sunsari, 70=Surkhet, 71=Syangja, 72=Tanahu, 73=Taplejung, 74=Terhathum, 75=Udayapur",transfers/section_13a,1,TRUE
+s13q06d_eng,NA,NA,transfers/section_13a,1,FALSE
+s13q07a,NA,NA,transfers/section_13a,1,TRUE
+s13q07b,NA,NA,transfers/section_13a,1,TRUE
+s13q08_s,NA,NA,transfers/section_13a,1,FALSE
+s13q08a_1, Purpose of transfer: Non-durable consumption,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_10, Purpose of transfer: Purchase of new Dwelling,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_11, Purpose of transfer: Repair or improvement of existing dwelling,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_12, Purpose of transfer: Marriage/funeral/ceremony,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_13, Purpose of transfer: For migration,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_14, Purpose of transfer: Repayment of other debts/interest,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_15, Purpose of transfer: Other personal use,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_2, Purpose of transfer: Consumer durables,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_3, Purpose of transfer: Education costs,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_4, Purpose of transfer: Health costs,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_5, Purpose of transfer: Purchase of business inputs,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_6, Purpose of transfer: Purchase of business equipment,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_7, Purpose of transfer: Purchase of land,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_8, Purpose of transfer: Purchase of livestock,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q08a_9, Purpose of transfer: Other business or farm use,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13a,1,TRUE
+s13q12,Caste of donor,"1=CHHETRI, 2=BRAHMAN (HILL), 3=MAGAR, 4=THARU, 5=TAMANG, 6=NEWAR, 7=MUSLIM, 8=KAMI, 9=YADAV, 10=RAI, 11=GURUNG, 12=DAMAIN/DHOLI, 13=LIMBU, 14=THAKURI, 15=SARKI, 16=TELI, 17=CHAMAR/HARIJAN/RAM, 18=KOIRI, 19=KURMI, 20=SANYASI, 21=DHANUK, 22=MUSAHAR, 23=DUSADH/PASWAN/PASI, 24=SHERPA, 25=SONAR, 26=KEWAT, 27=BRAHMAN (TARAI), 28=BANIYA, 29=GHARTI/BHUJEL, 30=MALLAH, 31=KALWAR, 32=KUMAL, 33=HAJAM/THAKUR, 34=KANU, 35=RAJBANSI, 36=SUNUWAR, 37=SUDHI, 38=LOHAR, 39=TATMA, 40=KHATWE, 41=DHOBI, 42=MAJHI, 43=NUNIYA, 44=KUMHAR, 45=DANUWAR, 46=CHEPANG/PRAJA, 47=HALUWAI, 48=RAJPUT, 49=KAYASTHA, 50=BADHAE, 51=MARWADI, 52=SANTHAL/SATAR, 53=DHAGAR/JHAGAR, 54=BANTAR, 55=BARAE, 56=KAHAR, 57=GANGAI, 58=LODH, 59=RAJBHAR, 60=THAMI, 61=DHIMAL, 62=BHOTE, 63=BING/BINDA, 64=BHEDIYAR/GADERI, 65=NURANG, 66=YAKKHA, 67=DARAI, 68=TAJPURIYA, 69=THAKALI, 70=CHIDIMAR, 71=PAHARI, 72=MALI, 73=BANGALI, 74=CHHANTAL, 75=DOM, 76=KAMAR, 77=BOTE, 78=BRAHMU/BARAMU, 79=GAINE, 80=JIREL, 81=ADIBASI/JANAJATI, 82=DURA, 83=CHURAUTE, 84=BADI, 85=MECHE, 86=LEPCHA, 87=HALKHOR, 88=PUNJABI/SIKH, 89=KISAN, 90=RAJI, 91=BYANGSI, 92=HAYU, 93=KOCHE, 94=DHUNIA, 95=WALUNG, 96=JAIN, 97=MUNDA, 98=RAUTE, 99=YEHLMO, 100=PATHARKATA/KUSWADIYA, 101=KUSUNDA, 102=OTHER DALIT, 103=OTHER CASTE, 104=DONT KNOW",transfers/section_13b,1,TRUE
+s13q13a,Recipient exists in the family roster,"1=Yes, 2=No",transfers/section_13b,1,TRUE
+s13q13b,NA,NA,transfers/section_13b,1,TRUE
+s13q13c,Reason behind not having the name in the family listing,"1=Deceased, 2=Out of Home, 3=Married, 998=Others",transfers/section_13b,1,TRUE
+s13q14,Relationship with donor,"1=Friends, 2=Relatives, 3=None, 4=Other",transfers/section_13b,1,TRUE
+s13q15d,District of donor,"1=Achham, 2=Arghakhanchi, 3=Baglung, 4=Baitadi, 5=Bajhang, 6=Bajura, 7=Banke, 8=Bara, 9=Bardiya, 10=Bhaktapur, 11=Bhojpur, 12=Chitwan, 13=Dadeldhura, 14=Dailekh, 15=Dang, 16=Darchula, 17=Dhading, 18=Dhankuta, 19=Dhanusa, 20=Dolakha, 21=Dolpa, 22=Doti, 23=Gorkha, 24=Gulmi, 25=Humla, 26=Illam, 27=Jajarkot, 28=Jhapa, 29=Jumla, 30=Kailali, 31=Kalikot, 32=Kanchanpur, 33=Kapilbastu, 34=Kaski, 35=Kathmandu, 36=Kavrepalanchowk, 37=Khotang, 38=Lalitpur, 39=Lamjung, 40=Mahottari, 41=Makwanpur, 42=Manang, 43=Morang, 44=Mugu, 45=Mustang, 46=Myagdi, 47=Nawalparasi, 48=Nuwakot, 49=Okhaldhunga, 50=Palpa, 51=Panchthar, 52=Parbat, 53=Parsa, 54=Pyuthan, 55=Ramechhap, 56=Rasuwa, 57=Rautahat, 58=Rolpa, 59=Rukum, 60=Rupandehi, 61=Salyan, 62=Sankhuwasabha, 63=Saptari, 64=Sarlahi, 65=Sindhuli, 66=Sindhupalchowk, 67=Siraha, 68=Solukhumbhu, 69=Sunsari, 70=Surkhet, 71=Syangja, 72=Tanahu, 73=Taplejung, 74=Terhathum, 75=Udayapur",transfers/section_13b,1,TRUE
+s13q16a,NA,NA,transfers/section_13b,1,TRUE
+s13q16b,NA,NA,transfers/section_13b,1,TRUE
+s13q17a_1,Purpose of transfer: Non-durable consumption,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_10,Purpose of transfer:Purchase of new Dwelling,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_11,Purpose of transfer:improvement of existing dwelling,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_12,Purpose of transfer:Marriage/funeral/ceremony,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_13,Purpose of transfer:For migration,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_14,Purpose of transfer:Repayment of other debts/interest,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_15,Purpose of transfer:Other personal use,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_2,Purpose of transfer:Consumer durables,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_3,Purpose of transfer:Education costs,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_4,Purpose of transfer:Health costs,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_5,Purpose of transfer:Purchase of business inputs,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_6,Purpose of transfer:Purchase of business equipment,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_7,Purpose of transfer:Purchase of land,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_8,Purpose of transfer:Purchase of livestock,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q17a_9,Purpose of transfer:Other business or farm use,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13b,1,TRUE
+s13q18b,NA,NA,transfers/section_13c,1,FALSE
+s13q19a,NA,NA,transfers/section_13c,1,TRUE
+s13q19b,Item type received in kind,"1=Yes, 2=No",transfers/section_13c,1,TRUE
+s13q19c,NA,NA,transfers/section_13c,1,TRUE
+s13q20,NA,NA,transfers/section_13c,1,TRUE
+s13q21a_1,Purpose of assistance: Non-durable consumption,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_10,Purpose of assistance:Purchase of new Dwelling,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_11,Purpose of assistance: Improvement of existing dwelling,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_12,Purpose of assistance: Marriage/funeral/ceremony,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_13,Purpose of assistance: For migration,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_14,Purpose of assistance: Repayment of other debts/interest,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_15,Other personal use,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_2,Purpose of assistance: Consumer durables,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_3,Purpose of assistance: Education costs,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_4,Purpose of assistance: Health costs,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_5,Purpose of assistance: Purchase of business inputs,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_6,Purpose of assistance: Purchase of business equipment,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_7,Purpose of assistance: Purchase of land,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_8,Purpose of assistance: Purchase of livestock,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q21a_9,Purpose of assistance: Other business or farm use,"0=No, 1=Yes, 2=Yes, 3=Yes, 4=Yes, 5=Yes, 6=Yes",transfers/section_13c,1,TRUE
+s13q22,Donation made in the past 12 months to any religious or community organization,"1=Yes, 2=No",transfers/section_13d,1,TRUE
+s13q23,NA,NA,transfers/section_13d,1,TRUE
+s13q24a,Any household member part of a community group,"1=Yes, 2=No",transfers/section_13d,1,TRUE
+s13q24b_1,NA,NA,transfers/section_13d,1,TRUE
+s13q24b_2,NA,NA,transfers/section_13d,1,TRUE
+s13q24b_3,NA,NA,transfers/section_13d,1,TRUE
+s13q24b_4,NA,NA,transfers/section_13d,1,TRUE
+s13q24b_5,NA,NA,transfers/section_13d,1,TRUE
+s13q24b_6,NA,NA,transfers/section_13d,1,TRUE
+s13q24b_7,NA,NA,transfers/section_13d,1,TRUE
+s13q24b_998,NA,NA,transfers/section_13d,1,TRUE
+s13q24c,NA,NA,transfers/section_13d,1,FALSE
+s14q02,Household members received or participated in the program in the past 12 months,"1=Yes, 2=No",social_protection/section_14a,1,TRUE
+s14q03_0b,NA,NA,social_protection/section_14a,1,TRUE
+s14q03_1b,NA,NA,social_protection/section_14a,1,TRUE
+s14q03_2b,NA,NA,social_protection/section_14a,1,TRUE
+s14q04a,NA,NA,social_protection/section_14a,1,TRUE
+s14q04b,NA,NA,social_protection/section_14a,1,TRUE
+s14q04c,NA,NA,social_protection/section_14a,1,TRUE
+s14q04d_1,Assistance received in Shrawan 2072(Jul/Aug 2015),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_10,Assistance received in Baishak 2073(Apr/May 2016),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_11,Assistance received in Jestha 2073(May/Jun 2016),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_12,Assistance received in Ashad 2073(Jun/Jul 2016),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_13,Assistance received in Shrawan 2073(Jul/Aug 2016),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_14,Assistance received in Bhadra 2073 (Aug/Sep 2016),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_2,Assistance received in Bhadra 2072(Aug/Sep 2015),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_3,Assistance received in Ashwin 2072(Sept/Oct 2015),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_4,Assistance received in Kartik 2072(Oct/Nov 2015),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_5,Assistance received in Mangshir 2072(Nov/Dec 2015),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_6,Assistance received in Poush 2072(Dec/Jan 2016),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_7,Assistance received in Magh 2072(Jan/Feb 2016),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_8,Assistance received in Falgun 2072(Feb/Mar 2016),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q04d_9,Assistance received in Chitra 2072(Mar/Apr 2016),"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q05_s,NA,NA,social_protection/section_14a,1,FALSE
+s14q05a_1,Assisted by community based organization in enrolling for this program,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q05a_2,Assisted by social mobilizer in enrolling for this program,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q05a_3,Assisted by VDC representative,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q05a_4,Assisted by other govt official in enrolling for this program,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q05a_5,Assisted by other beneficiaries of this program om enrolling for this program,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q05a_6,Assisted by family/friends in enrolling for this program,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q05a_7,Assisted by others in enrolling for this program,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q05a_8,Assisted by noone,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q06_s,NA,NA,social_protection/section_14a,1,FALSE
+s14q06a,Faced difficulty enrolling in this program,"1=Yes, 2=No",social_protection/section_14a,1,TRUE
+s14q06b_1,Difficulty reaching the VDC office,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q06b_2,Did not have required documentation,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q06b_3,Did not get adequate support from VDC office,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q06b_4,Others,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q06c,Faced difficulty accessing the program,"1=Yes, 2=No",social_protection/section_14a,1,TRUE
+s14q06e_1,Irregularity of Payment,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q06e_2,Lack of Information,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q06e_3,Difficulty to reach VDC,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q06e_4,Others,"0=No, 1=Yes",social_protection/section_14a,1,TRUE
+s14q06e_s,NA,NA,social_protection/section_14a,1,FALSE
+s14q07,Filed grievance,"1=Yes, 2=No",social_protection/section_14a,1,TRUE
+s14q08a,NA,NA,social_protection/section_14a,1,FALSE
+s14q08b,NA,NA,social_protection/section_14a,1,FALSE
+s14q08c,NA,NA,social_protection/section_14a,1,FALSE
+s14q09a,Aware about receiving cash transfers from the bank,"1=Yes, 2=No",social_protection/section_14a,1,TRUE
+s14q09b,Any househodl member received transfers through the bank,"1=Yes, 2=No",social_protection/section_14a,1,TRUE
+s14q09c,Does he/she have a bank account?,"1=Yes, 2=No",social_protection/section_14a,1,TRUE
+s14q09d,Difficulty faced receiving transfers from the bank,"1=Difficulty opening bank account, 2=Bank is far from where I live, 3=Other Specify",social_protection/section_14a,1,TRUE
+s14q09g,Has bank transfers of this program made things easier for the recipient?,"1=Yes, 2=No",social_protection/section_14a,1,TRUE
+s14q09h,Kind of convenience,"1=I can take out money when I need it, 2=Even if I am not able to go to the VDC during distribution, the money still gets collected in the account, 3=My saving has increased, 4=Other Specify",social_protection/section_14a,1,TRUE
+s14q09h_s,NA,NA,social_protection/section_14a,1,FALSE
+s14q09i,NA,NA,social_protection/section_14a,1,FALSE
+s14q11,Household members who participated in the program in the past 12 months,"0=Yes, 1=Yes, 2=No",social_protection/section_14b,1,TRUE
+s14q12_0b,NA,NA,social_protection/section_14b,1,TRUE
+s14q12_1b,NA,NA,social_protection/section_14b,1,TRUE
+s14q12_2b,NA,NA,social_protection/section_14b,1,TRUE
+s14q12_3b,NA,NA,social_protection/section_14b,1,TRUE
+s14q12_4b,NA,NA,social_protection/section_14b,1,TRUE
+s14q13a,NA,NA,social_protection/section_14b,1,FALSE
+s14q13a_eng,NA,NA,social_protection/section_14b,1,FALSE
+s14q13a_i,NA,NA,social_protection/section_14b,1,TRUE
+s14q13a_q,NA,NA,social_protection/section_14b,1,TRUE
+s14q13b,NA,NA,social_protection/section_14b,1,FALSE
+s14q13b_eng,NA,NA,social_protection/section_14b,1,FALSE
+s14q13b_i,NA,NA,social_protection/section_14b,1,TRUE
+s14q13b_q,NA,NA,social_protection/section_14b,1,TRUE
+s14q14, Difficulty accessing the program,"0=Yes, 1=Yes, 2=No",social_protection/section_14b,1,TRUE
+s14q15a_1, Kind of difficulty:Difficulty Enrolling,"0=Yes, 1=Yes, 2=No",social_protection/section_14b,1,TRUE
+s14q15a_2, Kind of difficulty:Irregularity in Payment,"0=Yes, 1=Yes, 2=No",social_protection/section_14b,1,TRUE
+s14q15a_3, Kind of difficulty:Lack of Information,"0=Yes, 1=Yes, 2=No",social_protection/section_14b,1,TRUE
+s14q15a_4, Kind of difficulty:Poor Reach in Ward/VDC,"0=Yes, 1=Yes, 2=No",social_protection/section_14b,1,TRUE
+s14q15a_5, Kind of difficulty: Other,"0=Yes, 1=Yes, 2=No",social_protection/section_14b,1,TRUE
+s14q17,Did you or any household members receive or participate in the past 12 months?,"1=Yes, 2=No",social_protection/section_14c,1,TRUE
+s14q18_1b,NA,NA,social_protection/section_14c,1,TRUE
+s14q18_2b,NA,NA,social_protection/section_14c,1,TRUE
+s14q18_3b,NA,NA,social_protection/section_14c,1,TRUE
+s14q19,NA,NA,social_protection/section_14c,1,TRUE
+s14q20,Paid in wages or kind,"1=Wage, 2=Kind, 3=Other",social_protection/section_14c,1,TRUE
+s14q21a,NA,NA,social_protection/section_14c,1,TRUE
+s14q21b,NA,NA,social_protection/section_14c,1,TRUE
+s14q22a,NA,NA,social_protection/section_14c,1,TRUE
+s14q22b,NA,NA,social_protection/section_14c,1,TRUE
+s14q22c,NA,NA,social_protection/section_14c,1,TRUE
+s14q23,Difficulty experienced in accessing the program,"1=Yes, 2=No",social_protection/section_14c,1,TRUE
+s14q24a_1,Difficulty Enrolling,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",social_protection/section_14c,1,TRUE
+s14q24a_2,Irregularity in Payment,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",social_protection/section_14c,1,TRUE
+s14q24a_3,Work was difficult,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",social_protection/section_14c,1,TRUE
+s14q24a_4,Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",social_protection/section_14c,1,TRUE
+s15q02,Decrease or loss of income or assets,"1=Income loss, 2=Assets loss, 3=Both income and assets loss, 4=No impact",shocks_coping/section_15a,1,TRUE
+s15q03,NA,NA,shocks_coping/section_15a,1,TRUE
+s15q04,NA,NA,shocks_coping/section_15a,1,TRUE
+s15q05a,"Spend savings, borrow money, sell or pawn properties","1=Yes, 2=No",shocks_coping/section_15a,1,TRUE
+s15q06_s,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q06a_1,Spent Savings,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_10,Borrowed from moneylenders/sharks,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_11,Borrowed from friends/family,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_12,"Borrowed  from a cooperative, savings group","0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_2,Pawned the house or land,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_3,Pawned farm animals/equipment,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_4,Pawned other properties,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_5,Sold the house or land,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_6,Sold farm animals/equiment,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_7,Sold other properties,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_8,Borrowed from a private bank,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_9,Borrowed from a government bank,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06a_998,Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_1,Spent Savings,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_10,Borrowed from moneylenders/sharks,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_11,Borrowed from friends/family,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_12,"Borrowed  from a cooperative, savings group","0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_2,Pawned the house or land,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_3,Pawned farm animals/equipment,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_4,Pawned other properties,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_5,Sold the house or land,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_6,Sold farm animals/equiment,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_7,Sold other properties,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_8,Borrowed from a private bank,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_9,Borrowed from a government bank,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q06b_998,Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q07_s,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q07a,Reduce consumption or expenditure on foods,"1=Yes, 2=No",shocks_coping/section_15a,1,TRUE
+s15q07b_1,Cut back on food consumtpion,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q07b_2,Shifted to cheaper food items,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q07b_3,Relied more on homegrown produce,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q07b_998,Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q08_s,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q08a,Reduce consumption or expenditures on non-food items,"1=Yes, 2=No",shocks_coping/section_15a,1,TRUE
+s15q08b_1,Cut back on non-food consumption,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q08b_2,Shifted to cheaper non-food products/services,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q08b_3,Stopped/postponed consumping products/services,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q08b_998,Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q09_s,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q09a,Education of children affected by the shock,"1=Yes, 2=No",shocks_coping/section_15a,1,TRUE
+s15q09b_1,Transferred children from private to public schools,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q09b_2,Withdrew/postponed admission of children to school,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q09b_3,Children in school skipped classes,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q09b_4,Shifted to cheaper school supplies,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q09b_5,Reduced allowances for children in school,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q09b_6,Children's school performance was affected,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q09b_7,Children had to repeat grade,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q09b_998,Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q10a,Received assistance or help from others,"1=Yes, 2=No",shocks_coping/section_15a,1,TRUE
+s15q10b_1,Source of assistance: Relatives,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q10b_2,Source of assistance: Friends/neighbors,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q10b_3,Source of assistance: Government,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q10b_4,Source of assistance: NGO/Church,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q10b_5,Source of assistance: Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q10b_6,INGOs,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q10c_1,Type of assistance: Cash,"0=No, 1=Yes",shocks_coping/section_15a,1,TRUE
+s15q10c_2,Type of assistance: In Kind (Food),"0=No, 1=Yes",shocks_coping/section_15a,1,TRUE
+s15q10c_3,Type of assistance: In Kind (Non Food),"0=No, 1=Yes",shocks_coping/section_15a,1,TRUE
+s15q10d,NA,NA,shocks_coping/section_15a,1,TRUE
+s15q10e,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q10f_1,NA,NA,shocks_coping/section_15a,1,TRUE
+s15q10f_2,NA,NA,shocks_coping/section_15a,1,TRUE
+s15q10f_3,NA,NA,shocks_coping/section_15a,1,TRUE
+s15q10f_998,NA,NA,shocks_coping/section_15a,1,TRUE
+s15q10f_s,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q11_s,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q11a,"Look for work, got employed or worked more","1=Yes, 2=No",shocks_coping/section_15a,1,TRUE
+s15q11b_1,Head worked more than 1 job,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q11b_2,Head seeking additional job,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q11b_3,Spouse went to work,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q11b_4,Children 5-17 went to work,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q11b_5,Children 18+ went to work,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q11b_6,Member 60+ went to work,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q11b_998,Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q11c,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q12_s,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q12a,Changes in your living arrangements or the number of household members,"1=Yes, 2=No",shocks_coping/section_15a,1,TRUE
+s15q12b_1,Moved in with relatives,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q12b_2,Relatives moved in,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q12b_3,Relatives moved away in search of work,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q12b_4,Postponed childbearing,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q12b_998,Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth",shocks_coping/section_15a,1,TRUE
+s15q12c,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q13a,First of the two main strategies adopted.,"0=None, 1=Spent savings, 2=Pawned the house or land, 3=Pawned farm animals/equipment, 4=Pawned other properties, 5=Sold the house or land, 6=Sold farm animals/equiment, 7=Sold other properties, 8=Borrowed from a private bank, 9=Borrowed from a government bank, 10=Borrowed from moneylenders/sharks, 11=Borrowed from friends, 12=Cut back on food consumtpion, 13=Shifted to cheaper food items, 14=Relied more on homegrown produce, 15=Cut back on consumtpion, 16=Shifted to cheaper non-food products/services, 17=Stopped/postponed consumping products/services, 18=Transferred children from private to public schools, 19=Withdrew/postponed admission of children to school, 20=Children in school skipped classes, 21=Shifted to cheaper school supplies, 22=Reduced allowances for children in school, 23=Children's school performance was affected, 24=Children had repeat grade, 25=Less use of Health Item, 26=Received financial support from relatives, 27=Received other material support from relatives, 28=Received financial support from friends/neighbors, 29=Received other material support form friends/neighbors, 30=Received assistance from government, 31=Received assistance from NGO/Church, 32=Head worked more than 1 job, 33=Head seeking additional job, 34=Spouse went to work, 35=Children 5-17 went to work children, 36=18+ went to work, 37=Member 60 above went to work, 38=Moved in with relatives, 39=Relatives moved in, 40=Relatives moved away in search of work, 41=Postponed child bearing, 42=Loan from relative, 43=Loan from cooperative",shocks_coping/section_15a,1,TRUE
+s15q13b,Second of the two main strategies adopted.,"0=None, 1=Spent savings, 2=Pawned the house or land, 3=Pawned farm animals/equipment, 4=Pawned other properties, 5=Sold the house or land, 6=Sold farm animals/equiment, 7=Sold other properties, 8=Borrowed from a private bank, 9=Borrowed from a government bank, 10=Borrowed from moneylenders/sharks, 11=Borrowed from friends, 12=Cut back on food consumtpion, 13=Shifted to cheaper food items, 14=Relied more on homegrown produce, 15=Cut back on consumtpion, 16=Shifted to cheaper non-food products/services, 17=Stopped/postponed consumping products/services, 18=Transferred children from private to public schools, 19=Withdrew/postponed admission of children to school, 20=Children in school skipped classes, 21=Shifted to cheaper school supplies, 22=Reduced allowances for children in school, 23=Children's school performance was affected, 24=Children had repeat grade, 25=Less use of Health Item, 26=Received financial support from relatives, 27=Received other material support from relatives, 28=Received financial support from friends/neighbors, 29=Received other material support form friends/neighbors, 30=Received assistance from government, 31=Received assistance from NGO/Church, 32=Head worked more than 1 job, 33=Head seeking additional job, 34=Spouse went to work, 35=Children 5-17 went to work children, 36=18+ went to work, 37=Member 60 above went to work, 38=Moved in with relatives, 39=Relatives moved in, 40=Relatives moved away in search of work, 41=Postponed child bearing, 42=Loan from relative, 43=Loan from cooperative",shocks_coping/section_15a,1,TRUE
+s15q14,NA,NA,shocks_coping/section_15a,1,FALSE
+s15q15a,Any social or emotional distress shared with community in the last four weeks,"1=Often, 2=Few Times, 3=Never",shocks_coping/section_15b,1,TRUE
+s15q15b,Any social or emotional disress NOT shared with the community in the last four w,"1=Often, 2=Few Times, 3=Never",shocks_coping/section_15b,1,TRUE
+s15q15c,Assessment of emotional well-being of family these days,"1=Very Good, 2=Good, 3=Neutral, 4=Bad, 5=Very Bad",shocks_coping/section_15b,1,TRUE
+s15q15d_1,Action to feel better:Prayer or individual spiritual action,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_10,Action to feel better:Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_2,Action to feel better:Tell family members,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_3,Action to feel better:Tell friends,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_4,Action to feel better:Tell village elder,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_5,Action to feel better:Tell religious leader,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_6,Action to feel better:Consult community based group which he/she belongs to,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_7,Action to feel better:Consult community based group which he/she does not belong,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_8,Action to feel better:Consult an NGO to feel better,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_9,Action to feel better:Do not tell anyone,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15d_s,NA,NA,shocks_coping/section_15b,1,FALSE
+s15q15e,Has taken any of these action when feeling bad,"1=Yes, I have in the past when I have felt badly, 2=No, but I would, if I feel badly, in the future, 3=No, and I would not in the future, even if I feel badly, 4=Other (Specefy), 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15f,Any group in community which provides help when someone is feeling bad,"1=Yes, 2=No",shocks_coping/section_15b,1,TRUE
+s15q15g_1,Information source about this group: Announcement by Village Elder,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15g_2,Information source about this group: Community Theater,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15g_3,Information source about this group: Word of Mouth,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15g_4,Information source about this group: Flyers,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15g_5,Information source about this group: Radio,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15g_6,Information source about this group: TV,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15g_7,Information source about this group: Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15h, Attends meetings,"1=Yes, 2=No",shocks_coping/section_15b,1,TRUE
+s15q15i_1, Reason for not attending: No time,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15i_2, Reason for not attending: Family does not want,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15i_3, Reason for not attending: Group does not welcome,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15i_4, Reason for not attending: Group not effective,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15i_5, Reason for not attending: No trust on Group,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15i_998,Reason for not attending: Other,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q15i_999, Reason for not attending: No Reason,"0=No, 1=First, 2=Second, 3=Third, 4=Fourth, 5=Fifth, 6=Sixth, 7=Seventh, 8=Eighth",shocks_coping/section_15b,1,TRUE
+s15q16a_1,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_10,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_11,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_12,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_2,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_3,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_4,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_5,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_6,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_7,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_8,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_9,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16a_998,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_1,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_10,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_11,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_12,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_2,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_3,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_4,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_5,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_6,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_7,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_8,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_9,NA,NA,shocks_coping/section_15b,1,TRUE
+s15q16b_998,NA,NA,shocks_coping/section_15b,1,TRUE
+s16q01,Birth certificate available,"1=Yes, 2=No",anthropometrics/section_16,1,TRUE
+s16q02,NA,NA,anthropometrics/section_16,1,FALSE
+s16q03,NA,NA,anthropometrics/section_16,1,TRUE
+s16q04,Result of the measurement,"1=Measured, 2=Could not meet child after multiple visits, 3=Too ill or disabled, 4=Refused, 5=Other",anthropometrics/section_16,1,TRUE
+s16q05,NA,NA,anthropometrics/section_16,1,TRUE
+s16q05a,NA,NA,anthropometrics/section_16,1,TRUE
+s16q05b,NA,NA,anthropometrics/section_16,1,TRUE
+s16q06,Method for measuring height,"1=Standing Up, 2=Lying down",anthropometrics/section_16,1,TRUE
+s16q07a,NA,NA,anthropometrics/section_16,1,TRUE
+s16q07a_1,NA,NA,anthropometrics/section_16,1,TRUE
+s16q07a_2,NA,NA,anthropometrics/section_16,1,TRUE
+s16q07b,NA,NA,anthropometrics/section_16,1,TRUE
+s16q07b_1,NA,NA,anthropometrics/section_16,1,TRUE
+section,NA,NA,variable_coverage,1,FALSE
+shared_plotID,NA,NA,land/section_9a2,1,TRUE
+shockid,Shock id,"1=Earthquake, 2=Flood, 3=Landslide, 4=Drought, 5=Fire, 6=Hail/Lightening, 7=Pests and Plant Diseases, 8=Post Harvest Loss, 9=Forced Displacement, 10=Riots/Blockage, 11=Death of Family Member, 12=Disease or injury of family member, 13=Loss of a regular job of a household member, 14=Failure or bankruptcy, 15=Theft, 16=Break up of family, 17=Loss of contract or default by creditor, 18=Withdrawal of government assistance, 19=Fuel Shortage, 20=Unexpected HIgher Prices, 21=Lifestock Loss",shocks_coping/section_15a,1,TRUE
+split_from,NA,NA,household_header/section_0,1,TRUE
+split_hh,NA,NA,household_header/section_0,1,TRUE
+variables,NA,NA,variable_coverage,1,FALSE
+vdc,NA,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; household_header/section_0; housing_amenities/section_4; id_match_long; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,40,FALSE
+vdc_code,NA,NA,household_header/section_0,1,TRUE
+vmun_code,NA,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; household_header/section_0; housing_amenities/section_4; id_match_long; id_match_wide; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,41,FALSE
+wagejobid,NA,NA,wage_jobs/section_8,1,TRUE
+ward,Previous ward number,"1=1, 2=2, 3=3, 4=4, 5=5, 6=6, 7=7, 8=8, 9=9",household_header/section_0; id_match_long,2,TRUE
+weight_difference,NA,NA,anthropometrics/section_16,1,TRUE
+wt_hh,NA,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; housing_amenities/section_4; id_match_long; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; wage_jobs/section_8,39,TRUE
+wt_hh_x,NA,NA,household_header/section_0,1,TRUE
+wt_hh_y,NA,NA,household_header/section_0,1,TRUE
+year,NA,NA,ag_equipment/section_9f; ag_inputs/section_9c; anthropometrics/section_16; borrowing_lending/section_12a; borrowing_lending/section_12b; borrowing_lending/section_12c; borrowing_lending/section_12d; crop_production/section_9b1; crop_production/section_9b2; education/section_2; food_consumption/section_5a; food_consumption/section_5b; health/section_3; household_header/section_0; housing_amenities/section_4; id_match_long; labor_jobs/section_7; land/section_9a1; land/section_9a2; land/section_9a3; land/section_9a4; livestock/section_9d; livestock/section_9e; migration/section_11; nonag_enterprise/section_10; nonfood_consumption/section_6a; nonfood_consumption/section_6b; nonfood_consumption/section_6c; nonfood_consumption/section_6d; roster/section_1; shocks_coping/section_15a; shocks_coping/section_15b; social_protection/section_14a; social_protection/section_14b; social_protection/section_14c; transfers/section_13a; transfers/section_13b; transfers/section_13c; transfers/section_13d; variable_coverage; wage_jobs/section_8,41,TRUE
