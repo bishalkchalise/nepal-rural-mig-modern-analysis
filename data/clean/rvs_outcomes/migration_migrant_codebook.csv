@@ -1,0 +1,30 @@
+variable,level,definition
+is_internal,migrant-year,1 if migrant is within Nepal.
+is_international,migrant-year,1 if migrant is overseas.
+dest_india,migrant-year,1 if overseas destination is India.
+dest_gulf,migrant-year,1 if overseas destination is Gulf country.
+dest_malaysia,migrant-year,1 if overseas destination is Malaysia.
+dest_other_country,migrant-year,"1 if overseas destination is not India, Gulf, or Malaysia."
+migrant_age,migrant-year,Age of migrant.
+months_away,migrant-year,"Months since first leaving, capped at 600."
+long_term_migrant,migrant-year,1 if migrant has been away more than 24 months.
+reason_work,migrant-year,1 if migration reason is work/job/business.
+reason_education,migrant-year,1 if migration reason is education/training.
+reason_family,migrant-year,1 if migration reason is marriage/family.
+reason_disaster,migrant-year,1 if migration reason is natural disaster.
+earning_total_rs,migrant-year,Monthly earning from primary plus secondary job.
+has_secondary_job,migrant-year,1 if migrant has secondary job.
+remit_sent_flag,migrant-year,1 if migrant sent remittance.
+remit_amount_rs,migrant-year,Remittance amount sent by migrant in past 12 months.
+remit_freq_per_year,migrant-year,"Frequency of remittance sends per year, capped at 12."
+remit_via_formal,migrant-year,1 if remittance sent through bank/IME.
+remit_via_informal,migrant-year,"1 if remittance sent through friends/family, hundi, or other."
+remit_use_consumption,migrant-year,1 if remittance used for consumption or ceremonies.
+remit_use_human_capital,migrant-year,1 if remittance used for education or health.
+remit_use_business_investment,migrant-year,1 if remittance used for business inputs/equipment/livestock/other business.
+remit_use_land_housing,migrant-year,"1 if remittance used for land, dwelling purchase, or housing improvement."
+remit_use_investment_any,migrant-year,"1 if remittance used for business, land, or housing investment."
+remit_use_debt,migrant-year,1 if remittance used to repay debt.
+mig_cost_rs,migrant-year,Migration cost paid for this migrant.
+mig_cost_loan_flag,migrant-year,1 if migration cost financed by loan.
+cost_to_monthly_earning_ratio,migrant-year,Migration cost divided by current monthly earnings.
