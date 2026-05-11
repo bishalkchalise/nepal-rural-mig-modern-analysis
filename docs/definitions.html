@@ -14,11 +14,14 @@
   <ul>
     <li><a href="index.html">Intro</a></li>
     <li><a href="explorer.html">Results</a></li>
+    <li><a href="test.html">Test (Family A)</a></li>
+    <li><a href="test_b.html">Test B (Family B)</a></li>
     <li><a href="definitions.html" class="active">Variable definitions</a>
       <ul class="subnav">
         <li><a href="#ds-census">Census (2001/11/21)</a></li>
         <li><a href="#ds-hh">Household (2016–18)</a></li>
-        <li><a href="#ds-plot">Plot (2016–18)</a></li>
+        <li><a href="#ds-nec_panel">NEC firm entry panel</a></li>
+        <li><a href="#ds-nec_cs">NEC firms (2018)</a></li>
       </ul>
     </li>
     <li><a href="summary.html">Summary statistics</a></li>
@@ -48,9 +51,10 @@
 
 <script>
 const DATASETS = [
-  {key:"census", label:"Census panel — Population &amp; Housing"},
-  {key:"hh",     label:"Household — agriculture (HH × year)"},
-  {key:"plot",   label:"Plot — agriculture (plot × year)"},
+  {key:"census",    label:"Census panel — Population &amp; Housing"},
+  {key:"hh",        label:"HRVS HH × year (all domains)"},
+  {key:"nec_panel", label:"NEC firm entry — muni × founding-year"},
+  {key:"nec_cs",    label:"NEC 2018 — firm cross-section"},
 ];
 
 async function init(){

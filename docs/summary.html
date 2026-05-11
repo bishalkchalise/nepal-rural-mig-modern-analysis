@@ -19,7 +19,8 @@
       <ul class="subnav">
         <li><a href="#ds-census">Census (2001/11/21)</a></li>
         <li><a href="#ds-hh">Household (2016–18)</a></li>
-        <li><a href="#ds-plot">Plot (2016–18)</a></li>
+        <li><a href="#ds-nec_panel">NEC firm entry panel</a></li>
+        <li><a href="#ds-nec_cs">NEC firms (2018)</a></li>
       </ul>
     </li>
     <li><a href="methods.html">Method</a></li>
@@ -58,15 +59,18 @@
 
 <script>
 const DATASETS = [
-  {key:"census", label:"Census panel — Population &amp; Housing",
+  {key:"census",    label:"Census panel — Population &amp; Housing",
    src:"data/clean/census/census_outcomes_municipality.csv",
    unit:"municipality"},
-  {key:"hh",     label:"Household agriculture (HH × year)",
-   src:"data/clean/rvs_outcomes/agriculture_hh_year.csv",
+  {key:"hh",        label:"HRVS HH × year (all domains)",
+   src:"data/clean/rvs_outcomes/{agriculture,consumption,education,enterprise,health,migration,shocks,social_protection}_hh_year.csv",
    unit:"HH-year"},
-  {key:"plot",   label:"Plot agriculture (plot × year)",
-   src:"data/clean/rvs_outcomes/agriculture_plot_year.csv",
-   unit:"plot-year"},
+  {key:"nec_panel", label:"NEC firm entry — muni × founding-year",
+   src:"data/clean/nec2018/mun_entry_panel_new.csv",
+   unit:"muni-year"},
+  {key:"nec_cs",    label:"NEC 2018 — firm cross-section",
+   src:"data/clean/nec2018/mun_{industry_structure,productivity_profitability,size_formality}.csv",
+   unit:"municipality"},
 ];
 
 // Format a number nicely:
