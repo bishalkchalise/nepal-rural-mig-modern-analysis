@@ -1,57 +1,48 @@
 # =============================================================================
 # script/first_stage.R — first-stage evidence that the FX-driven shock
-# moves the things it must move BEFORE we believe downstream outcomes.
+# moves outmigration (census) and remittance (HRVS HH) before any
+# downstream interpretation.
 #
-# Two pieces of evidence:
+# Preferred spec:  log_int treatment, c_mig=T, c_fx=T, Block A=T,
+#                   Block B=F, Block C=T.  All four migrant-count
+#                   thresholds reported in one consolidated table.
 #
-#   (1) Census — does the shock raise the share of HHs with at least one
-#       absentee member?  `absent_hh_share` is the closest census-level
-#       proxy for outmigration available across 2001 / 2011 / 2021.  It
-#       lumps internal + international absentees but in rural Nepal the
-#       overwhelming majority of absent HH members are working abroad,
-#       so it is a defensible first-stage proxy.
-#
-#   (2) HRVS HH panel — does the shock raise the probability that a HH
-#       reports receiving any remittance, and the rupee amount?
-#       Variables: remittance_any, remittance_amt  (full sample, 18,056
-#       HH-years; not conditional on having a migrant — that's the right
-#       sample for an ITT-style first stage).
-#
-# Both panels run at the preferred specification:
-#   treatment = log_int   ( fx_z * log(mig_int_z) )
-#   c_mig = TRUE          (year x mig_intensity trend partialled out)
-#   c_fx  = TRUE          (year x fx trend partialled out)
-#   Block A = TRUE        (dest-weighted baseline X x year)
-#   Block B = FALSE       (origin baseline X off, matches user preference)
-#   Block C = TRUE        (trade SSIV level controls)
-#
-# All four migrant-count thresholds reported (0 / 25 / 50 / 100).
-#
-# Outputs:
-#   output/tab/first_stage_census_absentee.csv
-#   output/tab/first_stage_hh_remittance.csv
-# Run:
-#   source("script/first_stage.R")
+# Run:  source("script/first_stage.R")
 # =============================================================================
 
 source("script/_specs_lib.R")
 
 THR <- c(0L, 25L, 50L, 100L)
 
-cat("\n#### FIRST STAGE — census absentee share ####\n")
+CFG <- list(
+  spec_label = "first_stage_pref",
+  treatment  = "log_int",
+  c_mig      = TRUE,
+  c_fx       = TRUE,
+  c_block_a  = TRUE,
+  c_block_b  = FALSE,
+  c_block_c  = TRUE
+)
+
+run_quiet <- function(...) {
+  # silence run_spec's per-call print blocks; keep its return value
+  invisible(capture.output(
+    res <- run_spec(...),
+    file = nullfile()
+  ))
+  res
+}
+
+cat("Running first-stage regressions (silent, may take ~1 min) ...\n")
+
+# ------------------ Census ------------------
 census_rows <- list()
 for (thr in THR) {
-  r <- run_spec(
-    spec_label = "first_stage_pref",
-    dataset    = "census",
-    threshold  = thr,
-    treatment  = "log_int",
-    c_mig      = TRUE,
-    c_fx       = TRUE,
-    c_block_a  = TRUE,
-    c_block_b  = FALSE,
-    c_block_c  = TRUE,
-    outcomes   = list("Absent HH" = c("absent_hh_share","hh_death_12m")),
+  r <- run_quiet(
+    spec_label = CFG$spec_label, dataset = "census", threshold = thr,
+    treatment  = CFG$treatment, c_mig = CFG$c_mig, c_fx = CFG$c_fx,
+    c_block_a = CFG$c_block_a, c_block_b = CFG$c_block_b, c_block_c = CFG$c_block_c,
+    outcomes   = list("first_stage" = "absent_hh_share"),
     output_path = file.path(ROOT, "output", "tab",
                             sprintf("first_stage_census_absentee_thr%d.csv", thr))
   )
@@ -61,35 +52,16 @@ census_first <- rbindlist(census_rows, fill = TRUE)
 fwrite(census_first, file.path(ROOT, "output", "tab",
                                "first_stage_census_absentee.csv"))
 
-
-cat("\n\n#### FIRST STAGE — HH remittance (both unconditional and intensive margin) ####\n")
-# Two sample groups:
-#   Unconditional (FULL HH-year sample, n=18,056):
-#     remittance_any  -- 1 if HH reports ANY remittance income
-#     remittance_amt  -- amount (UNIT UNCLEAR; mean 805, max 375,000 -- likely
-#                        scaled or in thousands of Rs; check codebook before
-#                        reporting a Rs level).
-#   Intensive margin (HHs WITH ANY MIGRANT only, n=8,559):
-#     remit_received          -- 1 if any remittance received
-#     remit_amount_12m_rs     -- total Rs received (all migrants)
-#     remit_amount_intl_12m_rs -- total Rs received from INTERNATIONAL migrants
+# ------------------ HH ------------------
 hh_rows <- list()
 for (thr in THR) {
-  r <- run_spec(
-    spec_label = "first_stage_pref",
-    dataset    = "hh",
-    threshold  = thr,
-    treatment  = "log_int",
-    c_mig      = TRUE,
-    c_fx       = TRUE,
-    c_block_a  = TRUE,
-    c_block_b  = FALSE,
-    c_block_c  = TRUE,
+  r <- run_quiet(
+    spec_label = CFG$spec_label, dataset = "hh", threshold = thr,
+    treatment  = CFG$treatment, c_mig = CFG$c_mig, c_fx = CFG$c_fx,
+    c_block_a = CFG$c_block_a, c_block_b = CFG$c_block_b, c_block_c = CFG$c_block_c,
     outcomes   = list(
-      "HH remittance — full sample" =
-        c("remittance_any","remittance_amt"),
-      "HH remittance — migrant HHs only (intensive margin)" =
-        c("remit_received","remit_amount_12m_rs","remit_amount_intl_12m_rs")
+      "full sample" = c("remittance_any","remittance_amt"),
+      "migrant HHs only" = c("remit_received","remit_amount_12m_rs","remit_amount_intl_12m_rs")
     ),
     output_path = file.path(ROOT, "output", "tab",
                             sprintf("first_stage_hh_remit_thr%d.csv", thr))
@@ -101,52 +73,55 @@ fwrite(hh_first, file.path(ROOT, "output", "tab",
                            "first_stage_hh_remittance.csv"))
 
 
-# --- Combined summary printout ---
-cat("\n\n", strrep("=", 70), "\n", sep = "")
-cat(" FIRST-STAGE SUMMARY (preferred spec, all thresholds)\n")
-cat(strrep("=", 70), "\n", sep = "")
+# ============================================================================
+# One consolidated table.
+# ============================================================================
+combined <- rbind(census_first, hh_first, fill = TRUE)
 
-cat("\n[1] CENSUS — absent_hh_share (mean", round(mean(census_first$mean_y, na.rm=TRUE), 3), ")\n")
-print(census_first[outcome == "absent_hh_share",
-                   .(threshold, beta, stars, beta_pp, pct_of_mean, se, pval, n, n_muni)],
-      digits = 4)
+# Order: census first, then HH unconditional, then HH intensive margin.
+# Within each, outcomes in a fixed reporting order; within each outcome,
+# thresholds 0/25/50/100 in order.
+ord_outcomes <- c(
+  "absent_hh_share",                # census
+  "remittance_any","remittance_amt",# HH unconditional
+  "remit_received","remit_amount_12m_rs","remit_amount_intl_12m_rs"  # HH intensive
+)
+combined[, outcome := factor(outcome, levels = ord_outcomes)]
+combined <- combined[order(outcome, threshold)]
 
-cat("\n[1b] CENSUS — hh_death_12m (placebo-ish — should NOT be moved by shock)\n")
-print(census_first[outcome == "hh_death_12m",
-                   .(threshold, beta, stars, beta_pp, pct_of_mean, se, pval, n, n_muni)],
-      digits = 4)
+# Sample-group label per outcome for clarity in the printed table
+sample_lbl <- c(
+  "absent_hh_share"          = "census (muni)",
+  "remittance_any"           = "HH full",
+  "remittance_amt"           = "HH full",
+  "remit_received"           = "HH migrant-only",
+  "remit_amount_12m_rs"      = "HH migrant-only",
+  "remit_amount_intl_12m_rs" = "HH migrant-only"
+)
+combined[, sample := sample_lbl[as.character(outcome)]]
 
-cat("\n[2a] HRVS HH FULL SAMPLE — remittance_any (mean",
-    round(mean(hh_first[outcome=='remittance_any']$mean_y, na.rm=TRUE), 3), ")\n")
-print(hh_first[outcome == "remittance_any",
-               .(threshold, beta, stars, beta_pp, pct_of_mean, se, pval, n, n_unit, n_muni)],
-      digits = 4)
+cat("\n\n", strrep("=", 78), "\n",
+    " FIRST STAGE — preferred spec across 4 thresholds\n",
+    strrep("=", 78), "\n", sep = "")
 
-cat("\n[2b] HRVS HH FULL SAMPLE — remittance_amt (UNIT UNCLEAR; mean",
-    round(mean(hh_first[outcome=='remittance_amt']$mean_y, na.rm=TRUE), 1), ")\n")
-print(hh_first[outcome == "remittance_amt",
-               .(threshold, beta, stars, pct_of_mean, se, pval, n, n_unit, n_muni)],
-      digits = 4)
-
-cat("\n[3a] HRVS — MIGRANT HHs ONLY — remit_received (mean",
-    round(mean(hh_first[outcome=='remit_received']$mean_y, na.rm=TRUE), 3), ")\n")
-print(hh_first[outcome == "remit_received",
-               .(threshold, beta, stars, beta_pp, pct_of_mean, se, pval, n, n_unit, n_muni)],
-      digits = 4)
-
-cat("\n[3b] HRVS — MIGRANT HHs ONLY — remit_amount_12m_rs (Rs total, mean",
-    round(mean(hh_first[outcome=='remit_amount_12m_rs']$mean_y, na.rm=TRUE), 0), ")\n")
-print(hh_first[outcome == "remit_amount_12m_rs",
-               .(threshold, beta, stars, pct_of_mean, se, pval, n, n_unit, n_muni)],
-      digits = 4)
-
-cat("\n[3c] HRVS — MIGRANT HHs ONLY — remit_amount_intl_12m_rs (Rs from international migrants, mean",
-    round(mean(hh_first[outcome=='remit_amount_intl_12m_rs']$mean_y, na.rm=TRUE), 0), ")\n")
-print(hh_first[outcome == "remit_amount_intl_12m_rs",
-               .(threshold, beta, stars, pct_of_mean, se, pval, n, n_unit, n_muni)],
-      digits = 4)
+print(
+  combined[, .(
+    outcome,
+    sample,
+    threshold,
+    beta      = signif(beta,    4),
+    stars,
+    beta_pp   = signif(beta_pp, 4),
+    pct_mean  = signif(pct_of_mean, 4),
+    se        = signif(se,      3),
+    pval      = signif(pval,    3),
+    n         = n,
+    n_unit    = n_unit,
+    n_muni    = n_muni
+  )],
+  nrows = nrow(combined)
+)
 
 cat("\nFiles saved:\n")
-cat("  output/tab/first_stage_census_absentee.csv      (4 rows: 2 outcomes x 4 thresholds, wait — 8 rows)\n")
-cat("  output/tab/first_stage_hh_remittance.csv         (8 rows: 2 outcomes x 4 thresholds)\n")
-cat("  + per-threshold individual CSVs in output/tab/\n")
+cat("  output/tab/first_stage_census_absentee.csv\n")
+cat("  output/tab/first_stage_hh_remittance.csv\n")
