@@ -12,314 +12,507 @@
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" />
 
+  <!-- Computer Modern web font (Beamer's native typeface) -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/aaaakshat/cm-web-fonts@latest/fonts.css" />
+
   <script>
     window.MathJax = {
       tex: { inlineMath: [['$','$'], ['\\(','\\)']],
              displayMath: [['$$','$$'], ['\\[','\\]']] },
-      svg: { fontCache: 'global' }
+      svg: { fontCache: 'global', scale: 1.0 }
     };
   </script>
   <script defer
           src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
   <style>
-    .reveal { font-family: Georgia, "Times New Roman", serif; }
-    .reveal h1, .reveal h2, .reveal h3 { font-family: Helvetica, Arial, sans-serif; letter-spacing: -0.01em; }
-    .reveal h1 { font-size: 2.0em; }
-    .reveal h2 { font-size: 1.5em; margin-bottom: 0.4em; }
-    .reveal h3 { font-size: 1.1em; color:#666; margin-bottom: 0.6em; }
+    /* ===========================================================
+       Beamer / LaTeX feel.
+       Body: Computer Modern Serif.  Headers: same.  Math: native MathJax serif.
+       Accent: Beamer Madrid navy (#1f4e79).  Background: paper.
+       =========================================================== */
+    :root {
+      --beamer-navy:   #1f4e79;
+      --beamer-dark:   #14365c;
+      --beamer-rule:   #c8d2dc;
+      --ink:           #1a1a1a;
+      --muted:         #555;
+      --paper:         #ffffff;
+      --hl:            #fff7c2;
+    }
+    .reveal {
+      font-family: "Computer Modern Serif", "CMU Serif", "Latin Modern Roman",
+                   "EB Garamond", "Source Serif 4", Cambria, "Times New Roman", serif;
+      color: var(--ink);
+      font-weight: 400;
+    }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+      font-family: "Computer Modern Serif", "CMU Serif", "Latin Modern Roman",
+                   "EB Garamond", "Times New Roman", serif;
+      letter-spacing: normal;
+      text-transform: none;
+      color: var(--beamer-dark);
+      font-weight: 700;
+    }
+    .reveal h1 { font-size: 1.6em; margin-bottom: 0.3em; line-height: 1.18; }
+    .reveal h2 {
+      font-size: 0.95em; line-height: 1.2; font-weight: 700;
+      color: var(--paper); background: var(--beamer-navy);
+      margin: -30px -60px 0.7em -60px;
+      padding: 14px 60px 12px 60px;
+      border-bottom: 3px solid var(--beamer-dark);
+    }
+    .reveal h3 {
+      font-size: 0.65em; color: var(--beamer-dark);
+      margin: 0.7em 0 0.25em; font-weight: 700; font-style: italic;
+      border-bottom: 1px solid var(--beamer-rule);
+      padding-bottom: 0.15em;
+    }
+    .reveal p, .reveal li {
+      font-size: 0.55em; line-height: 1.4; margin: 0.35em 0;
+      text-align: justify;
+    }
+    .reveal ul, .reveal ol {
+      margin-left: 1.4em; padding-left: 0;
+    }
+    .reveal ul li::marker { color: var(--beamer-navy); }
+    .reveal ol li::marker { color: var(--beamer-navy); font-weight: 700; }
+    .reveal li { margin: 0.25em 0; }
+    .reveal strong { font-weight: 700; color: var(--beamer-dark); }
+    .reveal em { font-style: italic; color: #333; }
     .reveal .slides { text-align: left; }
-    .reveal table { font-size: 0.55em; border-collapse: collapse; margin: 0 auto; }
-    .reveal th, .reveal td { padding: 4px 10px; text-align: right; }
+    .reveal section {
+      padding: 30px 60px;
+      background: var(--paper);
+    }
+
+    /* === Title slide (Beamer Madrid style) ====================== */
+    .title-slide { text-align: center; }
+    .title-slide h1 {
+      font-size: 1.5em; color: var(--beamer-dark);
+      margin-top: 2em; margin-bottom: 0.5em; text-align: center;
+    }
+    .title-slide .authors {
+      font-size: 0.72em; color: var(--ink);
+      margin-top: 1.4em; text-align: center;
+    }
+    .title-slide .affil   {
+      font-size: 0.5em;  color: var(--muted);
+      margin-top: 0.4em; text-align: center; font-style: italic;
+    }
+    .title-slide .pitch   {
+      font-size: 0.6em;  color: #333;
+      margin: 2em auto 0 auto; max-width: 820px;
+      text-align: center; line-height: 1.55; font-style: italic;
+      border-top: 1px solid var(--beamer-rule);
+      border-bottom: 1px solid var(--beamer-rule);
+      padding: 0.8em 1em;
+    }
+    .title-slide .hint {
+      position: absolute; bottom: 18px; left: 0; right: 0;
+      font-size: 0.4em; color: #999; text-align: center;
+      font-family: "Inter", sans-serif;
+    }
+
+    /* === Booktabs-style tables ================================== */
+    .reveal table {
+      font-size: 0.48em; border-collapse: collapse; margin: 0.5em auto;
+      width: auto; line-height: 1.35;
+    }
+    .reveal th, .reveal td { padding: 4px 14px; text-align: right; }
     .reveal th:first-child, .reveal td:first-child { text-align: left; }
-    .reveal table thead tr th { border-bottom: 2px solid #333; font-weight: bold; }
-    .reveal table tbody tr.sep td { border-top: 1px solid #ccc; }
-    .reveal .se { color:#666; font-size:0.9em; }
-    .reveal .pct { color:#888; font-size:0.85em; font-style: italic; }
-    .reveal .stars { color:#c0392b; font-weight: bold; }
-    .reveal .smalltext { font-size: 0.6em; color: #555; }
-    .reveal blockquote { border-left: 4px solid #999; padding-left: 12px; color: #444; font-style: italic; font-size: 0.85em; }
-    .reveal .col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2em; }
-    .reveal .footer { font-size: 0.55em; color:#888; position: absolute; bottom: 10px; left: 24px; }
-    .reveal section { padding-left: 24px; padding-right: 24px; }
+    .reveal table thead tr:first-child th {
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding-top: 8px;
+      padding-bottom: 6px;
+      font-weight: 700;
+    }
+    .reveal table thead tr.subhead th {
+      border-bottom: 1.5px solid var(--ink);
+      font-style: italic; font-weight: 400;
+      font-size: 0.9em; color: var(--muted);
+      padding-top: 1px; padding-bottom: 6px;
+    }
+    .reveal table tbody tr.bottomrule td {
+      border-top: 2px solid var(--ink) !important;
+      padding-top: 8px !important;
+    }
+    .reveal table tbody tr.sep td {
+      padding-top: 8px;
+    }
+    .reveal table .se   { color: var(--muted); font-size: 0.95em; }
+    .reveal table .pct  { color: var(--muted); font-style: italic; font-size: 0.95em; }
+    .reveal table .stars{ color: var(--beamer-navy); font-weight: 700; }
+
+    /* === Math ==================================================== */
+    .reveal mjx-container[display="true"] { margin: 0.6em 0 !important; }
+    .reveal .eq-cap {
+      font-size: 0.48em; color: var(--muted); margin: 0 0 0.4em 0;
+      text-align: center; font-style: italic;
+    }
+
+    /* === Misc ==================================================== */
+    .reveal blockquote {
+      border-left: 3px solid var(--beamer-navy);
+      padding: 0.4em 1em; margin: 0.5em 1em;
+      color: #333; font-style: italic; font-size: 0.6em; line-height: 1.55;
+      background: #f8f6ef;
+    }
+    .reveal kbd {
+      display: inline-block; padding: 0 5px; border: 1px solid #bbb;
+      border-radius: 2px; font-family: monospace; font-size: 0.85em;
+      background: #f4f4f4; color: #444;
+    }
+    .reveal .smalltext { font-size: 0.45em; color: var(--muted); }
+
+    /* === Footer (Beamer-style) ================================== */
+    .reveal .footer-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 22px;
+      background: var(--beamer-navy);
+      color: #cfdbe7; font-size: 0.4em;
+      padding: 4px 60px; display: flex; justify-content: space-between;
+      font-family: "Inter", sans-serif;
+    }
+
+    /* === Section divider slides ================================= */
+    .section-div {
+      background: var(--beamer-navy) !important;
+      text-align: center;
+    }
+    .section-div h2 {
+      background: transparent; color: var(--paper);
+      border: none; margin: 0; padding: 0;
+      font-size: 1.6em; font-style: italic;
+    }
+    .section-div p {
+      color: #d8e3ee; font-size: 0.65em; max-width: 700px;
+      margin: 1em auto 0; text-align: center; font-style: italic;
+    }
   </style>
 </head>
 <body>
 <div class="reveal">
 <div class="slides">
 
-<!-- ============================================================ -->
-<!-- 1. Title                                                       -->
-<!-- ============================================================ -->
-<section data-background-color="#f7f3ee">
-  <h1 style="margin-bottom:0.2em">International migration<br/>and modernisation of rural Nepal</h1>
-  <p class="smalltext" style="margin-top:1em; font-size:0.7em">
-    Bishal K. Chalise &nbsp;·&nbsp; Mushfiq Mobarak
-  </p>
-  <p class="smalltext" style="margin-top:0.4em">
-    Nepal · 2001 – 2021 · <em>preliminary, do not circulate</em>
-  </p>
-  <p style="margin-top:1.6em; font-size:0.85em">
+<!-- =============================================================
+     1. Title slide
+     ============================================================= -->
+<section class="title-slide">
+  <h1>International migration<br/>and modernisation of rural Nepal</h1>
+  <p class="authors">Bishal K. Chalise &nbsp;·&nbsp; Mushfiq Mobarak</p>
+  <p class="affil">Nepal &middot; 2001 – 2021 &middot; preliminary draft</p>
+  <p class="pitch">
     Does the FX-driven remittance windfall delivered through international
-    migration <strong>modernise</strong> rural Nepal? Evidence from a
-    Bartik-style shift-share instrument applied across three independent
-    Nepali micro-datasets.
+    migration modernise rural Nepal? Evidence from a Bartik-style shift-share
+    instrument across three independent Nepali micro-datasets.
   </p>
-  <p class="smalltext" style="position:absolute; bottom:24px;">
-    <kbd>F</kbd> fullscreen · arrow keys to navigate · <kbd>Esc</kbd> slide overview ·
-    <kbd>S</kbd> speaker notes.
+  <p class="hint">
+    <kbd>F</kbd> fullscreen &middot; <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> navigate &middot;
+    <kbd>Esc</kbd> overview
   </p>
 </section>
 
-<!-- ============================================================ -->
-<!-- 2. Background                                                  -->
-<!-- ============================================================ -->
+<!-- =============================================================
+     2. Background: facts
+     ============================================================= -->
 <section>
-  <h2>Background — Nepal &amp; international migration</h2>
-  <div class="col2" style="grid-template-columns: 1.1fr 0.9fr">
-    <ul>
-      <li><strong>One of the most remittance-dependent economies in the world.</strong> Personal remittances ≈ <strong>22 % of GDP</strong> (World Bank, 2022–23), the third-highest share globally after Tonga and Tajikistan.</li>
-      <li><strong>~3 million</strong> Nepalis are working abroad in any given year — out of a working-age population of ~20 million.</li>
-      <li><strong>Major destinations</strong>: Malaysia, the GCC states (Qatar, Saudi Arabia, the UAE, Kuwait, Oman, Bahrain), and India.</li>
-      <li>Migration intensified <em>after</em> the 2001 baseline — the post-2001 expansion of Nepal-to-Gulf labour contracts and a domestic civil war (1996–2006) raised outflows sharply.</li>
-      <li>The destination mix is <strong>sticky at the muni level</strong>: villages established corridors to specific destinations through network migration; the 2001 muni × destination shares pin them down.</li>
-    </ul>
-    <div>
-      <p class="smalltext"><strong>The identification puzzle.</strong> Migration is endogenous: places with more migrants may be poorer to begin with, or have shocks that drive both migration and welfare. We need exogenous variation in the <em>income</em> migrants send home, holding the migration network fixed.</p>
-      <p class="smalltext"><strong>The shock we use.</strong> Each destination's currency moves relative to the Nepali rupee over 2001–2023. Rs converts to wages → remittance amount sent home. FX is plausibly exogenous to any single Nepali municipality.</p>
-      <p class="smalltext"><strong>The shift-share trick.</strong> Combine destination-FX movements with the 2001 muni × destination shares. Munis with more migrants in <em>appreciating</em> destinations are exposed to a windfall; those tied to depreciating destinations are not.</p>
-    </div>
+  <h2>Background &mdash; Nepal &amp; international migration</h2>
+  <ul>
+    <li>Personal remittances $\approx$ <strong>22\% of GDP</strong> (World Bank, 2022&ndash;23) &mdash; the third-highest share globally after Tonga and Tajikistan.</li>
+    <li>About <strong>3 million</strong> Nepalis are working abroad at any time, out of a working-age population of $\sim$20 million.</li>
+    <li>Main destinations: <strong>Malaysia, the GCC states</strong> (Qatar, Saudi Arabia, the UAE, Kuwait, Oman, Bahrain), and <strong>India</strong>.</li>
+    <li>Outflows expanded sharply after 2001, driven by Nepal-to-Gulf labour contracts and the 1996&ndash;2006 Maoist insurgency.</li>
+    <li>At the muni level the destination mix is sticky: villages built corridors to specific destinations through network migration. The 2001 muni $\times$ destination matrix pins them down.</li>
+  </ul>
+  <div class="footer-bar">
+    <span>Nepal migration / FX shock &mdash; Chalise &amp; Mobarak</span>
+    <span>Background</span>
   </div>
 </section>
 
-<!-- ============================================================ -->
-<!-- 3. Shift-share construction                                    -->
-<!-- ============================================================ -->
+<!-- =============================================================
+     3. Background: identification puzzle
+     ============================================================= -->
+<section>
+  <h2>The identification puzzle &amp; the shock we use</h2>
+
+  <h3>Why a naive regression won't do</h3>
+  <p>
+    Migration is endogenous. Places with more migrants may be poorer to begin
+    with, or share shocks that drive both migration and welfare. To say
+    anything causal we need exogenous variation in the <em>income</em>
+    migrants send home, holding the migration network fixed.
+  </p>
+
+  <h3>The shock</h3>
+  <p>
+    Each destination's currency moves against the Nepali rupee over
+    2001&ndash;2023. Wages abroad convert to NPR; FX appreciation $=$
+    remittance windfall. FX movements are plausibly exogenous to any single
+    Nepali municipality.
+  </p>
+
+  <h3>The shift-share trick</h3>
+  <p>
+    Combine destination-FX movements with the muni $\times$ destination
+    shares fixed in 2001. Munis tied to appreciating destinations get a
+    windfall; those tied to depreciating destinations do not.
+  </p>
+
+  <div class="footer-bar">
+    <span>Nepal migration / FX shock &mdash; Chalise &amp; Mobarak</span>
+    <span>Background</span>
+  </div>
+</section>
+
+<!-- =============================================================
+     4. Shift-share construction
+     ============================================================= -->
 <section>
   <h2>Shift-share construction</h2>
-  <h3>Step 1 — baseline destination weights (2001 census)</h3>
+
+  <h3>Step 1 &mdash; baseline destination weights (2001 census)</h3>
   \[
-    \omega_{md,0} \;=\; \frac{N_{md,\,2001}}{\mathrm{Pop}_{m,\,2001}}
+    \omega_{md,0} \;=\; \frac{N_{md,\,2001}}{\mathrm{Pop}_{m,\,2001}},
     \qquad
-    \mathrm{mig\_int}_{m,0} \;=\; \sum_d \omega_{md,0}
+    \mathrm{mig\_int}_{m,0} \;=\; \sum_d \omega_{md,0},
     \qquad
     s_{md,0} \;=\; \frac{\omega_{md,0}}{\mathrm{mig\_int}_{m,0}}
   \]
-  <p class="smalltext">$N_{md,2001}$ = migrants from muni $m$ to destination $d$ in the 2001 census. $\omega$ is migrants per capita to each destination; $s_{md,0}$ are the destination shares of muni $m$ (sum to 1).</p>
+  <p class="eq-cap">$N_{md,2001}$ = migrants from muni $m$ to destination $d$ in 2001. $s_{md,0}$ are destination shares (sum to 1 within muni).</p>
 
-  <h3 style="margin-top:1.2em">Step 2 — destination-country shifter (annual)</h3>
+  <h3>Step 2 &mdash; destination-country shifter (annual)</h3>
   \[
     \mathrm{fxshock}_{dt} \;=\; \frac{\mathrm{FX}_{dt}}{\mathrm{FX}_{d,\,2001}}
   \]
-  <p class="smalltext">FX index of destination $d$'s currency vs Nepali rupee, relative to 2001. Source: IMF FX panel, annual.</p>
+  <p class="eq-cap">FX index of destination $d$'s currency vs NPR, indexed to 2001. Source: IMF FX panel, annual.</p>
 
-  <h3 style="margin-top:1.2em">Step 3 — muni-year share-weighted shock</h3>
+  <h3>Step 3 &mdash; muni-year share-weighted shock</h3>
   \[
     \mathrm{fxshock}_{mt} \;=\; \sum_d s_{md,0}\,\mathrm{fxshock}_{dt}
   \]
-  <p class="smalltext">Combines the <em>shifter</em> (destination FX movements, common across all Nepali munis sending to the same destination) with the <em>shares</em> (each muni's own 2001 destination mix). Treatment that goes into the regression is z-scored on the muni-year working sample.</p>
+  <p class="eq-cap">Combines the shifter (destination FX, common across all Nepali munis) with the shares (each muni's 2001 destination mix). Standardised on the working sample before estimation.</p>
+
+  <div class="footer-bar">
+    <span>Nepal migration / FX shock &mdash; Chalise &amp; Mobarak</span>
+    <span>Construction</span>
+  </div>
 </section>
 
-<!-- ============================================================ -->
-<!-- 3b. Where the identifying variation comes from                 -->
-<!-- ============================================================ -->
+<!-- =============================================================
+     5. Where the identifying variation comes from
+     ============================================================= -->
 <section>
   <h2>Where the identifying variation comes from</h2>
   <ul>
-    <li><strong>Cross-muni</strong>: muni A sends 80 % of its migrants to Malaysia, muni B sends 80 % to the UAE. If MYR appreciates against NPR but AED depreciates, only muni A sees a positive shock.</li>
-    <li><strong>Within-muni over time</strong>: each muni's destination mix is <em>fixed at 2001</em>, but the FX shifters move over 2001 → 2023, generating a time-varying treatment.</li>
-    <li><strong>Heterogeneous slope</strong> — main reduced form interacts the share-weighted shock with each muni's 2001 baseline migration <em>intensity</em>:
+    <li><strong>Cross-muni:</strong> muni A sends 80\% of its migrants to Malaysia, muni B sends 80\% to the UAE. If MYR appreciates against NPR but AED depreciates, only A receives a positive shock.</li>
+    <li><strong>Within-muni over time:</strong> each muni's destination mix is fixed at 2001, but FX shifters move year-by-year &mdash; generating panel variation in the treatment.</li>
+    <li><strong>Heterogeneous slope.</strong> Main reduced form interacts the shock with each muni's 2001 baseline migration intensity:
       \[
-        \beta\,\bigl[\mathrm{fx}_{z,m,t}\;\cdot\;\log(\mathrm{mig\_int}_{z,m,0})\bigr]
+        \beta\,\bigl[\mathrm{fx}_{z,m,t}\,\cdot\,\log(\mathrm{mig\_int}_{z,m,0})\bigr]
       \]
-      both z-scored. $\beta$ is the differential response per 1 SD of treatment.</li>
-    <li><strong>Identifying assumption</strong> (Borusyak-Hull-Jaravel style): conditional on year FE, muni FE, year-interacted Khanna Block-A characteristics, and year × log-mig-intensity, FX shifters are quasi-randomly assigned across destinations.</li>
+      both z-scored. $\beta$ is the differential response per 1 SD of the treatment.</li>
+    <li><strong>Identifying assumption</strong> (Borusyak&ndash;Hull&ndash;Jaravel, 2025): conditional on year FE, muni FE, year-interacted Khanna Block-A characteristics, and year $\times$ log-mig-intensity, FX shifters are quasi-randomly assigned across destinations.</li>
   </ul>
+  <div class="footer-bar">
+    <span>Nepal migration / FX shock &mdash; Chalise &amp; Mobarak</span>
+    <span>Identification</span>
+  </div>
 </section>
 
-<!-- ============================================================ -->
-<!-- 4. Section marker                                              -->
-<!-- ============================================================ -->
-<section data-background-color="#f3eee8">
-  <h2 style="font-size:2em">Section 1 — first-stage evidence</h2>
-  <p style="font-size:1.1em">
-    Before any downstream "migration income → welfare" claim, we need
-    to show that the instrument <strong>does</strong> move the things
-    it is supposed to move: outmigration, remittance receipts, and the
-    count of international migrants per household.
+<!-- =============================================================
+     6. Section divider
+     ============================================================= -->
+<section class="section-div">
+  <h2>Section 1 &mdash; first-stage evidence</h2>
+  <p>
+    Before any &ldquo;migration income $\to$ welfare&rdquo; claim, the
+    instrument must move the things it is supposed to: outmigration at the
+    muni level, remittance receipts at the household level, and the number
+    of international migrants per household.
   </p>
 </section>
 
-<!-- ============================================================ -->
-<!-- 5. First-stage spec                                            -->
-<!-- ============================================================ -->
-
-<!-- ============================================================ -->
-<section>
-  <h2>What we need the first stage to show</h2>
-  <ol>
-    <li>The shock pushes <strong>more households into outmigration</strong> at the muni level.</li>
-    <li>Households actually receive <strong>more remittance income</strong>.</li>
-    <li>The number of <strong>international migrants per migrant household</strong> rises.</li>
-  </ol>
-  <p>Without these, no downstream "migration income raises welfare" story is identifiable.</p>
-</section>
-
-<!-- ============================================================ -->
+<!-- =============================================================
+     7. First-stage specification
+     ============================================================= -->
 <section>
   <h2>First-stage specification</h2>
   \[
     \begin{aligned}
-    y_{it} \;=\;& \beta\,\bigl[\mathrm{fx}_z\cdot\log(\mathrm{mig\_int}_z)\bigr] \\
-      &+\; \textstyle\sum_t \lambda_{1,t}\,\mathrm{mig\_int}_z\,\mathbf{1}\{t\}
-      \;+\; \sum_t \lambda_{2,t}\,\mathrm{fx}_z\,\mathbf{1}\{t\} \\
-      &+\; \textstyle\sum_{k,t} \delta_{k,t}\,X^A_{k,m(i),0}\,\mathbf{1}\{t\}
-      \;+\; \alpha_i + \gamma_t + \varepsilon_{it}
+    y_{it} \;=\;& \beta\,\bigl[\mathrm{fx}_z\!\cdot\!\log(\mathrm{mig\_int}_z)\bigr] \\
+      &+\; \sum_t \lambda_{1,t}\,\mathrm{mig\_int}_z\!\cdot\!\mathbf{1}\{t\}
+       \;+\; \sum_t \lambda_{2,t}\,\mathrm{fx}_z\!\cdot\!\mathbf{1}\{t\} \\
+      &+\; \sum_{k,t} \delta_{k,t}\,X^A_{k,m(i),0}\!\cdot\!\mathbf{1}\{t\}
+       \;+\; \alpha_i + \gamma_t + \varepsilon_{it}
     \end{aligned}
   \]
-  <p class="smalltext">
-    $X^A$ = Khanna Block-A covariates (six destination-region shares + 2001 destination-weighted GDP per capita).
-    Block B (origin baseline X) and Block C (trade SSIV) <em>off</em> in this run.
-    Entity FE: muni (census) or HH (HRVS panel).
+  <p class="eq-cap" style="margin-top:0.8em">
+    $X^A$ = Khanna Block-A covariates: six destination-region migrant shares + 2001 destination-weighted GDP per capita, all interacted with year FE.
+    Entity FE $\alpha_i$: muni (census) or HH (HRVS panel).
+    SE clustered at municipality.
   </p>
+  <div class="footer-bar">
+    <span>Nepal migration / FX shock &mdash; Chalise &amp; Mobarak</span>
+    <span>First stage &mdash; specification</span>
+  </div>
 </section>
 
-<!-- ============================================================ -->
+<!-- =============================================================
+     8. First-stage results table
+     ============================================================= -->
 <section>
   <h2>First-stage results</h2>
-<table>
-<thead>
-<tr>
-  <th></th>
-  <th>(1)<br/>Migrant-HH share</th>
-  <th>(2)<br/>log(intl remit, Rs)</th>
-  <th>(3)<br/>log(# intl migrants)</th>
-</tr>
-<tr class="smalltext">
-  <th></th>
-  <th>Census, muni × year</th>
-  <th>HRVS HH × year</th>
-  <th>HRVS HH × year</th>
-</tr>
-</thead>
-<tbody>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>(1) Migrant-HH share</th>
+        <th>(2) log(intl remit, Rs)</th>
+        <th>(3) log(\# intl migrants)</th>
+      </tr>
+      <tr class="subhead">
+        <th></th>
+        <th>Census, muni $\times$ year</th>
+        <th>HRVS HH $\times$ year</th>
+        <th>HRVS HH $\times$ year</th>
+      </tr>
+    </thead>
+    <tbody>
 
-<tr><td><strong>k ≥ 0</strong></td>
-    <td>0.0060 <span class="stars">***</span></td>
-    <td>−0.614</td>
-    <td>0.0295</td></tr>
-<tr><td></td>
-    <td class="se">(0.0021)</td>
-    <td class="se">(0.461)</td>
-    <td class="se">(0.0224)</td></tr>
-<tr class="pct"><td></td>
-    <td>[+2.8 % of mean]</td>
-    <td>[−8.8 %]</td>
-    <td>[+5.6 %]</td></tr>
+      <tr><td><strong>$k \geq 0$</strong></td>
+          <td>0.0060 <span class="stars">***</span></td>
+          <td>$-$0.614</td>
+          <td>0.0295</td></tr>
+      <tr><td></td>
+          <td class="se">(0.0021)</td>
+          <td class="se">(0.461)</td>
+          <td class="se">(0.0224)</td></tr>
+      <tr class="pct"><td></td>
+          <td>[$+$2.8\%]</td>
+          <td>[$-$8.8\%]</td>
+          <td>[$+$5.6\%]</td></tr>
 
-<tr class="sep"><td><strong>k ≥ 25</strong></td>
-    <td>0.0063 <span class="stars">**</span></td>
-    <td>0.497</td>
-    <td>0.0368 <span class="stars">*</span></td></tr>
-<tr><td></td>
-    <td class="se">(0.0028)</td>
-    <td class="se">(0.345)</td>
-    <td class="se">(0.0190)</td></tr>
-<tr class="pct"><td></td>
-    <td>[+2.7 %]</td>
-    <td>[+6.8 %]</td>
-    <td>[+6.9 %]</td></tr>
+      <tr class="sep"><td><strong>$k \geq 25$</strong></td>
+          <td>0.0063 <span class="stars">**</span></td>
+          <td>0.497</td>
+          <td>0.0368 <span class="stars">*</span></td></tr>
+      <tr><td></td>
+          <td class="se">(0.0028)</td>
+          <td class="se">(0.345)</td>
+          <td class="se">(0.0190)</td></tr>
+      <tr class="pct"><td></td>
+          <td>[$+$2.7\%]</td>
+          <td>[$+$6.8\%]</td>
+          <td>[$+$6.9\%]</td></tr>
 
-<tr class="sep"><td><strong>k ≥ 50</strong></td>
-    <td>0.0076 <span class="stars">**</span></td>
-    <td>0.832 <span class="stars">**</span></td>
-    <td>0.0556 <span class="stars">***</span></td></tr>
-<tr><td></td>
-    <td class="se">(0.0034)</td>
-    <td class="se">(0.340)</td>
-    <td class="se">(0.0180)</td></tr>
-<tr class="pct"><td></td>
-    <td>[+3.0 %]</td>
-    <td>[+11.2 %]</td>
-    <td>[+10.2 %]</td></tr>
+      <tr class="sep"><td><strong>$k \geq 50$</strong></td>
+          <td>0.0076 <span class="stars">**</span></td>
+          <td>0.832 <span class="stars">**</span></td>
+          <td>0.0556 <span class="stars">***</span></td></tr>
+      <tr><td></td>
+          <td class="se">(0.0034)</td>
+          <td class="se">(0.340)</td>
+          <td class="se">(0.0180)</td></tr>
+      <tr class="pct"><td></td>
+          <td>[$+$3.0\%]</td>
+          <td>[$+$11.2\%]</td>
+          <td>[$+$10.2\%]</td></tr>
 
-<tr class="sep"><td><strong>k ≥ 100</strong></td>
-    <td>0.0134 <span class="stars">***</span></td>
-    <td>1.073 <span class="stars">***</span></td>
-    <td>0.0525 <span class="stars">***</span></td></tr>
-<tr><td></td>
-    <td class="se">(0.0039)</td>
-    <td class="se">(0.333)</td>
-    <td class="se">(0.0187)</td></tr>
-<tr class="pct"><td></td>
-    <td>[+5.0 %]</td>
-    <td>[+13.9 %]</td>
-    <td>[+9.3 %]</td></tr>
+      <tr class="sep"><td><strong>$k \geq 100$</strong></td>
+          <td>0.0134 <span class="stars">***</span></td>
+          <td>1.073 <span class="stars">***</span></td>
+          <td>0.0525 <span class="stars">***</span></td></tr>
+      <tr><td></td>
+          <td class="se">(0.0039)</td>
+          <td class="se">(0.333)</td>
+          <td class="se">(0.0187)</td></tr>
+      <tr class="pct"><td></td>
+          <td>[$+$5.0\%]</td>
+          <td>[$+$13.9\%]</td>
+          <td>[$+$9.3\%]</td></tr>
 
-<tr class="sep smalltext"><td>N (k = 0)</td><td>2,142</td><td>7,899</td><td>7,899</td></tr>
-<tr class="smalltext"><td>Clusters (muni)</td><td>714</td><td>281</td><td>281</td></tr>
-<tr class="smalltext"><td>FE</td><td>muni + year</td><td>HH + year</td><td>HH + year</td></tr>
-
-</tbody>
-</table>
-  <p class="smalltext" style="margin-top:0.5em">
-    Reported β: <em>fx_z × log(mig_int_z)</em>. SE in (), pct of mean in [].
-    *** p&lt;0.01, ** p&lt;0.05, * p&lt;0.1. SE clustered at municipality.
+      <tr class="bottomrule"><td>$N$ ($k=0$)</td><td>2,142</td><td>7,899</td><td>7,899</td></tr>
+      <tr><td>Clusters (muni)</td><td>714</td><td>281</td><td>281</td></tr>
+      <tr><td>Fixed effects</td><td>muni $+$ year</td><td>HH $+$ year</td><td>HH $+$ year</td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$: $\mathrm{fx}_z \times \log(\mathrm{mig\_int}_z)$.
+    SE in (), \% of mean in []. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.
+    SE clustered at municipality.
   </p>
+  <div class="footer-bar">
+    <span>Nepal migration / FX shock &mdash; Chalise &amp; Mobarak</span>
+    <span>First stage &mdash; results</span>
+  </div>
 </section>
 
-<!-- ============================================================ -->
+<!-- =============================================================
+     9. What this table says
+     ============================================================= -->
 <section>
   <h2>What this table says</h2>
   <ol>
-    <li>The shock <strong>raises outmigration at the muni level</strong>. The share of HHs with an absent member goes up 0.6–1.3 pp per 1 SD of treatment, monotone in the threshold.</li>
-    <li>Conditional on having a migrant, <strong>international remittance income rises</strong> — by ~11–14% in restricted samples.</li>
-    <li>Conditional on having a migrant, the <strong>count of international migrants per HH rises</strong> — by ~9–10% in restricted samples.</li>
+    <li>The shock <strong>raises outmigration at the muni level</strong>. The share of HHs with an absent member rises by $0.6\!-\!1.3$ pp per 1 SD of treatment, monotone in the threshold.</li>
+    <li>Conditional on having a migrant, <strong>international remittance income rises</strong> by $\sim$$11\!-\!14\%$ in restricted samples ($k\geq 50$, $k\geq 100$).</li>
+    <li>Conditional on having a migrant, the <strong>count of international migrants per HH rises</strong> by $\sim$$9\!-\!10\%$ in restricted samples.</li>
   </ol>
-  <p>All three margins are <strong>jointly identified by the same shift-share variation</strong>: more migration, more migrants per HH, more rupees coming back.</p>
+  <p style="margin-top:0.8em">
+    All three margins are <strong>jointly identified by the same shift-share variation</strong>: more migration, more migrants per household, more rupees coming back.
+  </p>
+  <div class="footer-bar">
+    <span>Nepal migration / FX shock &mdash; Chalise &amp; Mobarak</span>
+    <span>First stage &mdash; interpretation</span>
+  </div>
 </section>
 
-<!-- ============================================================ -->
+<!-- =============================================================
+     10. Threshold pattern
+     ============================================================= -->
 <section>
   <h2>Reading the threshold pattern</h2>
-  <p>Coefficients <em>increase monotonically</em> as we restrict to higher-baseline-migration municipalities (k = 0 → 100). Two coherent interpretations:</p>
+  <p>
+    Coefficients <em>increase monotonically</em> as the sample restricts to
+    higher-baseline-migration municipalities ($k=0 \to 100$). Two coherent
+    interpretations:
+  </p>
   <ul>
-    <li><strong>Mechanical</strong>: the shock-by-intensity interaction has more identifying variation precisely where intensity is non-trivial; below k ≈ 25 the interaction is mostly fitting noise.</li>
-    <li><strong>Economic</strong>: thin-migration munis don't have the destination network to capitalise on the FX shock; the strong response is concentrated in the munis already on the migration frontier.</li>
+    <li><strong>Mechanical.</strong> The shock-by-intensity interaction has more identifying variation precisely where intensity is non-trivial. Below $k\approx 25$ the interaction is mostly fitting noise.</li>
+    <li><strong>Economic.</strong> Thin-migration munis don't have the destination network to capitalise on the FX shock; the strong response is concentrated in munis already on the migration frontier.</li>
   </ul>
-  <p>Both consistent with the underlying network-cum-network-multiplier logic of shift-share migration shocks.</p>
+  <p>Both consistent with the network-multiplier logic of shift-share migration shocks.</p>
+  <div class="footer-bar">
+    <span>Nepal migration / FX shock &mdash; Chalise &amp; Mobarak</span>
+    <span>First stage &mdash; reading</span>
+  </div>
 </section>
 
-<!-- ============================================================ -->
-<section>
-  <h2>Where this goes next</h2>
-  <ul>
-    <li>Now that the first stage is established, the reduced-form outcomes are <strong>readable as IV-style responses</strong>.</li>
-    <li>Stable downstream patterns from the 48-spec grid:
-      <ul>
-        <li>Delayed marriage (−3.3 pp by 18, +0.14 yr mean age at marriage)</li>
-        <li>Sanitation revolution (+5.9 pp toilet, +7.1 pp ordinary toilet)</li>
-        <li>Asset upgrading to rural-mobility (motorbike + mobile up, car + fixed-internet down)</li>
-        <li>Male LFP down, feminisation of agriculture up, current schooling up</li>
-        <li>Construction boom; no manufacturing</li>
-      </ul>
-    </li>
-    <li>Caveats: census <code>absent_hh_share</code> doesn't separate intl vs domestic absentees (next data task: rebuild from raw HH file). HRVS panel is short (3 years); HH FE absorbs most within-HH rupee variation, hence the muni-FE robustness alternative also reported in the back-up table.</li>
-  </ul>
-</section>
-
-<!-- ============================================================ -->
+<!-- =============================================================
+     11. Wrap
+     ============================================================= -->
 <section>
   <h2>One-sentence wrap</h2>
   <blockquote>
-    In rural Nepal, the FX-driven remittance windfall buys households
-    a better toilet, a motorbike, and an extra year of schooling for
-    their kids; it pulls men out of the village, leaves women holding
-    the farm, delays marriage, and funds construction — but it doesn't
-    build manufacturing, doesn't bring fixed broadband, and doesn't raise
-    the local stock of educated adults because the very people who would
+    In rural Nepal, the FX-driven remittance windfall buys households a
+    better toilet, a motorbike, and an extra year of schooling for their
+    kids; it pulls men out of the village, leaves women holding the farm,
+    delays marriage, and funds construction &mdash; but it doesn't build
+    manufacturing, doesn't bring fixed broadband, and doesn't raise the
+    local stock of educated adults, because the very people who would
     lift that stock are remitting from abroad.
   </blockquote>
+  <p class="smalltext" style="margin-top:1em">
+    Detailed reduced-form results, stability across 48 specifications, and
+    variable-construction notes are in the next sections (to be added).
+  </p>
+  <div class="footer-bar">
+    <span>Nepal migration / FX shock &mdash; Chalise &amp; Mobarak</span>
+    <span>Wrap</span>
+  </div>
 </section>
 
 </div>
@@ -328,11 +521,17 @@
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
 <script>
   Reveal.initialize({
-    hash: true,
+    width:   1280,
+    height:  800,
+    margin:  0.06,
+    minScale: 0.2,
+    maxScale: 2.0,
+    hash:    true,
     slideNumber: 'c/t',
-    transition: 'fade',
-    controls: true,
-    progress: true
+    transition:  'fade',
+    controls:    true,
+    progress:    true,
+    center:      false   /* top-align: predictable layout for long content */
   });
 </script>
 </body>
