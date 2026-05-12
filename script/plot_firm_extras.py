@@ -42,8 +42,9 @@ def two_panel(rows_left, rows_right, title_left, title_right,
     labels = [r['label'] for r in rows_left]
     fig, axes = plt.subplots(1, 2, figsize=(9.5, 4.2), sharey=True)
     y = list(range(len(labels)))
-    extreme = max(abs(r['hi']) for r in rows_left + rows_right
-                  if r['lo'] is not None) * 1.05
+    all_bounds = [abs(r['lo']) for r in rows_left + rows_right] + \
+                 [abs(r['hi']) for r in rows_left + rows_right]
+    extreme = max(all_bounds) * 1.08
     for ax, rows, title in zip(axes, [rows_left, rows_right],
                               [title_left, title_right]):
         for i, r in enumerate(rows):

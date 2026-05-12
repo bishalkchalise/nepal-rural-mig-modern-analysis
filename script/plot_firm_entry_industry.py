@@ -76,8 +76,10 @@ for ax, rows, title in zip(axes, [rows_k0, rows_k25],
     ax.invert_yaxis()
     ax.tick_params(axis='both', length=2)
     ax.grid(axis='x', linewidth=0.4, alpha=0.4)
-    # symmetric x-axis around 0
-    extreme = max(abs(r['hi']) for r in rows + rows_k0 + rows_k25) * 1.05
+    # symmetric x-axis around 0 with padding
+    all_bounds = [abs(r['lo']) for r in rows_k0 + rows_k25] + \
+                 [abs(r['hi']) for r in rows_k0 + rows_k25]
+    extreme = max(all_bounds) * 1.08
     ax.set_xlim(-extreme, extreme)
 
 plt.tight_layout()
