@@ -156,19 +156,63 @@ NEC_PANEL_OUTCOMES <- c(
   "log_new_firms_other_services"
 )
 NEC_CS_OUTCOMES <- c(
+  ## --- Scale (firm count + aggregate inputs/outputs) ---
   "log_n_firms",
   "log_emp_total",
   "log_rev_total",
   "log_value_added_total",
   "log_cap_total",
-  "log_n_firms_size_micro_1",
-  "log_n_firms_size_small_2_9",
-  "log_n_firms_size_medium_10_50",
-  "log_n_firms_size_large_51p",
+  "log_exp_total",
+  "log_profit_proxy_total",
+
+  ## --- Per-worker productivity ---
+  "mean_value_added_per_worker",
+  "median_value_added_per_worker",
+  "mean_rev_per_worker",
+  "mean_capital_per_worker",
+  "mean_profit_per_worker",
+
+  ## --- Profitability & factor shares ---
+  "mean_profit_margin",
+  "wage_share_of_revenue",
+  "value_added_share_of_revenue",
+  "capital_intensity_aggregate",
+
+  ## --- Formality ---
   "formality_index",
   "share_registered",
+  "share_tax_registered",
+  "share_keeps_accounts",
+  "share_operates_year_round",
+
+  ## --- Credit & finance ---
+  "share_borrowed",
+  "share_uses_formal_credit",
+  "share_has_foreign_capital",
+
+  ## --- Firm demographics ---
+  "share_female_led",
   "mean_emp_per_firm",
-  "share_emp_female"
+
+  ## --- Size distribution (shares) ---
+  "share_size_1_worker",
+  "share_size_2_9_workers",
+  "share_size_10_50_workers",
+  "share_size_51plus_workers",
+
+  ## --- Industry composition ---
+  "industry_diversity",
+  "industry_hhi",
+  "n_industries_present",
+  "share_modern_proxy",
+  "share_services_total",
+
+  ## --- Industry shares (top 5) ---
+  "share_manufacturing",
+  "share_construction",
+  "share_trade_retail",
+  "share_hospitality",
+  "share_finance_prof_info"
 )
 NEC_PANEL_OUTCOMES <- intersect(NEC_PANEL_OUTCOMES, names(nec_p))
 NEC_CS_OUTCOMES    <- intersect(NEC_CS_OUTCOMES,    names(nec_cs))
