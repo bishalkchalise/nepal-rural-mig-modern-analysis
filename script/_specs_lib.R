@@ -268,6 +268,17 @@ load_hh <- function() {
     df <- unique(df[, ..keep_cols], by = c("hhid","year"))
     master <- merge(master, df, by = c("hhid","year"), all.x = TRUE)
   }
+  # Derived log-count columns for migrant outcomes.  Defined as log(1 + x) so
+  # zero-migrant HHs survive (rather than dropping to -Inf).  Note: the raw
+  # n_migrants_* live in migration_hh_year_migrant_only.csv, which restricts
+  # to HHs with any migrant.  Non-migrant HHs therefore have NA for these
+  # raw columns; the log versions stay NA there.  Use them only on the
+  # migrant-conditional sample (intensive margin).
+  for (v in c("n_migrants_total","n_migrants_international",
+              "n_migrants_male","n_migrants_female")) {
+    if (v %in% names(master))
+      master[, (paste0("log_", v)) := log1p(get(v))]
+  }
   .hh_cache <<- master
   master
 }

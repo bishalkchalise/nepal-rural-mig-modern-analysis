@@ -61,7 +61,11 @@ for (thr in THR) {
     c_block_a = CFG$c_block_a, c_block_b = CFG$c_block_b, c_block_c = CFG$c_block_c,
     outcomes   = list(
       "full sample" = c("remittance_any","remittance_amt"),
-      "migrant HHs only" = c("remit_received","remit_amount_12m_rs","remit_amount_intl_12m_rs")
+      "migrant HHs only" = c(
+        "remit_received","remit_amount_12m_rs","remit_amount_intl_12m_rs",
+        "n_migrants_total","log_n_migrants_total",
+        "n_migrants_international","log_n_migrants_international"
+      )
     ),
     output_path = file.path(ROOT, "output", "tab",
                             sprintf("first_stage_hh_remit_thr%d.csv", thr))
@@ -82,21 +86,27 @@ combined <- rbind(census_first, hh_first, fill = TRUE)
 # Within each, outcomes in a fixed reporting order; within each outcome,
 # thresholds 0/25/50/100 in order.
 ord_outcomes <- c(
-  "absent_hh_share",                # census
-  "remittance_any","remittance_amt",# HH unconditional
-  "remit_received","remit_amount_12m_rs","remit_amount_intl_12m_rs"  # HH intensive
+  "absent_hh_share",                                            # census
+  "remittance_any","remittance_amt",                            # HH unconditional
+  "remit_received","remit_amount_12m_rs","remit_amount_intl_12m_rs",  # HH intensive remit
+  "n_migrants_total","log_n_migrants_total",                    # HH intensive counts
+  "n_migrants_international","log_n_migrants_international"
 )
 combined[, outcome := factor(outcome, levels = ord_outcomes)]
 combined <- combined[order(outcome, threshold)]
 
 # Sample-group label per outcome for clarity in the printed table
 sample_lbl <- c(
-  "absent_hh_share"          = "census (muni)",
-  "remittance_any"           = "HH full",
-  "remittance_amt"           = "HH full",
-  "remit_received"           = "HH migrant-only",
-  "remit_amount_12m_rs"      = "HH migrant-only",
-  "remit_amount_intl_12m_rs" = "HH migrant-only"
+  "absent_hh_share"              = "census (muni)",
+  "remittance_any"               = "HH full",
+  "remittance_amt"               = "HH full",
+  "remit_received"               = "HH migrant-only",
+  "remit_amount_12m_rs"          = "HH migrant-only",
+  "remit_amount_intl_12m_rs"     = "HH migrant-only",
+  "n_migrants_total"             = "HH migrant-only",
+  "log_n_migrants_total"         = "HH migrant-only",
+  "n_migrants_international"     = "HH migrant-only",
+  "log_n_migrants_international" = "HH migrant-only"
 )
 combined[, sample := sample_lbl[as.character(outcome)]]
 
