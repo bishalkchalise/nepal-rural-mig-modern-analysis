@@ -21,7 +21,7 @@ CFG <- list(
   c_fx       = TRUE,
   c_block_a  = TRUE,
   c_block_b  = FALSE,
-  c_block_c  = TRUE
+  c_block_c  = FALSE       # trade SSIV removed
 )
 
 run_quiet <- function(...) {
