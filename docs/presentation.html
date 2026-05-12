@@ -114,7 +114,7 @@
     .reveal .slides { text-align: left; }
 
     .reveal section {
-      padding: 56px 96px 48px 96px;
+      padding: 36px 96px 28px 96px;
       background: var(--paper);
       box-sizing: border-box;
       height: 100%;
@@ -159,9 +159,29 @@
       font-variant-numeric: tabular-nums;
     }
     .reveal table th, .reveal table td {
-      padding: 4px 14px; text-align: right; vertical-align: top;
+      padding: 2.5px 14px; text-align: right; vertical-align: top;
       background: transparent;
     }
+    .reveal table thead tr:first-child th.sample-span {
+      text-align: center; font-style: italic; font-weight: 400;
+      color: var(--muted); font-size: 0.92em;
+      border-top: 1.2px solid var(--ink) !important;
+      border-bottom: 0.5px solid var(--rule) !important;
+      padding-top: 8px; padding-bottom: 4px;
+    }
+    .reveal table thead tr:first-child th.outcome-span {
+      text-align: left; font-weight: 600;
+      border-top: 1.2px solid var(--ink) !important;
+      border-bottom: 0.8px solid var(--ink) !important;
+      padding-top: 8px; padding-bottom: 4px;
+      vertical-align: bottom;
+    }
+    .reveal table thead tr.threshold-row th {
+      border-top: none !important;
+      border-bottom: 0.8px solid var(--ink) !important;
+      font-weight: 600; padding-top: 2px; padding-bottom: 6px;
+    }
+    .reveal table thead tr.threshold-row th:first-child { border-bottom: 0.8px solid var(--ink) !important; }
     .reveal table th:first-child, .reveal table td:first-child {
       text-align: left; padding-left: 0;
     }
@@ -278,8 +298,11 @@
   <table>
     <thead>
       <tr>
-        <th>Municipality sample &mdash; 2001 migrant-count threshold</th>
-        <th>$k = 0$  (all)</th>
+        <th rowspan="2" class="outcome-span">Outcome variables</th>
+        <th colspan="4" class="sample-span">Municipality sample &mdash; 2001 migrant-count threshold</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>full</th>
         <th>$k \geq 25$</th>
         <th>$k \geq 50$</th>
         <th>$k \geq 100$</th>
@@ -370,8 +393,11 @@
   <table>
     <thead>
       <tr>
-        <th>Municipality sample &mdash; 2001 migrant-count threshold</th>
-        <th>$k = 0$  (all)</th>
+        <th rowspan="2" class="outcome-span">Outcome variables</th>
+        <th colspan="4" class="sample-span">Municipality sample &mdash; 2001 migrant-count threshold</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>full</th>
         <th>$k \geq 25$</th>
         <th>$k \geq 50$</th>
         <th>$k \geq 100$</th>
@@ -465,8 +491,11 @@
   <table>
     <thead>
       <tr>
-        <th>Municipality sample &mdash; 2001 migrant-count threshold</th>
-        <th>$k = 0$  (all)</th>
+        <th rowspan="2" class="outcome-span">Outcome variables</th>
+        <th colspan="4" class="sample-span">Municipality sample &mdash; 2001 migrant-count threshold</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>full</th>
         <th>$k \geq 25$</th>
         <th>$k \geq 50$</th>
         <th>$k \geq 100$</th>
