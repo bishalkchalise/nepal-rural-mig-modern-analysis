@@ -214,7 +214,7 @@
      ============================================================= -->
 <section class="title-slide">
   <h1>International migration<br/>and modernisation of rural Nepal</h1>
-  <p class="authors">Bishal K. Chalise &nbsp;·&nbsp; Mushfiq Mobarak</p>
+  <p class="authors">Bishal K. Chalise &nbsp;·&nbsp; Ahmed Mushfiq Mobarak</p>
   <p class="pdf-link">
     <a href="?print-pdf" target="_blank" rel="noopener">↓ Download as PDF</a>
   </p>
@@ -389,6 +389,22 @@
     center:      false,
     plugins:     [ RevealMarkdown ]
   });
+
+  // When the deck is opened with ?print-pdf, auto-open the browser
+  // Save-as-PDF dialog once MathJax + the print stylesheet have rendered.
+  if (window.location.search.match(/print-pdf/gi)) {
+    Reveal.on('ready', function () {
+      // wait for MathJax to finish typesetting before printing
+      var fire = function () {
+        setTimeout(function () { window.print(); }, 500);
+      };
+      if (window.MathJax && window.MathJax.startup) {
+        window.MathJax.startup.promise.then(fire);
+      } else {
+        setTimeout(fire, 1500);
+      }
+    });
+  }
 </script>
 </body>
 </html>
