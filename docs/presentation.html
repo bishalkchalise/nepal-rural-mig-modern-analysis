@@ -154,7 +154,7 @@
     .reveal table tr { border: none !important; }
     .reveal table {
       font-size: 0.42em; border-collapse: collapse;
-      margin: 0.6em auto; width: 100%; max-width: 1100px;
+      margin: 0.6em auto; width: 100%; max-width: 1060px;
       line-height: 1.45;
       font-variant-numeric: tabular-nums;
     }
@@ -200,8 +200,8 @@
       margin: 0.8em auto !important; display: block !important;
     }
     .reveal .eq-cap {
-      font-size: 0.45em; color: var(--muted);
-      margin: -0.1em 0 0.3em 0; text-align: center;
+      font-size: 0.38em; color: var(--muted);
+      margin: -0.1em 0 0.3em 0; text-align: left; line-height: 1.55;
     }
   </style>
 </head>
@@ -278,18 +278,11 @@
   <table>
     <thead>
       <tr>
-        <th></th>
-        <th>$k \geq 0$</th>
+        <th>Municipality sample &mdash; 2001 migrant-count threshold</th>
+        <th>$k = 0$  (all)</th>
         <th>$k \geq 25$</th>
         <th>$k \geq 50$</th>
         <th>$k \geq 100$</th>
-      </tr>
-      <tr class="subhead">
-        <th>Sample threshold (2001 baseline migrants)</th>
-        <th>full</th>
-        <th>≥ 25</th>
-        <th>≥ 50</th>
-        <th>≥ 100</th>
       </tr>
     </thead>
     <tbody>
@@ -370,75 +363,24 @@
 </section>
 
 <!-- =============================================================
-     5. Household physical investment (toilet, foundation, asset index)
+     5. Household physical investment
      ============================================================= -->
 <section>
   <h2>Household physical investment</h2>
   <table>
     <thead>
       <tr>
-        <th></th>
-        <th>$k \geq 0$</th>
+        <th>Municipality sample &mdash; 2001 migrant-count threshold</th>
+        <th>$k = 0$  (all)</th>
         <th>$k \geq 25$</th>
         <th>$k \geq 50$</th>
         <th>$k \geq 100$</th>
       </tr>
-      <tr class="subhead">
-        <th>Sample threshold (2001 baseline migrants)</th>
-        <th>full</th>
-        <th>≥ 25</th>
-        <th>≥ 50</th>
-        <th>≥ 100</th>
-      </tr>
     </thead>
     <tbody>
 
-      <!-- Outcome 1: any toilet -->
-      <tr class="outcomehead"><td><strong>(1) Toilet adoption</strong></td>
-          <td>0.0616 <span class="stars">***</span></td>
-          <td>0.0587 <span class="stars">***</span></td>
-          <td>0.0650 <span class="stars">***</span></td>
-          <td>0.0559 <span class="stars">***</span></td></tr>
-      <tr class="outcomesub"><td>Census, muni × year</td>
-          <td class="se">(0.0062)</td>
-          <td class="se">(0.0078)</td>
-          <td class="se">(0.0087)</td>
-          <td class="se">(0.0106)</td></tr>
-      <tr class="pct"><td></td>
-          <td>[+10.3%]</td>
-          <td>[+8.9%]</td>
-          <td>[+9.6%]</td>
-          <td>[+7.9%]</td></tr>
-      <tr><td>$N$ / Clusters</td>
-          <td>2,142 / 714</td>
-          <td>1,425 / 475</td>
-          <td>1,203 / 401</td>
-          <td>939 / 313</td></tr>
-
-      <!-- Outcome 2: modern foundation -->
-      <tr class="outcomehead"><td><strong>(2) Modern foundation</strong></td>
-          <td>$-$0.0119 <span class="stars">**</span></td>
-          <td>0.0210 <span class="stars">***</span></td>
-          <td>0.0189 <span class="stars">***</span></td>
-          <td>0.0288 <span class="stars">***</span></td></tr>
-      <tr class="outcomesub"><td>Census, muni × year</td>
-          <td class="se">(0.0048)</td>
-          <td class="se">(0.0064)</td>
-          <td class="se">(0.0071)</td>
-          <td class="se">(0.0082)</td></tr>
-      <tr class="pct"><td></td>
-          <td>[$-$5.0%]</td>
-          <td>[+7.6%]</td>
-          <td>[+6.6%]</td>
-          <td>[+9.9%]</td></tr>
-      <tr><td>$N$ / Clusters</td>
-          <td>1,428 / 714</td>
-          <td>950 / 475</td>
-          <td>802 / 401</td>
-          <td>626 / 313</td></tr>
-
-      <!-- Outcome 3: asset index -->
-      <tr class="outcomehead"><td><strong>(3) Asset index (12 durables)</strong></td>
+      <!-- Outcome 1: durables per HH -->
+      <tr class="outcomehead"><td><strong>(1) Durables per household</strong></td>
           <td>0.0342</td>
           <td>0.0614 <span class="stars">**</span></td>
           <td>0.0899 <span class="stars">***</span></td>
@@ -459,39 +401,75 @@
           <td>802 / 401</td>
           <td>626 / 313</td></tr>
 
+      <!-- Outcome 2: modern housing -->
+      <tr class="outcomehead"><td><strong>(2) Modern housing</strong></td>
+          <td>$-$0.0119 <span class="stars">**</span></td>
+          <td>0.0210 <span class="stars">***</span></td>
+          <td>0.0189 <span class="stars">***</span></td>
+          <td>0.0288 <span class="stars">***</span></td></tr>
+      <tr class="outcomesub"><td>Census, muni × year</td>
+          <td class="se">(0.0048)</td>
+          <td class="se">(0.0064)</td>
+          <td class="se">(0.0071)</td>
+          <td class="se">(0.0082)</td></tr>
+      <tr class="pct"><td></td>
+          <td>[$-$5.0%]</td>
+          <td>[+7.6%]</td>
+          <td>[+6.6%]</td>
+          <td>[+9.9%]</td></tr>
+      <tr><td>$N$ / Clusters</td>
+          <td>1,428 / 714</td>
+          <td>950 / 475</td>
+          <td>802 / 401</td>
+          <td>626 / 313</td></tr>
+
+      <!-- Outcome 3: toilet adoption -->
+      <tr class="outcomehead"><td><strong>(3) Toilet adoption</strong></td>
+          <td>0.0616 <span class="stars">***</span></td>
+          <td>0.0587 <span class="stars">***</span></td>
+          <td>0.0650 <span class="stars">***</span></td>
+          <td>0.0559 <span class="stars">***</span></td></tr>
+      <tr class="outcomesub"><td>Census, muni × year</td>
+          <td class="se">(0.0062)</td>
+          <td class="se">(0.0078)</td>
+          <td class="se">(0.0087)</td>
+          <td class="se">(0.0106)</td></tr>
+      <tr class="pct"><td></td>
+          <td>[+10.3%]</td>
+          <td>[+8.9%]</td>
+          <td>[+9.6%]</td>
+          <td>[+7.9%]</td></tr>
+      <tr><td>$N$ / Clusters</td>
+          <td>2,142 / 714</td>
+          <td>1,425 / 475</td>
+          <td>1,203 / 401</td>
+          <td>939 / 313</td></tr>
+
     </tbody>
   </table>
   <p class="eq-cap" style="margin-top:0.6em">
     Reported $\beta$: $\mathrm{fx}_z \times \log(\mathrm{mig\_int}_z)$.
-    SE in (), % of mean in []. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.
-    SE clustered at municipality.
+    SE in (), % of mean in []. *** $p<0.01$, ** $p<0.05$, * $p<0.10$. SE clustered at municipality.
+    <em>Durables per household</em>: mean number of household durable categories owned (0&ndash;12 scale; radio, TV, mobile, computer, internet, landline, bicycle, motorcycle, car, fridge, plus 2 others). Higher = more types owned.
+    <em>Modern housing</em>: share of dwellings with cement/concrete/RCC foundation (vs. mud/wood/stone).
     <em>Toilet adoption</em>: share of HHs with any toilet (modern + ordinary).
-    <em>Modern foundation</em>: share of dwellings with cement/concrete/RCC foundation.
-    <em>Asset index</em>: count of 12 household durables (radio, TV, mobile, computer, internet, bicycle, motorcycle, car, fridge, etc.).
-    Foundation and asset index are measured in 2011/2021 only (not coded in 2001).
+    Durables and Modern housing are measured in 2011/2021 only (not coded in 2001).
   </p>
 </section>
 
 <!-- =============================================================
-     6. Human capital & child outcomes
+     6. Human capital investment
      ============================================================= -->
 <section>
-  <h2>Human capital &amp; child outcomes</h2>
+  <h2>Human capital investment</h2>
   <table>
     <thead>
       <tr>
-        <th></th>
-        <th>$k \geq 0$</th>
+        <th>Municipality sample &mdash; 2001 migrant-count threshold</th>
+        <th>$k = 0$  (all)</th>
         <th>$k \geq 25$</th>
         <th>$k \geq 50$</th>
         <th>$k \geq 100$</th>
-      </tr>
-      <tr class="subhead">
-        <th>Sample threshold (2001 baseline migrants)</th>
-        <th>full</th>
-        <th>≥ 25</th>
-        <th>≥ 50</th>
-        <th>≥ 100</th>
       </tr>
     </thead>
     <tbody>
@@ -530,25 +508,8 @@
           <td>[+1.8%]</td>
           <td>[+0.5%]</td></tr>
 
-      <!-- (3) Literate, male -->
-      <tr class="outcomehead"><td><strong>(3) Literate, male</strong></td>
-          <td>0.0125 <span class="stars">***</span></td>
-          <td>0.0054 <span class="stars">**</span></td>
-          <td>0.0040 <span class="stars">*</span></td>
-          <td>0.0001</td></tr>
-      <tr class="outcomesub"><td>Census, muni × year</td>
-          <td class="se">(0.0021)</td>
-          <td class="se">(0.0021)</td>
-          <td class="se">(0.0024)</td>
-          <td class="se">(0.0028)</td></tr>
-      <tr class="pct"><td></td>
-          <td>[+1.8%]</td>
-          <td>[+0.7%]</td>
-          <td>[+0.5%]</td>
-          <td>[+0.01%]</td></tr>
-
-      <!-- (4) School attendance 6-16 -->
-      <tr class="outcomehead"><td><strong>(4) School attendance 6&ndash;16</strong></td>
+      <!-- (3) School attendance 6-16 -->
+      <tr class="outcomehead"><td><strong>(3) School attendance 6&ndash;16</strong></td>
           <td>0.0193 <span class="stars">***</span></td>
           <td>0.0090 <span class="stars">***</span></td>
           <td>0.0090 <span class="stars">***</span></td>
@@ -563,55 +524,59 @@
           <td>[+1.1%]</td>
           <td>[+1.1%]</td>
           <td>[+0.6%]</td></tr>
-
-      <!-- (5) Mean children deceased -->
-      <tr class="outcomehead"><td><strong>(5) Mean children deceased</strong></td>
-          <td>$-$0.0028</td>
-          <td>$-$0.0002</td>
-          <td>0.0046</td>
-          <td>0.0084 <span class="stars">**</span></td></tr>
-      <tr class="outcomesub"><td>Census, muni × year</td>
-          <td class="se">(0.0040)</td>
-          <td class="se">(0.0036)</td>
-          <td class="se">(0.0036)</td>
-          <td class="se">(0.0040)</td></tr>
-      <tr class="pct"><td></td>
-          <td>[$-$1.6%]</td>
-          <td>[$-$0.1%]</td>
-          <td>[+3.2%]</td>
-          <td>[+6.0%]</td></tr>
-
-      <!-- (6) Any child deceased -->
-      <tr class="outcomehead"><td><strong>(6) Any child deceased</strong></td>
-          <td>0.0008</td>
-          <td>0.0017</td>
-          <td>0.0040 <span class="stars">**</span></td>
-          <td>0.0059 <span class="stars">***</span></td></tr>
-      <tr class="outcomesub"><td>Census, muni × year</td>
-          <td class="se">(0.0019)</td>
-          <td class="se">(0.0018)</td>
-          <td class="se">(0.0019)</td>
-          <td class="se">(0.0022)</td></tr>
-      <tr class="pct"><td></td>
-          <td>[+0.8%]</td>
-          <td>[+1.7%]</td>
-          <td>[+4.2%]</td>
-          <td>[+6.5%]</td></tr>
-
-      <tr><td>$N$ / Clusters</td>
+      <tr><td>$N$ / Clusters (1)–(3)</td>
           <td>2,142 / 714</td>
           <td>1,425 / 475</td>
           <td>1,203 / 401</td>
           <td>939 / 313</td></tr>
+
+      <!-- (4) Health spending on medicines -->
+      <tr class="outcomehead"><td><strong>(4) Health spending — medicines (Rs)</strong></td>
+          <td>2,187 <span class="stars">***</span></td>
+          <td>1,914 <span class="stars">***</span></td>
+          <td>1,258 <span class="stars">*</span></td>
+          <td>926</td></tr>
+      <tr class="outcomesub"><td>HRVS HH × year</td>
+          <td class="se">(751)</td>
+          <td class="se">(635)</td>
+          <td class="se">(647)</td>
+          <td class="se">(800)</td></tr>
+      <tr class="pct"><td></td>
+          <td>[+147%]</td>
+          <td>[+125%]</td>
+          <td>[+82%]</td>
+          <td>[+60%]</td></tr>
+
+      <!-- (5) Total health spending -->
+      <tr class="outcomehead"><td><strong>(5) Health spending — total (Rs)</strong></td>
+          <td>10,768 <span class="stars">**</span></td>
+          <td>6,603 <span class="stars">**</span></td>
+          <td>4,432 <span class="stars">*</span></td>
+          <td>2,798</td></tr>
+      <tr class="outcomesub"><td>HRVS HH × year</td>
+          <td class="se">(4,731)</td>
+          <td class="se">(2,657)</td>
+          <td class="se">(2,438)</td>
+          <td class="se">(3,224)</td></tr>
+      <tr class="pct"><td></td>
+          <td>[+84%]</td>
+          <td>[+53%]</td>
+          <td>[+36%]</td>
+          <td>[+23%]</td></tr>
+      <tr><td>$N$ / Clusters (4)–(5)</td>
+          <td>16,562 / 281</td>
+          <td>11,561 / 191</td>
+          <td>10,274 / 169</td>
+          <td>8,327 / 133</td></tr>
+
     </tbody>
   </table>
   <p class="eq-cap" style="margin-top:0.5em">
     Reported $\beta$: $\mathrm{fx}_z \times \log(\mathrm{mig\_int}_z)$.
-    SE in (), % of mean in []. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.
-    SE clustered at municipality. FE: muni + year.
-    <em>Literacy</em> at pop 6+; <em>School attendance</em> at ages 6&ndash;16.
-    Mortality outcomes built from ever-married women 15&ndash;49 reporting any child deceased.
-    Mortality effects are concentrated at higher migration-intensity thresholds ($k\geq 50$); not robust at low thresholds.
+    SE in (), % of mean in []. *** $p<0.01$, ** $p<0.05$, * $p<0.10$. SE clustered at municipality.
+    FE: muni + year for (1)–(3); HH + year for (4)–(5).
+    <em>Literacy</em> = share of pop 6+ who is literate. <em>School attendance</em> = share of children 6–16 in school.
+    <em>Health spending</em> = total HH-level out-of-pocket health expenditure (medicines = medicine purchases only; total = medicines + hospital + other). Mean baseline Rs 1,500 (medicines) and Rs 12,400 (total).
   </p>
 </section>
 
