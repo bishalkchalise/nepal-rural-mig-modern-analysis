@@ -18,6 +18,16 @@ DOCS  = ROOT / "docs/presentation.html"
 # -------------------------------------------------------------- labels & blocks
 # (outcome code, slide label, mean string for sub-row, value type)
 #   value type: 'pct' = share x100 with 1 dp, 'rs' = rupee integer, 'log' = 3 dp
+# Labels may include HTML tooltip attribute (title=) for hover-explanations.
+
+TT_SIMPSON = ("Simpson crop diversity: 1 − Σpᵢ². "
+              "0 = monoculture; ~0.9 = perfectly balanced across crops. "
+              "Mean ≈0.22 means most HH concentrate in 1–2 crops.")
+TT_HHI     = ("Industry diversity = 1 − HHI on muni-level industry employment shares. "
+              "0 = all employment in one industry; close to 1 = perfectly diversified.")
+TT_HFIAS   = ("Household Food Insecurity Access Scale (HFIAS): 9 indicator questions × 4 frequency levels "
+              "(0–3 each), summed to 0–27. Median household scores 0 in most populations; "
+              "any positive value indicates experienced food insecurity.")
 HH_BLOCKS = [
     ("firststage", "First-stage", [
         ("absent_hh_share",                 "Migrant-HH share",                 ".24",      "pct"),
@@ -57,7 +67,7 @@ HH_BLOCKS = [
         ("share_both_seasons",              "Cultivated both seasons",          ".65",      "pct"),
         ("share_fallow_wet",                "Fallow land, wet season",          ".08",      "pct"),
         ("share_fallow_dry",                "Fallow land, dry season",          ".28",      "pct"),
-        ("crop_simpson_diversity",          "Crop diversity (Simpson)",         ".22",      "log"),
+        ("crop_simpson_diversity",          f"<span title='{TT_SIMPSON}' style='border-bottom:1px dotted #2c5282;cursor:help'>Crop diversity (Simpson)</span>", ".22", "pct"),
         ("grows_horticulture",              "Grows any horticulture crop",      ".38",      "pct"),
     ]),
     ("inputs", "Input use", [
@@ -73,11 +83,11 @@ HH_BLOCKS = [
         ("nonfood_exp_12m",                 "Non-food spending, annual (Rs)",   "Rs 97,932","rs"),
         ("nonfood_clothing_footwear_12m",   "Clothing & footwear, annual (Rs)", "Rs 12,151","rs"),
         ("nonfood_fuel_lighting_12m",       "Fuel & lighting, annual (Rs)",     "Rs 4,760", "rs"),
-        ("food_insec_score",                "Food insecurity score (0–27)",     "0.77",     "log"),
+        ("food_insec_score",                f"<span title='{TT_HFIAS}' style='border-bottom:1px dotted #2c5282;cursor:help'>Food insecurity score (HFIAS, 0–27)</span>", "0.77", "log"),
     ]),
 ]
 FIRM_BLOCKS = [
-    ("entry", "Firm entry", [
+    ("entry", "Firm entry 2001–18", [
         ("log_new_firms",                       "Total new firms",              "3.35", "log"),
         ("log_new_firms_size_1_worker",         "Size: 1-worker",               "2.40", "log"),
         ("log_new_firms_size_2_9_workers",      "Size: 2–9 workers",            "2.81", "log"),
@@ -86,12 +96,12 @@ FIRM_BLOCKS = [
         ("log_new_firms_trade_retail",          "Industry: Trade & retail",     "2.70", "log"),
         ("log_new_firms_hospitality_food",      "Industry: Hospitality & food", "1.52", "log"),
     ]),
-    ("structure", "Firm structure 2018", [
+    ("structure", "Firm structure 2018 (cross-section)", [
         ("log_n_firms",                         "log(# firms)",                 "6.82", "log"),
         ("log_emp_total",                       "log(total employment)",        "7.92", "log"),
         ("log_rev_total",                       "log(revenue)",                 "21.25","log"),
         ("log_cap_total",                       "log(capital stock)",           "21.47","log"),
-        ("industry_diversity",                  "Industry diversity (1 − HHI)", ".67",  "pct"),
+        ("industry_diversity",                  f"<span title='{TT_HHI}' style='border-bottom:1px dotted #2c5282;cursor:help'>Industry diversity (1 − HHI)</span>", ".67", "pct"),
         ("share_female_led",                    "Share female-led",             ".35",  "pct"),
     ]),
 ]
@@ -121,8 +131,19 @@ def fmt_se(se, kind):
         return f"({se:,.0f})"
     return f"({se:.3f})"
 
-def fmt_pct_of_mean(b, mean, kind):
-    if pd.isna(b) or pd.isna(mean) or mean == 0: return ""
+def fmt_effect_row(b, mean, kind):
+    """Per-cell content for the row under the beta:
+       - 'pct'  -> percentage-point change   '[+6.3pp]'
+       - 'log'  -> approx percent change       '[+49.7%]'
+       - 'rs'   -> Rs amount as % of mean      '[+22%]'
+    """
+    if pd.isna(b): return ""
+    if kind == "pct":
+        return f"[{b*100:+.1f}pp]"
+    if kind == "log":
+        return f"[{b*100:+.0f}%]"
+    if pd.isna(mean) or mean == 0:
+        return ""
     return f"[{100*b/mean:+.0f}%]"
 
 # -------------------------------------------------------------- table builder
@@ -148,7 +169,7 @@ def build_table(df, sample_labels, block, slide_id, sample_key):
             se= float(r['se'].iloc[0]);   m = float(r['mean_y'].iloc[0])
             beta_cells.append(f"<td>{fmt_beta(b,p,kind)}</td>")
             se_cells.append(f"<td class='se'>{fmt_se(se,kind)}</td>")
-            pct_cells.append(f"<td>{fmt_pct_of_mean(b,m,kind)}</td>")
+            pct_cells.append(f"<td>{fmt_effect_row(b,m,kind)}</td>")
         rows.append(
             f"<tr class='outcomehead'><td><strong>{label}</strong></td>{''.join(beta_cells)}</tr>"
             f"<tr class='outcomesub'><td>mean {mean_str}</td>{''.join(se_cells)}</tr>"
@@ -269,12 +290,17 @@ EXTRA_HEAD = '''
 '''
 
 FOOTNOTE = (
-    'All coefficients at $k\\geq 25$ baseline migrants per municipality, anchor spec '
-    '(treatment + year × mig_int + year × fx + year × Block A; muni + year FE).  '
-    'SE in parens (cluster: muni), % of mean in []. *** $p<.01$, ** $p<.05$, * $p<.10$. '
-    '<em>Net-flow:</em> net-inflow muni = more in-migrants than out-migrants in 2001 census; '
-    'net-outflow = the reverse. Classification fixed at 2001 baseline. '
-    '<em>Rural / Urban:</em> rural = Gaunpalika; urban = Nagar/Upamahanagar/Mahanagarpalika.'
+    'All coefficients at $k\\geq 25$ baseline migrants per muni, anchor spec '
+    '(treatment + year × mig_int + year × fx + year × Block A; muni + year FE). '
+    'SE in parens (cluster: muni); *** $p<.01$, ** $p<.05$, * $p<.10$. '
+    '<strong>Effect column</strong> [ ]: percentage points (<em>pp</em>) for share outcomes, '
+    'approximate % change for log outcomes, % of sample mean for rupee amounts. '
+    '<strong>Means</strong> shown are the regression-sample (k ≥ 25) means, not the raw-data population; '
+    'k=25 munis are wealthier and more migration-exposed than the average Nepalese muni. '
+    '<strong>Net-flow:</strong> net-inflow muni = more in-migrants than out-migrants in 2001 census (predetermined); '
+    'net-outflow = reverse. <strong>Rural / Urban:</strong> rural = Gaunpalika; '
+    'urban = Nagar/Upamahanagar/Mahanagarpalika. '
+    'NEC panel covers founding years 2001–2018 (annual); NEC cross-section is 2018 stock.'
 )
 
 # -------------------------------------------------------------- main
