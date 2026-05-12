@@ -20,19 +20,55 @@
 
 source("script/_specs_lib.R")
 
-# Force-load the census panel into the cache, then add three derived columns.
+# Force-load the census panel into the cache, then add derived columns.
+# Individual sectors (presentation-ready):
+#   agri    = ind_agri_forestry_fish                  (primary)
+#   manuf   = ind_manufacturing                       (secondary)
+#   constr  = ind_construction                        (secondary)
+#   trade   = ind_wholesale_retail                    (tertiary)
+#   serv    = sum of the remaining 7 tertiary cats    (tertiary residual)
+# Aggregates (ISIC-style):
+#   pri_share = ind_agri_forestry_fish
+#   sec_share = ind_manufacturing + ind_construction
+#   ter_share = sum of 8 tertiary categories
 census <- load_census()
-census[, pri_share := ind_agri_forestry_fish]
-census[, sec_share := ind_manufacturing + ind_construction]
-census[, ter_share := ind_wholesale_retail + ind_transport_accommodation +
-                       ind_finance_real_estate_prof + ind_public_admin_defence +
-                       ind_education + ind_health + ind_arts_recreation + ind_others]
+census[, `:=`(
+  agri_share    = ind_agri_forestry_fish,
+  manuf_share   = ind_manufacturing,
+  constr_share  = ind_construction,
+  trade_share   = ind_wholesale_retail,
+  serv_share    = ind_transport_accommodation + ind_finance_real_estate_prof +
+                  ind_public_admin_defence + ind_education + ind_health +
+                  ind_arts_recreation + ind_others,
+  pri_share = ind_agri_forestry_fish,
+  sec_share = ind_manufacturing + ind_construction,
+  ter_share = ind_wholesale_retail + ind_transport_accommodation +
+              ind_finance_real_estate_prof + ind_public_admin_defence +
+              ind_education + ind_health + ind_arts_recreation + ind_others
+)]
 
-cat(sprintf("Sector-share means (across muni-years):\n  primary  %.3f  |  secondary %.3f  |  tertiary  %.3f  |  sum %.3f\n",
-            mean(census$pri_share, na.rm=TRUE),
-            mean(census$sec_share, na.rm=TRUE),
-            mean(census$ter_share, na.rm=TRUE),
-            mean(census$pri_share + census$sec_share + census$ter_share, na.rm=TRUE)))
+cat(sprintf(
+"Sector means (across muni-years):
+  agriculture        %.3f
+  manufacturing      %.3f
+  construction       %.3f
+  trade  (retail)    %.3f
+  other services     %.3f
+  ---
+  primary            %.3f   (= agriculture)
+  secondary          %.3f   (= manuf + constr)
+  tertiary           %.3f   (= trade + other services)
+  sum                %.3f
+",
+  mean(census$agri_share, na.rm=TRUE),
+  mean(census$manuf_share, na.rm=TRUE),
+  mean(census$constr_share, na.rm=TRUE),
+  mean(census$trade_share, na.rm=TRUE),
+  mean(census$serv_share, na.rm=TRUE),
+  mean(census$pri_share, na.rm=TRUE),
+  mean(census$sec_share, na.rm=TRUE),
+  mean(census$ter_share, na.rm=TRUE),
+  mean(census$pri_share + census$sec_share + census$ter_share, na.rm=TRUE)))
 
 run_quiet <- function(...) {
   invisible(capture.output(res <- run_spec(...), file = nullfile()))
@@ -48,15 +84,20 @@ for (thr in c(0L, 25L, 50L, 100L)) {
     treatment  = "log_int",
     c_mig      = TRUE, c_fx = TRUE,
     c_block_a  = TRUE, c_block_b = FALSE, c_block_c = FALSE,
-    outcomes   = list("Sector shares" = c("pri_share","sec_share","ter_share")),
+    outcomes   = list(
+      "Individual sectors" = c("agri_share","manuf_share","constr_share","trade_share","serv_share"),
+      "Aggregates"         = c("pri_share","sec_share","ter_share")
+    ),
     save       = FALSE
   )
   if (!is.null(r)) rows[[length(rows)+1]] <- r
 }
 out <- rbindlist(rows, fill = TRUE)
 
-# Sort for display: primary -> secondary -> tertiary, threshold ascending
-out[, outcome := factor(outcome, levels = c("pri_share","sec_share","ter_share"))]
+# Sort for display: disaggregated sectors first, then aggregates
+out[, outcome := factor(outcome,
+       levels = c("agri_share","manuf_share","constr_share","trade_share","serv_share",
+                  "pri_share","sec_share","ter_share"))]
 out <- out[order(outcome, threshold)]
 
 dir.create(file.path(ROOT, "output/tab"), recursive = TRUE, showWarnings = FALSE)
