@@ -33,13 +33,19 @@ source("script/_specs_lib.R")
 #   ter_share = sum of 8 tertiary categories
 census <- load_census()
 census[, `:=`(
-  agri_share    = ind_agri_forestry_fish,
-  manuf_share   = ind_manufacturing,
-  constr_share  = ind_construction,
-  trade_share   = ind_wholesale_retail,
-  serv_share    = ind_transport_accommodation + ind_finance_real_estate_prof +
-                  ind_public_admin_defence + ind_education + ind_health +
-                  ind_arts_recreation + ind_others,
+  # Disaggregated sectors
+  agri_share      = ind_agri_forestry_fish,
+  manuf_share     = ind_manufacturing,
+  constr_share    = ind_construction,
+  trade_share     = ind_wholesale_retail,
+  transport_share = ind_transport_accommodation,
+  finance_share   = ind_finance_real_estate_prof,
+  public_share    = ind_public_admin_defence,
+  education_share = ind_education,
+  health_share    = ind_health,
+  arts_share      = ind_arts_recreation,
+  others_share    = ind_others,
+  # ISIC aggregates
   pri_share = ind_agri_forestry_fish,
   sec_share = ind_manufacturing + ind_construction,
   ter_share = ind_wholesale_retail + ind_transport_accommodation +
@@ -52,19 +58,31 @@ cat(sprintf(
   agriculture        %.3f
   manufacturing      %.3f
   construction       %.3f
-  trade  (retail)    %.3f
-  other services     %.3f
+  trade (retail)     %.3f
+  transport          %.3f
+  finance            %.3f
+  public admin       %.3f
+  education          %.3f
+  health             %.3f
+  arts/recreation    %.3f
+  others             %.3f
   ---
   primary            %.3f   (= agriculture)
   secondary          %.3f   (= manuf + constr)
-  tertiary           %.3f   (= trade + other services)
+  tertiary           %.3f   (= trade + transport + finance + public + edu + health + arts + others)
   sum                %.3f
 ",
   mean(census$agri_share, na.rm=TRUE),
   mean(census$manuf_share, na.rm=TRUE),
   mean(census$constr_share, na.rm=TRUE),
   mean(census$trade_share, na.rm=TRUE),
-  mean(census$serv_share, na.rm=TRUE),
+  mean(census$transport_share, na.rm=TRUE),
+  mean(census$finance_share, na.rm=TRUE),
+  mean(census$public_share, na.rm=TRUE),
+  mean(census$education_share, na.rm=TRUE),
+  mean(census$health_share, na.rm=TRUE),
+  mean(census$arts_share, na.rm=TRUE),
+  mean(census$others_share, na.rm=TRUE),
   mean(census$pri_share, na.rm=TRUE),
   mean(census$sec_share, na.rm=TRUE),
   mean(census$ter_share, na.rm=TRUE),
@@ -85,8 +103,13 @@ for (thr in c(0L, 25L, 50L, 100L)) {
     c_mig      = TRUE, c_fx = TRUE,
     c_block_a  = TRUE, c_block_b = FALSE, c_block_c = FALSE,
     outcomes   = list(
-      "Individual sectors" = c("agri_share","manuf_share","constr_share","trade_share","serv_share"),
-      "Aggregates"         = c("pri_share","sec_share","ter_share")
+      "Individual sectors" = c(
+        "agri_share","manuf_share","constr_share",
+        "trade_share","transport_share","finance_share",
+        "public_share","education_share","health_share",
+        "arts_share","others_share"
+      ),
+      "Aggregates" = c("pri_share","sec_share","ter_share")
     ),
     save       = FALSE
   )
@@ -96,7 +119,10 @@ out <- rbindlist(rows, fill = TRUE)
 
 # Sort for display: disaggregated sectors first, then aggregates
 out[, outcome := factor(outcome,
-       levels = c("agri_share","manuf_share","constr_share","trade_share","serv_share",
+       levels = c("agri_share","manuf_share","constr_share",
+                  "trade_share","transport_share","finance_share",
+                  "public_share","education_share","health_share",
+                  "arts_share","others_share",
                   "pri_share","sec_share","ter_share"))]
 out <- out[order(outcome, threshold)]
 
