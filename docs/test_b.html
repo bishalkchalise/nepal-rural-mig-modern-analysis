@@ -3,15 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Results — Nepal SSIV</title>
+<title>Test B — Family B variants — Nepal SSIV</title>
 <link rel="stylesheet" href="style.css">
-<script>
-window.MathJax = {
-  tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
-  svg: { fontCache: 'global' }
-};
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
 </head>
 <body>
 <div class="layout">
@@ -20,14 +13,14 @@ window.MathJax = {
   <h2>Pages</h2>
   <ul>
     <li><a href="index.html">Intro</a></li>
-    <li><a href="explorer.html" class="active">Results</a>
+    <li><a href="explorer.html">Results</a></li>
+    <li><a href="test.html">Test (Family A)</a></li>
+    <li><a href="test_b.html" class="active">Test B (Family B)</a>
       <ul class="subnav">
         <li><a href="#" id="nav-dataset">Active dataset</a></li>
         <li><a href="#" id="nav-group">Active group</a></li>
       </ul>
     </li>
-    <li><a href="test.html">Test (Family A)</a></li>
-    <li><a href="test_b.html">Test B (Family B)</a></li>
     <li><a href="definitions.html">Variable definitions</a></li>
     <li><a href="summary.html">Summary statistics</a></li>
     <li><a href="methods.html">Method</a></li>
@@ -37,13 +30,12 @@ window.MathJax = {
 <main class="content-wide">
 
 <header class="page-header">
-  <h1>Results</h1>
+  <h1>Test B — Family B (saturated-model variants)</h1>
   <div class="sub">
-    Cumulative-build ladder. Treatment is the heterogeneous slope
-    <strong>fx × log(mig_intensity)</strong> by default — toggle to
-    <strong>linear</strong> form for robustness. A1→A4 add control blocks
-    one at a time, ending at the saturated A4 (Khanna Block A added).
-    Reported β with municipality-clustered standard errors.
+    Six robustness variants of the saturated A4 model. Each column is one
+    minor tweak (functional form, drop a control block, no interaction) so
+    you can see how the coefficient moves under each. The cumulative
+    ladder is on the <a href="test.html">Test (Family A)</a> page.
   </div>
 </header>
 
@@ -114,7 +106,7 @@ window.MathJax = {
 </footer>
 
 <script>
-const FAMILY = "A";   // headline ladder uses log interaction; linear is in Test B (B2)
+const FAMILY = "B";   // change to "A" for test.html
 let DATA = null, META = null;
 
 function fmtCoef(b, p, digits=4){
@@ -189,16 +181,13 @@ function renderNote(){
   const fe = ({census:"lgcode + year", hh:"hhid + year"})[dsKey] || "entity + year";
   const refYear = D.ref_year || ({census:2001, hh:2016})[dsKey];
   const cluster = "lgcode";
-  const formStr = FAMILY === "A_lin"
-    ? "fx_z × mig_intensity_z (linear)"
-    : "fx_z × log(mig_intensity_z)";
 
   return `
-    <strong>Notes.</strong> ${D.label}. Treatment in every column is
-    <em>${formStr}</em> — the heterogeneous slope. Control blocks added
-    cumulatively across the four columns: column 2 adds
-    <em>year × mig_intensity</em>; column 3 adds <em>year × fx</em>;
-    column 4 adds <em>year × destination-weighted X</em> (Khanna Block A:
+    <strong>Notes.</strong> ${D.label}. Treatment in every column is the
+    interaction <em>fx_z × log(mig_intensity_z)</em> — heterogeneous slope.
+    Control blocks added cumulatively across A1→A4:
+    A2 adds <em>year × mig_intensity</em>; A3 adds <em>year × fx</em>;
+    A4 adds <em>year × destination-weighted X</em> (Khanna Block A:
     region-of-origin shares + destination GDP/cap). Treatments z-scored
     on the working sample at muni-year level.
     Sample: <strong>${DATA.thresholds[thr]}</strong>; reference year ${refYear};
@@ -248,43 +237,17 @@ function render(){
     }).join("") ||
     `<tr><td colspan="${4 + specOrder.length}" class="se" style="text-align:center;padding:20px">No outcomes in this group.</td></tr>`;
 
-  // Saturated-spec equation block — replaces the old "N obs / N muni" bar.
-  const entitySym = ({census:"\\alpha_m", hh:"\\alpha_i", nec_panel:"\\alpha_m", nec_cs:"\\delta_d"})
-                    [document.getElementById("dataset").value] || "\\alpha_i";
-  const entityWord = ({census:"municipality", hh:"household",
-                       nec_panel:"municipality", nec_cs:"district"})
-                    [document.getElementById("dataset").value] || "entity";
+  // sample n / n_unit from one cell
+  const sample = Object.values(D.estimates?.[thr]?.[FAMILY]?.[specOrder[0]] || {}).find(e => e && !e.err) || {};
   document.getElementById("meta").innerHTML = `
-    <div style="background:var(--panel);border:1px solid var(--rule);
-                border-radius:3px;padding:1rem 1.2rem;margin-bottom:1rem;
-                font-family:var(--serif);font-size:14px;line-height:1.55">
-      <div style="font-family:var(--sans);font-size:11px;text-transform:uppercase;
-                  letter-spacing:.06em;color:var(--muted);font-weight:600;
-                  margin-bottom:.6rem">
-        Saturated specification (column A4)
-      </div>
-      <div style="text-align:center;margin:0.4rem 0">
-        \\[ y_{it} \\;=\\; \\underbrace{\\beta\\bigl[\\mathrm{fx}_z \\cdot \\log(\\mathrm{mig\\_int}_z)\\bigr]}_{\\text{heterogeneous slope (reported)}}
-        \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_1'\\bigl(\\mathrm{mig\\_int}_z\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_{\\text{mig}}\\,:\\,\\text{year}\\times\\text{mig-intensity trend}}
-        \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_2'\\bigl(\\mathrm{fx}_z\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_{\\text{fx}}\\,:\\,\\text{year}\\times\\text{fx trend}}
-        \\;+\\; \\underbrace{\\boldsymbol{\\delta}'\\bigl(\\mathbf{X}_{m(i),0}\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_X\\,:\\,\\text{year}\\times\\text{baseline X (Khanna Block A)}}
-        \\;+\\; ${entitySym} \\;+\\; \\gamma_t \\;+\\; \\varepsilon_{it} \\]
-      </div>
-      <div style="font-family:var(--sans);font-size:12px;color:var(--muted);
-                  margin-top:.4rem;line-height:1.6">
-        Columns A1 → A4 add the control blocks one at a time. Each row reports
-        the same parameter $\\beta$ — only the controls change.
-        ${entitySym} = ${entityWord} fixed effect; $\\gamma_t$ = year FE.
-        Baseline X = destination-region migrant shares + destination-weighted
-        2001 GDP per capita (7 covariates). SE clustered at municipality.
-        For the linear-interaction variant and other robustness tweaks, see
-        <a href="test_b.html">Test B</a>.
-      </div>
-    </div>
+    <span><b>${D.label}</b></span>
+    <span>Family ${FAMILY} · ${DATA.families[FAMILY].label} · ${specOrder.length} specs</span>
+    <span>Threshold: <b>${DATA.thresholds[thr]}</b></span>
+    <span>Group: <b>${grp}</b></span>
+    ${sample.n ? `<span>N obs: <b>${sample.n.toLocaleString()}</b></span>` : ""}
+    ${sample.n_unit ? `<span>N ${unitName()}: <b>${sample.n_unit.toLocaleString()}</b></span>` : ""}
+    ${sample.n_muni ? `<span>N muni: <b>${sample.n_muni.toLocaleString()}</b></span>` : ""}
   `;
-  if (window.MathJax && MathJax.typesetPromise) {
-    MathJax.typesetPromise([document.getElementById("meta")]).catch(()=>{});
-  }
   document.getElementById("table-note").innerHTML = renderNote();
 
   const params = new URLSearchParams({
@@ -388,8 +351,8 @@ function renderPlot(){
   const thr  = document.getElementById("threshold").value;
   const grp  = document.getElementById("group").value;
   const specOrder = Object.keys(DATA.families[FAMILY].specs);
-  // Use the SATURATED spec (rightmost column) for the plot
-  const plotSpec = "A4";
+  // Use the SATURATED spec for the plot (last spec in family A, B1 in family B)
+  const plotSpec = (FAMILY === "A") ? "A4" : "B1";
 
   // Collect (label, beta, se, sig) for each outcome in the group
   const allYs = Object.keys(D.outcomes).filter(y => D.outcomes[y].group === grp);
