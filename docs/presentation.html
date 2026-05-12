@@ -1,4 +1,30 @@
 <!doctype html>
+<!--
+================================================================
+ HOW TO EDIT THE SLIDES
+================================================================
+
+ Each slide is one <section>...</section> block below.
+ Slides marked  "(✏️ markdown-editable)"  use plain Markdown:
+
+   <section data-markdown>
+   <textarea data-template>
+   ## Slide title
+   Body paragraph.
+   - bullet with **bold** and *italic*
+   - inline math like $\beta$
+   </textarea>
+   </section>
+
+ To edit one of those: just change the text between <textarea> tags.
+
+ Slides NOT marked markdown (title, math equations, the table,
+ section dividers) are HTML — change text between <h2>…</h2>,
+ <li>…</li>, etc.
+
+ Save → git push → portal updates in ~1 min.
+================================================================
+-->
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -235,47 +261,36 @@
 </section>
 
 <!-- =============================================================
-     2. Background: facts
+     2. Background facts                  (✏️ markdown-editable)
      ============================================================= -->
-<section>
-  <h2>Background &mdash; Nepal &amp; international migration</h2>
-  <ul>
-    <li>Personal remittances $\approx$ <strong>22% of GDP</strong> (World Bank, 2022&ndash;23) &mdash; the third-highest share globally after Tonga and Tajikistan.</li>
-    <li>About <strong>3 million</strong> Nepalis are working abroad at any time, out of a working-age population of $\sim$20 million.</li>
-    <li>Main destinations: <strong>Malaysia, the GCC states</strong> (Qatar, Saudi Arabia, the UAE, Kuwait, Oman, Bahrain), and <strong>India</strong>.</li>
-    <li>Outflows expanded sharply after 2001, driven by Nepal-to-Gulf labour contracts and the 1996&ndash;2006 Maoist insurgency.</li>
-    <li>At the muni level the destination mix is sticky: villages built corridors to specific destinations through network migration. The 2001 muni $\times$ destination matrix pins them down.</li>
-  </ul>
+<section data-markdown>
+<textarea data-template>
+## Background — Nepal & international migration
+
+- Personal remittances ≈ **22% of GDP** (World Bank, 2022–23) — the third-highest share globally after Tonga and Tajikistan.
+- About **3 million** Nepalis are working abroad at any time, out of a working-age population of ~20 million.
+- Main destinations: **Malaysia, the GCC states** (Qatar, Saudi Arabia, the UAE, Kuwait, Oman, Bahrain), and **India**.
+- Outflows expanded sharply after 2001, driven by Nepal-to-Gulf labour contracts and the 1996–2006 Maoist insurgency.
+- At the muni level the destination mix is sticky: villages built corridors to specific destinations through network migration. The 2001 muni × destination matrix pins them down.
+</textarea>
 </section>
 
 <!-- =============================================================
-     3. Background: identification puzzle
+     3. Identification puzzle             (✏️ markdown-editable)
      ============================================================= -->
-<section>
-  <h2>The identification puzzle &amp; the shock we use</h2>
+<section data-markdown>
+<textarea data-template>
+## The identification puzzle & the shock we use
 
-  <h3>Why a naive regression won't do</h3>
-  <p>
-    Migration is endogenous. Places with more migrants may be poorer to begin
-    with, or share shocks that drive both migration and welfare. To say
-    anything causal we need exogenous variation in the <em>income</em>
-    migrants send home, holding the migration network fixed.
-  </p>
+### Why a naive regression won't do
+Migration is endogenous. Places with more migrants may be poorer to begin with, or share shocks that drive both migration and welfare. To say anything causal we need exogenous variation in the *income* migrants send home, holding the migration network fixed.
 
-  <h3>The shock</h3>
-  <p>
-    Each destination's currency moves against the Nepali rupee over
-    2001&ndash;2023. Wages abroad convert to NPR; FX appreciation $=$
-    remittance windfall. FX movements are plausibly exogenous to any single
-    Nepali municipality.
-  </p>
+### The shock
+Each destination's currency moves against the Nepali rupee over 2001–2023. Wages abroad convert to NPR; FX appreciation = remittance windfall. FX movements are plausibly exogenous to any single Nepali municipality.
 
-  <h3>The shift-share trick</h3>
-  <p>
-    Combine destination-FX movements with the muni $\times$ destination
-    shares fixed in 2001. Munis tied to appreciating destinations get a
-    windfall; those tied to depreciating destinations do not.
-  </p>
+### The shift-share trick
+Combine destination-FX movements with the muni × destination shares fixed in 2001. Munis tied to appreciating destinations get a windfall; those tied to depreciating destinations do not.
+</textarea>
 </section>
 
 <!-- =============================================================
@@ -445,61 +460,54 @@
 </section>
 
 <!-- =============================================================
-     9. What this table says
+     9. What this table says              (✏️ markdown-editable)
      ============================================================= -->
-<section>
-  <h2>What this table says</h2>
-  <ol>
-    <li>The shock <strong>raises outmigration at the muni level</strong>. The share of HHs with an absent member rises by $0.6\!-\!1.3$ pp per 1 SD of treatment, monotone in the threshold.</li>
-    <li>Conditional on having a migrant, <strong>international remittance income rises</strong> by $\sim$$11\!-\!14%$ in restricted samples ($k\geq 50$, $k\geq 100$).</li>
-    <li>Conditional on having a migrant, the <strong>count of international migrants per HH rises</strong> by $\sim$$9\!-\!10%$ in restricted samples.</li>
-  </ol>
-  <p style="margin-top:0.8em">
-    All three margins are <strong>jointly identified by the same shift-share variation</strong>: more migration, more migrants per household, more rupees coming back.
-  </p>
+<section data-markdown>
+<textarea data-template>
+## What this table says
+
+1. The shock **raises outmigration at the muni level**. The share of HHs with an absent member rises by 0.6–1.3 pp per 1 SD of treatment, monotone in the threshold.
+2. Conditional on having a migrant, **international remittance income rises** by ~11–14% in restricted samples ($k\geq 50$, $k\geq 100$).
+3. Conditional on having a migrant, the **count of international migrants per HH rises** by ~9–10% in restricted samples.
+
+All three margins are **jointly identified by the same shift-share variation**: more migration, more migrants per household, more rupees coming back.
+</textarea>
 </section>
 
 <!-- =============================================================
-     10. Threshold pattern
+     10. Threshold pattern                (✏️ markdown-editable)
      ============================================================= -->
-<section>
-  <h2>Reading the threshold pattern</h2>
-  <p>
-    Coefficients <em>increase monotonically</em> as the sample restricts to
-    higher-baseline-migration municipalities ($k=0 \to 100$). Two coherent
-    interpretations:
-  </p>
-  <ul>
-    <li><strong>Mechanical.</strong> The shock-by-intensity interaction has more identifying variation precisely where intensity is non-trivial. Below $k\approx 25$ the interaction is mostly fitting noise.</li>
-    <li><strong>Economic.</strong> Thin-migration munis don't have the destination network to capitalise on the FX shock; the strong response is concentrated in munis already on the migration frontier.</li>
-  </ul>
-  <p>Both consistent with the network-multiplier logic of shift-share migration shocks.</p>
+<section data-markdown>
+<textarea data-template>
+## Reading the threshold pattern
+
+Coefficients *increase monotonically* as the sample restricts to higher-baseline-migration municipalities ($k=0 \to 100$). Two coherent interpretations:
+
+- **Mechanical.** The shock-by-intensity interaction has more identifying variation precisely where intensity is non-trivial. Below $k\approx 25$ the interaction is mostly fitting noise.
+- **Economic.** Thin-migration munis don't have the destination network to capitalise on the FX shock; the strong response is concentrated in munis already on the migration frontier.
+
+Both consistent with the network-multiplier logic of shift-share migration shocks.
+</textarea>
 </section>
 
 <!-- =============================================================
-     11. Wrap
+     11. Wrap                             (✏️ markdown-editable)
      ============================================================= -->
-<section>
-  <h2>One-sentence wrap</h2>
-  <blockquote>
-    In rural Nepal, the FX-driven remittance windfall buys households a
-    better toilet, a motorbike, and an extra year of schooling for their
-    kids; it pulls men out of the village, leaves women holding the farm,
-    delays marriage, and funds construction &mdash; but it doesn't build
-    manufacturing, doesn't bring fixed broadband, and doesn't raise the
-    local stock of educated adults, because the very people who would
-    lift that stock are remitting from abroad.
-  </blockquote>
-  <p class="smalltext" style="margin-top:1em">
-    Detailed reduced-form results, stability across 48 specifications, and
-    variable-construction notes are in the next sections (to be added).
-  </p>
+<section data-markdown>
+<textarea data-template>
+## One-sentence wrap
+
+> In rural Nepal, the FX-driven remittance windfall buys households a better toilet, a motorbike, and an extra year of schooling for their kids; it pulls men out of the village, leaves women holding the farm, delays marriage, and funds construction — but it doesn't build manufacturing, doesn't bring fixed broadband, and doesn't raise the local stock of educated adults, because the very people who would lift that stock are remitting from abroad.
+
+<small>Detailed reduced-form results, stability across 48 specifications, and variable-construction notes are in the next sections (to be added).</small>
+</textarea>
 </section>
 
 </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
 <script>
   Reveal.initialize({
     width:   1280,
@@ -512,7 +520,8 @@
     transition:  'fade',
     controls:    true,
     progress:    true,
-    center:      false   /* top-align: predictable layout for long content */
+    center:      false,   /* top-align: predictable layout for long content */
+    plugins:     [ RevealMarkdown ]
   });
 </script>
 </body>
