@@ -1,0 +1,55 @@
+source,variable,label,slide_mean,raw_n,raw_mean,raw_sd,raw_min,raw_p50,raw_max,raw_pct_zero,reg_k0_n,reg_k0_mean,reg_k25_n,reg_k25_mean,note,flag_raw_vs_slide
+census,mig_in_share,Migrant-HH share (1st stage proxy),,2249,0.0920,0.1264,0.0000,0.0268,0.7942,0.8448,2142.0000,0.0946,1425.0000,0.1089,,
+census,absent_hh_share,Migrant-HH share (slide 4),0.2400,2249,0.2064,0.1357,0.0000,0.1877,0.6287,0.0445,2142.0000,0.2127,1425.0000,0.2375,,DIFF 14%
+hh_mig,remit_amount_intl_12m_rs,"log(intl remit, Rs) [base in Rs]",,8559,121466.4082,221071.6639,0.0000,50000.0000,5000000.0000,41.7806,,,,,,
+hh_mig,n_migrants_international,log(# intl migrants) [base count],,8559,0.8536,0.8279,0.0000,1.0000,8.0000,33.5787,,,,,,
+census,amen_asset_count_mean,Durables per household,2.8900,1506,2.6132,1.2986,0.2624,2.2985,6.7427,0.0000,1428.0000,2.6699,950.0000,2.8914,,DIFF 10%
+census,housing_foundation_modern,Modern housing,0.2800,1506,0.2306,0.2433,0.0000,0.1471,0.9596,1.8592,1428.0000,0.2407,950.0000,0.2772,,DIFF 18%
+census,amen_toilet_any,Toilet adoption,0.6600,2249,0.5957,0.3374,0.0000,0.6455,1.0000,0.0889,2142.0000,0.5980,1425.0000,0.6579,,DIFF 10%
+census,edu_literate,Literate (pop 6+),0.6400,2249,0.6039,0.1611,0.1330,0.6299,0.9191,0.0000,2142.0000,0.6075,1425.0000,0.6400,,DIFF 6%
+census,edu_literate_female,"Literate, female",0.5500,2249,0.5070,0.1834,0.0291,0.5373,0.8786,0.0000,2142.0000,0.5113,1425.0000,0.5518,,DIFF 8%
+census,edu_school_attend_6_16,School attendance 6-16,0.8400,2249,0.8183,0.1389,0.3182,0.8690,1.0000,0.0000,2142.0000,0.8197,1425.0000,0.8441,,
+hh_health,hlt_spend_total,Health spending total (Rs),12401.0000,17539,12878.3103,46516.1729,0.0000,2400.0000,3412400.0000,21.8256,,,,,,
+census,ind_agri_forestry_fish,Agriculture (primary),0.7200,2249,0.7256,0.1665,0.0211,0.7722,1.0000,0.0000,2142.0000,0.7201,1425.0000,0.7002,,
+census,ind_manufacturing,Manufacturing,0.0470,2249,0.0457,0.0414,0.0000,0.0322,0.4223,0.2223,2142.0000,0.0468,1425.0000,0.0483,,
+census,ind_construction,Construction,0.0400,2249,0.0394,0.0382,0.0000,0.0277,0.2752,2.4900,2142.0000,0.0401,1425.0000,0.0403,,
+census,ind_wholesale_retail,Trade & retail,0.0640,2249,0.0627,0.0469,0.0000,0.0493,0.2609,0.3112,2142.0000,0.0640,1425.0000,0.0695,,
+census,ind_finance_real_estate_prof,Finance / RE / prof,0.0100,2249,0.0101,0.0164,0.0000,0.0052,0.1930,13.3393,2142.0000,0.0104,1425.0000,0.0126,,
+census,ind_public_admin_defence,Public admin & defence,0.0150,2249,0.0146,0.0270,0.0000,0.0075,0.5610,3.2014,2142.0000,0.0150,1425.0000,0.0167,,
+census,occ_share_managers,Managers,0.0210,2249,0.0170,0.0253,0.0000,0.0065,0.2116,15.6959,2142.0000,0.0174,1425.0000,0.0206,,DIFF 19%
+census,occ_share_professionals,Professionals,0.0340,2249,0.0311,0.0182,0.0000,0.0282,0.1614,0.2668,2142.0000,0.0313,1425.0000,0.0339,,DIFF 9%
+census,occ_share_technicians,Technicians,0.0140,2249,0.0117,0.0141,0.0000,0.0076,0.1694,2.9791,2142.0000,0.0119,1425.0000,0.0136,,DIFF 17%
+census,occ_share_service_sales,Service & sales,0.0570,2249,0.0495,0.0413,0.0000,0.0373,0.3464,0.2223,2142.0000,0.0507,1425.0000,0.0571,,DIFF 13%
+census,occ_share_craft_trades,Craft & trades,0.0640,2249,0.0603,0.0434,0.0000,0.0499,0.3276,0.2223,2142.0000,0.0615,1425.0000,0.0637,,DIFF 6%
+census,occ_share_machine_operators,Machine operators,0.0180,2249,0.0148,0.0168,0.0000,0.0087,0.1407,9.7377,2142.0000,0.0154,1425.0000,0.0179,,DIFF 18%
+hh_ag,share_self_wet,"Own-cultivated, wet season",0.8550,15220,0.8561,0.3111,0.0000,1.0000,1.0000,9.3101,,,,,,
+hh_ag,share_self_dry,"Own-cultivated, dry season",0.6970,15220,0.6996,0.4123,0.0000,1.0000,1.0000,21.4783,,,,,,
+hh_ag,share_both_seasons,Cultivated both seasons,0.6910,15220,0.6942,0.4150,0.0000,1.0000,1.0000,22.0237,,,,,,
+hh_ag,share_fallow_wet,"Fallow, wet season",0.0700,15220,0.0649,0.2024,0.0000,0.0000,1.0000,88.2194,,,,,,DIFF 7%
+hh_ag,share_fallow_dry,"Fallow, dry season",0.2700,15220,0.2314,0.3760,0.0000,0.0000,1.0000,68.5940,,,,,,DIFF 14%
+hh_ag,crop_simpson_diversity,Crop diversity (Simpson),0.2230,5456,0.2218,0.2486,0.0000,0.0194,0.8574,49.1569,,,,,,
+hh_ag,grows_horticulture,Grows any horticulture crop,0.3750,15609,0.3752,0.4842,0.0000,0.0000,1.0000,62.4832,,,,,,
+hh_ag,owns_plough,Owns plough,0.6200,9663,0.6271,0.4836,0.0000,1.0000,1.0000,37.2866,,,,,,
+hh_ag,owns_powered_machinery,Owns powered farm machinery,0.0300,9663,0.0269,0.1618,0.0000,0.0000,1.0000,97.3093,,,,,,DIFF 10%
+hh_ag,owns_irrigation_kit,Owns irrigation equipment,0.1000,9663,0.0970,0.2959,0.0000,0.0000,1.0000,90.3032,,,,,,
+hh_ag,total_input_cost_rs,"Total input cost (Rs, base)",,18056,7158.2749,13612.7739,0.0000,2550.0000,431700.0000,31.8177,,,,,,
+hh_ag,dry_cost_seed,"Dry-season seed cost (Rs, base)",,16419,416.9065,1427.1002,0.0000,0.0000,54600.0000,71.7157,,,,,,
+hh_cons,food_exp_total_7day,"Food spending, weekly (Rs)",2282.0000,18056,2215.2087,1168.9293,0.0000,1992.0000,18052.0000,0.0055,,,,,,
+hh_cons,food_exp_protein_7day,"Protein spending, weekly (Rs)",724.0000,18056,692.1426,585.5244,0.0000,555.0000,12260.0000,2.3039,,,,,,
+hh_cons,nonfood_exp_12m,"Non-food spending, annual (Rs)",97932.0000,18056,89741.3183,211680.0291,680.0000,42877.5000,10637500.0000,0.0000,,,,,,DIFF 8%
+hh_cons,nonfood_clothing_footwear_12m,"Clothing & footwear, annual (Rs)",12151.0000,18056,11829.9838,8804.8745,0.0000,10000.0000,256000.0000,0.8363,,,,,,
+hh_cons,nonfood_fuel_lighting_12m,"Fuel & lighting, annual (Rs)",4760.0000,18056,4279.0455,4879.3967,0.0000,3325.0000,300360.0000,0.0720,,,,,,DIFF 10%
+hh_cons,food_insec_score,Food insecurity score (0-27),0.7700,18056,0.9188,2.6466,0.0000,0.0000,27.0000,85.5062,,,,,,DIFF 19%
+nec_panel,new_firms,"Total new firms (count, base)",62.0000,14326,56.5735,250.3977,0.0000,19.0000,17707.0000,2.3733,13566.0000,58.9813,9025.0000,75.8429,,DIFF 9%
+nec_panel,new_firms_size_1_worker,"Size: 1-worker (count, base)",24.0000,14326,21.8235,91.1336,0.0000,7.0000,6594.0000,10.7148,13566.0000,22.7530,9025.0000,28.5279,,DIFF 9%
+nec_panel,new_firms_size_2_9_workers,"Size: 2-9 workers (count, base)",36.0000,14326,32.7458,152.1125,0.0000,10.0000,10624.0000,5.3330,13566.0000,34.1269,9025.0000,44.4756,,DIFF 9%
+nec_panel,new_firms_size_10_50_workers,"Size: 10-50 workers (count, base)",2.0000,14326,1.8385,9.7145,0.0000,0.0000,464.0000,52.5199,13566.0000,1.9272,9025.0000,2.6006,,DIFF 8%
+nec_panel,new_firms_manufacturing,"Manufacturing (count, base)",7.0000,14326,6.4100,22.4853,0.0000,2.0000,1418.0000,26.4135,13566.0000,6.6789,9025.0000,8.5696,,DIFF 8%
+nec_panel,new_firms_trade_retail,"Trade & retail (count, base)",35.0000,14326,31.7485,142.3410,0.0000,9.0000,9891.0000,8.1600,13566.0000,33.0858,9025.0000,42.3425,,DIFF 9%
+nec_panel,new_firms_hospitality_food,"Hospitality & food (count, base)",9.3000,14326,8.4191,50.5367,0.0000,2.0000,3960.0000,30.0293,13566.0000,8.7985,9025.0000,11.7388,,DIFF 9%
+nec_cs,n_firms,"# firms (count, base)",,754,1224.6101,3430.0581,1.0000,612.5000,80434.0000,0.0000,714.0000,1276.1092,475.0000,1634.6274,,
+nec_cs,emp_total,"Total employment (count, base)",,754,4281.7732,17557.1120,27.0000,1673.0000,440604.0000,0.0000,714.0000,4475.6541,475.0000,5922.1158,,
+nec_cs,rev_total,"Total revenue (Rs, base)",,754,13119277441.1300,184213873028.9245,27414300.0000,759310620.0000,5000083366644.0000,0.0000,714.0000,13832035779.4454,475.0000,19765318274.6274,,
+nec_cs,cap_total,"Total capital stock (Rs, base)",,754,173315788058.7268,2209707223003.9326,31965009.0000,854114412.0000,45063313134775.0000,0.0000,714.0000,183006122713.4272,475.0000,186508177093.8526,,
+nec_cs,industry_diversity,Industry diversity (1-HHI),0.6600,754,0.6608,0.0919,0.0000,0.6649,0.8374,0.1326,714.0000,0.6636,475.0000,0.6710,,
+nec_cs,share_female_led,Share female-led,0.3100,753,0.3083,0.1540,0.0000,0.3262,0.7727,0.1328,714.0000,0.3119,475.0000,0.3540,,
