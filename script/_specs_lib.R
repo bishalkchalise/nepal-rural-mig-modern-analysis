@@ -346,7 +346,10 @@ run_spec <- function(spec_label,
                      outcomes      = NULL,
                      ref_year      = NULL,
                      output_path   = NULL,
-                     fe            = NULL) {
+                     fe            = NULL,
+                     save          = TRUE) {
+  # `save = FALSE` skips writing the per-call CSV — useful when a wrapper
+  # script (e.g. first_stage.R) wants only one consolidated output file.
   # `fe` overrides the FE structure used by feols (default = entity + year):
   #   NULL          -> entity_col + year   (e.g. hhid + year for HH; lgcode + year for census)
   #   "muni_year"   -> lgcode + year       (drop entity FE for HH; identical to default for census)
@@ -541,32 +544,38 @@ run_spec <- function(spec_label,
                      "se","pval","n","n_unit","n_muni","n_years",
                      "sd_y","r2_within","err"))
 
-  if (is.null(output_path))
-    output_path <- file.path(ROOT, "output", "tab",
-                             sprintf("%s_%s_thr%d_results.csv",
-                                     spec_label, dataset, threshold))
-  output_path <- path.expand(output_path)
-
-  out_dir <- dirname(output_path)
-  dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
-  cat("\n", strrep("=", 70), "\n", sep = "")
-  cat(" Working dir : ", getwd(), "\n", sep = "")
-  cat(" Will save to: ", output_path, "\n", sep = "")
-  cat(" Directory exists: ", dir.exists(out_dir),
-      "  |  writable: ", file.access(out_dir, mode = 2) == 0, "\n", sep = "")
-
-  write_ok <- tryCatch({ fwrite(out, output_path); TRUE },
-                      error = function(e) { message("fwrite failed: ",
-                                                    conditionMessage(e)); FALSE })
-  if (write_ok && file.exists(output_path)) {
-    fi <- file.info(output_path)
-    cat(" SAVED OK   : ", output_path, "\n", sep = "")
-    cat(sprintf("    size = %s bytes   |   modified = %s\n",
-                format(fi$size, big.mark = ","), format(fi$mtime)))
+  if (!isTRUE(save)) {
+    cat("\n[run_spec] save = FALSE — returning result without writing CSV.\n")
+    cat(sprintf(" Rows: %d   |   With estimates: %d   |   Errors/notes: %d\n",
+                nrow(out), sum(!is.na(out$beta)), sum(!is.na(out$err))))
   } else {
-    cat(" *** SAVE FAILED ***  (see message above)\n")
+    if (is.null(output_path))
+      output_path <- file.path(ROOT, "output", "tab",
+                               sprintf("%s_%s_thr%d_results.csv",
+                                       spec_label, dataset, threshold))
+    output_path <- path.expand(output_path)
+
+    out_dir <- dirname(output_path)
+    dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+    cat("\n", strrep("=", 70), "\n", sep = "")
+    cat(" Working dir : ", getwd(), "\n", sep = "")
+    cat(" Will save to: ", output_path, "\n", sep = "")
+    cat(" Directory exists: ", dir.exists(out_dir),
+        "  |  writable: ", file.access(out_dir, mode = 2) == 0, "\n", sep = "")
+
+    write_ok <- tryCatch({ fwrite(out, output_path); TRUE },
+                        error = function(e) { message("fwrite failed: ",
+                                                      conditionMessage(e)); FALSE })
+    if (write_ok && file.exists(output_path)) {
+      fi <- file.info(output_path)
+      cat(" SAVED OK   : ", output_path, "\n", sep = "")
+      cat(sprintf("    size = %s bytes   |   modified = %s\n",
+                  format(fi$size, big.mark = ","), format(fi$mtime)))
+    } else {
+      cat(" *** SAVE FAILED ***  (see message above)\n")
+    }
+    cat(strrep("=", 70), "\n", sep = "")
   }
-  cat(strrep("=", 70), "\n", sep = "")
   cat(sprintf(" Rows: %d   |   With estimates: %d   |   Errors/notes: %d\n",
               nrow(out), sum(!is.na(out$beta)), sum(!is.na(out$err))))
 
@@ -609,6 +618,7 @@ run_spec <- function(spec_label,
     cat(sprintf("\n--- Notes / skipped cells (%d) ---\n", sum(!is.na(out$err))))
     print(out[!is.na(err), .(outcome, group, n_years, err)], nrows = 60)
   }
-  cat("\nCSV path again:  ", output_path, "\n", sep = "")
+  if (isTRUE(save))
+    cat("\nCSV path again:  ", output_path, "\n", sep = "")
   invisible(out)
 }

@@ -51,14 +51,11 @@ for (thr in THR) {
     treatment  = CFG$treatment, c_mig = CFG$c_mig, c_fx = CFG$c_fx,
     c_block_a = CFG$c_block_a, c_block_b = CFG$c_block_b, c_block_c = CFG$c_block_c,
     outcomes   = list("first_stage" = OUT_CENSUS),
-    output_path = file.path(ROOT, "output", "tab",
-                            sprintf("first_stage_census_absentee_thr%d.csv", thr))
+    save = FALSE
   )
   if (!is.null(r)) { r[, fe_struct := "lgcode + year"]; census_rows[[length(census_rows)+1]] <- r }
 }
 census_first <- rbindlist(census_rows, fill = TRUE)
-fwrite(census_first, file.path(ROOT, "output", "tab",
-                               "first_stage_census_absentee.csv"))
 
 # ---------- HH (default: hhid + year FE) ----------
 hh_rows_def <- list()
@@ -72,8 +69,7 @@ for (thr in THR) {
       "migrant HHs only" = OUT_HH_MIG
     ),
     fe         = NULL,    # default: hhid + year
-    output_path = file.path(ROOT, "output", "tab",
-                            sprintf("first_stage_hh_remit_thr%d_hhFE.csv", thr))
+    save       = FALSE
   )
   if (!is.null(r)) { r[, fe_struct := "hhid + year"]; hh_rows_def[[length(hh_rows_def)+1]] <- r }
 }
@@ -91,16 +87,13 @@ for (thr in THR) {
       "migrant HHs only" = OUT_HH_MIG
     ),
     fe         = "muni_year",   # lgcode + year  (drop HH FE)
-    output_path = file.path(ROOT, "output", "tab",
-                            sprintf("first_stage_hh_remit_thr%d_muniFE.csv", thr))
+    save       = FALSE
   )
   if (!is.null(r)) { r[, fe_struct := "lgcode + year"]; hh_rows_muni[[length(hh_rows_muni)+1]] <- r }
 }
 hh_first_muni <- rbindlist(hh_rows_muni, fill = TRUE)
 
 hh_combined <- rbind(hh_first_def, hh_first_muni, fill = TRUE)
-fwrite(hh_combined, file.path(ROOT, "output", "tab",
-                              "first_stage_hh_remittance.csv"))
 
 # ============================================================================
 # One consolidated table
@@ -154,6 +147,8 @@ print(
   nrows = nrow(combined)
 )
 
-cat("\nFiles saved:\n")
-cat("  output/tab/first_stage_census_absentee.csv\n")
-cat("  output/tab/first_stage_hh_remittance.csv\n")
+out_path <- file.path(ROOT, "output", "tab", "first_stage.csv")
+dir.create(dirname(out_path), recursive = TRUE, showWarnings = FALSE)
+fwrite(combined, out_path)
+
+cat("\nFile saved:\n  ", normalizePath(out_path, winslash = "/"), "\n", sep = "")
