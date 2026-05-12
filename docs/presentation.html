@@ -49,55 +49,110 @@
 <div class="slides">
 
 <!-- ============================================================ -->
-<section>
-  <h1>International migration &amp; rural Nepal</h1>
-  <h2>Presentation</h2>
-  <p class="smalltext">
-    Bishal K. Chalise &nbsp;·&nbsp; Mushfiq Mobarak <br/>
-    Nepal · 2001 – 2021 · preliminary
+<!-- 1. Title                                                       -->
+<!-- ============================================================ -->
+<section data-background-color="#f7f3ee">
+  <h1 style="margin-bottom:0.2em">International migration<br/>and modernisation of rural Nepal</h1>
+  <p class="smalltext" style="margin-top:1em; font-size:0.7em">
+    Bishal K. Chalise &nbsp;·&nbsp; Mushfiq Mobarak
   </p>
-  <p style="margin-top:2em">
-    <em>Does the FX-driven remittance windfall delivered through international
-    migration actually <strong>modernise</strong> rural Nepal? Evidence
-    from a Bartik-style shift-share instrument across three independent
-    Nepali micro-datasets.</em>
+  <p class="smalltext" style="margin-top:0.4em">
+    Nepal · 2001 – 2021 · <em>preliminary, do not circulate</em>
+  </p>
+  <p style="margin-top:1.6em; font-size:0.85em">
+    Does the FX-driven remittance windfall delivered through international
+    migration <strong>modernise</strong> rural Nepal? Evidence from a
+    Bartik-style shift-share instrument applied across three independent
+    Nepali micro-datasets.
   </p>
   <p class="smalltext" style="position:absolute; bottom:24px;">
-    Use <kbd>F</kbd> for fullscreen · arrow keys to navigate ·
-    <kbd>Esc</kbd> for slide overview.
+    <kbd>F</kbd> fullscreen · arrow keys to navigate · <kbd>Esc</kbd> slide overview ·
+    <kbd>S</kbd> speaker notes.
   </p>
 </section>
 
 <!-- ============================================================ -->
+<!-- 2. Background                                                  -->
+<!-- ============================================================ -->
 <section>
-  <h2>Section 1 — First-stage evidence</h2>
-  <p>
-    Before any downstream "migration income raises welfare" claim, we
-    need to show that the instrument <strong>does</strong> raise migration
-    and remittance receipts. This section reports those first-stage
-    regressions across four sample thresholds.
-  </p>
-  <p class="smalltext">
-    <em>Sections to be added: identifying assumption · shift-share validity ·
-    headline reduced-form outcomes · stability across specifications ·
-    counterfactual magnitudes · policy.</em>
-  </p>
+  <h2>Background — Nepal &amp; international migration</h2>
+  <div class="col2" style="grid-template-columns: 1.1fr 0.9fr">
+    <ul>
+      <li><strong>One of the most remittance-dependent economies in the world.</strong> Personal remittances ≈ <strong>22 % of GDP</strong> (World Bank, 2022–23), the third-highest share globally after Tonga and Tajikistan.</li>
+      <li><strong>~3 million</strong> Nepalis are working abroad in any given year — out of a working-age population of ~20 million.</li>
+      <li><strong>Major destinations</strong>: Malaysia, the GCC states (Qatar, Saudi Arabia, the UAE, Kuwait, Oman, Bahrain), and India.</li>
+      <li>Migration intensified <em>after</em> the 2001 baseline — the post-2001 expansion of Nepal-to-Gulf labour contracts and a domestic civil war (1996–2006) raised outflows sharply.</li>
+      <li>The destination mix is <strong>sticky at the muni level</strong>: villages established corridors to specific destinations through network migration; the 2001 muni × destination shares pin them down.</li>
+    </ul>
+    <div>
+      <p class="smalltext"><strong>The identification puzzle.</strong> Migration is endogenous: places with more migrants may be poorer to begin with, or have shocks that drive both migration and welfare. We need exogenous variation in the <em>income</em> migrants send home, holding the migration network fixed.</p>
+      <p class="smalltext"><strong>The shock we use.</strong> Each destination's currency moves relative to the Nepali rupee over 2001–2023. Rs converts to wages → remittance amount sent home. FX is plausibly exogenous to any single Nepali municipality.</p>
+      <p class="smalltext"><strong>The shift-share trick.</strong> Combine destination-FX movements with the 2001 muni × destination shares. Munis with more migrants in <em>appreciating</em> destinations are exposed to a windfall; those tied to depreciating destinations are not.</p>
+    </div>
+  </div>
 </section>
 
 <!-- ============================================================ -->
+<!-- 3. Shift-share construction                                    -->
+<!-- ============================================================ -->
 <section>
-  <h2>Empirical strategy in one slide</h2>
+  <h2>Shift-share construction</h2>
+  <h3>Step 1 — baseline destination weights (2001 census)</h3>
+  \[
+    \omega_{md,0} \;=\; \frac{N_{md,\,2001}}{\mathrm{Pop}_{m,\,2001}}
+    \qquad
+    \mathrm{mig\_int}_{m,0} \;=\; \sum_d \omega_{md,0}
+    \qquad
+    s_{md,0} \;=\; \frac{\omega_{md,0}}{\mathrm{mig\_int}_{m,0}}
+  \]
+  <p class="smalltext">$N_{md,2001}$ = migrants from muni $m$ to destination $d$ in the 2001 census. $\omega$ is migrants per capita to each destination; $s_{md,0}$ are the destination shares of muni $m$ (sum to 1).</p>
+
+  <h3 style="margin-top:1.2em">Step 2 — destination-country shifter (annual)</h3>
+  \[
+    \mathrm{fxshock}_{dt} \;=\; \frac{\mathrm{FX}_{dt}}{\mathrm{FX}_{d,\,2001}}
+  \]
+  <p class="smalltext">FX index of destination $d$'s currency vs Nepali rupee, relative to 2001. Source: IMF FX panel, annual.</p>
+
+  <h3 style="margin-top:1.2em">Step 3 — muni-year share-weighted shock</h3>
+  \[
+    \mathrm{fxshock}_{mt} \;=\; \sum_d s_{md,0}\,\mathrm{fxshock}_{dt}
+  \]
+  <p class="smalltext">Combines the <em>shifter</em> (destination FX movements, common across all Nepali munis sending to the same destination) with the <em>shares</em> (each muni's own 2001 destination mix). Treatment that goes into the regression is z-scored on the muni-year working sample.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 3b. Where the identifying variation comes from                 -->
+<!-- ============================================================ -->
+<section>
+  <h2>Where the identifying variation comes from</h2>
   <ul>
-    <li><strong>Shock:</strong> destination-country FX index (relative to 2001) interacted with each municipality's 2001 share-weighted destination mix — a Bartik-style shift-share instrument.</li>
-    <li><strong>Treatment of interest:</strong>
+    <li><strong>Cross-muni</strong>: muni A sends 80 % of its migrants to Malaysia, muni B sends 80 % to the UAE. If MYR appreciates against NPR but AED depreciates, only muni A sees a positive shock.</li>
+    <li><strong>Within-muni over time</strong>: each muni's destination mix is <em>fixed at 2001</em>, but the FX shifters move over 2001 → 2023, generating a time-varying treatment.</li>
+    <li><strong>Heterogeneous slope</strong> — main reduced form interacts the share-weighted shock with each muni's 2001 baseline migration <em>intensity</em>:
       \[
-        \beta\bigl[\mathrm{fx}_{z,m,t} \;\cdot\; \log(\mathrm{mig\_int}_{z,m,0})\bigr]
+        \beta\,\bigl[\mathrm{fx}_{z,m,t}\;\cdot\;\log(\mathrm{mig\_int}_{z,m,0})\bigr]
       \]
-      heterogeneous slope: how strongly the FX shock bites where 2001 baseline migration intensity is high.</li>
-    <li><strong>Threshold filter:</strong> repeat estimation on subsamples with $k=0/25/50/100$ baseline migrants — robustness to thin-migration municipalities.</li>
+      both z-scored. $\beta$ is the differential response per 1 SD of treatment.</li>
+    <li><strong>Identifying assumption</strong> (Borusyak-Hull-Jaravel style): conditional on year FE, muni FE, year-interacted Khanna Block-A characteristics, and year × log-mig-intensity, FX shifters are quasi-randomly assigned across destinations.</li>
   </ul>
-  <p class="smalltext">Treatments z-scored on the muni-year working sample. SE clustered at municipality.</p>
 </section>
+
+<!-- ============================================================ -->
+<!-- 4. Section marker                                              -->
+<!-- ============================================================ -->
+<section data-background-color="#f3eee8">
+  <h2 style="font-size:2em">Section 1 — first-stage evidence</h2>
+  <p style="font-size:1.1em">
+    Before any downstream "migration income → welfare" claim, we need
+    to show that the instrument <strong>does</strong> move the things
+    it is supposed to move: outmigration, remittance receipts, and the
+    count of international migrants per household.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 5. First-stage spec                                            -->
+<!-- ============================================================ -->
 
 <!-- ============================================================ -->
 <section>
