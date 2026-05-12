@@ -347,7 +347,13 @@ run_spec <- function(spec_label,
                      ref_year      = NULL,
                      output_path   = NULL,
                      fe            = NULL,
-                     save          = TRUE) {
+                     save          = TRUE,
+                     lag           = 0L) {
+  # `lag = L` shifts the FX shock back by L years before the outcome year:
+  # the outcome at year t is matched with the shock at year t - L.  Use this
+  # to test whether outcomes respond contemporaneously (L = 0, default) or
+  # to lagged shock realisations (L = 1, 2, ...).  mig_intensity is 2001-
+  # baseline-fixed and is NOT lagged.
   # `save = FALSE` skips writing the per-call CSV — useful when a wrapper
   # script (e.g. first_stage.R) wants only one consolidated output file.
   # `fe` overrides the FE structure used by feols (default = entity + year):
@@ -369,11 +375,14 @@ run_spec <- function(spec_label,
   trd  <- if (c_block_c) load_trade_ssiv() else NULL
 
   base_data <- if (dataset == "census") load_census() else load_hh()
-  panel <- merge(
-    base_data,
-    inst[, .(lgcode, year, fxshock, mig_intensity, log_mig_intensity, total_migrants)],
-    by = c("lgcode","year")
-  )
+
+  # Apply lag: shift the instrument so outcome year t merges with shock at t-L.
+  inst_use <- inst[, .(lgcode, year, fxshock, mig_intensity, log_mig_intensity, total_migrants)]
+  if (lag != 0L) {
+    inst_use <- copy(inst_use)
+    inst_use[, year := year + as.integer(lag)]   # shock at y becomes the row for outcome year y + L
+  }
+  panel <- merge(base_data, inst_use, by = c("lgcode","year"))
 
   sub <- if (threshold == 0L) copy(panel) else panel[total_migrants >= threshold]
 
@@ -487,7 +496,7 @@ run_spec <- function(spec_label,
     y <- ouc$all[i]
     base <- data.table(
       dataset = dataset, outcome = y, group = ouc$lookup[y],
-      spec = spec_label, threshold = threshold,
+      spec = spec_label, threshold = threshold, lag = as.integer(lag),
       beta = NA_real_, stars = "",
       mean_y = NA_real_, pct_of_mean = NA_real_,
       se = NA_real_, pval = NA_real_,
@@ -539,7 +548,7 @@ run_spec <- function(spec_label,
                                NA_real_, 100 * beta / mean_y)]
 
   # Final column order
-  setcolorder(out, c("dataset","outcome","group","spec","threshold",
+  setcolorder(out, c("dataset","outcome","group","spec","threshold","lag",
                      "beta","stars","mean_y","beta_pp","pct_of_mean",
                      "se","pval","n","n_unit","n_muni","n_years",
                      "sd_y","r2_within","err"))
