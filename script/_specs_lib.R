@@ -283,6 +283,13 @@ load_hh <- function() {
     if (v %in% names(master))
       master[, (paste0("log_", v)) := log1p(get(v))]
   }
+  # log1p of rupee remittance amounts — semi-elasticity outcomes with a
+  # much tighter SE than raw Rs (long right tail collapses).
+  for (v in c("remittance_amt", "remit_amount_12m_rs",
+              "remit_amount_intl_12m_rs")) {
+    if (v %in% names(master))
+      master[, (paste0("log_", v)) := log1p(get(v))]
+  }
   .hh_cache <<- master
   master
 }
@@ -338,7 +345,13 @@ run_spec <- function(spec_label,
                      c_block_c     = TRUE,
                      outcomes      = NULL,
                      ref_year      = NULL,
-                     output_path   = NULL) {
+                     output_path   = NULL,
+                     fe            = NULL) {
+  # `fe` overrides the FE structure used by feols (default = entity + year):
+  #   NULL          -> entity_col + year   (e.g. hhid + year for HH; lgcode + year for census)
+  #   "muni_year"   -> lgcode + year       (drop entity FE for HH; identical to default for census)
+  #   "muni_only"   -> lgcode              (cross-section style, with no year FE)
+  #   any other str -> used as-is on the RHS of |
 
   treatment <- match.arg(treatment)
   stopifnot(dataset %in% c("census","hh"))
@@ -439,8 +452,16 @@ run_spec <- function(spec_label,
       fml <- as.formula(sprintf("%s ~ %s", y, paste(rhs, collapse = " + ")))
       cross_section <- TRUE
     } else {
-      fe  <- paste(entity_col, "year", sep = " + ")
-      fml <- as.formula(sprintf("%s ~ %s | %s", y, paste(rhs, collapse = " + "), fe))
+      fe_str <- if (is.null(fe)) {
+                  paste(entity_col, "year", sep = " + ")
+                } else if (identical(fe, "muni_year")) {
+                  "lgcode + year"
+                } else if (identical(fe, "muni_only")) {
+                  "lgcode"
+                } else {
+                  fe
+                }
+      fml <- as.formula(sprintf("%s ~ %s | %s", y, paste(rhs, collapse = " + "), fe_str))
       cross_section <- FALSE
     }
 
