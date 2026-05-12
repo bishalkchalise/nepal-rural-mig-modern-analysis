@@ -329,26 +329,44 @@ def main():
     h2 = build_slide("hetslide-firm", "Heterogeneity: firm side",
                      FIRM_BLOCKS, fnet, furb, FOOTNOTE)
 
-    block = "\n\n<!-- HET-SLIDES-BEGIN -->\n" + EXTRA_HEAD + "\n" + h1 + "\n\n" + h2 + "\n<!-- HET-SLIDES-END -->\n"
+    # Block 1: HH heterogeneity slide (positioned after consumption, before firm slides)
+    # Block 2: Firm heterogeneity slide (positioned at end after all firm slides)
+    block_hh = ("\n\n<!-- HET-HH-BEGIN -->\n"
+                + EXTRA_HEAD + "\n" + h1 + "\n<!-- HET-HH-END -->\n")
+    block_firm = ("\n\n<!-- HET-FIRM-BEGIN -->\n" + h2 + "\n<!-- HET-FIRM-END -->\n")
 
     html = DOCS.read_text(encoding='utf-8')
-    BEG = "<!-- HET-SLIDES-BEGIN -->"
-    END = "<!-- HET-SLIDES-END -->"
-    if BEG in html and END in html:
-        before = html.split(BEG)[0]
-        after  = html.split(END, 1)[1]
-        html = before + block + after
-    else:
-        # insert before the final </div></div> that closes reveal slides
-        anchor = "</section>\n\n</div>"
-        if anchor in html:
-            html = html.replace(anchor, "</section>\n" + block + "\n</div>", 1)
-        else:
-            # fall back: append at very end before </body>
-            html = html.replace("</body>", block + "\n</body>")
+
+    # Clean up the legacy single block, if present.
+    OLD_BEG, OLD_END = "<!-- HET-SLIDES-BEGIN -->", "<!-- HET-SLIDES-END -->"
+    if OLD_BEG in html and OLD_END in html:
+        html = html.split(OLD_BEG)[0] + html.split(OLD_END, 1)[1]
+
+    # Replace or insert each block at its own marker pair.
+    def upsert(html, beg, end, block, anchor_before):
+        if beg in html and end in html:
+            return html.split(beg)[0] + block + html.split(end, 1)[1]
+        # fall back: insert block *before* the anchor string
+        if anchor_before in html:
+            return html.replace(anchor_before, block + anchor_before, 1)
+        return html.replace("</body>", block + "\n</body>")
+
+    # HH het goes right after the consumption slide. Anchor on the full slide-12
+    # multi-line comment so the block lands BEFORE the firm-entry comment.
+    HH_ANCHOR = ("<!-- =============================================================\n"
+                 "     12. Firm entry — by size and industry (NEC panel)\n"
+                 "     ============================================================= -->")
+    html = upsert(html, "<!-- HET-HH-BEGIN -->", "<!-- HET-HH-END -->",
+                  block_hh, HH_ANCHOR)
+
+    # Firm het goes at the very end of the deck, before the closing </div>.
+    html = upsert(html, "<!-- HET-FIRM-BEGIN -->", "<!-- HET-FIRM-END -->",
+                  block_firm, "</section>\n\n</div>")
 
     DOCS.write_text(html, encoding='utf-8')
     print(f"Wrote heterogeneity slides into {DOCS}")
+    print(f"  H1 (HH)   inserted after consumption slide")
+    print(f"  H2 (Firm) inserted at end of deck")
     print(f"  H1 outcome blocks: {[b[0] for b in HH_BLOCKS]}")
     print(f"  H2 outcome blocks: {[b[0] for b in FIRM_BLOCKS]}")
 
