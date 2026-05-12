@@ -62,7 +62,17 @@ fwrite(census_first, file.path(ROOT, "output", "tab",
                                "first_stage_census_absentee.csv"))
 
 
-cat("\n\n#### FIRST STAGE — HH remittance receipt + amount ####\n")
+cat("\n\n#### FIRST STAGE — HH remittance (both unconditional and intensive margin) ####\n")
+# Two sample groups:
+#   Unconditional (FULL HH-year sample, n=18,056):
+#     remittance_any  -- 1 if HH reports ANY remittance income
+#     remittance_amt  -- amount (UNIT UNCLEAR; mean 805, max 375,000 -- likely
+#                        scaled or in thousands of Rs; check codebook before
+#                        reporting a Rs level).
+#   Intensive margin (HHs WITH ANY MIGRANT only, n=8,559):
+#     remit_received          -- 1 if any remittance received
+#     remit_amount_12m_rs     -- total Rs received (all migrants)
+#     remit_amount_intl_12m_rs -- total Rs received from INTERNATIONAL migrants
 hh_rows <- list()
 for (thr in THR) {
   r <- run_spec(
@@ -75,7 +85,12 @@ for (thr in THR) {
     c_block_a  = TRUE,
     c_block_b  = FALSE,
     c_block_c  = TRUE,
-    outcomes   = list("HH remittance" = c("remittance_any","remittance_amt")),
+    outcomes   = list(
+      "HH remittance — full sample" =
+        c("remittance_any","remittance_amt"),
+      "HH remittance — migrant HHs only (intensive margin)" =
+        c("remit_received","remit_amount_12m_rs","remit_amount_intl_12m_rs")
+    ),
     output_path = file.path(ROOT, "output", "tab",
                             sprintf("first_stage_hh_remit_thr%d.csv", thr))
   )
@@ -101,13 +116,33 @@ print(census_first[outcome == "hh_death_12m",
                    .(threshold, beta, stars, beta_pp, pct_of_mean, se, pval, n, n_muni)],
       digits = 4)
 
-cat("\n[2] HRVS HH — remittance_any (any remit, mean", round(mean(hh_first[outcome=='remittance_any']$mean_y, na.rm=TRUE), 3), ")\n")
+cat("\n[2a] HRVS HH FULL SAMPLE — remittance_any (mean",
+    round(mean(hh_first[outcome=='remittance_any']$mean_y, na.rm=TRUE), 3), ")\n")
 print(hh_first[outcome == "remittance_any",
                .(threshold, beta, stars, beta_pp, pct_of_mean, se, pval, n, n_unit, n_muni)],
       digits = 4)
 
-cat("\n[3] HRVS HH — remittance_amt (Rs, mean", round(mean(hh_first[outcome=='remittance_amt']$mean_y, na.rm=TRUE), 1), ")\n")
+cat("\n[2b] HRVS HH FULL SAMPLE — remittance_amt (UNIT UNCLEAR; mean",
+    round(mean(hh_first[outcome=='remittance_amt']$mean_y, na.rm=TRUE), 1), ")\n")
 print(hh_first[outcome == "remittance_amt",
+               .(threshold, beta, stars, pct_of_mean, se, pval, n, n_unit, n_muni)],
+      digits = 4)
+
+cat("\n[3a] HRVS — MIGRANT HHs ONLY — remit_received (mean",
+    round(mean(hh_first[outcome=='remit_received']$mean_y, na.rm=TRUE), 3), ")\n")
+print(hh_first[outcome == "remit_received",
+               .(threshold, beta, stars, beta_pp, pct_of_mean, se, pval, n, n_unit, n_muni)],
+      digits = 4)
+
+cat("\n[3b] HRVS — MIGRANT HHs ONLY — remit_amount_12m_rs (Rs total, mean",
+    round(mean(hh_first[outcome=='remit_amount_12m_rs']$mean_y, na.rm=TRUE), 0), ")\n")
+print(hh_first[outcome == "remit_amount_12m_rs",
+               .(threshold, beta, stars, pct_of_mean, se, pval, n, n_unit, n_muni)],
+      digits = 4)
+
+cat("\n[3c] HRVS — MIGRANT HHs ONLY — remit_amount_intl_12m_rs (Rs from international migrants, mean",
+    round(mean(hh_first[outcome=='remit_amount_intl_12m_rs']$mean_y, na.rm=TRUE), 0), ")\n")
+print(hh_first[outcome == "remit_amount_intl_12m_rs",
                .(threshold, beta, stars, pct_of_mean, se, pval, n, n_unit, n_muni)],
       digits = 4)
 
