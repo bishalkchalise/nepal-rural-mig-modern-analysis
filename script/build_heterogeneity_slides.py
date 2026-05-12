@@ -359,9 +359,21 @@ def main():
     html = upsert(html, "<!-- HET-HH-BEGIN -->", "<!-- HET-HH-END -->",
                   block_hh, HH_ANCHOR)
 
-    # Firm het goes at the very end of the deck, before the closing </div>.
-    html = upsert(html, "<!-- HET-FIRM-BEGIN -->", "<!-- HET-FIRM-END -->",
-                  block_firm, "</section>\n\n</div>")
+    # Firm het: always remove any prior firm-het block, then re-insert it
+    # INSIDE the reveal slides container (before </div></div><script src=reveal.js>).
+    while "<!-- HET-FIRM-BEGIN -->" in html and "<!-- HET-FIRM-END -->" in html:
+        html = (html.split("<!-- HET-FIRM-BEGIN -->")[0]
+                + html.split("<!-- HET-FIRM-END -->", 1)[1])
+    REVEAL_SCRIPT_ANCHOR = '<script src="https://cdn.jsdelivr.net/npm/reveal.js'
+    idx = html.find(REVEAL_SCRIPT_ANCHOR)
+    if idx > 0:
+        rev_close = html.rfind("</div>\n</div>", 0, idx)
+        if rev_close > 0:
+            html = html[:rev_close] + block_firm + "\n" + html[rev_close:]
+        else:
+            html = html.replace("</body>", block_firm + "\n</body>")
+    else:
+        html = html.replace("</body>", block_firm + "\n</body>")
 
     DOCS.write_text(html, encoding='utf-8')
     print(f"Wrote heterogeneity slides into {DOCS}")
