@@ -114,7 +114,7 @@
     .reveal .slides { text-align: left; }
 
     .reveal section {
-      padding: 36px 96px 28px 96px;
+      padding: 32px 96px 18px 96px;
       background: var(--paper);
       box-sizing: border-box;
       height: 100%;
@@ -159,7 +159,7 @@
       font-variant-numeric: tabular-nums;
     }
     .reveal table th, .reveal table td {
-      padding: 2.5px 14px; text-align: right; vertical-align: top;
+      padding: 1.5px 14px; text-align: right; vertical-align: top;
       background: transparent;
     }
     .reveal table thead tr:first-child th.sample-span {
@@ -220,8 +220,8 @@
       margin: 0.8em auto !important; display: block !important;
     }
     .reveal .eq-cap {
-      font-size: 0.38em; color: var(--muted);
-      margin: -0.1em 0 0.3em 0; text-align: left; line-height: 1.55;
+      font-size: 0.33em; color: var(--muted);
+      margin: 0.2em 0 0 0; text-align: left; line-height: 1.5;
     }
   </style>
 </head>
@@ -473,13 +473,13 @@
 
     </tbody>
   </table>
-  <p class="eq-cap" style="margin-top:0.6em">
-    Reported $\beta$: $\mathrm{fx}_z \times \log(\mathrm{mig\_int}_z)$.
-    SE in (), % of mean in []. *** $p<0.01$, ** $p<0.05$, * $p<0.10$. SE clustered at municipality.
-    <em>Durables per household</em>: mean number of household durable categories owned (0&ndash;12 scale; radio, TV, mobile, computer, internet, landline, bicycle, motorcycle, car, fridge, plus 2 others). Higher = more types owned.
-    <em>Modern housing</em>: share of dwellings with cement/concrete/RCC foundation (vs. mud/wood/stone).
-    <em>Toilet adoption</em>: share of HHs with any toilet (modern + ordinary).
-    Durables and Modern housing are measured in 2011/2021 only (not coded in 2001).
+  <p class="eq-cap">
+    Reported $\beta$: $\mathrm{fx}_z \times \log(\mathrm{mig\_int}_z)$. SE in (), % of mean in [].
+    *** $p<.01$, ** $p<.05$, * $p<.10$. SE clustered at municipality. FE: muni + year.
+    <em>Durables per HH</em>: mean count of household durable categories owned (0–12 scale: radio, TV, mobile, computer, internet, landline, bike, motorbike, car, fridge, +2).
+    <em>Modern housing</em>: share of dwellings with cement/concrete/RCC foundation.
+    <em>Toilet adoption</em>: share of HHs with any toilet.
+    Durables and modern housing measured in 2011/2021 only.
   </p>
 </section>
 
@@ -600,12 +600,13 @@
 
     </tbody>
   </table>
-  <p class="eq-cap" style="margin-top:0.5em">
-    Reported $\beta$: $\mathrm{fx}_z \times \log(\mathrm{mig\_int}_z)$.
-    SE in (), % of mean in []. *** $p<0.01$, ** $p<0.05$, * $p<0.10$. SE clustered at municipality.
+  <p class="eq-cap">
+    Reported $\beta$: $\mathrm{fx}_z \times \log(\mathrm{mig\_int}_z)$. SE in (), % of mean in [].
+    *** $p<.01$, ** $p<.05$, * $p<.10$. SE clustered at municipality.
     FE: muni + year for (1)–(3); HH + year for (4)–(5).
-    <em>Literacy</em> = share of pop 6+ who is literate. <em>School attendance</em> = share of children 6–16 in school.
-    <em>Health spending</em> = total HH-level out-of-pocket health expenditure (medicines = medicine purchases only; total = medicines + hospital + other). Mean baseline Rs 1,500 (medicines) and Rs 12,400 (total).
+    <em>Literacy / attendance</em>: census shares (pop 6+ / children 6–16).
+    <em>Health spending</em>: HH-level out-of-pocket Rs (medicines vs medicines + hospital + other);
+    baseline means Rs 1,500 (medicines) and Rs 12,400 (total).
   </p>
 </section>
 
