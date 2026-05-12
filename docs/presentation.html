@@ -104,8 +104,8 @@
       border-bottom: 1px solid var(--rule);
     }
     .reveal h3 {
-      font-size: 0.62em; color: var(--accent);
-      margin: 1.1em 0 0.3em; font-weight: 500;
+      font-size: 0.55em; color: var(--accent);
+      margin: 0.6em 0 0.1em; font-weight: 500;
       text-transform: uppercase; letter-spacing: 0.08em;
     }
     .reveal p, .reveal li {
@@ -217,11 +217,12 @@
 
     /* === Math =================================================== */
     .reveal mjx-container[display="true"] {
-      margin: 0.5em auto !important; display: block !important;
+      font-size: 0.88em !important;
+      margin: 0.25em auto !important; display: block !important;
     }
     .reveal .eq-cap {
-      font-size: 0.5em; color: var(--muted);
-      margin: -0.1em 0 0.6em 0; text-align: center;
+      font-size: 0.45em; color: var(--muted);
+      margin: -0.1em 0 0.3em 0; text-align: center;
     }
 
     /* === Misc =================================================== */
@@ -323,9 +324,9 @@ Combine destination-FX movements with the muni × destination shares fixed in 20
   <h3>Step 1 &mdash; baseline destination weights (2001 census)</h3>
   \[
     \begin{aligned}
-      \omega_{md,0} \;&=\; \frac{N_{md,\,2001}}{\mathrm{Pop}_{m,\,2001}} \\[2pt]
-      \mathrm{mig\_int}_{m,0} \;&=\; \sum_d \omega_{md,0} \\[2pt]
-      s_{md,0} \;&=\; \frac{\omega_{md,0}}{\mathrm{mig\_int}_{m,0}}
+      \omega_{md,0} &= \tfrac{N_{md,\,2001}}{\mathrm{Pop}_{m,\,2001}}, &
+      \mathrm{mig\_int}_{m,0} &= \textstyle\sum_d \omega_{md,0}, &
+      s_{md,0} &= \tfrac{\omega_{md,0}}{\mathrm{mig\_int}_{m,0}}
     \end{aligned}
   \]
   <p class="eq-cap">$N_{md,2001}$ = migrants from muni $m$ to destination $d$ in 2001. $s_{md,0}$ are destination shares (sum to 1 within muni).</p>
