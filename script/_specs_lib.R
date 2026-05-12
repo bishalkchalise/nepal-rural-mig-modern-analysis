@@ -35,6 +35,10 @@ suppressPackageStartupMessages({
 setDTthreads(0)
 ROOT <- normalizePath(".")
 
+# Suppress R's default switch to scientific (1.23e+05) notation in printed
+# tables.  Higher penalty = wider numbers before switching to "e".
+options(scipen = 999)
+
 # -----------------------------------------------------------------------------
 # Helpers
 # -----------------------------------------------------------------------------
