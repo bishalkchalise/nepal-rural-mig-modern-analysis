@@ -21,12 +21,16 @@ window.MathJax = {
   <ul>
     <li><a href="index.html">Intro</a></li>
     <li><a href="explorer.html">Results</a></li>
+    <li><a href="test.html">Test (Family A)</a></li>
+    <li><a href="test_b.html">Test B (Family B)</a></li>
     <li><a href="definitions.html">Variable definitions</a></li>
     <li><a href="summary.html">Summary statistics</a></li>
     <li><a href="methods.html" class="active">Method</a>
       <ul class="subnav">
         <li><a href="#shock">Shock construction</a></li>
-        <li><a href="#specs">Specifications</a></li>
+        <li><a href="#blocks">Spec building blocks</a></li>
+        <li><a href="#familyA">Family A (A1–A4)</a></li>
+        <li><a href="#familyB">Family B (B1–B6)</a></li>
         <li><a href="#datasets">Datasets &amp; FE</a></li>
         <li><a href="#refs">References</a></li>
       </ul>
@@ -92,55 +96,212 @@ before estimation, so β is the response per 1 SD of the standardised
 treatment.
 </p>
 
-<h2 id="specs">Three specifications</h2>
+<h2 id="blocks">Specification building blocks</h2>
 
 <p>
-The treatment of interest is the <em>heterogeneous-treatment slope</em> —
-how strongly the FX shock's effect on outcome $y$ scales with each
-municipality's baseline migration intensity. All three specifications have
-two-way fixed effects ($\alpha_i, \gamma_t$) and standard errors clustered
-at the municipality. The reported $\beta$ is the bracketed interaction term.
+The two test pages (Family A and Family B) build their specifications from
+a common set of components. Each spec is fully described by a
+<em>treatment</em> term plus an on/off toggle for three control blocks. All
+specifications include municipality (or HH) and year fixed effects
+$\alpha_i + \gamma_t$, and standard errors clustered at the municipality.
+</p>
+
+<p><strong>Treatment options.</strong> The reported $\beta$ in every spec is
+the coefficient on the treatment column listed below.</p>
+
+<ul>
+  <li><strong>Log interaction</strong>: $\mathrm{fx}_z \cdot \log(\mathrm{mig\_int}_z)$ — the heterogeneous-treatment slope on log mig intensity.</li>
+  <li><strong>Linear interaction</strong>: $\mathrm{fx}_z \cdot \mathrm{mig\_int}_z$ — same slope idea but linear in mig intensity.</li>
+  <li><strong>Fx alone</strong>: $\mathrm{fx}_z$ — average FX-shock effect with no heterogeneity by mig intensity.</li>
+</ul>
+
+<p><strong>Control blocks — fully expanded with year-specific
+coefficients.</strong> Let $\boldsymbol{\tau}_t = (\mathbf{1}\{t=t_1\},\ldots,\mathbf{1}\{t=t_T\})'$ denote the period-FE vector with the reference year ($t_{\text{ref}}=$ 2001 for census, 2016 for HH/plot) omitted. Each block carries one separate coefficient per (variable × non-reference year), matching Khanna et al. (2026) eq. (4) and footnote&nbsp;12 — i.e. $\mathrm{MigInc}_{o0}\times\mathbf{D}_t$ and $\mathrm{Rshock}_o\times\mathbf{D}_t$ are estimated with year-specific slopes, not collapsed onto a single Post indicator.</p>
+
+\begin{align}
+C_{\text{mig}}
+  &\;=\; \boldsymbol{\lambda}_1'\bigl(\mathrm{mig\_int}_z\,\boldsymbol{\tau}_t\bigr)
+  \;\equiv\; \sum_{t\neq t_{\text{ref}}} \lambda_{1,t}\,\mathrm{mig\_int}_z\,\mathbf{1}\{t\} \\[4pt]
+C_{\text{fx}}
+  &\;=\; \boldsymbol{\lambda}_2'\bigl(\mathrm{fx}_z\,\boldsymbol{\tau}_t\bigr)
+  \;\equiv\; \sum_{t\neq t_{\text{ref}}} \lambda_{2,t}\,\mathrm{fx}_z\,\mathbf{1}\{t\} \\[4pt]
+C_{X}
+  &\;=\; \sum_{k=1}^{K}\boldsymbol{\delta}_k'\bigl(X_{k,m(i),0}\,\boldsymbol{\tau}_t\bigr)
+  \;\equiv\; \sum_{k=1}^{K}\sum_{t\neq t_{\text{ref}}} \delta_{k,t}\,X_{k,m(i),0}\,\mathbf{1}\{t\}
+\end{align}
+
+<p>
+$C_{\text{mig}}$ controls for differential trends correlated with baseline
+migration intensity. $C_{\text{fx}}$ allows year-specific FX shock effects
+(relaxes constancy across years). $C_{X}$ is Khanna's Block A — the
+$K$ baseline destination characteristics, namely the six (non-omitted)
+destination-region migrant shares and the destination-weighted 2001 GDP
+per capita. For census P3 (2001/11/21, ref=2001) this expands to
+$2 + 2 + 7\!\times\!2 = 18$ control coefficients in the saturated
+specification.
+</p>
+
+<p>
+Note on Khanna et al. (2026): their eq. (4) uses $\mathbf{X}_{o,0}\times\mathrm{Post}_t$ for the baseline-X term — i.e. one $\delta_k$ per characteristic, not one per (characteristic × period). They have a single pre-shock period (1997 AFC) and multiple post periods, so $\mathrm{Post}_t$ is the natural collapse. For Nepal the FX series moves continuously 2001–2023 with no single-event pre/post boundary, so we keep the more flexible $\mathbf{X}_{o,0}\times\mathbf{D}_t$ form. Setting $\delta_{k,2011}=\delta_{k,2021}$ recovers Khanna's $\times\mathrm{Post}$ as a constrained special case.
+</p>
+
+<p>
+All treatment quantities (fx, mig_int, log mig_int) are z-scored on the
+working sample at the muni-year level before estimation, so $\beta$ is the
+response per 1 SD of the treatment.
+</p>
+
+<h2 id="familyA">Family A — Cumulative builds (A1 → A4)</h2>
+
+<p>
+Family A is the headline ladder used on the <a href="explorer.html">Results</a>
+page. It holds the treatment fixed at the log-interaction heterogeneous
+slope ($\mathrm{fx}_z \cdot \log(\mathrm{mig\_int}_z)$) and adds control
+blocks one at a time. All four columns report the same parameter, so the
+reader can scan left-to-right and see whether the slope survives as the
+model saturates.
+</p>
+
+<p>
+For the linear-interaction variant
+($\mathrm{fx}_z \cdot \mathrm{mig\_int}_z$) and other robustness tweaks
+(drop one of $C_{\text{mig}}$ / $C_{\text{fx}}$ / $C_X$, or no interaction
+at all), see <a href="test_b.html">Test B (Family B)</a>.
 </p>
 
 \begin{equation}
-\textbf{S1:}\quad
-y_{it} = \alpha\,\mathrm{fxshock}_{m(i),t}
-       + \beta\bigl[\mathrm{fxshock}_{m(i),t}\cdot\mathrm{mig\_intensity}_{m(i),0}\bigr]
+\textbf{A1 — treatment only:}\quad
+y_{it} = \beta\,\bigl[\mathrm{fx}_z \cdot \log\mathrm{mig\_int}_z\bigr]
        + \alpha_i + \gamma_t + \varepsilon_{it}
-\label{eq:s1}
+\label{eq:a1}
 \end{equation}
 
 \begin{equation}
-\textbf{S2 (main):}\quad
-y_{it} = \alpha\,\mathrm{fxshock}_{m(i),t}
-       + \beta\bigl[\mathrm{fxshock}_{m(i),t}\cdot\log\mathrm{mig\_intensity}_{m(i),0}\bigr]
-       + \boldsymbol{\lambda}'\bigl(\mathrm{mig\_intensity}_{m(i),0}\,\boldsymbol{\tau}_t\bigr)
+\textbf{A2 — A1 + }C_{\text{mig}}\textbf{:}\quad
+y_{it} = \beta\,\bigl[\mathrm{fx}_z \cdot \log\mathrm{mig\_int}_z\bigr]
+       + \boldsymbol{\lambda}_1'(\mathrm{mig\_int}_z\,\boldsymbol{\tau}_t)
        + \alpha_i + \gamma_t + \varepsilon_{it}
-\label{eq:s2}
+\label{eq:a2}
 \end{equation}
 
 \begin{equation}
-\textbf{S3:}\quad
-y_{it} = \alpha\,\mathrm{fxshock}_{m(i),t}
-       + \beta\bigl[\mathrm{fxshock}_{m(i),t}\cdot\mathrm{mig\_intensity}_{m(i),0}\bigr]
-       + \boldsymbol{\lambda}'\bigl(\log\mathrm{mig\_intensity}_{m(i),0}\,\boldsymbol{\tau}_t\bigr)
+\textbf{A3 — A2 + }C_{\text{fx}}\textbf{:}\quad
+y_{it} = \beta\,\bigl[\mathrm{fx}_z \cdot \log\mathrm{mig\_int}_z\bigr]
+       + \boldsymbol{\lambda}_1'(\mathrm{mig\_int}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\lambda}_2'(\mathrm{fx}_z\,\boldsymbol{\tau}_t)
        + \alpha_i + \gamma_t + \varepsilon_{it}
-\label{eq:s3}
+\label{eq:a3}
 \end{equation}
 
-<ul>
-  <li><strong>S1</strong> — FX shock × <em>linear</em> mig-intensity, no year × migint trend control.</li>
-  <li><strong>S2</strong> — FX shock × <em>log</em> mig-intensity, with linear year × mig-intensity controls. (Main spec.)</li>
-  <li><strong>S3</strong> — FX shock × <em>linear</em> mig-intensity, with log year × mig-intensity controls.</li>
-</ul>
+\begin{equation}
+\textbf{A4 (saturated) — A3 + }C_{X}\textbf{:}\quad
+y_{it} = \beta\,\bigl[\mathrm{fx}_z \cdot \log\mathrm{mig\_int}_z\bigr]
+       + \boldsymbol{\lambda}_1'(\mathrm{mig\_int}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\lambda}_2'(\mathrm{fx}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\delta}'(\mathbf{X}_{m(i),0}\,\boldsymbol{\tau}_t)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:a4}
+\end{equation}
+
+<p><strong>What each estimates.</strong></p>
+
+<table class="var-table">
+  <thead>
+    <tr><th style="text-align:left">Spec</th><th style="text-align:left">Estimand</th><th style="text-align:left">Interpretation</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>A1</strong></td><td>$\beta$ in eq. \eqref{eq:a1}</td><td>Naïve heterogeneous slope: extra outcome response per 1 SD fx, scaled by 1 SD of log mig intensity, after only entity + year FE.</td></tr>
+    <tr><td><strong>A2</strong></td><td>$\beta$ in eq. \eqref{eq:a2}</td><td>A1 net of differential trends correlated with mig intensity. Removes the "high-mig munis would have moved differently anyway" story.</td></tr>
+    <tr><td><strong>A3</strong></td><td>$\beta$ in eq. \eqref{eq:a3}</td><td>A2 net of year-specific FX shock effects. Allows the average FX shock to load on different years (NPR depreciation timing).</td></tr>
+    <tr><td><strong>A4</strong></td><td>$\beta$ in eq. \eqref{eq:a4}</td><td>Saturated. Also nets out differential trends correlated with the destination composition (region shares + dest GDP).</td></tr>
+  </tbody>
+</table>
+
+<h2 id="familyB">Family B — Saturated-model variants (B1 → B6)</h2>
+
+<p>
+Family B starts from the saturated A4 baseline and changes one element per
+column — either the treatment shape or one control block — so the reader
+can see how β responds to each tweak.
+</p>
+
+\begin{equation}
+\textbf{B1 (= A4, log interaction):}\quad
+y_{it} = \beta\,\bigl[\mathrm{fx}_z \cdot \log\mathrm{mig\_int}_z\bigr]
+       + \boldsymbol{\lambda}_1'(\mathrm{mig\_int}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\lambda}_2'(\mathrm{fx}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\delta}'(\mathbf{X}_{m(i),0}\,\boldsymbol{\tau}_t)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:b1}
+\end{equation}
+
+\begin{equation}
+\textbf{B2 — linear interaction:}\quad
+y_{it} = \beta\,\bigl[\mathrm{fx}_z \cdot \mathrm{mig\_int}_z\bigr]
+       + \boldsymbol{\lambda}_1'(\mathrm{mig\_int}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\lambda}_2'(\mathrm{fx}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\delta}'(\mathbf{X}_{m(i),0}\,\boldsymbol{\tau}_t)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:b2}
+\end{equation}
+
+\begin{equation}
+\textbf{B3 — drop }C_{\text{mig}}\textbf{:}\quad
+y_{it} = \beta\,\bigl[\mathrm{fx}_z \cdot \log\mathrm{mig\_int}_z\bigr]
+       + \boldsymbol{\lambda}_2'(\mathrm{fx}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\delta}'(\mathbf{X}_{m(i),0}\,\boldsymbol{\tau}_t)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:b3}
+\end{equation}
+
+\begin{equation}
+\textbf{B4 — drop }C_{\text{fx}}\textbf{:}\quad
+y_{it} = \beta\,\bigl[\mathrm{fx}_z \cdot \log\mathrm{mig\_int}_z\bigr]
+       + \boldsymbol{\lambda}_1'(\mathrm{mig\_int}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\delta}'(\mathbf{X}_{m(i),0}\,\boldsymbol{\tau}_t)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:b4}
+\end{equation}
+
+\begin{equation}
+\textbf{B5 — drop }C_{X}\textbf{ (= A3):}\quad
+y_{it} = \beta\,\bigl[\mathrm{fx}_z \cdot \log\mathrm{mig\_int}_z\bigr]
+       + \boldsymbol{\lambda}_1'(\mathrm{mig\_int}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\lambda}_2'(\mathrm{fx}_z\,\boldsymbol{\tau}_t)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:b5}
+\end{equation}
+
+\begin{equation}
+\textbf{B6 — Fx alone, no interaction:}\quad
+y_{it} = \beta\,\mathrm{fx}_z
+       + \boldsymbol{\lambda}_1'(\mathrm{mig\_int}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\lambda}_2'(\mathrm{fx}_z\,\boldsymbol{\tau}_t)
+       + \boldsymbol{\delta}'(\mathbf{X}_{m(i),0}\,\boldsymbol{\tau}_t)
+       + \alpha_i + \gamma_t + \varepsilon_{it}
+\label{eq:b6}
+\end{equation}
+
+<p><strong>What each estimates.</strong></p>
+
+<table class="var-table">
+  <thead>
+    <tr><th style="text-align:left">Spec</th><th style="text-align:left">Estimand</th><th style="text-align:left">Interpretation</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>B1</strong></td><td>$\beta$ in eq. \eqref{eq:b1}</td><td>Reference — same as A4. Heterogeneous slope at full saturation.</td></tr>
+    <tr><td><strong>B2</strong></td><td>$\beta$ in eq. \eqref{eq:b2}</td><td>Linear instead of log interaction. Tests whether the heterogeneity is better captured by mig intensity itself rather than its log.</td></tr>
+    <tr><td><strong>B3</strong></td><td>$\beta$ in eq. \eqref{eq:b3}</td><td>B1 minus the linear-mig-intensity year trend. Tests whether $C_{\text{mig}}$ is necessary on top of $C_{\text{fx}}$ and $C_X$.</td></tr>
+    <tr><td><strong>B4</strong></td><td>$\beta$ in eq. \eqref{eq:b4}</td><td>B1 minus year-specific FX effects. Tests whether the FX trend control matters.</td></tr>
+    <tr><td><strong>B5</strong></td><td>$\beta$ in eq. \eqref{eq:b5}</td><td>B1 minus Khanna Block A. Tests whether destination-composition controls move the slope. Algebraically equal to A3.</td></tr>
+    <tr><td><strong>B6</strong></td><td>$\beta$ in eq. \eqref{eq:b6}</td><td>Treatment swapped from interaction to Fx alone. Reports the average FX-shock effect under full saturation — heterogeneity benchmark.</td></tr>
+  </tbody>
+</table>
 
 <p>
 $\boldsymbol{\tau}_t = (\mathbf{1}\{t=t_1\},\dots,\mathbf{1}\{t=t_T\})'$ is
 the year-period indicator vector relative to a reference year (2001 for the
-census, 2016 for the household and plot panels). All four treatment
-quantities (fxshock, mig_intensity, log mig_intensity) are z-scored on the
-working sample at the muni-year level before estimation, so $\beta$ is the
-differential response per 1 SD of the interaction term.
+census, 2016 for the HH and plot panels).
 </p>
 
 <h3>Sample threshold</h3>
