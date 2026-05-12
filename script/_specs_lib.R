@@ -493,13 +493,15 @@ run_spec <- function(spec_label,
                   fifelse(pval < 0.01, "***",
                   fifelse(pval < 0.05, "**",
                   fifelse(pval < 0.10, "*", ""))))]
-  # Beta as % of outcome mean (only meaningful when mean != 0)
+  # beta_pp     : beta * 100 — interpretable as pp for share/proportion outcomes
+  # pct_of_mean : 100 * beta / mean_y — response as % of baseline level (any outcome)
+  out[, beta_pp     := fifelse(is.na(beta), NA_real_, beta * 100)]
   out[, pct_of_mean := fifelse(is.na(beta) | is.na(mean_y) | mean_y == 0,
                                NA_real_, 100 * beta / mean_y)]
 
   # Final column order
   setcolorder(out, c("dataset","outcome","group","spec","threshold",
-                     "beta","stars","mean_y","pct_of_mean",
+                     "beta","stars","mean_y","beta_pp","pct_of_mean",
                      "se","pval","n","n_unit","n_muni","n_years",
                      "sd_y","r2_within","err"))
 
@@ -530,7 +532,7 @@ run_spec <- function(spec_label,
   cat(sprintf("\n========== SIGNIFICANT (p < 0.05) — %d outcomes ==========\n",
               nrow(sig)))
   if (nrow(sig) > 0) {
-    print(sig[, .(outcome, group, beta, stars, mean_y, pct_of_mean,
+    print(sig[, .(outcome, group, beta, stars, mean_y, beta_pp, pct_of_mean,
                   se, pval, n_unit, n_muni, n_years)],
           digits = 4, nrows = nrow(sig))
   } else {
