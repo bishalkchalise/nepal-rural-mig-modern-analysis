@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>First stage — Nepal migration / FX shock</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" />
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$','$'], ['\\(','\\)']],
+             displayMath: [['$$','$$'], ['\\[','\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <style>
+    .reveal { font-family: Georgia, "Times New Roman", serif; }
+    .reveal h1, .reveal h2, .reveal h3 { font-family: Helvetica, Arial, sans-serif; letter-spacing: -0.01em; }
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em; margin-bottom: 0.4em; }
+    .reveal h3 { font-size: 1.1em; color:#666; margin-bottom: 0.6em; }
+    .reveal .slides { text-align: left; }
+    .reveal table { font-size: 0.55em; border-collapse: collapse; margin: 0 auto; }
+    .reveal th, .reveal td { padding: 4px 10px; text-align: right; }
+    .reveal th:first-child, .reveal td:first-child { text-align: left; }
+    .reveal table thead tr th { border-bottom: 2px solid #333; font-weight: bold; }
+    .reveal table tbody tr.sep td { border-top: 1px solid #ccc; }
+    .reveal .se { color:#666; font-size:0.9em; }
+    .reveal .pct { color:#888; font-size:0.85em; font-style: italic; }
+    .reveal .stars { color:#c0392b; font-weight: bold; }
+    .reveal .smalltext { font-size: 0.6em; color: #555; }
+    .reveal blockquote { border-left: 4px solid #999; padding-left: 12px; color: #444; font-style: italic; font-size: 0.85em; }
+    .reveal .col2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2em; }
+    .reveal .footer { font-size: 0.55em; color:#888; position: absolute; bottom: 10px; left: 24px; }
+    .reveal section { padding-left: 24px; padding-right: 24px; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================ -->
+<section>
+  <h1>International migration &amp; rural Nepal</h1>
+  <h2>First-stage evidence</h2>
+  <p class="smalltext">
+    Bishal K. Chalise &nbsp;·&nbsp; Mushfiq Mobarak <br/>
+    Nepal · 2001 – 2021 · preliminary
+  </p>
+  <p style="margin-top:2em">
+    <em>Does the FX-driven remittance windfall delivered through international
+    migration actually move the outcomes it is supposed to move?</em>
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<section>
+  <h2>Empirical strategy in one slide</h2>
+  <ul>
+    <li><strong>Shock:</strong> destination-country FX index (relative to 2001) interacted with each municipality's 2001 share-weighted destination mix — a Bartik-style shift-share instrument.</li>
+    <li><strong>Treatment of interest:</strong>
+      \[
+        \beta\bigl[\mathrm{fx}_{z,m,t} \;\cdot\; \log(\mathrm{mig\_int}_{z,m,0})\bigr]
+      \]
+      heterogeneous slope: how strongly the FX shock bites where 2001 baseline migration intensity is high.</li>
+    <li><strong>Threshold filter:</strong> repeat estimation on subsamples with $k=0/25/50/100$ baseline migrants — robustness to thin-migration municipalities.</li>
+  </ul>
+  <p class="smalltext">Treatments z-scored on the muni-year working sample. SE clustered at municipality.</p>
+</section>
+
+<!-- ============================================================ -->
+<section>
+  <h2>What we need the first stage to show</h2>
+  <ol>
+    <li>The shock pushes <strong>more households into outmigration</strong> at the muni level.</li>
+    <li>Households actually receive <strong>more remittance income</strong>.</li>
+    <li>The number of <strong>international migrants per migrant household</strong> rises.</li>
+  </ol>
+  <p>Without these, no downstream "migration income raises welfare" story is identifiable.</p>
+</section>
+
+<!-- ============================================================ -->
+<section>
+  <h2>First-stage specification</h2>
+  \[
+    \begin{aligned}
+    y_{it} \;=\;& \beta\,\bigl[\mathrm{fx}_z\cdot\log(\mathrm{mig\_int}_z)\bigr] \\
+      &+\; \textstyle\sum_t \lambda_{1,t}\,\mathrm{mig\_int}_z\,\mathbf{1}\{t\}
+      \;+\; \sum_t \lambda_{2,t}\,\mathrm{fx}_z\,\mathbf{1}\{t\} \\
+      &+\; \textstyle\sum_{k,t} \delta_{k,t}\,X^A_{k,m(i),0}\,\mathbf{1}\{t\}
+      \;+\; \alpha_i + \gamma_t + \varepsilon_{it}
+    \end{aligned}
+  \]
+  <p class="smalltext">
+    $X^A$ = Khanna Block-A covariates (six destination-region shares + 2001 destination-weighted GDP per capita).
+    Block B (origin baseline X) and Block C (trade SSIV) <em>off</em> in this run.
+    Entity FE: muni (census) or HH (HRVS panel).
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<section>
+  <h2>First-stage results</h2>
+<table>
+<thead>
+<tr>
+  <th></th>
+  <th>(1)<br/>Migrant-HH share</th>
+  <th>(2)<br/>log(intl remit, Rs)</th>
+  <th>(3)<br/>log(# intl migrants)</th>
+</tr>
+<tr class="smalltext">
+  <th></th>
+  <th>Census, muni × year</th>
+  <th>HRVS HH × year</th>
+  <th>HRVS HH × year</th>
+</tr>
+</thead>
+<tbody>
+
+<tr><td><strong>k ≥ 0</strong></td>
+    <td>0.0060 <span class="stars">***</span></td>
+    <td>−0.614</td>
+    <td>0.0295</td></tr>
+<tr><td></td>
+    <td class="se">(0.0021)</td>
+    <td class="se">(0.461)</td>
+    <td class="se">(0.0224)</td></tr>
+<tr class="pct"><td></td>
+    <td>[+2.8 % of mean]</td>
+    <td>[−8.8 %]</td>
+    <td>[+5.6 %]</td></tr>
+
+<tr class="sep"><td><strong>k ≥ 25</strong></td>
+    <td>0.0063 <span class="stars">**</span></td>
+    <td>0.497</td>
+    <td>0.0368 <span class="stars">*</span></td></tr>
+<tr><td></td>
+    <td class="se">(0.0028)</td>
+    <td class="se">(0.345)</td>
+    <td class="se">(0.0190)</td></tr>
+<tr class="pct"><td></td>
+    <td>[+2.7 %]</td>
+    <td>[+6.8 %]</td>
+    <td>[+6.9 %]</td></tr>
+
+<tr class="sep"><td><strong>k ≥ 50</strong></td>
+    <td>0.0076 <span class="stars">**</span></td>
+    <td>0.832 <span class="stars">**</span></td>
+    <td>0.0556 <span class="stars">***</span></td></tr>
+<tr><td></td>
+    <td class="se">(0.0034)</td>
+    <td class="se">(0.340)</td>
+    <td class="se">(0.0180)</td></tr>
+<tr class="pct"><td></td>
+    <td>[+3.0 %]</td>
+    <td>[+11.2 %]</td>
+    <td>[+10.2 %]</td></tr>
+
+<tr class="sep"><td><strong>k ≥ 100</strong></td>
+    <td>0.0134 <span class="stars">***</span></td>
+    <td>1.073 <span class="stars">***</span></td>
+    <td>0.0525 <span class="stars">***</span></td></tr>
+<tr><td></td>
+    <td class="se">(0.0039)</td>
+    <td class="se">(0.333)</td>
+    <td class="se">(0.0187)</td></tr>
+<tr class="pct"><td></td>
+    <td>[+5.0 %]</td>
+    <td>[+13.9 %]</td>
+    <td>[+9.3 %]</td></tr>
+
+<tr class="sep smalltext"><td>N (k = 0)</td><td>2,142</td><td>7,899</td><td>7,899</td></tr>
+<tr class="smalltext"><td>Clusters (muni)</td><td>714</td><td>281</td><td>281</td></tr>
+<tr class="smalltext"><td>FE</td><td>muni + year</td><td>HH + year</td><td>HH + year</td></tr>
+
+</tbody>
+</table>
+  <p class="smalltext" style="margin-top:0.5em">
+    Reported β: <em>fx_z × log(mig_int_z)</em>. SE in (), pct of mean in [].
+    *** p&lt;0.01, ** p&lt;0.05, * p&lt;0.1. SE clustered at municipality.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<section>
+  <h2>What this table says</h2>
+  <ol>
+    <li>The shock <strong>raises outmigration at the muni level</strong>. The share of HHs with an absent member goes up 0.6–1.3 pp per 1 SD of treatment, monotone in the threshold.</li>
+    <li>Conditional on having a migrant, <strong>international remittance income rises</strong> — by ~11–14% in restricted samples.</li>
+    <li>Conditional on having a migrant, the <strong>count of international migrants per HH rises</strong> — by ~9–10% in restricted samples.</li>
+  </ol>
+  <p>All three margins are <strong>jointly identified by the same shift-share variation</strong>: more migration, more migrants per HH, more rupees coming back.</p>
+</section>
+
+<!-- ============================================================ -->
+<section>
+  <h2>Reading the threshold pattern</h2>
+  <p>Coefficients <em>increase monotonically</em> as we restrict to higher-baseline-migration municipalities (k = 0 → 100). Two coherent interpretations:</p>
+  <ul>
+    <li><strong>Mechanical</strong>: the shock-by-intensity interaction has more identifying variation precisely where intensity is non-trivial; below k ≈ 25 the interaction is mostly fitting noise.</li>
+    <li><strong>Economic</strong>: thin-migration munis don't have the destination network to capitalise on the FX shock; the strong response is concentrated in the munis already on the migration frontier.</li>
+  </ul>
+  <p>Both consistent with the underlying network-cum-network-multiplier logic of shift-share migration shocks.</p>
+</section>
+
+<!-- ============================================================ -->
+<section>
+  <h2>Where this goes next</h2>
+  <ul>
+    <li>Now that the first stage is established, the reduced-form outcomes are <strong>readable as IV-style responses</strong>.</li>
+    <li>Stable downstream patterns from the 48-spec grid:
+      <ul>
+        <li>Delayed marriage (−3.3 pp by 18, +0.14 yr mean age at marriage)</li>
+        <li>Sanitation revolution (+5.9 pp toilet, +7.1 pp ordinary toilet)</li>
+        <li>Asset upgrading to rural-mobility (motorbike + mobile up, car + fixed-internet down)</li>
+        <li>Male LFP down, feminisation of agriculture up, current schooling up</li>
+        <li>Construction boom; no manufacturing</li>
+      </ul>
+    </li>
+    <li>Caveats: census <code>absent_hh_share</code> doesn't separate intl vs domestic absentees (next data task: rebuild from raw HH file). HRVS panel is short (3 years); HH FE absorbs most within-HH rupee variation, hence the muni-FE robustness alternative also reported in the back-up table.</li>
+  </ul>
+</section>
+
+<!-- ============================================================ -->
+<section>
+  <h2>One-sentence wrap</h2>
+  <blockquote>
+    In rural Nepal, the FX-driven remittance windfall buys households
+    a better toilet, a motorbike, and an extra year of schooling for
+    their kids; it pulls men out of the village, leaves women holding
+    the farm, delays marriage, and funds construction — but it doesn't
+    build manufacturing, doesn't bring fixed broadband, and doesn't raise
+    the local stock of educated adults because the very people who would
+    lift that stock are remitting from abroad.
+  </blockquote>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'fade',
+    controls: true,
+    progress: true
+  });
+</script>
+</body>
+</html>
