@@ -339,6 +339,7 @@ run_spec <- function(spec_label,
                      threshold     = 0L,
                      treatment     = c("log_int","lin_int","fx_alone"),
                      c_mig         = FALSE,
+                     c_mig_log     = FALSE,   # when TRUE, year × log(mig_int_z) instead of year × mig_int_z
                      c_fx          = TRUE,
                      c_block_a     = TRUE,
                      c_block_b     = TRUE,
@@ -435,8 +436,10 @@ run_spec <- function(spec_label,
 
     year_cols <- character(0)
     if (length(years_present) >= 2) {
-      if (c_mig)
-        year_cols <- c(year_cols, build_year_dummies(d, "mig_int_z", "cmig", ref_year))
+      if (c_mig) {
+        x_col <- if (c_mig_log) "log_migint_z" else "mig_int_z"
+        year_cols <- c(year_cols, build_year_dummies(d, x_col, "cmig", ref_year))
+      }
       if (c_fx)
         year_cols <- c(year_cols, build_year_dummies(d, "fx_z",      "cfx",  ref_year))
       if (c_block_a && length(bxA$cols))
