@@ -149,11 +149,15 @@ NEC_PANEL_OUTCOMES <- c(
   "log_new_firms_size_2_9_workers",
   "log_new_firms_size_10_50_workers",
   "log_new_firms_size_51plus_workers",
+  "log_new_firms_agriculture",
   "log_new_firms_manufacturing",
   "log_new_firms_construction",
   "log_new_firms_trade_retail",
   "log_new_firms_hospitality_food",
-  "log_new_firms_other_services"
+  "log_new_firms_other_services",
+  "log_new_firms_transport_storage",
+  "log_new_firms_finance_prof_realestate",
+  "log_new_firms_education_health_social"
 )
 NEC_CS_OUTCOMES <- c(
   ## --- Scale (firm count + aggregate inputs/outputs) ---
@@ -207,12 +211,16 @@ NEC_CS_OUTCOMES <- c(
   "share_modern_proxy",
   "share_services_total",
 
-  ## --- Industry shares (top 5) ---
+  ## --- Industry shares (incl. agriculture — the largest sector) ---
+  "share_agriculture",
   "share_manufacturing",
   "share_construction",
   "share_trade_retail",
   "share_hospitality",
-  "share_finance_prof_info"
+  "share_finance_prof_info",
+  "share_social_services",
+  "share_transport",
+  "share_other_services"
 )
 NEC_PANEL_OUTCOMES <- intersect(NEC_PANEL_OUTCOMES, names(nec_p))
 NEC_CS_OUTCOMES    <- intersect(NEC_CS_OUTCOMES,    names(nec_cs))
