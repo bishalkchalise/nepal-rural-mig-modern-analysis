@@ -52,20 +52,20 @@ HH_BLOCKS = [
         ("occ_share_machine_operators",     "Machine operators (manual)",       ".018",     "pct"),
     ]),
     ("landuse", "Land use", [
-        ("share_self_wet",                  "Self-cultivated, wet season",      ".84",      "pct"),
-        ("share_self_dry",                  "Self-cultivated, dry season",      ".65",      "pct"),
+        ("share_self_wet",                  "Own-cultivated land, wet season",  ".84",      "pct"),
+        ("share_self_dry",                  "Own-cultivated land, dry season",  ".65",      "pct"),
         ("share_both_seasons",              "Cultivated both seasons",          ".65",      "pct"),
-        ("share_fallow_wet",                "Fallow, wet season",               ".08",      "pct"),
-        ("share_fallow_dry",                "Fallow, dry season",               ".28",      "pct"),
+        ("share_fallow_wet",                "Fallow land, wet season",          ".08",      "pct"),
+        ("share_fallow_dry",                "Fallow land, dry season",          ".28",      "pct"),
         ("crop_simpson_diversity",          "Crop diversity (Simpson)",         ".22",      "log"),
-        ("grows_horticulture",              "Grows horticulture",               ".38",      "pct"),
+        ("grows_horticulture",              "Grows any horticulture crop",      ".38",      "pct"),
     ]),
     ("inputs", "Input use", [
-        ("owns_plough",                     "Owns plough (=1)",                 ".52",      "pct"),
-        ("owns_powered_machinery",          "Owns powered machinery (=1)",      ".03",      "pct"),
-        ("owns_irrigation_kit",             "Owns irrigation kit (=1)",         ".11",      "pct"),
-        ("log_total_input_cost_rs",         "log(total input cost, Rs)",        "6.35",     "log"),
-        ("log_dry_cost_seed",               "log(dry-season seed cost, Rs)",    "1.94",     "log"),
+        ("owns_plough",                     "Owns plough",                      ".52",      "pct"),
+        ("owns_powered_machinery",          "Owns powered farm machinery",      ".03",      "pct"),
+        ("owns_irrigation_kit",             "Owns irrigation equipment",        ".11",      "pct"),
+        ("log_total_input_cost_rs",         "Total input cost (log Rs)",        "6.35",     "log"),
+        ("log_dry_cost_seed",               "Seed cost, dry season (log Rs)",   "1.94",     "log"),
     ]),
     ("consump", "Consumption", [
         ("food_exp_total_7day",             "Food spending, weekly (Rs)",       "Rs 2,282", "rs"),
@@ -217,22 +217,36 @@ def build_slide(slide_id, title, blocks, csv_net, csv_urb, footnote):
 # -------------------------------------------------------------- CSS / JS
 EXTRA_HEAD = '''
 <style>
-  .het-grid { display: grid; grid-template-columns: 150px 1fr; gap: 14px; align-items: start; }
-  .het-tabs { display: flex; flex-direction: column; gap: 4px; }
+  .het-grid { display: grid; grid-template-columns: 170px 1fr; gap: 36px; align-items: start; }
+  .het-tabs {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 8px 12px 8px 0;
+    border-right: 1px solid #cbd5e0;
+  }
   .het-tab-btn, .het-sample-btn {
-    padding: 5px 8px; font-size: 0.55em; line-height: 1.2;
-    border: 1px solid #cbd5e0; background: #f7fafc; color: #1a202c;
+    padding: 6px 10px; font-size: 0.52em; line-height: 1.2;
+    border: 1px solid transparent; background: transparent; color: #1a202c;
     cursor: pointer; font-family: inherit; text-align: left;
     border-radius: 3px;
   }
+  .het-tab-btn:hover, .het-sample-btn:hover { background: #edf2f7; }
   .het-tab-btn.active, .het-sample-btn.active {
     background: #2c5282; color: white; border-color: #2c5282;
   }
-  .het-sample-toggle { display: flex; gap: 8px; margin: 4px 0 10px 0; }
-  .het-content .het-table { display: none; font-size: 0.46em; margin: 0; width: 100%; }
+  .het-sample-toggle {
+    display: flex; gap: 4px; margin: 0 0 10px 0;
+    padding-bottom: 8px; border-bottom: 1px solid #e2e8f0;
+  }
+  .het-sample-btn { padding: 4px 12px; border: 1px solid #cbd5e0; }
+  .het-content .het-table { display: none; font-size: 0.42em; margin: 0; width: 100%; border-collapse: collapse; }
   .het-content .het-table.active { display: table; }
-  .het-foot { font-size: 0.30em !important; margin-top: 10px; }
-  .reveal .het-slide h2 { margin-bottom: 6px; }
+  .het-content .het-table td, .het-content .het-table th {
+    padding: 1.5px 6px !important; line-height: 1.15; vertical-align: baseline;
+  }
+  .het-content .het-table tr.outcomesub td { padding-top: 0 !important; padding-bottom: 0 !important; }
+  .het-content .het-table tr.pct td        { padding-top: 0 !important; padding-bottom: 4px !important; }
+  .het-foot { font-size: 0.30em !important; margin-top: 12px; line-height: 1.3; }
+  .reveal .het-slide h2 { margin-bottom: 8px; }
 </style>
 <script>
   function hetUpdate(slideId) {
