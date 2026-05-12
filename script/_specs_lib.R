@@ -391,35 +391,56 @@ run_spec <- function(spec_label,
       return(list(d = d, err = "degenerate"))
 
     d <- copy(d)   # mutate locally for year-dummy columns
+    years_present <- sort(unique(d$year))
+
     year_cols <- character(0)
-    if (c_mig)
-      year_cols <- c(year_cols, build_year_dummies(d, "mig_int_z", "cmig", ref_year))
-    if (c_fx)
-      year_cols <- c(year_cols, build_year_dummies(d, "fx_z",      "cfx",  ref_year))
-    if (c_block_a && length(bxA$cols))
-      for (k in bxA$cols)
-        year_cols <- c(year_cols, build_year_dummies(d, k, paste0("cA_", k), ref_year))
-    if (c_block_b && length(bxB$cols))
-      for (k in bxB$cols)
-        year_cols <- c(year_cols, build_year_dummies(d, k, paste0("cB_", k), ref_year))
+    if (length(years_present) >= 2) {
+      if (c_mig)
+        year_cols <- c(year_cols, build_year_dummies(d, "mig_int_z", "cmig", ref_year))
+      if (c_fx)
+        year_cols <- c(year_cols, build_year_dummies(d, "fx_z",      "cfx",  ref_year))
+      if (c_block_a && length(bxA$cols))
+        for (k in bxA$cols)
+          year_cols <- c(year_cols, build_year_dummies(d, k, paste0("cA_", k), ref_year))
+      if (c_block_b && length(bxB$cols))
+        for (k in bxB$cols)
+          year_cols <- c(year_cols, build_year_dummies(d, k, paste0("cB_", k), ref_year))
+    }
 
     level_cols <- character(0)
     if (c_block_c && !is.null(trd))
       level_cols <- c("trade_ssiv_imp_z","trade_ssiv_exp_z")
 
     rhs <- c("treatment_col", year_cols, level_cols)
-    fe  <- paste(entity_col, "year", sep = " + ")
-    fml <- as.formula(sprintf("%s ~ %s | %s", y, paste(rhs, collapse = " + "), fe))
+
+    # 1-year outcomes: drop entity FE (it would absorb everything) and just
+    # run a cross-section with the level controls + Block A/B as levels.
+    if (length(years_present) < 2) {
+      bx_levels <- c(
+        if (c_block_a && length(bxA$cols)) bxA$cols else character(0),
+        if (c_block_b && length(bxB$cols)) bxB$cols else character(0)
+      )
+      rhs <- c("treatment_col", bx_levels, level_cols)
+      fml <- as.formula(sprintf("%s ~ %s", y, paste(rhs, collapse = " + ")))
+      cross_section <- TRUE
+    } else {
+      fe  <- paste(entity_col, "year", sep = " + ")
+      fml <- as.formula(sprintf("%s ~ %s | %s", y, paste(rhs, collapse = " + "), fe))
+      cross_section <- FALSE
+    }
 
     fit <- tryCatch(
-      feols(fml, data = d, cluster = ~lgcode, notes = FALSE, warn = FALSE),
+      feols(fml, data = d, cluster = ~lgcode,
+            notes = FALSE, warn = FALSE,
+            combine.quick = FALSE),
       error = function(e) e
     )
     if (inherits(fit, "error"))
-      return(list(d = d, err = substr(conditionMessage(fit), 1, 80)))
+      return(list(d = d, err = substr(conditionMessage(fit), 1, 100)))
     if (!("treatment_col" %in% names(coef(fit))))
       return(list(d = d, err = "treatment absorbed"))
-    list(d = d, fit = fit)
+    list(d = d, fit = fit, cross_section = cross_section,
+         years = length(years_present))
   }
 
   rows <- vector("list", length(ouc$all))
@@ -428,19 +449,22 @@ run_spec <- function(spec_label,
     base <- data.table(
       dataset = dataset, outcome = y, group = ouc$lookup[y],
       spec = spec_label, threshold = threshold,
-      beta = NA_real_, se = NA_real_, pval = NA_real_,
+      beta = NA_real_, stars = "",
+      mean_y = NA_real_, pct_of_mean = NA_real_,
+      se = NA_real_, pval = NA_real_,
       n = NA_integer_, n_unit = NA_integer_, n_muni = NA_integer_,
-      mean_y = NA_real_, sd_y = NA_real_, r2_within = NA_real_,
+      n_years = NA_integer_, sd_y = NA_real_, r2_within = NA_real_,
       err = NA_character_
     )
     r <- fit_one(y)
     if (!is.null(r$err) && is.null(r$fit)) {
       if (!is.null(r$d)) {
-        base$n      <- nrow(r$d)
-        base$n_unit <- uniqueN(r$d[[entity_col]])
-        base$n_muni <- uniqueN(r$d$lgcode)
-        base$mean_y <- mean(r$d[[y]], na.rm = TRUE)
-        base$sd_y   <- sd(r$d[[y]], na.rm = TRUE)
+        base$n       <- nrow(r$d)
+        base$n_unit  <- uniqueN(r$d[[entity_col]])
+        base$n_muni  <- uniqueN(r$d$lgcode)
+        base$n_years <- uniqueN(r$d$year)
+        base$mean_y  <- mean(r$d[[y]], na.rm = TRUE)
+        base$sd_y    <- sd(r$d[[y]], na.rm = TRUE)
       }
       base$err <- r$err
       rows[[i]] <- base; next
@@ -453,17 +477,31 @@ run_spec <- function(spec_label,
     base$n         <- as.integer(fit$nobs)
     base$n_unit    <- uniqueN(d[[entity_col]])
     base$n_muni    <- uniqueN(d$lgcode)
+    base$n_years   <- r$years
     base$mean_y    <- mean(d[[y]], na.rm = TRUE)
     base$sd_y      <- sd(d[[y]], na.rm = TRUE)
     base$r2_within <- tryCatch(unname(r2(fit, "wr2")), error = function(e) NA_real_)
-    rows[[i]]      <- base
+    if (isTRUE(r$cross_section) && is.na(base$err))
+      base$err <- sprintf("1-year outcome: cross-section (no entity FE)")
+    rows[[i]] <- base
   }
 
   out <- rbindlist(rows, fill = TRUE)
+
+  # Stars
   out[, stars := fifelse(is.na(pval), "",
                   fifelse(pval < 0.01, "***",
                   fifelse(pval < 0.05, "**",
                   fifelse(pval < 0.10, "*", ""))))]
+  # Beta as % of outcome mean (only meaningful when mean != 0)
+  out[, pct_of_mean := fifelse(is.na(beta) | is.na(mean_y) | mean_y == 0,
+                               NA_real_, 100 * beta / mean_y)]
+
+  # Final column order
+  setcolorder(out, c("dataset","outcome","group","spec","threshold",
+                     "beta","stars","mean_y","pct_of_mean",
+                     "se","pval","n","n_unit","n_muni","n_years",
+                     "sd_y","r2_within","err"))
 
   if (is.null(output_path))
     output_path <- file.path(ROOT, "output", "tab",
@@ -476,7 +514,7 @@ run_spec <- function(spec_label,
   cat(" SAVED TO:\n   ", normalizePath(output_path, winslash = "/", mustWork = TRUE),
       "\n", sep = "")
   cat(strrep("=", 70), "\n", sep = "")
-  cat(sprintf(" Rows: %d   |   With estimates: %d   |   Errors: %d\n",
+  cat(sprintf(" Rows: %d   |   With estimates: %d   |   Errors/notes: %d\n",
               nrow(out), sum(!is.na(out$beta)), sum(!is.na(out$err))))
 
   cat("\n--- Summary ---\n")
@@ -487,13 +525,27 @@ run_spec <- function(spec_label,
     sig_01     = sum(pval < 0.01, na.rm = TRUE)
   )])
 
-  cat("\n--- First 40 outcomes ---\n")
-  print(out[, .(outcome, group, beta, se, pval, stars, mean_y, n_muni)],
-        digits = 4, nrows = 40)
+  # Highlight: print significant rows first as a separate block, then all.
+  sig <- out[!is.na(pval) & pval < 0.05][order(pval)]
+  cat(sprintf("\n========== SIGNIFICANT (p < 0.05) — %d outcomes ==========\n",
+              nrow(sig)))
+  if (nrow(sig) > 0) {
+    print(sig[, .(outcome, group, beta, stars, mean_y, pct_of_mean,
+                  se, pval, n_unit, n_muni, n_years)],
+          digits = 4, nrows = nrow(sig))
+  } else {
+    cat("(none)\n")
+  }
+
+  cat("\n========== ALL OUTCOMES (sorted by p-value) ==========\n")
+  print(out[order(is.na(pval), pval),
+            .(outcome, group, beta, stars, mean_y, pct_of_mean,
+              se, pval, n_unit, n_muni, n_years)],
+        digits = 4, nrows = nrow(out))
 
   if (any(!is.na(out$err))) {
-    cat(sprintf("\n--- Skipped/errored cells (%d) ---\n", sum(!is.na(out$err))))
-    print(out[!is.na(err), .(outcome, group, err)], nrows = 40)
+    cat(sprintf("\n--- Notes / skipped cells (%d) ---\n", sum(!is.na(out$err))))
+    print(out[!is.na(err), .(outcome, group, n_years, err)], nrows = 60)
   }
   cat("\nCSV path again:  ", normalizePath(output_path, winslash = "/"), "\n", sep = "")
   invisible(out)
