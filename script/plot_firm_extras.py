@@ -44,7 +44,7 @@ def two_panel(rows_left, rows_right, title_left, title_right,
     y = list(range(len(labels)))
     all_bounds = [abs(r['lo']) for r in rows_left + rows_right] + \
                  [abs(r['hi']) for r in rows_left + rows_right]
-    extreme = max(all_bounds) * 1.08
+    extreme = max(all_bounds) * 1.18
     for ax, rows, title in zip(axes, [rows_left, rows_right],
                               [title_left, title_right]):
         for i, r in enumerate(rows):
@@ -55,9 +55,9 @@ def two_panel(rows_left, rows_right, title_left, title_right,
                         markersize=6, linewidth=1.2)
         ax.axvline(0, color='#cbd5e0', linewidth=0.8, zorder=0)
         ax.set_yticks(y); ax.set_yticklabels(labels)
+        ax.set_ylim(len(labels) - 0.5, -0.5)
         ax.set_title(title, loc='left', pad=8)
         ax.set_xlabel(xlabel, fontsize=8)
-        ax.invert_yaxis()
         ax.tick_params(axis='both', length=2)
         ax.grid(axis='x', linewidth=0.4, alpha=0.4)
         ax.set_xlim(-extreme, extreme)
