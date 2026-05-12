@@ -80,9 +80,7 @@ for ax, rows, title in zip(axes, [rows_k0, rows_k25],
     extreme = max(abs(r['hi']) for r in rows + rows_k0 + rows_k25) * 1.05
     ax.set_xlim(-extreme, extreme)
 
-plt.suptitle('Firm entry by industry — NEC panel, 2001–2018',
-             fontsize=13, fontweight='bold', x=0.06, y=0.98, ha='left')
-plt.tight_layout(rect=[0, 0, 1, 0.92])
+plt.tight_layout()
 
 out = ROOT / "docs/figs/firm_entry_industry.svg"
 out.parent.mkdir(parents=True, exist_ok=True)

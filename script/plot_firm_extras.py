@@ -60,9 +60,7 @@ def two_panel(rows_left, rows_right, title_left, title_right,
         ax.tick_params(axis='both', length=2)
         ax.grid(axis='x', linewidth=0.4, alpha=0.4)
         ax.set_xlim(-extreme, extreme)
-    plt.suptitle(suptitle, fontsize=13, fontweight='bold',
-                 x=0.06, y=0.98, ha='left')
-    plt.tight_layout(rect=[0, 0, 1, 0.92])
+    plt.tight_layout()
     out = ROOT / "docs/figs" / outfile
     out.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(out, format='svg', bbox_inches='tight', dpi=300)
