@@ -509,16 +509,32 @@ run_spec <- function(spec_label,
     output_path <- file.path(ROOT, "output", "tab",
                              sprintf("%s_%s_thr%d_results.csv",
                                      spec_label, dataset, threshold))
-  dir.create(dirname(output_path), recursive = TRUE, showWarnings = FALSE)
-  fwrite(out, output_path)
+  output_path <- path.expand(output_path)
 
+  out_dir <- dirname(output_path)
+  dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
   cat("\n", strrep("=", 70), "\n", sep = "")
-  cat(" SAVED TO:\n   ", normalizePath(output_path, winslash = "/", mustWork = TRUE),
-      "\n", sep = "")
+  cat(" Working dir : ", getwd(), "\n", sep = "")
+  cat(" Will save to: ", output_path, "\n", sep = "")
+  cat(" Directory exists: ", dir.exists(out_dir),
+      "  |  writable: ", file.access(out_dir, mode = 2) == 0, "\n", sep = "")
+
+  write_ok <- tryCatch({ fwrite(out, output_path); TRUE },
+                      error = function(e) { message("fwrite failed: ",
+                                                    conditionMessage(e)); FALSE })
+  if (write_ok && file.exists(output_path)) {
+    fi <- file.info(output_path)
+    cat(" SAVED OK   : ", output_path, "\n", sep = "")
+    cat(sprintf("    size = %s bytes   |   modified = %s\n",
+                format(fi$size, big.mark = ","), format(fi$mtime)))
+  } else {
+    cat(" *** SAVE FAILED ***  (see message above)\n")
+  }
   cat(strrep("=", 70), "\n", sep = "")
   cat(sprintf(" Rows: %d   |   With estimates: %d   |   Errors/notes: %d\n",
               nrow(out), sum(!is.na(out$beta)), sum(!is.na(out$err))))
 
+  # --------- Summary ----------------------------------------------------------
   cat("\n--- Summary ---\n")
   print(out[!is.na(beta), .(
     n_outcomes = .N,
@@ -527,28 +543,36 @@ run_spec <- function(spec_label,
     sig_01     = sum(pval < 0.01, na.rm = TRUE)
   )])
 
-  # Highlight: print significant rows first as a separate block, then all.
-  sig <- out[!is.na(pval) & pval < 0.05][order(pval)]
-  cat(sprintf("\n========== SIGNIFICANT (p < 0.05) — %d outcomes ==========\n",
-              nrow(sig)))
-  if (nrow(sig) > 0) {
-    print(sig[, .(outcome, group, beta, stars, mean_y, beta_pp, pct_of_mean,
-                  se, pval, n_unit, n_muni, n_years)],
-          digits = 4, nrows = nrow(sig))
-  } else {
-    cat("(none)\n")
+  # --------- Helper to print a data.table broken up by `group` ---------------
+  # Preserves natural outcome order within each group (the order in which the
+  # user defined them in CENSUS_GROUPS / HH_GROUPS / a custom list).
+  print_by_group <- function(dt) {
+    if (nrow(dt) == 0) { cat("(none)\n"); return(invisible()) }
+    cols <- c("outcome","beta","stars","mean_y","beta_pp","pct_of_mean",
+              "se","pval","n_unit","n_muni","n_years")
+    groups_in_order <- unique(dt$group)
+    for (g in groups_in_order) {
+      sub <- dt[group == g, ..cols]
+      cat(sprintf("\n  -- %s  (n=%d) --\n", g, nrow(sub)))
+      print(sub, digits = 4, nrows = nrow(sub))
+    }
   }
 
-  cat("\n========== ALL OUTCOMES (sorted by p-value) ==========\n")
-  print(out[order(is.na(pval), pval),
-            .(outcome, group, beta, stars, mean_y, pct_of_mean,
-              se, pval, n_unit, n_muni, n_years)],
-        digits = 4, nrows = nrow(out))
+  # --------- Block 1: significant outcomes (any star) by category ------------
+  sig <- out[!is.na(pval) & pval < 0.10]
+  cat(sprintf("\n========== SIGNIFICANT (p < 0.10, any star) — %d outcomes, grouped ==========\n",
+              nrow(sig)))
+  print_by_group(sig)
+
+  # --------- Block 2: all outcomes by category -------------------------------
+  cat(sprintf("\n========== ALL OUTCOMES — %d, grouped by category ==========\n",
+              nrow(out)))
+  print_by_group(out)
 
   if (any(!is.na(out$err))) {
     cat(sprintf("\n--- Notes / skipped cells (%d) ---\n", sum(!is.na(out$err))))
     print(out[!is.na(err), .(outcome, group, n_years, err)], nrows = 60)
   }
-  cat("\nCSV path again:  ", normalizePath(output_path, winslash = "/"), "\n", sep = "")
+  cat("\nCSV path again:  ", output_path, "\n", sep = "")
   invisible(out)
 }
