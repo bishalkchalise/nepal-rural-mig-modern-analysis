@@ -102,8 +102,10 @@ cat(sprintf("NEC panel: %d rows, %d munis (%d urban, %d rural)\n",
 for (v in c("new_firms",
             "new_firms_size_1_worker","new_firms_size_2_9_workers",
             "new_firms_size_10_50_workers","new_firms_size_51plus_workers",
+            "new_firms_agriculture",
             "new_firms_manufacturing","new_firms_construction",
             "new_firms_trade_retail","new_firms_hospitality_food",
+            "new_firms_transport_storage",
             "new_firms_other_services","new_firms_finance_prof_realestate",
             "new_firms_education_health_social")) {
   if (v %in% names(nec_p) && !(paste0("log_", v) %in% names(nec_p)))
