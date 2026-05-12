@@ -1,22 +1,23 @@
 # =============================================================================
-# Run "main minus C_mig" on the census panel.
+# SPEC 01 — census panel.  Main saturated spec MINUS the second term
+# (year x mig_intensity trend).  In Family B taxonomy this is B3.
 #
-# This is the saturated A4 specification MINUS the year-by-mig_intensity trend.
-# In Family B taxonomy this is B3: "Drop year x mig_int". Equivalent to:
-#
-#   y_it = beta * (fx_z * log(mig_int_z))                     # treatment
-#        + sum_t lambda_{2,t} * fx_z   * 1{year==t}           # C_fx
-#        + sum_{k,t} delta_{k,t} * X_k * 1{year==t}           # C_X (Khanna Block A)
+#   y_it = beta * (fx_z * log(mig_int_z))                     # treatment (kept)
+#        + sum_t lambda_{2,t} * fx_z   * 1{year==t}           # C_fx     (kept)
+#        + sum_{k,t} delta_{k,t} * X_k * 1{year==t}           # C_X      (kept)
 #        + alpha_m + gamma_t + e_it                           # muni + year FE
 #
-# Reference year: 2001. SE clustered at lgcode.
+# Dropped vs the main A4 spec:
+#   sum_t lambda_{1,t} * mig_int_z * 1{year==t}               # C_mig    (REMOVED)
+#
+# Reference year: 2001.  SE clustered at lgcode.
 # Treatments (fx, mig_intensity, log mig_intensity) are z-scored on the
 # muni-year working sample AFTER applying the migrant-count threshold.
 #
-# Outputs: data/clean/results_b3_census.csv  (one row per outcome x threshold).
+# Outputs: data/clean/spec_01_census_results.csv  (one row per outcome x threshold).
 #
 # Run from repo root:
-#   Rscript script/run_b3_census.R
+#   Rscript script/spec_01_census.R
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -192,7 +193,7 @@ for (thr in THRESHOLDS) {
     idx <- idx + 1L
     base <- data.table(
       dataset = "census", outcome = y, group = OUT2GRP[y],
-      spec = "B3_drop_C_mig", threshold = thr,
+      spec = "spec_01", threshold = thr,
       beta = NA_real_, se = NA_real_, pval = NA_real_,
       n = NA_integer_, n_unit = NA_integer_, n_muni = NA_integer_,
       mean_y = NA_real_, sd_y = NA_real_, r2_within = NA_real_,
@@ -238,6 +239,6 @@ for (thr in THRESHOLDS) {
 }
 
 out <- rbindlist(results, fill = TRUE)
-fwrite(out, "data/clean/results_b3_census.csv")
-cat(sprintf("\nWrote data/clean/results_b3_census.csv: %d rows (%d with estimates)\n",
+fwrite(out, "data/clean/spec_01_census_results.csv")
+cat(sprintf("\nWrote data/clean/spec_01_census_results.csv: %d rows (%d with estimates)\n",
             nrow(out), sum(!is.na(out$beta))))
