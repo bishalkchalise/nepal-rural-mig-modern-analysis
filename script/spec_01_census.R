@@ -239,6 +239,49 @@ for (thr in THRESHOLDS) {
 }
 
 out <- rbindlist(results, fill = TRUE)
-fwrite(out, "data/clean/spec_01_census_results.csv")
-cat(sprintf("\nWrote data/clean/spec_01_census_results.csv: %d rows (%d with estimates)\n",
-            nrow(out), sum(!is.na(out$beta))))
+
+# Add significance stars for console display
+out[, stars := fifelse(is.na(pval), "",
+                fifelse(pval < 0.01, "***",
+                fifelse(pval < 0.05, "**",
+                fifelse(pval < 0.10, "*", ""))))]
+
+out_path <- file.path(ROOT, "data/clean/spec_01_census_results.csv")
+fwrite(out, out_path)
+
+cat("\n", strrep("=", 70), "\n", sep = "")
+cat(" SAVED TO:\n   ", normalizePath(out_path, winslash = "/", mustWork = TRUE), "\n", sep = "")
+cat(strrep("=", 70), "\n", sep = "")
+cat(sprintf(" Rows: %d   |   With estimates: %d   |   Errors: %d\n",
+            nrow(out), sum(!is.na(out$beta)), sum(!is.na(out$err))))
+
+# Summary by threshold
+cat("\n--- Significant cells by threshold ---\n")
+sm <- out[!is.na(beta), .(
+  n_outcomes = .N,
+  pos_sig_05 = sum(pval < 0.05 & beta > 0, na.rm = TRUE),
+  neg_sig_05 = sum(pval < 0.05 & beta < 0, na.rm = TRUE),
+  sig_01     = sum(pval < 0.01, na.rm = TRUE)
+), by = threshold]
+print(sm)
+
+# Headline outcomes at thr=0
+cat("\n--- Headline outcomes at thr=0 (k = 0, all munis) ---\n")
+headline <- c("amen_assets_car","amen_assets_internet","amen_assets_mobile",
+              "amen_lighting_electricity","amen_water_piped","amen_cooking_lpg",
+              "edu_attain_higher_secondary_plus","edu_attain_tertiary",
+              "work_share_agriculture","work_lfp",
+              "ind_manufacturing","ind_construction",
+              "flfp_all","mlfp_all","gap_lfp_m_minus_f")
+hd <- out[threshold == 0 & outcome %in% headline,
+          .(outcome, group, beta, se, pval, stars, mean_y, n_muni)]
+print(hd, digits = 4)
+
+# Full table at thr=0
+cat("\n--- All outcomes at thr=0 ---\n")
+print(out[threshold == 0,
+          .(outcome, group, beta, se, pval, stars, mean_y, n_muni)],
+      digits = 4, nrows = 250)
+
+# Final pointer to the file
+cat("\nCSV path again:  ", normalizePath(out_path, winslash = "/"), "\n", sep = "")
