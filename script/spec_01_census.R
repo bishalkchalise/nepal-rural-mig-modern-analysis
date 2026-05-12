@@ -14,7 +14,7 @@
 # Treatments (fx, mig_intensity, log mig_intensity) are z-scored on the
 # muni-year working sample AFTER applying the migrant-count threshold.
 #
-# Outputs: data/clean/spec_01_census_results.csv  (one row per outcome x threshold).
+# Outputs: output/tab/spec_01_census_results.csv  (one row per outcome x threshold).
 #
 # Run from repo root:
 #   Rscript script/spec_01_census.R
@@ -246,7 +246,8 @@ out[, stars := fifelse(is.na(pval), "",
                 fifelse(pval < 0.05, "**",
                 fifelse(pval < 0.10, "*", ""))))]
 
-out_path <- file.path(ROOT, "data/clean/spec_01_census_results.csv")
+dir.create(file.path(ROOT, "output/tab"), recursive = TRUE, showWarnings = FALSE)
+out_path <- file.path(ROOT, "output/tab/spec_01_census_results.csv")
 fwrite(out, out_path)
 
 cat("\n", strrep("=", 70), "\n", sep = "")
