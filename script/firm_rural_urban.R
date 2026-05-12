@@ -326,6 +326,25 @@ nec_cs_inst <- inst[year == 2018, .(lgcode, fxshock, mig_intensity, log_mig_inte
 nec_cs <- merge(nec_cs, nec_cs_inst, by = "lgcode", suffixes = c("", ".inst"))
 
 rows <- list()
+skip_log <- list()  # diagnostic: (dataset, outcome, sample, thr, reason)
+diag_skip <- function(ds, y, samp, thr, reason) {
+  skip_log[[length(skip_log)+1]] <<- data.table(
+    dataset = ds, outcome = y, sample = samp, threshold = thr, reason = reason)
+}
+why_null <- function(panel_d, outcome, thr) {
+  sub <- panel_d[total_migrants >= thr]
+  if (nrow(sub) < 50)
+    return(sprintf("nrow<50 (%d rows after thr=%d)", nrow(sub), thr))
+  if (!(outcome %in% names(sub)))
+    return(sprintf("outcome col not in data"))
+  v <- sub[[outcome]]
+  if (sum(!is.na(v)) < 50)
+    return(sprintf("non-NA<50 (%d non-NA)", sum(!is.na(v))))
+  if (sd(v, na.rm = TRUE) == 0 || uniqueN(v) < 2)
+    return(sprintf("zero variance (sd=%.4f, unique=%d)",
+                   sd(v, na.rm = TRUE), uniqueN(v)))
+  "unknown (feols failure or other)"
+}
 for (samp_name in names(SAMPLES)) {
   filt <- SAMPLES[[samp_name]]
   for (thr in THR) {
@@ -333,7 +352,10 @@ for (samp_name in names(SAMPLES)) {
     panel_d <- if (is.null(filt)) nec_p else nec_p[sample == filt]
     for (y in NEC_PANEL_OUTCOMES) {
       r <- fit_panel(panel_d, y, thr = thr, ref_year = 2001L)
-      if (is.null(r) || !is.null(r$err)) next
+      if (is.null(r)) { diag_skip("nec_panel", y, samp_name, thr,
+                                  why_null(panel_d, y, thr)); next }
+      if (!is.null(r$err)) { diag_skip("nec_panel", y, samp_name, thr,
+                                       paste0("feols: ", r$err)); next }
       rows[[length(rows)+1]] <- data.table(
         dataset = "nec_panel", outcome = y, sample = samp_name, threshold = thr,
         beta = r$beta, se = r$se, pval = r$pval,
@@ -344,7 +366,10 @@ for (samp_name in names(SAMPLES)) {
     cs_d <- if (is.null(filt)) nec_cs else nec_cs[sample == filt]
     for (y in NEC_CS_OUTCOMES) {
       r <- fit_cs(cs_d, y, thr = thr)
-      if (is.null(r) || !is.null(r$err)) next
+      if (is.null(r)) { diag_skip("nec_cs", y, samp_name, thr,
+                                  why_null(cs_d, y, thr)); next }
+      if (!is.null(r$err)) { diag_skip("nec_cs", y, samp_name, thr,
+                                       paste0("feols: ", r$err)); next }
       rows[[length(rows)+1]] <- data.table(
         dataset = "nec_cs", outcome = y, sample = samp_name, threshold = thr,
         beta = r$beta, se = r$se, pval = r$pval,
@@ -353,6 +378,17 @@ for (samp_name in names(SAMPLES)) {
     }
     cat(sprintf("  done %s, thr=%d\n", samp_name, thr))
   }
+}
+# Print which outcomes got dropped and why
+if (length(skip_log)) {
+  skip_dt <- rbindlist(skip_log, fill = TRUE)
+  cat("\n========== Skipped cells (no row written) ==========\n")
+  print(skip_dt[, .N, by = .(dataset, outcome, reason)][order(dataset, outcome)],
+        nrows = 200)
+  cat("\nFull skip log:\n")
+  print(skip_dt, nrows = 200)
+} else {
+  cat("\nNo cells skipped.\n")
 }
 out <- rbindlist(rows, fill = TRUE)
 out[, stars := fifelse(is.na(pval), "",
