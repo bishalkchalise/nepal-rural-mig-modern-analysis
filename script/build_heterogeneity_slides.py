@@ -148,11 +148,19 @@ def fmt_effect_row(b, mean, kind):
 
 # -------------------------------------------------------------- table builder
 def build_table(df, sample_labels, block, slide_id, sample_key):
+    # Map raw labels to header text — "Net-inflow" / "Net-outflow" become
+    # "Internal in-flow" / "Internal out-flow" so the audience never has to
+    # remember which "net" means which.
+    HEADER = {
+        "Net-inflow":  "Internal in-flow",
+        "Net-outflow": "Internal out-flow",
+    }
+    sample_labels_disp = [HEADER.get(l, l) for l in sample_labels]
     """One <table> for one (slide, tab, sample-set) combination."""
     block_key, _, outcomes = block
     table_id = f"{slide_id}-{block_key}-{sample_key}"
 
-    header_cols = "".join(f"<th>{lbl}</th>" for lbl in sample_labels)
+    header_cols = "".join(f"<th>{lbl}</th>" for lbl in sample_labels_disp)
     rows = []
     for code, label, mean_str, kind in outcomes:
         sub = df[df['outcome'] == code]
@@ -210,7 +218,7 @@ def build_slide(slide_id, title, blocks, csv_net, csv_urb, footnote):
     # sample toggle
     sample_toggle = (
         f"<div class='het-sample-toggle'>"
-        f"  <button class='het-sample-btn active' data-sample='net' onclick=\"hetSetSample('{slide_id}','net')\">Net-flow (inflow / outflow)</button>"
+        f"  <button class='het-sample-btn active' data-sample='net' onclick=\"hetSetSample('{slide_id}','net')\">Internal migration (net inflow / outflow)</button>"
         f"  <button class='het-sample-btn' data-sample='urb' onclick=\"hetSetSample('{slide_id}','urb')\">Rural / Urban</button>"
         f"</div>"
     )
@@ -297,8 +305,10 @@ FOOTNOTE = (
     'approximate % change for log outcomes, % of sample mean for rupee amounts. '
     '<strong>Means</strong> shown are the regression-sample (k ≥ 25) means, not the raw-data population; '
     'k=25 munis are wealthier and more migration-exposed than the average Nepalese muni. '
-    '<strong>Net-flow:</strong> net-inflow muni = more in-migrants than out-migrants in 2001 census (predetermined); '
-    'net-outflow = reverse. <strong>Rural / Urban:</strong> rural = Gaunpalika; '
+    '<strong>Internal migration:</strong> classification uses 2001 census <em>internal</em> migration flows. '
+    'Internal in-flow muni = more people moved <em>into</em> the muni from elsewhere in Nepal than moved out; '
+    'internal out-flow = reverse. Fixed at 2001 baseline (predetermined). '
+    '<strong>Rural / Urban:</strong> rural = Gaunpalika; '
     'urban = Nagar/Upamahanagar/Mahanagarpalika. '
     'NEC panel covers founding years 2001–2018 (annual); NEC cross-section is 2018 stock.'
 )
