@@ -47,16 +47,18 @@ CENSUS_OUTCOMES <- c(
   "absent_hh_share",
   # HH investment
   "amen_asset_count_mean", "housing_foundation_modern", "amen_toilet_any",
-  # human capital
-  "edu_literate", "edu_literate_female", "edu_school_attend_6_16",
+  # human capital  (literacy: total + both genders; schooling)
+  "edu_literate", "edu_literate_female", "edu_literate_male", "edu_school_attend_6_16",
   # sectors
   "ind_agri_forestry_fish", "ind_manufacturing", "ind_construction",
   "ind_wholesale_retail", "ind_finance_real_estate_prof", "ind_public_admin_defence",
-  # occupations
-  "occ_share_managers", "occ_share_technicians",
-  "occ_share_service_sales", "occ_share_craft_trades", "occ_share_machine_operators",
-  # labour
-  "mlfp_all", "flfp_chores_only", "fem_share_of_ag_workers", "work_share_student"
+  # occupations  (top + middle + bottom of ladder)
+  "occ_share_managers", "occ_share_professionals", "occ_share_technicians",
+  "occ_share_service_sales", "occ_share_craft_trades",
+  "occ_share_machine_operators", "occ_share_elementary",
+  # labour  (LFP by gender, plus female chores + ag composition)
+  "mlfp_all", "flfp_all", "flfp_chores_only",
+  "fem_share_of_ag_workers", "work_share_student"
 )
 HH_OUTCOMES <- c(
   # first-stage on HH side
@@ -65,15 +67,22 @@ HH_OUTCOMES <- c(
   "remittance_any", "remittance_amt",
   # health spending
   "hlt_spend_medicines", "hlt_spend_total",
-  # consumption
-  "food_exp_total_7day", "food_exp_protein_7day",
-  "nonfood_exp_12m", "nonfood_clothing_footwear_12m", "nonfood_fuel_lighting_12m",
+  # food consumption  (total, staples, protein, insecurity)
+  "food_exp_total_7day", "food_exp_staples_7day", "food_exp_protein_7day",
   "food_insec_score",
-  # land use & input use
+  # nonfood consumption  (total + 4 modernisation categories)
+  "nonfood_exp_12m", "nonfood_clothing_footwear_12m", "nonfood_fuel_lighting_12m",
+  "nonfood_transport_12m", "nonfood_communication_12m",
+  # land use  (own-cultivation + fallow, both seasons)
   "share_self_wet", "share_self_dry", "share_both_seasons",
+  "share_fallow_wet", "share_fallow_dry",
   "crop_simpson_diversity", "grows_horticulture",
-  "log_total_input_cost_rs", "log_dry_cost_seed",
-  "owns_irrigation_kit"
+  # input use  (total + wet/dry split of seeds & fertiliser)
+  "log_total_input_cost_rs",
+  "log_wet_cost_seed", "log_dry_cost_seed",
+  "log_wet_cost_fert", "log_dry_cost_fert",
+  # capital equipment  (irrigation + plough + powered machinery)
+  "owns_irrigation_kit", "owns_plough", "owns_powered_machinery"
 )
 
 # ---- 4.  Helper: temporarily restrict the cached datasets to a sample ------
