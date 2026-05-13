@@ -94,6 +94,84 @@ def load_results_groups():
                 mapping[(ds, oc)] = {"group": g, "label": lbl or oc}
     return mapping
 
+
+def compute_n_unit_hh():
+    """For HH dataset, count unique HHs in the regression sample
+    (threshold-filtered, non-NA on outcome).  Iterate over each HRVS
+    file separately to avoid messy merges — we only need
+    (hhid, year, lgcode, outcome) per file.
+
+    Returns dict: (threshold, outcome) -> n_unit (int).
+    """
+    import numpy as np
+    base = ROOT / "data/clean/rvs_outcomes"
+    inst_p = ROOT / "data/clean/instrument/instrument_mun.csv"
+    if not inst_p.exists():
+        return {}
+    inst = pd.read_csv(inst_p, usecols=["lgcode","year","total_migrants"])
+
+    SKIP = {"hhid","year","lgcode","vmun_code","wt_hh","psu","vdc","lgname",
+            "district","district77","district_name","s00q03a","s00q03b","s00q03c",
+            "member_id","fxshock","mig_intensity","log_mig_intensity",
+            "total_migrants","fx_z","mig_int_z","log_migint_z"}
+
+    out = {}
+    files = ["agriculture_hh_year","consumption_hh_year","education_hh_year",
+             "enterprise_hh_year","health_hh_year","social_protection_hh_year",
+             "shocks_coping_shocked_hh_year","migration_hh_year_migrant_only"]
+
+    # Build (hhid, year) -> lgcode lookup from any file that has lgcode
+    hh_geo = []
+    for f in files:
+        p = base / (f + ".csv")
+        if not p.exists(): continue
+        df = pd.read_csv(p, usecols=lambda c: c in ("hhid","year","lgcode","vmun_code"))
+        if "vmun_code" in df.columns and "lgcode" not in df.columns:
+            df = df.rename(columns={"vmun_code": "lgcode"})
+        if {"hhid","year","lgcode"}.issubset(df.columns):
+            hh_geo.append(df[["hhid","year","lgcode"]].drop_duplicates(["hhid","year"]))
+    if not hh_geo:
+        return {}
+    geo = pd.concat(hh_geo, ignore_index=True).drop_duplicates(["hhid","year"])
+
+    for f in files:
+        p = base / (f + ".csv")
+        if not p.exists(): continue
+        df = pd.read_csv(p)
+        if "vmun_code" in df.columns and "lgcode" not in df.columns:
+            df = df.rename(columns={"vmun_code": "lgcode"})
+        if "hhid" not in df.columns or "year" not in df.columns:
+            continue
+        # ensure lgcode column via the geo lookup
+        if "lgcode" not in df.columns:
+            df = df.merge(geo, on=["hhid","year"], how="left")
+        df = df.dropna(subset=["lgcode"])
+        df["lgcode"] = df["lgcode"].astype(int)
+        # merge in total_migrants
+        df = df.merge(inst, on=["lgcode","year"], how="inner")
+        outcomes = [c for c in df.columns if c not in SKIP]
+        # also include derived log_ versions for migrant/remit
+        log_derive = {}
+        for v in ("n_migrants_total","n_migrants_international","n_migrants_male",
+                  "n_migrants_female","remittance_amt","remit_amount_12m_rs",
+                  "remit_amount_intl_12m_rs"):
+            if v in df.columns:
+                df["log_"+v] = np.log1p(pd.to_numeric(df[v], errors="coerce"))
+                log_derive["log_"+v] = "log of "+v
+                if ("log_"+v) not in outcomes:
+                    outcomes.append("log_"+v)
+        for thr in (0, 25, 50, 100):
+            sub = df[df["total_migrants"] >= thr]
+            for oc in outcomes:
+                v = pd.to_numeric(sub[oc], errors="coerce")
+                mask = v.notna()
+                if mask.sum() < 50: continue
+                # only set if not already set (HH master uses first file's record per outcome)
+                if (thr, oc) not in out:
+                    out[(thr, oc)] = int(sub.loc[mask, "hhid"].nunique())
+    return out
+
+
 def main():
     if not CSV.exists():
         raise FileNotFoundError(f"{CSV} not found — run script/robustness_final.R first.")
@@ -103,6 +181,9 @@ def main():
         df = pd.concat([df, df_fill], ignore_index=True)
         print(f"  + merged {len(df_fill):,} fill rows from {CSV_FILL.name}")
     results_groups = load_results_groups()
+    print("  Computing n_unit (unique HHs) for HH dataset…")
+    hh_nunit = compute_n_unit_hh()
+    print(f"    -> {len(hh_nunit)} (threshold, outcome) entries")
 
     # Numeric coercion
     for col in ["beta","se","pval","mean_y","sd_y","n","n_muni"]:
@@ -157,6 +238,14 @@ def main():
                         if pd.notna(r["sd_y"]): rec["sd_y"] = float(r["sd_y"])
                         if pd.notna(r["n"]):    rec["n"]    = int(r["n"])
                         if pd.notna(r["n_muni"]):rec["n_muni"]=int(r["n_muni"])
+                        # n_unit: census/nec_panel/nec_cs use n_muni;
+                        # HH gets the precomputed unique-HH count.
+                        if ds == "hh":
+                            nu = hh_nunit.get((int(r["threshold"]), r["outcome"]))
+                            if nu is not None: rec["n_unit"] = nu
+                        else:
+                            if pd.notna(r["n_muni"]):
+                                rec["n_unit"] = int(r["n_muni"])
                         if isinstance(r.get("interpret"), str) and r["interpret"]:
                             rec["interpret"] = r["interpret"]
                     cells[r["outcome"]] = rec

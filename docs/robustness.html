@@ -202,7 +202,8 @@ function rowFor(yKey, ests, displayMode, specOrder){
   const sample = specOrder.map(s => ests[s]).find(e => e && !e.err && e.beta != null) || {};
   const meanCell = `<td>${fmtMean(sample.mean_y)}</td>`;
   const nCell = `<td>${sample.n ? sample.n.toLocaleString() : ""}</td>`;
-  const nUnitCell = `<td>${sample.n_muni ? sample.n_muni.toLocaleString() : ""}</td>`;
+  const nUnitVal = sample.n_unit ?? sample.n_muni;
+  const nUnitCell = `<td>${nUnitVal ? nUnitVal.toLocaleString() : ""}</td>`;
 
   const specCells = specOrder.map(s => {
     const e = ests[s];
