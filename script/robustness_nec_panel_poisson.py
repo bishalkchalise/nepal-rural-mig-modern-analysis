@@ -173,8 +173,8 @@ def fit_one(outcome: str, lag_L: int, threshold: int) -> dict:
         return {"err": "too few obs / no variation"}
     # treatment = log/lin = fx_z * log_migint_z
     d["treatment"] = d["fx_z"].values * d["log_migint_z"].values
-    # year-interacted controls (log/lin uses log_migint_z for mig control)
-    year_cols  = build_year_dummies(d, "log_migint_z", "cmig", 2001)
+    # year-interacted controls (log/lin anchor: linear mig_int_z, NOT log)
+    year_cols  = build_year_dummies(d, "mig_int_z", "cmig", 2001)
     year_cols += build_year_dummies(d, "fx_z",         "cfx",  2001)
     for k in BLOCK_A_COLS:
         year_cols += build_year_dummies(d, k, f"cA_{k}", 2001)

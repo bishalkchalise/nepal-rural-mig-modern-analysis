@@ -99,7 +99,7 @@ def fit_one(dataset, lag_L, estimator):
     else:
         lhs, fn = "emp_total", fepois
 
-    rhs = ["treatment", "fx_z", "log_migint_z"] + BLOCK_A_COLS
+    rhs = ["treatment", "fx_z", "mig_int_z"] + BLOCK_A_COLS  # log/lin anchor
     formula = f"{lhs} ~ " + " + ".join(rhs) + " | DIST"
     try:
         fit = fn(formula, data=cs, vcov={"CRV1": "DIST"})

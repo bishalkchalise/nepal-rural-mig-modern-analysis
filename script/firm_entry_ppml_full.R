@@ -119,7 +119,8 @@ fit_one <- function(outcome, lag_L, estimator) {
   d[, treatment := fx_z * log_migint_z]
 
   year_cols <- character(0)
-  year_cols <- c(year_cols, build_year_dummies(d, "log_migint_z", "cmig", 2001L))
+  # log/lin anchor: linear mig_int_z (NOT log) in year-interactions
+  year_cols <- c(year_cols, build_year_dummies(d, "mig_int_z", "cmig", 2001L))
   year_cols <- c(year_cols, build_year_dummies(d, "fx_z",         "cfx",  2001L))
   for (k in BLOCK_A_COLS)
     year_cols <- c(year_cols, build_year_dummies(d, k, paste0("cA_", k), 2001L))
