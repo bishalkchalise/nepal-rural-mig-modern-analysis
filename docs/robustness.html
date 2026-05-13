@@ -6,11 +6,8 @@
 <title>Robustness — Nepal SSIV</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  /* page-local extensions to the shared design system */
-  .spec-toggle{
-    display:flex; flex-wrap:wrap; gap:6px;
-    margin:0 0 1rem 0;
-  }
+  /* spec column toggle pills (lightweight extension to shared style) */
+  .spec-toggle{display:flex; flex-wrap:wrap; gap:6px; margin:1rem 0}
   .spec-toggle label{
     display:inline-flex; align-items:center; gap:5px;
     padding:5px 10px; border:1px solid var(--rule); border-radius:3px;
@@ -22,45 +19,21 @@
     background:var(--accent); border-color:var(--accent); color:#fff;
     font-weight:500;
   }
-  .spec-toggle input{ position:absolute; opacity:0; pointer-events:none; }
+  .spec-toggle input{position:absolute; opacity:0; pointer-events:none}
 
-  .table-scroll{
-    max-height:70vh; overflow:auto;
-    border:1px solid var(--rule); border-radius:3px;
-    background:var(--bg);
-  }
-  .table-scroll table{ margin:0 }
-  .table-scroll thead th{
-    position:sticky; top:0; background:var(--bg); z-index:2;
-    cursor:pointer; user-select:none;
-  }
-  .table-scroll thead th:hover{ color:var(--accent) }
-  .interp-cell{ text-align:left; color:var(--muted); font-size:13px }
-  .err-cell{ color:var(--neg); font-style:italic }
-
-  .pager{
-    display:flex; gap:8px; align-items:center;
-    margin-top:.8rem; font-family:var(--sans); font-size:13px;
-    color:var(--muted);
-  }
-  .pager button{
-    padding:4px 12px; border:1px solid var(--rule); background:var(--bg);
-    border-radius:3px; cursor:pointer; font-family:var(--sans); font-size:13px;
-  }
-  .pager button:disabled{ opacity:.4; cursor:default }
-  .pager select{
-    padding:4px 8px; border:1px solid var(--rule); border-radius:3px;
-    background:var(--bg); font-family:var(--sans); font-size:13px;
-  }
   .equation-card{
     background:var(--panel); border:1px solid var(--rule); border-radius:3px;
     padding:1rem 1.2rem; margin:1rem 0;
-    font-family:var(--mono); font-size:14px; line-height:1.9;
-    overflow-x:auto;
+    font-family:var(--mono); font-size:14px; line-height:1.9; overflow-x:auto;
   }
-  .red-token{ color:var(--neg); font-weight:600 }
-  .blue-token{ color:var(--accent); font-weight:600 }
-  /* match details styling already in stylesheet */
+  .red-token{color:var(--neg); font-weight:600}
+  .blue-token{color:var(--accent); font-weight:600}
+
+  /* table header spec sub-label */
+  table.robust th .spec-sub{
+    display:block; font-weight:400; color:var(--muted);
+    font-size:11px; margin-top:2px;
+  }
 </style>
 </head>
 <body>
@@ -71,7 +44,12 @@
   <ul>
     <li><a href="index.html">Intro</a></li>
     <li><a href="explorer.html">Results</a></li>
-    <li><a href="robustness.html" class="active">Robustness</a></li>
+    <li><a href="robustness.html" class="active">Robustness</a>
+      <ul class="subnav">
+        <li><a href="#" id="nav-dataset">Active dataset</a></li>
+        <li><a href="#" id="nav-group">Active group</a></li>
+      </ul>
+    </li>
     <li><a href="definitions.html">Variable definitions</a></li>
     <li><a href="summary.html">Summary statistics</a></li>
     <li><a href="methods.html">Method</a></li>
@@ -84,19 +62,21 @@
 <header class="page-header">
   <h1>Robustness</h1>
   <div class="sub">
-    Every numeric outcome across all four datasets under nine specifications.
-    Filter by dataset, threshold, outcome group, and specification.
-    Sort any column by clicking the header. Hover a row for full details.
+    Same outcome list as Results — but each row is shown under the
+    baseline plus eight alternative specifications. Toggle individual
+    specs to declutter; click an outcome name for its definition.
+    Coefficient formatting matches Results: stars × significance,
+    SE in parentheses below.
   </div>
 </header>
 
-<details open>
-<summary>Estimation equation &mdash; what changes across the nine specifications</summary>
+<details>
+<summary>Estimation equation &mdash; what changes across the nine specs</summary>
 
 <p style="margin-top:.6rem">
 Every spec estimates the same regression form. Only the
 <span class="red-token">treatment</span> term and the
-<span class="blue-token"> year × mig_int_z</span> control vary:
+<span class="blue-token">year × mig_int_z</span> control vary:
 </p>
 
 <div class="equation-card">
@@ -112,124 +92,76 @@ y<sub>i,t</sub> &nbsp;=&nbsp;
 α<sub>m</sub> &nbsp;+&nbsp; γ<sub>t</sub> &nbsp;+&nbsp; ε<sub>i,t</sub>
 </div>
 
-<p style="font-size:14px; color:var(--muted); margin:.4rem 0">
-<strong style="color:var(--fg)">Common across all 9 specs.</strong>
-<code>year × fx_z</code> and Block A × year always included.
-Entity FE α<sub>m</sub> is muni for census + NEC panel, HH for HRVS, district for NEC 2018 cs.
-SE clustered at municipality (district for NEC cs). Sample: muni-baseline migrants ≥ <em>k</em>.
-</p>
-
 <table class="var-table" style="margin-top:1rem">
-<thead><tr>
-  <th>Spec</th>
-  <th>TREATMENT<sub>m,t</sub></th>
-  <th>year × mig_int_z form</th>
-  <th>What's tested</th>
-</tr></thead>
+<thead><tr><th>Spec</th><th>TREATMENT</th><th>year × mig_int_z form</th><th>What's tested</th></tr></thead>
 <tbody>
-<tr><td><strong>S0_baseline</strong></td>
-    <td>fx<sub>z,m,t</sub> · log(mig_int_z<sub>m</sub>)</td>
+<tr><td><strong>S0_baseline</strong></td><td>fx<sub>z,m,t</sub> · log(mig_int_z<sub>m</sub>)</td>
     <td>year × mig_int_z (linear)</td>
-    <td>Anchor — literature-standard SSIV. Mixed log/linear forms on the two sides deliberately decouple treatment from c_mig.</td></tr>
-<tr><td>S_lag1</td><td>fx<sub>z,m,t&minus;1</sub> · log(mig_int_z<sub>m</sub>)</td>
-    <td>year × mig_int_z</td><td>FX shifter lagged 1 year.</td></tr>
-<tr><td>S_lag2</td><td>fx<sub>z,m,t&minus;2</sub> · log(mig_int_z<sub>m</sub>)</td>
-    <td>year × mig_int_z</td><td>Lagged 2 years.</td></tr>
-<tr><td>S_lag3</td><td>fx<sub>z,m,t&minus;3</sub> · log(mig_int_z<sub>m</sub>)</td>
-    <td>year × mig_int_z</td><td>Lagged 3 years.</td></tr>
-<tr><td>S_lag4</td><td>fx<sub>z,m,t&minus;4</sub> · log(mig_int_z<sub>m</sub>)</td>
-    <td>year × mig_int_z</td><td>Lagged 4 years.</td></tr>
-<tr><td>S_lag5</td><td>fx<sub>z,m,t&minus;5</sub> · log(mig_int_z<sub>m</sub>)</td>
-    <td>year × mig_int_z</td><td>Lagged 5 years.</td></tr>
-<tr><td>S_lag10</td><td>fx<sub>z,m,t&minus;10</sub> · log(mig_int_z<sub>m</sub>)</td>
-    <td>year × mig_int_z</td><td>Lagged 10 years — loses census 2001 cohort.</td></tr>
-<tr><td><strong>S_both_log</strong></td>
-    <td>fx<sub>z,m,t</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>Anchor — literature-standard SSIV with mixed log/linear forms across treatment vs c_mig.</td></tr>
+<tr><td>S_lag1..S_lag5</td><td>fx<sub>z,m,t−L</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × mig_int_z</td><td>FX shifter lagged 1–5 years (delayed-response tests).</td></tr>
+<tr><td>S_lag10</td><td>fx<sub>z,m,t−10</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × mig_int_z</td><td>Lagged 10 years (loses census 2001 cohort).</td></tr>
+<tr><td><strong>S_both_log</strong></td><td>fx<sub>z,m,t</sub> · log(mig_int_z<sub>m</sub>)</td>
     <td>year × <em>log</em>(mig_int_z)</td>
-    <td>"Consistent log" — same functional form on both sides; near-collinear with treatment on long panels.</td></tr>
-<tr><td><strong>S_both_linear</strong></td>
-    <td>fx<sub>z,m,t</sub> · <em>mig_int_z<sub>m</sub></em> (linear share)</td>
-    <td>year × mig_int_z</td>
-    <td>"Consistent linear" — linear share inside treatment to match the linear c_mig.</td></tr>
+    <td>"Consistent log" — same functional form on both sides; near-collinear on long panels.</td></tr>
+<tr><td><strong>S_both_linear</strong></td><td>fx<sub>z,m,t</sub> · <em>mig_int_z<sub>m</sub></em> (linear share)</td>
+    <td>year × mig_int_z</td><td>"Consistent linear" — linear share inside treatment to match the linear c_mig.</td></tr>
 </tbody>
 </table>
 
 <p class="table-note" style="border-top:0; padding:.6rem 0; margin-top:.4rem">
-Standardisation: <code>fx_z</code>, <code>mig_int_z</code>, and
-<code>log_mig_int_z</code> are z-scored within each working sample
-(k threshold) before estimation. Block A = six 2001
-destination-region migrant shares + destination-weighted GDP per capita,
-each interacted with year dummies. Coefficient (β) stars:
-<strong>*</strong> p&lt;0.10, <strong>**</strong> p&lt;0.05,
-<strong>***</strong> p&lt;0.01.
+Common across all 9 specs: <code>year × fx_z</code>, Block A × year,
+entity FE α<sub>m</sub> (muni for census + NEC panel, HH for HRVS,
+district for NEC cs), year FE γ<sub>t</sub>, SE clustered at municipality
+(district for NEC cs). Treatments z-scored on the working sample.
 </p>
 </details>
 
 <div class="controls">
   <div class="ctrl">
-    <label for="f-dataset">Dataset</label>
-    <select id="f-dataset"><option value="">All datasets</option></select>
-    <div class="desc" id="f-dataset-desc">census, hh, nec_panel, nec_cs</div>
+    <label for="dataset">Dataset</label>
+    <select id="dataset"></select>
+    <div class="desc" id="dataset-desc"></div>
   </div>
   <div class="ctrl">
-    <label for="f-threshold">Sample threshold (k ≥)</label>
-    <select id="f-threshold"><option value="">All thresholds</option></select>
-    <div class="desc" id="f-threshold-desc">k = 0, 25, 50, 100 baseline migrants</div>
+    <label for="threshold">Sample threshold</label>
+    <select id="threshold"></select>
+    <div class="desc" id="threshold-desc"></div>
   </div>
   <div class="ctrl">
-    <label for="f-group">Outcome group</label>
-    <select id="f-group"><option value="">All groups</option></select>
-    <div class="desc" id="f-group-desc">e.g. Assets, Industry, Firm scale</div>
+    <label for="group">Outcome group</label>
+    <select id="group"></select>
+    <div class="desc" id="group-desc"></div>
   </div>
   <div class="ctrl">
-    <label for="f-outcome">Search outcome</label>
-    <input id="f-outcome" type="text" placeholder="e.g. toilet, firms, edu">
-    <div class="desc">Substring match on variable name</div>
-  </div>
-  <div class="ctrl">
-    <label for="f-sig">Significance filter</label>
-    <select id="f-sig">
-      <option value="">All</option>
-      <option value="01">p &lt; 0.01</option>
-      <option value="05">p &lt; 0.05</option>
-      <option value="10">p &lt; 0.10</option>
-      <option value="ns">Not significant (p ≥ 0.10)</option>
-    </select>
-    <div class="desc">Hide rows that don't meet the cutoff</div>
+    <label for="search">Filter outcome name (within group)</label>
+    <input id="search" type="text" placeholder="substring, e.g. toilet">
+    <div class="desc">Optional. Substring match.</div>
   </div>
 </div>
 
 <div class="spec-toggle" id="spec-toggle"></div>
 
-<div class="meta" id="meta">
-  Showing <strong id="row-count">0</strong> of <strong id="row-total">0</strong> rows
-</div>
+<div class="meta" id="meta"></div>
 
-<div class="table-scroll">
-  <table id="rb-table" class="results">
+<div id="table-wrap" style="overflow-x:auto">
+  <table id="rb-table" class="robust results">
     <thead><tr id="rb-head"></tr></thead>
     <tbody id="rb-body"></tbody>
   </table>
 </div>
 
-<div class="pager">
-  <button id="prev">← Prev</button>
-  <span id="page-info">page 1</span>
-  <button id="next">Next →</button>
-  <span style="margin-left:auto">Rows per page</span>
-  <select id="page-size">
-    <option>100</option><option selected>250</option><option>500</option>
-    <option>1000</option><option value="all">All</option>
-  </select>
-</div>
-
-<div class="table-note">
-  <strong>Reading the table.</strong> β is the treatment slope, SE is
-  cluster-robust at municipality (district for NEC cs).
-  <code>Interpretation</code> auto-converts: pp for share outcomes,
-  approximate % change for log outcomes, Rs for monetary amounts.
-  Rows where the model could not be estimated (degenerate outcome,
-  one-year-only column, etc.) show the reason in italics.
+<div class="table-note" id="table-note">
+  <strong>Reading.</strong> Each row is one outcome variable. Each spec column
+  shows the treatment coefficient β (colour-coded by sign + significance)
+  with its standard error in parentheses below.
+  Stars: <span class="stars">*</span> p&lt;0.10,
+  <span class="stars">**</span> p&lt;0.05,
+  <span class="stars">***</span> p&lt;0.01.
+  Cells with <span class="se">err</span> or <span class="se">—</span>
+  indicate the model could not be estimated (degenerate outcome,
+  cross-section with no time dimension, etc.).
 </div>
 
 </main>
@@ -243,22 +175,32 @@ each interacted with year dummies. Coefficient (β) stars:
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 (async function(){
-  const SPECS = ['S0_baseline','S_lag1','S_lag2','S_lag3','S_lag4','S_lag5',
-                 'S_lag10','S_both_log','S_both_linear'];
-  const COLS = [
-    {key:'outcome_group', label:'Outcome group', type:'text'},
-    {key:'dataset',       label:'Dataset',       type:'text'},
-    {key:'outcome',       label:'Outcome',       type:'text'},
-    {key:'spec',          label:'Spec',          type:'text'},
-    {key:'threshold',     label:'k ≥',           type:'int'},
-    {key:'beta',          label:'β',             type:'coef'},
-    {key:'se',            label:'SE',            type:'se'},
-    {key:'pval',          label:'p',             type:'num', dp:3},
-    {key:'mean_y',        label:'Mean Y',        type:'meany'},
-    {key:'n',             label:'N',             type:'int'},
-    {key:'interpret',     label:'Interpretation',type:'interp'}
-  ];
+  const SPEC_ORDER = ['S0_baseline','S_lag1','S_lag2','S_lag3','S_lag4',
+                      'S_lag5','S_lag10','S_both_log','S_both_linear'];
+  const SPEC_DESC = {
+    'S0_baseline':   'anchor',
+    'S_lag1':        'fx lag 1y',
+    'S_lag2':        'fx lag 2y',
+    'S_lag3':        'fx lag 3y',
+    'S_lag4':        'fx lag 4y',
+    'S_lag5':        'fx lag 5y',
+    'S_lag10':       'fx lag 10y',
+    'S_both_log':    'log/log',
+    'S_both_linear': 'lin/lin'
+  };
+  const DATASET_LABEL = {
+    'census':   'Census municipality panel (2001, 2011, 2021)',
+    'hh':       'HRVS household panel (2016, 2017, 2018)',
+    'nec_panel':'NEC firm-entry panel (annual 2001–2018)',
+    'nec_cs':   'NEC 2018 firm cross-section'
+  };
+  const UNIT_NAME = {census:'muni', hh:'HH', nec_panel:'muni', nec_cs:'muni'};
+  const ENTITY_FE = {
+    census:'lgcode + year', hh:'hhid + year',
+    nec_panel:'lgcode + year', nec_cs:'district (cross-section)'
+  };
 
+  // ---- Load CSV ----
   const resp = await fetch('robustness_final.csv');
   const parsed = Papa.parse(await resp.text(), {header:true, skipEmptyLines:true});
   const data = parsed.data.map(r => {
@@ -267,61 +209,74 @@ each interacted with year dummies. Coefficient (β) stars:
     r.pval = r.pval === '' ? null : parseFloat(r.pval);
     r.mean_y = r.mean_y === '' ? null : parseFloat(r.mean_y);
     r.n    = r.n    === '' ? null : parseInt(r.n);
+    r.n_muni = r.n_muni === '' ? null : parseInt(r.n_muni);
     r.threshold = parseInt(r.threshold);
     return r;
   });
-  document.getElementById('row-total').textContent = data.length.toLocaleString();
 
-  // Populate filters
-  function uniq(arr){ return Array.from(new Set(arr)).sort(); }
-  const datasets   = uniq(data.map(r => r.dataset));
-  const groups     = uniq(data.map(r => r.outcome_group));
-  const thresholds = uniq(data.map(r => r.threshold)).sort((a,b) => a-b);
-  const dsSel  = document.getElementById('f-dataset');
-  datasets.forEach(d => dsSel.appendChild(new Option(d, d)));
-  const thrSel = document.getElementById('f-threshold');
-  thresholds.forEach(t => thrSel.appendChild(new Option('k ≥ ' + t, t)));
-  if (thresholds.length === 1) {
-    thrSel.value = thresholds[0]; thrSel.disabled = true;
-    thrSel.title = 'Only one threshold in the loaded CSV.';
+  // Index by (dataset, threshold, outcome_group, outcome, spec)
+  const idx = {};
+  const groupsByDs = {};
+  const outcomesByGroup = {};
+  const thresholds = new Set();
+  for (const r of data) {
+    thresholds.add(r.threshold);
+    const key = `${r.dataset}|${r.threshold}|${r.outcome_group}|${r.outcome}`;
+    if (!idx[key]) idx[key] = {};
+    idx[key][r.spec] = r;
+    // dataset -> [outcome_group]
+    if (!groupsByDs[r.dataset]) groupsByDs[r.dataset] = new Set();
+    groupsByDs[r.dataset].add(r.outcome_group);
+    // group -> [outcome]
+    const gKey = `${r.dataset}|${r.outcome_group}`;
+    if (!outcomesByGroup[gKey]) outcomesByGroup[gKey] = new Set();
+    outcomesByGroup[gKey].add(r.outcome);
   }
-  const grSel = document.getElementById('f-group');
-  groups.forEach(g => grSel.appendChild(new Option(g, g)));
+  // Sort sets
+  Object.keys(groupsByDs).forEach(d => {
+    groupsByDs[d] = Array.from(groupsByDs[d]).sort();
+  });
+  Object.keys(outcomesByGroup).forEach(g => {
+    outcomesByGroup[g] = Array.from(outcomesByGroup[g]).sort();
+  });
 
-  // Spec checkboxes
+  // ---- Populate dropdowns ----
+  const dsSel  = document.getElementById('dataset');
+  const thrSel = document.getElementById('threshold');
+  const grSel  = document.getElementById('group');
+  const search = document.getElementById('search');
+
+  ['census','hh','nec_panel','nec_cs'].forEach(d => {
+    if (groupsByDs[d]) dsSel.appendChild(new Option(d, d));
+  });
+  Array.from(thresholds).sort((a,b) => a-b)
+    .forEach(t => thrSel.appendChild(new Option('k ≥ ' + t, t)));
+
+  function refreshGroups(){
+    const cur = grSel.value;
+    const grs = groupsByDs[dsSel.value] || [];
+    grSel.innerHTML = '';
+    grs.forEach(g => grSel.appendChild(new Option(g, g)));
+    if (grs.includes(cur)) grSel.value = cur;
+  }
+  refreshGroups();
+  // Pick sensible defaults
+  if (Array.from(thresholds).includes(25)) thrSel.value = '25';
+
+  // ---- Spec toggle ----
   const specBox = document.getElementById('spec-toggle');
-  SPECS.forEach(s => {
+  SPEC_ORDER.forEach(s => {
     const lab = document.createElement('label');
     lab.innerHTML = `<input type="checkbox" data-spec="${s}" checked> ${s}`;
     specBox.appendChild(lab);
   });
 
-  // Headers
-  const head = document.getElementById('rb-head');
-  let sortCol = null, sortDir = 0;
-  COLS.forEach((c, i) => {
-    const th = document.createElement('th');
-    th.textContent = c.label;
-    th.addEventListener('click', () => {
-      sortDir = (sortCol === i ? -sortDir : 1);
-      sortCol = i;
-      render();
-    });
-    head.appendChild(th);
-  });
-
-  // Format helpers — match explorer.html's style
-  function fmtStars(p){
-    if (p == null || isNaN(p)) return '';
-    if (p < 0.01) return '***';
-    if (p < 0.05) return '**';
-    if (p < 0.10) return '*';
-    return '';
-  }
+  // ---- Formatters (same vocab as explorer.html) ----
   function fmtCoef(b, p){
     if (b == null || isNaN(b)) return '';
     const sign = b >= 0 ? '+' : '';
-    const stars = fmtStars(p);
+    const stars = (p == null || isNaN(p)) ? '' :
+                  (p < 0.01 ? '***' : (p < 0.05 ? '**' : (p < 0.10 ? '*' : '')));
     const cls = (p == null || p >= 0.10) ? 'nsig' : (b >= 0 ? 'pos' : 'neg');
     return `<span class="${cls}">${sign}${b.toFixed(4)}</span><span class="stars">${stars}</span>`;
   }
@@ -342,110 +297,83 @@ each interacted with year dummies. Coefficient (β) stars:
     return m.toPrecision(3);
   }
 
-  // Pager state
-  let pageSize = 250, pageIdx = 0;
-
-  function getFiltered(){
-    const ds  = dsSel.value;
-    const thr = thrSel.value;
-    const gr  = grSel.value;
-    const oc  = document.getElementById('f-outcome').value.toLowerCase().trim();
-    const sig = document.getElementById('f-sig').value;
-    const specOn = new Set(
-      Array.from(document.querySelectorAll('#spec-toggle input:checked')).map(c => c.dataset.spec)
+  // ---- Render ----
+  function getActiveSpecs(){
+    return SPEC_ORDER.filter(s =>
+      document.querySelector(`#spec-toggle input[data-spec="${s}"]`).checked
     );
-    let filt = data.filter(r => {
-      if (ds  && r.dataset !== ds) return false;
-      if (thr && String(r.threshold) !== thr) return false;
-      if (gr  && r.outcome_group !== gr) return false;
-      if (oc  && !r.outcome.toLowerCase().includes(oc)) return false;
-      if (!specOn.has(r.spec)) return false;
-      if (sig === '01' && !(r.pval < 0.01)) return false;
-      if (sig === '05' && !(r.pval < 0.05)) return false;
-      if (sig === '10' && !(r.pval < 0.10)) return false;
-      if (sig === 'ns' && !(r.pval >= 0.10)) return false;
-      return true;
-    });
-    if (sortCol !== null) {
-      const col = COLS[sortCol];
-      filt = filt.slice().sort((a, b) => {
-        const av = a[col.key], bv = b[col.key];
-        if (av === null || av === undefined) return 1;
-        if (bv === null || bv === undefined) return -1;
-        if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * sortDir;
-        return String(av).localeCompare(String(bv)) * sortDir;
-      });
-    }
-    return filt;
-  }
-
-  function renderRow(r){
-    const tr = document.createElement('tr');
-    COLS.forEach(c => {
-      const td = document.createElement('td');
-      const v = r[c.key];
-      if (c.type === 'coef') {
-        td.innerHTML = fmtCoef(r.beta, r.pval);
-      } else if (c.type === 'se') {
-        td.innerHTML = fmtSE(r.se);
-      } else if (c.type === 'meany') {
-        td.textContent = fmtMean(v);
-      } else if (c.type === 'num') {
-        td.textContent = (v == null || isNaN(v)) ? '' : v.toFixed(c.dp);
-        if (v != null && !isNaN(v) && v < 0.10) td.style.fontWeight = '500';
-      } else if (c.type === 'int') {
-        td.textContent = v == null ? '' : v.toLocaleString();
-      } else if (c.type === 'interp') {
-        td.className = 'interp-cell';
-        if (r.err && r.err !== '') {
-          td.textContent = r.err;
-          td.classList.add('err-cell');
-        } else {
-          td.textContent = v || '';
-        }
-      } else {
-        td.textContent = v;
-      }
-      tr.appendChild(td);
-    });
-    tr.title =
-      `dataset=${r.dataset}\nspec=${r.spec}\nthreshold=k>=${r.threshold}\n` +
-      `outcome=${r.outcome}\nβ=${r.beta}\nSE=${r.se}\np=${r.pval}\n` +
-      `mean Y=${r.mean_y}\nN=${r.n}\n${r.interpret || ''}`;
-    return tr;
   }
 
   function render(){
-    const filt = getFiltered();
-    document.getElementById('row-count').textContent = filt.length.toLocaleString();
-    const tbody = document.getElementById('rb-body');
-    tbody.innerHTML = '';
-    let start = pageIdx * pageSize;
-    let end = pageSize === Infinity ? filt.length : Math.min(start + pageSize, filt.length);
-    if (start >= filt.length) { pageIdx = 0; start = 0; end = Math.min(pageSize, filt.length); }
-    for (let i = start; i < end; i++) tbody.appendChild(renderRow(filt[i]));
-    document.querySelectorAll('#rb-head th').forEach((th, i) => {
-      th.textContent = COLS[i].label + (sortCol === i ? (sortDir === 1 ? ' ▲' : ' ▼') : '');
-    });
-    const totalPages = pageSize === Infinity ? 1 : Math.max(1, Math.ceil(filt.length / pageSize));
-    document.getElementById('page-info').textContent = `page ${pageIdx + 1} of ${totalPages}`;
-    document.getElementById('prev').disabled = (pageIdx === 0);
-    document.getElementById('next').disabled = (pageIdx + 1 >= totalPages);
+    const ds = dsSel.value, thr = thrSel.value, grp = grSel.value;
+    const subSearch = search.value.toLowerCase().trim();
+    const activeSpecs = getActiveSpecs();
+
+    // descriptions
+    document.getElementById('dataset-desc').textContent  = DATASET_LABEL[ds] || '';
+    document.getElementById('threshold-desc').textContent =
+      'k = ' + thr + ' baseline migrants per muni';
+    document.getElementById('group-desc').textContent = grp || '';
+    document.getElementById('nav-dataset').textContent =
+      'Dataset: ' + (DATASET_LABEL[ds] || ds);
+    document.getElementById('nav-group').textContent = 'Group: ' + (grp || '—');
+
+    // Header row
+    const headEl = document.getElementById('rb-head');
+    headEl.innerHTML =
+      `<th style="text-align:left">Outcome</th>` +
+      `<th>mean(y)</th>` +
+      activeSpecs.map(s =>
+        `<th>${s}<span class="spec-sub">${SPEC_DESC[s]||''}</span></th>`
+      ).join('') +
+      `<th>N total</th><th>N ${UNIT_NAME[ds]||'unit'}</th>`;
+
+    // Body — one row per outcome in (ds, group)
+    let outcomes = outcomesByGroup[`${ds}|${grp}`] || [];
+    if (subSearch) outcomes = outcomes.filter(o => o.toLowerCase().includes(subSearch));
+    const body = document.getElementById('rb-body');
+
+    if (!outcomes.length) {
+      body.innerHTML = `<tr><td colspan="${3 + activeSpecs.length}" class="se" style="text-align:center; padding:20px">No outcomes in this group.</td></tr>`;
+    } else {
+      body.innerHTML = outcomes.map(oc => {
+        const cells = activeSpecs.map(s => {
+          const r = idx[`${ds}|${thr}|${grp}|${oc}`]?.[s];
+          if (!r) return `<td><span class="se">—</span></td>`;
+          if (r.err && r.err !== '') return `<td><span class="se">err</span></td>`;
+          if (r.beta == null) return `<td><span class="se">—</span></td>`;
+          return `<td>${fmtCoef(r.beta, r.pval)}<br>${fmtSE(r.se)}</td>`;
+        }).join('');
+        // pull mean / N from baseline (first non-error spec)
+        const sample = activeSpecs.map(s => idx[`${ds}|${thr}|${grp}|${oc}`]?.[s])
+                                   .find(e => e && !e.err && e.beta != null) || {};
+        return `<tr>` +
+          `<td><a href="definitions.html#${oc}"><span class="outcome-cell">${oc}</span></a></td>` +
+          `<td>${fmtMean(sample.mean_y)}</td>` +
+          cells +
+          `<td>${sample.n ? sample.n.toLocaleString() : ''}</td>` +
+          `<td>${sample.n_muni ? sample.n_muni.toLocaleString() : ''}</td>` +
+          `</tr>`;
+      }).join('');
+    }
+
+    // meta strip
+    document.getElementById('meta').innerHTML =
+      `<div><strong>Dataset:</strong> ${DATASET_LABEL[ds] || ds}</div>` +
+      `<div><strong>k ≥</strong> ${thr}</div>` +
+      `<div><strong>FE:</strong> ${ENTITY_FE[ds] || ''}</div>` +
+      `<div><strong>Group:</strong> ${grp}</div>` +
+      `<div><strong>Outcomes shown:</strong> ${outcomes.length}</div>`;
   }
 
-  ['f-dataset','f-threshold','f-group','f-sig'].forEach(id => {
-    document.getElementById(id).addEventListener('change', () => { pageIdx = 0; render(); });
-  });
-  document.getElementById('f-outcome').addEventListener('input', () => { pageIdx = 0; render(); });
-  document.querySelectorAll('#spec-toggle input').forEach(c => {
-    c.addEventListener('change', () => { pageIdx = 0; render(); });
-  });
-  document.getElementById('prev').addEventListener('click', () => { pageIdx = Math.max(0, pageIdx - 1); render(); });
-  document.getElementById('next').addEventListener('click', () => { pageIdx++; render(); });
-  document.getElementById('page-size').addEventListener('change', e => {
-    pageSize = e.target.value === 'all' ? Infinity : parseInt(e.target.value);
-    pageIdx = 0; render();
-  });
+  // ---- Wire up ----
+  dsSel.addEventListener('change', () => { refreshGroups(); render(); });
+  thrSel.addEventListener('change', render);
+  grSel.addEventListener('change', render);
+  search.addEventListener('input', render);
+  document.querySelectorAll('#spec-toggle input').forEach(c =>
+    c.addEventListener('change', render)
+  );
 
   render();
 })();
