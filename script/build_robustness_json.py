@@ -28,9 +28,32 @@ Output shape:
 import pandas as pd, json, sys
 from pathlib import Path
 
-# Load curated outcome → group / label map
+# Load curated outcome → group / label map.  Priority:
+#   (1) output/tab/outcome_map.csv  if it exists (user-editable)
+#   (2) script/_outcome_map.py  (Python fallback)
 sys.path.insert(0, str(Path(__file__).parent))
-from _outcome_map import CURATED
+from _outcome_map import CURATED as _CURATED_DEFAULT
+
+def load_curated():
+    csv_p = Path("output/tab/outcome_map.csv")
+    if csv_p.exists():
+        df = pd.read_csv(csv_p)
+        df["keep"] = df["keep"].astype(str).str.strip().str.upper()
+        df = df[df["keep"].isin({"Y","YES","TRUE","1"})]
+        out = {}
+        for ds, sub in df.groupby("dataset"):
+            out[ds] = {}
+            for _, r in sub.iterrows():
+                v = str(r["variable"]).strip()
+                if not v: continue
+                out[ds][v] = {"group": str(r["group"]).strip(),
+                              "label": str(r["label"]).strip() or v}
+        print(f"  curated map source: {csv_p} ({sum(len(m) for m in out.values())} kept rows)")
+        return out
+    print("  curated map source: script/_outcome_map.py (Python fallback)")
+    return _CURATED_DEFAULT
+
+CURATED = load_curated()
 
 ROOT = Path(".")
 CSV       = ROOT / "output/tab/robustness_final.csv"
