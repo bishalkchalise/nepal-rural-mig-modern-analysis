@@ -282,51 +282,6 @@ sample restricted to munis with ≥ 25 baseline migrants in 2001.
     </div>
   </div>
 
-  <div class="viz-card">
-    <h3>9. Firm stock by industry — OLS on log(1+y) vs. PPML on raw count, by cohort</h3>
-    <p class="viz-sub">
-      2018 cross-section, β on raw firm counts in each industry. Three
-      cohort overlays (full 2018 stock; post-2001; post-2011) × two
-      estimators (OLS solid circles, PPML dashed squares) → six lines per
-      panel. PPML elasticities are uniformly ≈ 2–3× the OLS-log estimates,
-      reflecting big-firm-count mass weighting; both estimators agree on the
-      sign (negative for hospitality, manufacturing, construction, transport,
-      trade-retail, finance/prof) and on cohort ordering.
-    </p>
-    <div class="viz-img-wrap">
-      <a href="figs/firm_stock_industry_count_ppml_overlay.svg" target="_blank" rel="noopener">
-        <img src="figs/firm_stock_industry_count_ppml_overlay.png"
-             alt="OLS vs PPML on 2018 stock by industry, by cohort">
-      </a>
-    </div>
-    <div class="viz-meta">
-      Source: <code>output/tab/robustness_nec_cs_poisson.csv</code> ·
-      <a href="figs/firm_stock_industry_count_ppml_overlay.svg" target="_blank" rel="noopener">SVG</a>
-    </div>
-  </div>
-
-  <div class="viz-card">
-    <h3>10. Firm stock by size — OLS on log(1+y) vs. PPML on raw count, by cohort</h3>
-    <p class="viz-sub">
-      Same OLS-vs-PPML × cohort layout for 2018 firm counts in each size
-      bucket. Size 51+ firms (54–65 % zeros across cohorts) show the
-      largest OLS–PPML divergence — PPML is the preferred estimator there.
-      For the dominant 1-worker and 2–9 worker buckets (essentially no
-      zeros) the two estimators track closely, with PPML somewhat above
-      OLS-log due to count-level weighting.
-    </p>
-    <div class="viz-img-wrap">
-      <a href="figs/firm_stock_size_count_ppml_overlay.svg" target="_blank" rel="noopener">
-        <img src="figs/firm_stock_size_count_ppml_overlay.png"
-             alt="OLS vs PPML on 2018 stock by size, by cohort">
-      </a>
-    </div>
-    <div class="viz-meta">
-      Source: <code>output/tab/robustness_nec_cs_poisson.csv</code> ·
-      <a href="figs/firm_stock_size_count_ppml_overlay.svg" target="_blank" rel="noopener">SVG</a>
-    </div>
-  </div>
-
 </div>
 
 </main>
