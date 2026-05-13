@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robustness — Nepal SSIV</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* page-local styling for the robustness explorer */
+  .rb-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px 18px;
+    margin: 14px 0 18px 0;
+  }
+  .rb-controls .ctrl { display: flex; flex-direction: column; gap: 4px; }
+  .rb-controls label { font-size: 0.85em; color: #4a5568; font-weight: 500; }
+  .rb-controls select, .rb-controls input {
+    padding: 5px 8px; font-size: 0.9em; border: 1px solid #cbd5e0;
+    border-radius: 3px; font-family: inherit; background: white;
+  }
+  .rb-spec-toggle {
+    display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 16px 0;
+  }
+  .rb-spec-toggle label {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border: 1px solid #cbd5e0; border-radius: 4px;
+    cursor: pointer; font-size: 0.78em; background: #f7fafc;
+    user-select: none;
+  }
+  .rb-spec-toggle label:has(input:checked) {
+    background: #2c5282; color: white; border-color: #2c5282;
+  }
+  .rb-spec-toggle input { display: none; }
+  .rb-stats {
+    font-size: 0.85em; color: #4a5568; margin: 6px 0 10px 0;
+  }
+  .rb-stats strong { color: #1a202c; }
+
+  /* table */
+  .rb-table-wrap {
+    max-height: 70vh; overflow: auto; border: 1px solid #e2e8f0;
+    border-radius: 4px; background: white;
+  }
+  table.rb-table {
+    border-collapse: collapse; font-size: 0.78em; min-width: 100%;
+    font-variant-numeric: tabular-nums;
+  }
+  table.rb-table th, table.rb-table td {
+    padding: 4px 8px; border-bottom: 1px solid #edf2f7;
+    text-align: right; white-space: nowrap;
+  }
+  table.rb-table thead th {
+    position: sticky; top: 0; background: #f7fafc; z-index: 2;
+    border-bottom: 1.5px solid #2c5282; cursor: pointer;
+    font-weight: 600; color: #1a202c;
+  }
+  table.rb-table thead th:hover { background: #edf2f7; }
+  table.rb-table th:nth-child(-n+4),
+  table.rb-table td:nth-child(-n+4) {
+    text-align: left;
+  }
+  /* outcome-group label column: smaller text */
+  table.rb-table td:first-child { font-size: 0.85em; color: #4a5568; }
+  table.rb-table tr:hover td { background: #fffbea; }
+  .num-pos { color: #22543d; }
+  .num-neg { color: #742a2a; }
+  .stars { color: #c53030; font-weight: 600; }
+  .interp-cell { text-align: left !important; color: #4a5568; font-size: 0.92em; }
+  .err-cell { color: #c53030; font-style: italic; }
+
+  /* spec-explainer accordion */
+  .rb-explainer details {
+    background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 4px;
+    padding: 8px 14px; margin: 8px 0; font-size: 0.88em;
+  }
+  .rb-explainer summary {
+    cursor: pointer; font-weight: 600; color: #1a202c;
+  }
+  .rb-explainer table { margin-top: 8px; font-size: 0.92em; }
+  .rb-explainer th, .rb-explainer td { padding: 3px 8px; text-align: left; }
+  .rb-explainer th { border-bottom: 1px solid #cbd5e0; }
+  .pager {
+    display: flex; gap: 6px; align-items: center; margin: 10px 0;
+    font-size: 0.85em;
+  }
+  .pager button {
+    padding: 3px 9px; border: 1px solid #cbd5e0; background: white;
+    border-radius: 3px; cursor: pointer;
+  }
+  .pager button:disabled { opacity: 0.4; cursor: default; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <h2>Pages</h2>
+  <ul>
+    <li><a href="index.html">Intro</a></li>
+    <li><a href="explorer.html">Results</a></li>
+    <li><a href="robustness.html" class="active">Robustness</a></li>
+    <li><a href="definitions.html">Variable definitions</a></li>
+    <li><a href="summary.html">Summary statistics</a></li>
+    <li><a href="methods.html">Method</a></li>
+    <li><a href="presentation.html" target="_blank" rel="noopener">Presentation ↗</a></li>
+  </ul>
+</nav>
+
+<main class="content-wide">
+
+<header class="page-header">
+  <h1>Robustness explorer</h1>
+  <div class="sub">
+    Every numeric outcome across all four datasets at k ≥ 25, run under nine
+    specifications. Filter by dataset / outcome group / specification, sort
+    any column, hover a coefficient cell for SE and p-value.
+  </div>
+</header>
+
+<div class="rb-explainer">
+<details open>
+<summary>The estimation equation — what changes across the nine specs</summary>
+
+<p style="margin-top:8px;">
+Every spec estimates the same regression form. Only the
+<strong>red</strong> treatment term and the <strong>blue</strong>
+year × mig_int_z control change:
+</p>
+
+<div style="font-family: 'IBM Plex Mono', Menlo, monospace; font-size: 0.95em;
+            background: white; padding: 12px 16px; border: 1px solid #cbd5e0;
+            border-radius: 4px; line-height: 1.7; overflow-x: auto;">
+y<sub>i,t</sub> &nbsp;=&nbsp;
+<span style="color:#c53030;font-weight:600;">β · TREATMENT<sub>m(i),t</sub></span>
+&nbsp;+&nbsp;
+<span style="color:#2c5282;font-weight:600;">λ<sub>1</sub> · [ <span id="cmig-form">year × mig_int_z</span> ]</span>
+&nbsp;+&nbsp;
+λ<sub>2</sub> · [ year × fx_z ]
+&nbsp;+&nbsp;
+δ · [ year × Block A ]
+&nbsp;+&nbsp;
+α<sub>m</sub> &nbsp;+&nbsp; γ<sub>t</sub> &nbsp;+&nbsp; ε<sub>i,t</sub>
+</div>
+
+<p style="margin-top:10px; font-size:0.9em; color:#4a5568;">
+<strong>Common across all 9 specs:</strong>
+year × fx<sub>z</sub> control,
+Block A × year (year-interacted destination-region shares + destination GDP),
+entity FE α<sub>m</sub> (muni for census + NEC panel; HH for HRVS; district for NEC 2018 cs),
+year FE γ<sub>t</sub>,
+SE clustered at municipality (district for NEC cs).
+Sample: k ≥ baseline-migrant threshold (default k=25).
+</p>
+
+<table>
+<thead><tr><th>Spec</th>
+<th style="color:#c53030;">TREATMENT<sub>m,t</sub></th>
+<th style="color:#2c5282;">year × mig_int_z form</th>
+<th>What's being tested</th></tr></thead>
+<tbody>
+<tr><td><strong>S0_baseline</strong></td>
+    <td>fx<sub>z,m,t</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × mig_int_z (linear)</td>
+    <td>Anchor — literature-standard SSIV. Mixed log/linear forms across treatment vs control deliberately decouple them to preserve identifying variation.</td></tr>
+
+<tr><td>S_lag1</td>
+    <td>fx<sub>z,m,t−1</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × mig_int_z</td>
+    <td>FX shifter lagged 1 year — tests delayed responses.</td></tr>
+<tr><td>S_lag2</td>
+    <td>fx<sub>z,m,t−2</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × mig_int_z</td>
+    <td>FX shifter lagged 2 years.</td></tr>
+<tr><td>S_lag3</td>
+    <td>fx<sub>z,m,t−3</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × mig_int_z</td>
+    <td>FX shifter lagged 3 years.</td></tr>
+<tr><td>S_lag4</td>
+    <td>fx<sub>z,m,t−4</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × mig_int_z</td>
+    <td>FX shifter lagged 4 years.</td></tr>
+<tr><td>S_lag5</td>
+    <td>fx<sub>z,m,t−5</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × mig_int_z</td>
+    <td>FX shifter lagged 5 years.</td></tr>
+<tr><td>S_lag10</td>
+    <td>fx<sub>z,m,t−10</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × mig_int_z</td>
+    <td>FX shifter lagged 10 years — loses census 2001 cohort.</td></tr>
+
+<tr><td><strong>S_both_log</strong></td>
+    <td>fx<sub>z,m,t</sub> · log(mig_int_z<sub>m</sub>)</td>
+    <td>year × <strong>log</strong>(mig_int_z)</td>
+    <td>"Consistent log" — same functional form on both sides. Near-collinear with treatment on long panels (NEC); use as a diagnostic, not an identifying spec.</td></tr>
+<tr><td><strong>S_both_linear</strong></td>
+    <td>fx<sub>z,m,t</sub> · <strong>mig_int_z<sub>m</sub></strong> (linear share)</td>
+    <td>year × mig_int_z</td>
+    <td>"Consistent linear" — linear share inside treatment to match the linear c_mig control. Also produces over-control on long panels.</td></tr>
+</tbody>
+</table>
+
+<p style="margin-top:10px; font-size:0.9em; color:#4a5568;">
+Standardisation: <code>fx_z</code> and <code>mig_int_z</code> /
+<code>log_mig_int_z</code> are all z-scored within each working sample
+(k threshold) before estimation. Block A consists of six 2001
+destination-region migrant shares plus destination-weighted GDP per capita,
+each interacted with year dummies.
+Coefficient (β) is reported with stars: <strong>*</strong> p&lt;0.10,
+<strong>**</strong> p&lt;0.05, <strong>***</strong> p&lt;0.01.
+</p>
+</details>
+</div>
+
+<div class="rb-controls">
+  <div class="ctrl">
+    <label for="f-dataset">Dataset</label>
+    <select id="f-dataset"><option value="">All datasets</option></select>
+  </div>
+  <div class="ctrl">
+    <label for="f-threshold">Sample threshold (k ≥)</label>
+    <select id="f-threshold"><option value="">All thresholds</option></select>
+  </div>
+  <div class="ctrl">
+    <label for="f-group">Outcome group</label>
+    <select id="f-group"><option value="">All groups</option></select>
+  </div>
+  <div class="ctrl">
+    <label for="f-outcome">Search outcome name</label>
+    <input id="f-outcome" type="text" placeholder="e.g. toilet, firms, edu">
+  </div>
+  <div class="ctrl">
+    <label for="f-sig">Significance filter</label>
+    <select id="f-sig">
+      <option value="">All</option>
+      <option value="01">p &lt; 0.01</option>
+      <option value="05">p &lt; 0.05</option>
+      <option value="10">p &lt; 0.10</option>
+      <option value="ns">Not significant (p ≥ 0.10)</option>
+    </select>
+  </div>
+</div>
+
+<div class="rb-spec-toggle" id="spec-toggle">
+  <!-- spec checkboxes inserted by JS -->
+</div>
+
+<div class="rb-stats">
+  Showing <strong id="row-count">0</strong> of <strong id="row-total">0</strong>
+  rows. <span id="last-spec-count"></span>
+</div>
+
+<div class="rb-table-wrap">
+  <table class="rb-table" id="rb-table">
+    <thead><tr id="rb-head"></tr></thead>
+    <tbody id="rb-body"></tbody>
+  </table>
+</div>
+
+<div class="pager">
+  <button id="prev">← Prev</button>
+  <span id="page-info">page 1</span>
+  <button id="next">Next →</button>
+  <span style="margin-left:auto;">Rows per page:</span>
+  <select id="page-size">
+    <option>100</option><option selected>250</option><option>500</option><option>1000</option><option value="all">All</option>
+  </select>
+</div>
+
+</main></div>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+(async function() {
+  const COLS = [
+    {key: 'outcome_group', label: 'Outcome group', type: 'text'},
+    {key: 'dataset',       label: 'Dataset',       type: 'text'},
+    {key: 'outcome',       label: 'Outcome',       type: 'text'},
+    {key: 'spec',          label: 'Spec',          type: 'text'},
+    {key: 'threshold',     label: 'k ≥',           type: 'int'},
+    {key: 'beta',          label: 'β',             type: 'num',  dp: 4, color: true},
+    {key: 'stars',         label: '',              type: 'stars'},
+    {key: 'se',            label: 'SE',            type: 'num',  dp: 4},
+    {key: 'pval',          label: 'p-value',       type: 'num',  dp: 3},
+    {key: 'mean_y',        label: 'Mean Y',        type: 'num',  dp: 3},
+    {key: 'n',             label: 'N',             type: 'int'},
+    {key: 'interpret',     label: 'Interpretation', type: 'interp'},
+  ];
+  const SPECS = ['S0_baseline','S_lag1','S_lag2','S_lag3','S_lag4','S_lag5','S_lag10','S_both_log','S_both_linear'];
+
+  // ----- Load CSV -----
+  const resp = await fetch('robustness_final.csv');
+  const text = await resp.text();
+  const parsed = Papa.parse(text, {header: true, skipEmptyLines: true, dynamicTyping: false});
+  const data = parsed.data.map(r => {
+    r.beta = r.beta === '' ? null : parseFloat(r.beta);
+    r.se   = r.se   === '' ? null : parseFloat(r.se);
+    r.pval = r.pval === '' ? null : parseFloat(r.pval);
+    r.mean_y = r.mean_y === '' ? null : parseFloat(r.mean_y);
+    r.sd_y = r.sd_y === '' ? null : parseFloat(r.sd_y);
+    r.n    = r.n    === '' ? null : parseInt(r.n);
+    r.n_muni = r.n_muni === '' ? null : parseInt(r.n_muni);
+    r.threshold = parseInt(r.threshold);
+    return r;
+  });
+  document.getElementById('row-total').textContent = data.length.toLocaleString();
+
+  // ----- Populate filter dropdowns -----
+  function uniq(arr) { return Array.from(new Set(arr)).sort(); }
+  const datasets   = uniq(data.map(r => r.dataset));
+  const groups     = uniq(data.map(r => r.outcome_group));
+  const thresholds = uniq(data.map(r => r.threshold)).sort((a,b) => a-b);
+  const dsSel = document.getElementById('f-dataset');
+  datasets.forEach(d => { const o=document.createElement('option'); o.value=d; o.textContent=d; dsSel.appendChild(o); });
+  const thrSel = document.getElementById('f-threshold');
+  thresholds.forEach(t => { const o=document.createElement('option'); o.value=t; o.textContent='k ≥ ' + t; thrSel.appendChild(o); });
+  // If only one threshold present, auto-select it and disable the dropdown
+  if (thresholds.length === 1) {
+    thrSel.value = thresholds[0];
+    thrSel.disabled = true;
+    thrSel.title = 'Only one threshold present in the loaded CSV. Re-run the R script with multiple thresholds to enable this filter.';
+  }
+  const grSel = document.getElementById('f-group');
+  groups.forEach(g => { const o=document.createElement('option'); o.value=g; o.textContent=g; grSel.appendChild(o); });
+
+  // ----- Spec checkboxes -----
+  const specBox = document.getElementById('spec-toggle');
+  SPECS.forEach(s => {
+    const lab = document.createElement('label');
+    lab.innerHTML = `<input type="checkbox" data-spec="${s}" checked> ${s}`;
+    specBox.appendChild(lab);
+  });
+
+  // ----- Build table header -----
+  const head = document.getElementById('rb-head');
+  COLS.forEach((c, i) => {
+    const th = document.createElement('th');
+    th.textContent = c.label;
+    th.dataset.col = c.key;
+    th.dataset.dir = '0'; // 0 = unsorted, 1 = asc, -1 = desc
+    th.addEventListener('click', () => onHeaderClick(i));
+    head.appendChild(th);
+  });
+  let sortCol = null, sortDir = 0;
+  function onHeaderClick(i) {
+    if (sortCol === i) {
+      sortDir = (sortDir === 1 ? -1 : 1);
+    } else {
+      sortCol = i; sortDir = 1;
+    }
+    render();
+  }
+
+  // ----- Filters -----
+  let pageSize = 250, pageIdx = 0;
+  function getFiltered() {
+    const ds = dsSel.value;
+    const gr = grSel.value;
+    const oc = document.getElementById('f-outcome').value.toLowerCase().trim();
+    const sig = document.getElementById('f-sig').value;
+    const specOn = new Set(
+      Array.from(document.querySelectorAll('#spec-toggle input:checked')).map(c => c.dataset.spec)
+    );
+    const thr = document.getElementById('f-threshold').value;
+    let filt = data.filter(r => {
+      if (ds && r.dataset !== ds) return false;
+      if (thr && String(r.threshold) !== thr) return false;
+      if (gr && r.outcome_group !== gr) return false;
+      if (oc && !r.outcome.toLowerCase().includes(oc)) return false;
+      if (!specOn.has(r.spec)) return false;
+      if (sig === '01' && !(r.pval < 0.01)) return false;
+      if (sig === '05' && !(r.pval < 0.05)) return false;
+      if (sig === '10' && !(r.pval < 0.10)) return false;
+      if (sig === 'ns' && !(r.pval >= 0.10)) return false;
+      return true;
+    });
+    if (sortCol !== null) {
+      const col = COLS[sortCol];
+      filt = filt.slice().sort((a, b) => {
+        const av = a[col.key], bv = b[col.key];
+        if (av === null || av === undefined) return 1;
+        if (bv === null || bv === undefined) return -1;
+        if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * sortDir;
+        return String(av).localeCompare(String(bv)) * sortDir;
+      });
+    }
+    return filt;
+  }
+
+  function fmtNum(v, dp) {
+    if (v === null || v === undefined || Number.isNaN(v)) return '';
+    if (Math.abs(v) >= 100000) return v.toLocaleString(undefined, {maximumFractionDigits: 0});
+    return v.toFixed(dp);
+  }
+
+  function renderRow(r) {
+    const tr = document.createElement('tr');
+    COLS.forEach(c => {
+      const td = document.createElement('td');
+      const v = r[c.key];
+      if (c.type === 'stars') {
+        td.className = 'stars';
+        td.textContent = v || '';
+      } else if (c.type === 'num') {
+        td.textContent = fmtNum(v, c.dp);
+        if (c.color && v !== null && !Number.isNaN(v)) {
+          td.classList.add(v > 0 ? 'num-pos' : (v < 0 ? 'num-neg' : ''));
+        }
+      } else if (c.type === 'int') {
+        td.textContent = v === null ? '' : v.toLocaleString();
+      } else if (c.type === 'interp') {
+        td.className = 'interp-cell';
+        td.textContent = r.err && r.err !== '' ? `(${r.err})` : (v || '');
+        if (r.err && r.err !== '') td.classList.add('err-cell');
+      } else {
+        td.textContent = v;
+      }
+      tr.appendChild(td);
+    });
+    // tooltip = full record
+    tr.title = `dataset=${r.dataset}\nspec=${r.spec}\noutcome=${r.outcome}\n` +
+               `β=${r.beta}\nSE=${r.se}\np=${r.pval}\nmean Y=${r.mean_y}\nN=${r.n}\n` +
+               `${r.interpret || ''}`;
+    return tr;
+  }
+
+  function render() {
+    const filt = getFiltered();
+    document.getElementById('row-count').textContent = filt.length.toLocaleString();
+    const tbody = document.getElementById('rb-body');
+    tbody.innerHTML = '';
+    let start = pageIdx * pageSize;
+    let end = pageSize === Infinity ? filt.length : Math.min(start + pageSize, filt.length);
+    if (start >= filt.length) { pageIdx = 0; start = 0; end = Math.min(pageSize, filt.length); }
+    for (let i = start; i < end; i++) {
+      tbody.appendChild(renderRow(filt[i]));
+    }
+    // header indicators
+    document.querySelectorAll('#rb-head th').forEach((th, i) => {
+      th.textContent = COLS[i].label + (sortCol === i ? (sortDir === 1 ? ' ▲' : ' ▼') : '');
+    });
+    // pager
+    const totalPages = pageSize === Infinity ? 1 : Math.max(1, Math.ceil(filt.length / pageSize));
+    document.getElementById('page-info').textContent = `page ${pageIdx + 1} of ${totalPages}`;
+    document.getElementById('prev').disabled = (pageIdx === 0);
+    document.getElementById('next').disabled = (pageIdx + 1 >= totalPages);
+  }
+
+  // ----- Wire up controls -----
+  ['f-dataset','f-threshold','f-group','f-sig'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => { pageIdx = 0; render(); });
+  });
+  document.getElementById('f-outcome').addEventListener('input', () => { pageIdx = 0; render(); });
+  document.querySelectorAll('#spec-toggle input').forEach(c => {
+    c.addEventListener('change', () => { pageIdx = 0; render(); });
+  });
+  document.getElementById('prev').addEventListener('click', () => { pageIdx = Math.max(0, pageIdx - 1); render(); });
+  document.getElementById('next').addEventListener('click', () => { pageIdx++; render(); });
+  document.getElementById('page-size').addEventListener('change', (e) => {
+    const v = e.target.value;
+    pageSize = (v === 'all') ? Infinity : parseInt(v);
+    pageIdx = 0; render();
+  });
+
+  // initial render
+  render();
+})();
+</script>
+
+</body>
+</html>
