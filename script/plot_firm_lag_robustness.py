@@ -41,7 +41,7 @@ import numpy as np
 from pathlib import Path
 import matplotlib
 matplotlib.rcParams.update({
-    "font.family": "DejaVu Sans, Helvetica, Arial, sans-serif",
+    "font.family": "DejaVu Sans",
     "axes.spines.top": False,
     "axes.spines.right": False,
     "axes.edgecolor": "#1a202c",
@@ -88,13 +88,13 @@ def draw_cohort_panel(ax, oc, label, df):
     ax.tick_params(labelsize=8)
     ax.grid(axis="y", lw=0.3, alpha=0.4)
 
-def add_note(fig, text):
-    fig.text(0.01, 0.005, text, fontsize=8, color="#4a5568",
-             wrap=True, va="bottom", ha="left", family="DejaVu Sans")
+def add_note(fig, text, y=0.02):
+    fig.text(0.03, y, text, fontsize=8.5, color="#4a5568",
+             va="bottom", ha="left", family="DejaVu Sans", linespacing=1.40)
 
 def save(stem):
-    plt.savefig(OUT / f"{stem}.svg", format="svg", bbox_inches="tight")
-    plt.savefig(OUT / f"{stem}.png", format="png", bbox_inches="tight", dpi=150)
+    plt.savefig(OUT / f"{stem}.svg", format="svg")
+    plt.savefig(OUT / f"{stem}.png", format="png", dpi=150)
     print(f"  saved docs/figs/{stem}.{{svg,png}}")
     plt.close()
 
@@ -110,24 +110,25 @@ OUT1 = [("log_n_firms",           "log(# firms)"),
         ("industry_diversity",    "Industry diversity (1 − HHI)"),
         ("share_size_1_worker",   "Share: 1-worker firms"),
         ("share_size_51plus_workers","Share: 51+ worker firms")]
-fig, axes = plt.subplots(2, 4, figsize=(15, 8.4), sharex=True)
+fig, axes = plt.subplots(2, 4, figsize=(15, 12), sharex=True)
 for ax, (oc, lab) in zip(axes.flatten(), OUT1):
     draw_cohort_panel(ax, oc, lab, cs_a)
 for ax in (axes[0,0], axes[1,0]):
     ax.set_ylabel("β  (95% CI)", fontsize=9)
 hh, ll = axes[0,0].get_legend_handles_labels()
-fig.legend(hh, ll, loc="upper center", ncol=3, frameon=False,
-           bbox_to_anchor=(0.5, 0.985), fontsize=10)
 fig.suptitle("FIRM STOCK — coefficients vs FX-shifter lag, by cohort restriction",
-             y=0.96, fontsize=12, fontweight="bold")
-plt.tight_layout(rect=[0, 0.06, 1, 0.94])
+             y=0.985, fontsize=12, fontweight="bold")
+fig.legend(hh, ll, loc="upper center", ncol=3, frameon=False,
+           bbox_to_anchor=(0.5, 0.955), fontsize=10)
+fig.subplots_adjust(top=0.88, bottom=0.18, left=0.05, right=0.98,
+                    hspace=0.40, wspace=0.28)
 add_note(fig,
-"Notes: Each panel plots β (with 95% CI bands) from the anchor robustness spec\n"
-"(treatment = fx_z × log(mig_int_z); controls year × mig_int_z + year × fx_z + Block A levels + district FE) on the\n"
-"corresponding 2018 firm-stock outcome (y-axis), across FX-shifter lags 0–10 years (x-axis). Sample: 475 munis with ≥25 baseline\n"
-"migrants in 2001. Three datasets overlaid: full 2018 stock (all firms in 2018), post-2001 cohort (firms founded 2001–2018,\n"
-"surviving to 2018), and post-2011 cohort (firms founded 2011–2018). Close overlap of the three lines indicates the\n"
-"lag-strengthening profile is intrinsic to the shock-period cohort, not an artifact of pre-shock incumbents clearing out.")
+"Notes: Each panel plots β (with 95% CI bands) from the anchor robustness spec (treatment = fx_z × log(mig_int_z);\n"
+"controls year × mig_int_z + year × fx_z + Block A levels + district FE) on the corresponding 2018 firm-stock outcome\n"
+"(y-axis), across FX-shifter lags 0–10 years (x-axis). Sample: 475 munis with ≥25 baseline migrants in 2001. Three datasets\n"
+"overlaid: full 2018 stock (all firms in 2018), post-2001 cohort (firms founded 2001–2018, surviving to 2018), and\n"
+"post-2011 cohort (firms founded 2011–2018). Close overlap of the three lines indicates the lag-strengthening profile is\n"
+"intrinsic to the shock-period cohort, not an artifact of pre-shock incumbents clearing out.")
 save("firm_lag_full_vs_cohort")
 
 # ====================================================================
@@ -144,7 +145,7 @@ INDUSTRIES = [
     ("log_new_firms_finance_prof_realestate","Finance / prof / RE",   "#0987a0"),
     ("log_new_firms",                       "All entry",              "#1a202c"),
 ]
-fig, ax = plt.subplots(1, 1, figsize=(9.5, 5.6))
+fig, ax = plt.subplots(1, 1, figsize=(10, 7.6))
 for oc, lab, c in INDUSTRIES:
     s = panel[panel["outcome"] == oc].sort_values("lag")
     if s.empty: continue
@@ -158,10 +159,10 @@ ax.set_title("FIRM ENTRY by industry — annual flow response to lagged FX shock
              fontsize=12, fontweight="bold")
 ax.legend(loc="upper left", fontsize=8.5, frameon=False, ncol=2)
 ax.grid(axis="y", lw=0.3, alpha=0.4)
-plt.tight_layout(rect=[0, 0.13, 1, 1])
+fig.subplots_adjust(top=0.93, bottom=0.30, left=0.10, right=0.97)
 add_note(fig,
-"Notes: Lines plot β from the anchor spec (treatment = fx_z(t−L) × log(mig_int_z); controls: year × mig_int_z + year × fx_z + \n"
-"Block A × year; muni + year FE; SE clustered at muni) on log(1 + new firms in muni m, founded in year t) across lags 0–10.\n"
+"Notes: Lines plot β from the anchor spec (treatment = fx_z(t−L) × log(mig_int_z); controls: year × mig_int_z + year × fx_z\n"
+"+ Block A × year; muni + year FE; SE clustered at muni) on log(1 + new firms in muni m, founded in year t) across lags 0–10.\n"
 "Sample: muni × founding-year cells in NEC panel, k≥25 (8,550 cells). Each line is one ISIC industry; bold black = aggregate.\n"
 "Hospitality & food shows the deepest contemporaneous-to-medium-run negative response (lag 2–5, β ≈ −0.04 to −0.06 ***);\n"
 "transport, construction, and manufacturing follow a similar but milder pattern; agriculture and finance/RE trend positive\n"
@@ -179,7 +180,7 @@ SIZES = [
     ("log_new_firms_size_51plus_workers","51+ workers",         "#744210"),
     ("log_new_firms",                    "All entry (any size)","#1a202c"),
 ]
-fig, ax = plt.subplots(1, 1, figsize=(9.5, 5.6))
+fig, ax = plt.subplots(1, 1, figsize=(10, 7.6))
 for oc, lab, c in SIZES:
     s = panel[panel["outcome"] == oc].sort_values("lag")
     if s.empty: continue
@@ -196,13 +197,14 @@ ax.set_title("FIRM ENTRY by size — annual flow response to lagged FX shock",
              fontsize=12, fontweight="bold")
 ax.legend(loc="upper left", fontsize=9, frameon=False)
 ax.grid(axis="y", lw=0.3, alpha=0.4)
-plt.tight_layout(rect=[0, 0.13, 1, 1])
+fig.subplots_adjust(top=0.93, bottom=0.28, left=0.10, right=0.97)
 add_note(fig,
 "Notes: β from anchor spec on log(1 + new firms in muni m, founded year t, in given size category). Sample: NEC panel\n"
 "muni × founding-year, k≥25. 95% CI bands shown for the four size lines. Size-1 firms (solo entrants) are roughly flat\n"
 "around zero; 2–9 worker firms (small employers) show a mild dip at mid-lags; 10–50 worker entries are too rare for clean\n"
-"identification; 51+ worker entries trend slightly positive at lag 2 and lag 10 but never significant. The aggregate (black)\n"
-"masks heterogeneity: 1-worker entries respond little, while 2–9 and 10–50 categories are slightly suppressed at lag 4–5.")
+"identification; 51+ worker entries trend slightly positive at lag 2 and lag 10 but never significant. The aggregate\n"
+"(black) masks heterogeneity: 1-worker entries respond little, while 2–9 and 10–50 categories are slightly suppressed\n"
+"at lag 4–5.")
 save("firm_entry_lag_size")
 
 # ====================================================================
@@ -219,23 +221,24 @@ COMP = [
     ("share_finance_prof_info", "Finance / prof / info"),
     ("share_social_services",   "Social services"),
 ]
-fig, axes = plt.subplots(2, 4, figsize=(15, 8.4), sharex=True)
+fig, axes = plt.subplots(2, 4, figsize=(15, 12), sharex=True)
 for ax, (oc, lab) in zip(axes.flatten(), COMP):
     draw_cohort_panel(ax, oc, lab, cs_a)
 for ax in (axes[0,0], axes[1,0]):
     ax.set_ylabel("β on share (pp)", fontsize=9)
 hh, ll = axes[0,0].get_legend_handles_labels()
-fig.legend(hh, ll, loc="upper center", ncol=3, frameon=False,
-           bbox_to_anchor=(0.5, 0.985), fontsize=10)
 fig.suptitle("INDUSTRY COMPOSITION (2018 stock) — share-of-firms response to lagged FX shock",
-             y=0.96, fontsize=12, fontweight="bold")
-plt.tight_layout(rect=[0, 0.06, 1, 0.94])
+             y=0.985, fontsize=12, fontweight="bold")
+fig.legend(hh, ll, loc="upper center", ncol=3, frameon=False,
+           bbox_to_anchor=(0.5, 0.955), fontsize=10)
+fig.subplots_adjust(top=0.88, bottom=0.18, left=0.05, right=0.98,
+                    hspace=0.40, wspace=0.28)
 add_note(fig,
 "Notes: Each panel plots β (with 95% CI bands) from the anchor cross-section spec on the muni-level share of firms in the\n"
 "named industry. Three datasets overlaid as in firm-stock plot. Hospitality consistently negative (≈ −1.0pp), Agriculture\n"
-"consistently positive (≈ +0.5pp). Manufacturing share roughly flat across lags. Most sector-share responses are stable across\n"
-"the lag profile — composition effects are immediate, not cumulative. Cohort restriction produces small upward shift for sizes\n"
-"that include public-sector firms (post-shock cohorts have fewer such firms).")
+"consistently positive (≈ +0.5pp). Manufacturing share roughly flat across lags. Most sector-share responses are stable\n"
+"across the lag profile — composition effects are immediate, not cumulative. Cohort restriction produces small upward shift\n"
+"for sectors that include public-sector firms (post-shock cohorts have fewer such firms).")
 save("firm_industry_composition_lag")
 
 # ====================================================================
@@ -252,7 +255,7 @@ FOR_OUT = [
     ("share_female_led",          "Share female-led"),
     ("formality_index",           "Formality index"),
 ]
-fig, axes = plt.subplots(2, 4, figsize=(15, 8.4), sharex=True)
+fig, axes = plt.subplots(2, 4, figsize=(15, 10.5), sharex=True)
 for ax, (oc, lab) in zip(axes.flatten(), FOR_OUT):
     s = cs_full[cs_full["outcome"] == oc].sort_values("lag")
     if not s.empty:
@@ -268,13 +271,14 @@ for ax, (oc, lab) in zip(axes.flatten(), FOR_OUT):
 for ax in (axes[0,0], axes[1,0]):
     ax.set_ylabel("β  (95% CI)", fontsize=9)
 fig.suptitle("FIRM FORMALITY, CREDIT, DEMOGRAPHICS (2018 full stock) — response to lagged FX shock",
-             y=0.98, fontsize=12, fontweight="bold")
-plt.tight_layout(rect=[0, 0.06, 1, 0.95])
+             y=0.975, fontsize=12, fontweight="bold")
+fig.subplots_adjust(top=0.92, bottom=0.18, left=0.05, right=0.98,
+                    hspace=0.40, wspace=0.28)
 add_note(fig,
-"Notes: Each panel plots β (with 95% CI band) from the anchor cross-section spec on a 2018 firm-composition outcome (full stock\n"
-"only — cohort-restricted versions of these vars are not available without firm-level microdata). Tax registration drops with\n"
-"shock (≈ −3pp) consistently across lags; accounts and registration also negative but smaller. Female-led firm share rises\n"
-"steadily (≈ +1pp). Formal credit usage barely moves. Sample: full 2018 stock at k≥25.")
+"Notes: Each panel plots β (with 95% CI band) from the anchor cross-section spec on a 2018 firm-composition outcome (full\n"
+"stock only — cohort-restricted versions of these vars are not available without firm-level microdata). Tax registration\n"
+"drops with shock (≈ −3pp) consistently across lags; accounts and registration also negative but smaller. Female-led firm\n"
+"share rises steadily (≈ +1pp). Formal credit usage barely moves. Sample: full 2018 stock at k≥25.")
 save("firm_formality_credit_lag")
 
 # ====================================================================
@@ -287,23 +291,23 @@ SIZE_OUT = [
     ("share_size_10_50_workers", "Share: 10–50 workers"),
     ("share_size_51plus_workers","Share: 51+ workers"),
 ]
-fig, axes = plt.subplots(1, 4, figsize=(16, 4.8), sharex=True)
+fig, axes = plt.subplots(1, 4, figsize=(16, 7.5), sharex=True)
 for ax, (oc, lab) in zip(axes, SIZE_OUT):
     draw_cohort_panel(ax, oc, lab, cs_a)
 axes[0].set_ylabel("β on share of firms (pp scale)", fontsize=9)
 hh, ll = axes[0].get_legend_handles_labels()
-fig.legend(hh, ll, loc="upper center", ncol=3, frameon=False,
-           bbox_to_anchor=(0.5, 1.0), fontsize=10)
 fig.suptitle("FIRM SIZE COMPOSITION (2018 stock) — share-of-firms response to lagged FX shock, by cohort",
-             y=0.96, fontsize=12, fontweight="bold")
-plt.tight_layout(rect=[0, 0.09, 1, 0.93])
+             y=0.97, fontsize=12, fontweight="bold")
+fig.legend(hh, ll, loc="upper center", ncol=3, frameon=False,
+           bbox_to_anchor=(0.5, 0.91), fontsize=10)
+fig.subplots_adjust(top=0.83, bottom=0.34, left=0.06, right=0.98, wspace=0.30)
 add_note(fig,
 "Notes: β on muni-level share of 2018 firms in each size bucket (1 / 2–9 / 10–50 / 51+ workers). Anchor cross-section spec.\n"
 "Three datasets: full 2018 stock; post-2001 cohort; post-2011 cohort. Shifts in size composition are mostly stable across\n"
-"lags (composition effects are immediate, not cumulative). Cohort restriction lifts the 51+ worker share estimate above zero —\n"
-"i.e., the shock-period cohort is slightly more represented in the 51+ category than the full 2018 stock implies — but the\n"
-"effect remains tiny (≤ +0.1pp). The headline composition shift is the +1.5pp positive on 1-worker firms balanced by a\n"
-"≈ −1.5pp negative on 2–9 workers: shocks shift entry toward solo proprietors.")
+"lags (composition effects are immediate, not cumulative). Cohort restriction lifts the 51+ worker share estimate above\n"
+"zero — i.e., the shock-period cohort is slightly more represented in the 51+ category than the full 2018 stock implies —\n"
+"but the effect remains tiny (≤ +0.1pp). The headline composition shift is the +1.5pp positive on 1-worker firms balanced\n"
+"by a ≈ −1.5pp negative on 2–9 workers: shocks shift entry toward solo proprietors.")
 save("firm_size_composition_lag")
 
 print("\nAll 6 plots saved to docs/figs/.")
