@@ -284,6 +284,73 @@ sample restricted to munis with ≥ 25 baseline migrants in 2001.
 
 </div>
 
+<h2 style="margin-top:2.6rem">How to read the OLS vs. PPML overlay</h2>
+<p>
+The PPML (Poisson pseudo-MLE) panels do <em>not</em> replace the earlier
+log-OLS panels (cards&nbsp;1 and&nbsp;2). Both estimators are reported
+side-by-side so the reader can see where they agree and where they diverge.
+</p>
+
+<h3>What each estimator does</h3>
+<table style="border-collapse:collapse; width:100%; max-width:880px; margin:.5rem 0 1rem; font-size:15px">
+  <thead>
+    <tr style="border-bottom:1px solid var(--rule); text-align:left">
+      <th style="padding:.4rem .6rem">&nbsp;</th>
+      <th style="padding:.4rem .6rem">OLS on log(1 + y)</th>
+      <th style="padding:.4rem .6rem">PPML on raw y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid var(--rule)">
+      <td style="padding:.4rem .6rem"><strong>Model</strong></td>
+      <td style="padding:.4rem .6rem">log(1 + y) = X β + α<sub>i</sub> + γ<sub>t</sub> + ε</td>
+      <td style="padding:.4rem .6rem">E[y | X] = exp(X β + α<sub>i</sub> + γ<sub>t</sub>)</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--rule)">
+      <td style="padding:.4rem .6rem"><strong>Outcome scale</strong></td>
+      <td style="padding:.4rem .6rem">Log-transformed (zeros floored at log&nbsp;1&nbsp;=&nbsp;0)</td>
+      <td style="padding:.4rem .6rem">Raw count (zeros kept natively)</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--rule)">
+      <td style="padding:.4rem .6rem"><strong>β interpretation</strong></td>
+      <td style="padding:.4rem .6rem">≈ % change in y (semi-elasticity)</td>
+      <td style="padding:.4rem .6rem">≈ % change in <em>expected</em> y (semi-elasticity)</td>
+    </tr>
+    <tr>
+      <td style="padding:.4rem .6rem"><strong>Comparable axis?</strong></td>
+      <td colspan="2" style="padding:.4rem .6rem">
+        <strong>Yes</strong> — both βs are on the same log/semi-elastic scale,
+        so the two lines can share a y-axis.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>The y variable, not the coefficient, is where they differ</h3>
+<p>
+The PPML coefficient β is interpreted on the log scale (semi-elasticity:
+β&nbsp;=&nbsp;∂&nbsp;log&nbsp;E[y]&nbsp;/&nbsp;∂&nbsp;x), but the outcome y
+enters in <em>levels</em> (raw count, no log, no +1). That's the whole point
+of PPML: keep the natural scale of the count and let the link function
+absorb the non-linearity. By contrast, OLS-on-log(1+y) applies the log
+transformation to the outcome itself, which means zero cells get artificially
+re-coded as log(1)&nbsp;=&nbsp;0 (i.e. "1 firm").
+</p>
+
+<h3>When the two diverge, PPML is the preferred estimator</h3>
+<p>
+For low-zero outcomes (hospitality, trade-retail, 1-worker, 2–9 workers)
+the two lines track each other closely and the OLS-log finding is robust.
+For high-zero outcomes (agriculture 57 % zeros, finance/RE 60 %, size 10–50 52 %,
+size 51+ 91 %) PPML can move sharply away from OLS-log, because the OLS
+estimate is partly identifying off the artificial log(1)&nbsp;=&nbsp;0 floor.
+A larger PPML coefficient at the aggregate also reflects that PPML weights
+by count level — i.e. large-firm-count municipalities contribute more —
+whereas OLS-on-log weights every muni-year symmetrically. The two
+estimators are answering slightly different questions, and reporting both
+is the honest way to handle count data with substantial zeros.
+</p>
+
 </main>
 </div>
 
