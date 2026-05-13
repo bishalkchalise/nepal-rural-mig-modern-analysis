@@ -29,8 +29,9 @@ import pandas as pd, json
 from pathlib import Path
 
 ROOT = Path(".")
-CSV  = ROOT / "output/tab/robustness_final.csv"
-OUT  = ROOT / "docs/robustness.json"
+CSV       = ROOT / "output/tab/robustness_final.csv"
+CSV_FILL  = ROOT / "output/tab/robustness_final_fill.csv"   # optional add-on
+OUT       = ROOT / "docs/robustness.json"
 
 DATASET_META = {
     "census":    {"label": "Census municipality panel (2001, 2011, 2021)",
@@ -50,15 +51,27 @@ THRESHOLD_LABELS = {
 }
 # Spec catalogue with lag + scale axes
 SPECS = [
-    ("S0_baseline",   0,  "log", "lin", "anchor: fx × log(mig_int_z); year × mig_int_z"),
-    ("S_lag1",        1,  "log", "lin", "FX shifter lagged 1 year"),
-    ("S_lag2",        2,  "log", "lin", "FX shifter lagged 2 years"),
-    ("S_lag3",        3,  "log", "lin", "FX shifter lagged 3 years"),
-    ("S_lag4",        4,  "log", "lin", "FX shifter lagged 4 years"),
-    ("S_lag5",        5,  "log", "lin", "FX shifter lagged 5 years"),
-    ("S_lag10",       10, "log", "lin", "FX shifter lagged 10 years"),
-    ("S_both_log",    0,  "log", "log", "consistent log: year × log(mig_int_z) control"),
-    ("S_both_linear", 0,  "lin", "lin", "consistent linear: fx × mig_int_z treatment"),
+    ("S0_baseline",        0,  "log", "lin", "anchor: fx × log(mig_int_z); year × mig_int_z"),
+    ("S_lag1",             1,  "log", "lin", "FX shifter lagged 1 year (log/lin)"),
+    ("S_lag2",             2,  "log", "lin", "FX shifter lagged 2 years (log/lin)"),
+    ("S_lag3",             3,  "log", "lin", "FX shifter lagged 3 years (log/lin)"),
+    ("S_lag4",             4,  "log", "lin", "FX shifter lagged 4 years (log/lin)"),
+    ("S_lag5",             5,  "log", "lin", "FX shifter lagged 5 years (log/lin)"),
+    ("S_lag10",            10, "log", "lin", "FX shifter lagged 10 years (log/lin)"),
+    ("S_both_log",         0,  "log", "log", "log/log at lag 0"),
+    ("S_both_log_lag1",    1,  "log", "log", "log/log at lag 1y"),
+    ("S_both_log_lag2",    2,  "log", "log", "log/log at lag 2y"),
+    ("S_both_log_lag3",    3,  "log", "log", "log/log at lag 3y"),
+    ("S_both_log_lag4",    4,  "log", "log", "log/log at lag 4y"),
+    ("S_both_log_lag5",    5,  "log", "log", "log/log at lag 5y"),
+    ("S_both_log_lag10",   10, "log", "log", "log/log at lag 10y"),
+    ("S_both_linear",      0,  "lin", "lin", "lin/lin at lag 0"),
+    ("S_both_linear_lag1", 1,  "lin", "lin", "lin/lin at lag 1y"),
+    ("S_both_linear_lag2", 2,  "lin", "lin", "lin/lin at lag 2y"),
+    ("S_both_linear_lag3", 3,  "lin", "lin", "lin/lin at lag 3y"),
+    ("S_both_linear_lag4", 4,  "lin", "lin", "lin/lin at lag 4y"),
+    ("S_both_linear_lag5", 5,  "lin", "lin", "lin/lin at lag 5y"),
+    ("S_both_linear_lag10",10, "lin", "lin", "lin/lin at lag 10y"),
 ]
 SPEC_LABEL = {s[0]: s[4] for s in SPECS}
 SPEC_META  = {s[0]: {"lag": s[1], "treatment_form": s[2], "c_mig_form": s[3], "desc": s[4]}
@@ -85,6 +98,10 @@ def main():
     if not CSV.exists():
         raise FileNotFoundError(f"{CSV} not found — run script/robustness_final.R first.")
     df = pd.read_csv(CSV)
+    if CSV_FILL.exists():
+        df_fill = pd.read_csv(CSV_FILL)
+        df = pd.concat([df, df_fill], ignore_index=True)
+        print(f"  + merged {len(df_fill):,} fill rows from {CSV_FILL.name}")
     results_groups = load_results_groups()
 
     # Numeric coercion
