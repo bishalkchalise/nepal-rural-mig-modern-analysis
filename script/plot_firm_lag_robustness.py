@@ -310,4 +310,90 @@ add_note(fig,
 "by a ≈ −1.5pp negative on 2–9 workers: shocks shift entry toward solo proprietors.")
 save("firm_size_composition_lag")
 
-print("\nAll 6 plots saved to docs/figs/.")
+# ====================================================================
+# Plot 7 — Firm ENTRY (flow) by industry, multi-panel with CI bands
+# ====================================================================
+print("Plot 7: firm entry by industry (multi-panel) ...")
+ENT_IND = [
+    ("log_new_firms",                        "All entry (aggregate)"),
+    ("log_new_firms_hospitality_food",       "Hospitality & food"),
+    ("log_new_firms_manufacturing",          "Manufacturing"),
+    ("log_new_firms_construction",           "Construction"),
+    ("log_new_firms_transport_storage",      "Transport & storage"),
+    ("log_new_firms_trade_retail",           "Trade & retail"),
+    ("log_new_firms_agriculture",            "Agriculture"),
+    ("log_new_firms_finance_prof_realestate","Finance / prof / RE"),
+]
+fig, axes = plt.subplots(2, 4, figsize=(15, 12), sharex=True)
+for ax, (oc, lab) in zip(axes.flatten(), ENT_IND):
+    s = panel[panel["outcome"] == oc].sort_values("lag")
+    if not s.empty:
+        x, b, se = s["lag"].values, s["beta"].values, s["se"].values
+        col = "#1a202c" if oc == "log_new_firms" else "#2c5282"
+        ax.plot(x, b, marker="o", markersize=4.5, lw=1.8, color=col, label="β (95% CI)")
+        ax.fill_between(x, b - 1.96*se, b + 1.96*se, color=col, alpha=0.15)
+    ax.axhline(0, color="#1a202c", lw=0.5, ls=":")
+    ax.set_title(lab, fontsize=10, fontweight="bold")
+    ax.set_xlabel("FX shifter lag (years)", fontsize=8.5)
+    ax.tick_params(labelsize=8)
+    ax.grid(axis="y", lw=0.3, alpha=0.4)
+for ax in (axes[0,0], axes[1,0]):
+    ax.set_ylabel("β  on log(1 + # new firms)", fontsize=9)
+hh, ll = axes[0,0].get_legend_handles_labels()
+fig.suptitle("FIRM ENTRY (flow) by industry — annual log(# new firms) response to lagged FX shock",
+             y=0.985, fontsize=12, fontweight="bold")
+fig.legend(hh, ll, loc="upper center", ncol=1, frameon=False,
+           bbox_to_anchor=(0.5, 0.955), fontsize=10)
+fig.subplots_adjust(top=0.88, bottom=0.18, left=0.05, right=0.98,
+                    hspace=0.40, wspace=0.28)
+add_note(fig,
+"Notes: Each panel plots β (with 95% CI band) from the anchor flow spec (treatment = fx_z(t−L) × log(mig_int_z); controls:\n"
+"year × mig_int_z + year × fx_z + Block A × year; muni + year FE; SE clustered at muni) on log(1 + new firms in muni m\n"
+"founded in year t, in given industry) across lags 0–10. Sample: NEC panel of muni × founding-year cells, k≥25 (8,550\n"
+"cells). Hospitality & food shows the deepest negative response (lag 2–5, β ≈ −0.04 to −0.06 ***); transport, construction\n"
+"and manufacturing follow a milder but consistent pattern; agriculture and finance/prof/RE trend positive at mid-lags.\n"
+"Lag 10 estimates are small-sample (only 2011+ cohort survives the merge with pre-2008 FX) and noisier.")
+save("firm_entry_lag_by_industry_panels")
+
+# ====================================================================
+# Plot 8 — Firm ENTRY (flow) by size, multi-panel with CI bands
+# ====================================================================
+print("Plot 8: firm entry by size (multi-panel) ...")
+ENT_SIZE = [
+    ("log_new_firms",                   "All entry (aggregate)"),
+    ("log_new_firms_size_1_worker",     "1 worker"),
+    ("log_new_firms_size_2_9_workers",  "2–9 workers"),
+    ("log_new_firms_size_10_50_workers","10–50 workers"),
+    ("log_new_firms_size_51plus_workers","51+ workers"),
+]
+fig, axes = plt.subplots(1, 5, figsize=(18, 7.5), sharex=True)
+for ax, (oc, lab) in zip(axes, ENT_SIZE):
+    s = panel[panel["outcome"] == oc].sort_values("lag")
+    if not s.empty:
+        x, b, se = s["lag"].values, s["beta"].values, s["se"].values
+        col = "#1a202c" if oc == "log_new_firms" else "#c53030"
+        ax.plot(x, b, marker="o", markersize=4.5, lw=1.8, color=col, label="β (95% CI)")
+        ax.fill_between(x, b - 1.96*se, b + 1.96*se, color=col, alpha=0.15)
+    ax.axhline(0, color="#1a202c", lw=0.5, ls=":")
+    ax.set_title(lab, fontsize=10, fontweight="bold")
+    ax.set_xlabel("FX shifter lag (years)", fontsize=8.5)
+    ax.tick_params(labelsize=8)
+    ax.grid(axis="y", lw=0.3, alpha=0.4)
+axes[0].set_ylabel("β  on log(1 + # new firms)", fontsize=9)
+hh, ll = axes[0].get_legend_handles_labels()
+fig.suptitle("FIRM ENTRY (flow) by size — annual log(# new firms) response to lagged FX shock",
+             y=0.97, fontsize=12, fontweight="bold")
+fig.legend(hh, ll, loc="upper center", ncol=1, frameon=False,
+           bbox_to_anchor=(0.5, 0.91), fontsize=10)
+fig.subplots_adjust(top=0.83, bottom=0.34, left=0.05, right=0.98, wspace=0.30)
+add_note(fig,
+"Notes: β (with 95% CI band) from the anchor flow spec on log(1 + new firms in muni m founded in year t, in given size\n"
+"category) across lags 0–10. Sample: NEC panel of muni × founding-year cells, k≥25. Aggregate panel (left, black) shows\n"
+"the overall lag profile; the four size-specific panels show how the response is allocated by firm size. Size-1 (solo)\n"
+"entries are roughly flat near zero. 2–9 worker entries (small employers) show a mild but consistent dip at mid-lags.\n"
+"10–50 worker entries are too rare for clean identification (wide CIs). 51+ worker entries trend slightly positive at\n"
+"lag 2 and lag 10 but never significant. Bottom line: the aggregate response masks heterogeneity — the negative-entry\n"
+"effect comes mainly from suppressed 2–9 worker firm formation, not solo proprietors.")
+save("firm_entry_lag_by_size_panels")
+
+print("\nAll 8 plots saved to docs/figs/.")
