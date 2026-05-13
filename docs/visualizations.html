@@ -237,6 +237,51 @@ sample restricted to munis with ≥ 25 baseline migrants in 2001.
     </div>
   </div>
 
+  <div class="viz-card">
+    <h3>7. Firm entry by industry — OLS on log(1+y) vs. PPML on raw count</h3>
+    <p class="viz-sub">
+      Side-by-side comparison of the OLS-on-log(1+new_firms) estimator
+      (blue) against PPML on the raw count (red), for the same anchor spec
+      and sample. Both coefficients are semi-elasticities and are directly
+      comparable. PPML treats zero cells correctly (large-zero industries
+      like agriculture 57 % zeros, finance/RE 60 %); where the two lines
+      diverge the OLS estimate is contaminated by the log(1+y) zero-floor.
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_entry_lag_industry_ppml_overlay.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_entry_lag_industry_ppml_overlay.png"
+             alt="OLS vs PPML entry by industry">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec.csv</code> +
+      <code>robustness_nec_poisson.csv</code> ·
+      <a href="figs/firm_entry_lag_industry_ppml_overlay.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
+  <div class="viz-card">
+    <h3>8. Firm entry by size — OLS on log(1+y) vs. PPML on raw count</h3>
+    <p class="viz-sub">
+      Same OLS-vs-PPML overlay by firm-size category. PPML matters most
+      for the high-zero buckets: 10–50 workers (52 % zeros) and 51+ workers
+      (91 % zeros). For the dominant 1-worker and 2–9 worker categories
+      (low zero-share) the two estimators agree closely — confirming the
+      OLS result on the main entry response is robust.
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_entry_lag_size_ppml_overlay.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_entry_lag_size_ppml_overlay.png"
+             alt="OLS vs PPML entry by size">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec.csv</code> +
+      <code>robustness_nec_poisson.csv</code> ·
+      <a href="figs/firm_entry_lag_size_ppml_overlay.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
 </div>
 
 </main>

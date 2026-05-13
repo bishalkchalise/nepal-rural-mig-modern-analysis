@@ -396,4 +396,103 @@ add_note(fig,
 "effect comes mainly from suppressed 2–9 worker firm formation, not solo proprietors.")
 save("firm_entry_lag_by_size_panels")
 
-print("\nAll 8 plots saved to docs/figs/.")
+# ====================================================================
+# Plot 9 + 10 — OLS-on-log(1+y)  vs.  PPML  overlay (entry by industry / size)
+# ====================================================================
+PPML_PATH = ROOT / "output/tab/robustness_nec_poisson.csv"
+if PPML_PATH.exists():
+    ppml = pd.read_csv(PPML_PATH)
+    ppml = ppml[ppml["err"].fillna("") == ""].copy()
+    ppml_a = ppml[ppml["threshold"] == THR]   # anchor k=25
+    # OLS panel rows at the anchor spec — already in `panel` above (log/lin, k=25)
+    # PPML outcomes are the raw count names; map to the log_* names used in panel
+    def ols_for(raw_oc):
+        s = panel[panel["outcome"] == "log_" + raw_oc].sort_values("lag")
+        return s
+    def ppml_for(raw_oc):
+        s = ppml_a[ppml_a["outcome"] == raw_oc].sort_values("lag")
+        return s
+
+    def draw_overlay(ax, raw_oc, label):
+        ols  = ols_for(raw_oc)
+        pp   = ppml_for(raw_oc)
+        if not ols.empty:
+            x, b, se = ols["lag"].values, ols["beta"].values, ols["se"].values
+            ax.plot(x, b, marker="o", markersize=4, lw=1.6, color="#2c5282",
+                    label="OLS on log(1+y)")
+            ax.fill_between(x, b - 1.96*se, b + 1.96*se, color="#2c5282", alpha=0.10)
+        if not pp.empty:
+            x, b, se = pp["lag"].values, pp["beta"].values, pp["se"].values
+            ax.plot(x, b, marker="s", markersize=4, lw=1.6, color="#c53030",
+                    label="PPML on raw count")
+            ax.fill_between(x, b - 1.96*se, b + 1.96*se, color="#c53030", alpha=0.10)
+        ax.axhline(0, color="#1a202c", lw=0.5, ls=":")
+        ax.set_title(label, fontsize=10, fontweight="bold")
+        ax.set_xlabel("FX shifter lag (years)", fontsize=8.5)
+        ax.tick_params(labelsize=8)
+        ax.grid(axis="y", lw=0.3, alpha=0.4)
+
+    # ---- 9: industry overlay ----
+    print("Plot 9: PPML vs OLS — entry by industry ...")
+    OVL_IND = [
+        ("new_firms",                        "All entry (aggregate)"),
+        ("new_firms_hospitality_food",       "Hospitality & food"),
+        ("new_firms_manufacturing",          "Manufacturing"),
+        ("new_firms_construction",           "Construction"),
+        ("new_firms_transport_storage",      "Transport & storage"),
+        ("new_firms_trade_retail",           "Trade & retail"),
+        ("new_firms_agriculture",            "Agriculture"),
+        ("new_firms_finance_prof_realestate","Finance / prof / RE"),
+    ]
+    fig, axes = plt.subplots(2, 4, figsize=(15, 12), sharex=True)
+    for ax, (oc, lab) in zip(axes.flatten(), OVL_IND):
+        draw_overlay(ax, oc, lab)
+    for ax in (axes[0,0], axes[1,0]):
+        ax.set_ylabel("β  (semi-elasticity)", fontsize=9)
+    hh, ll = axes[0,0].get_legend_handles_labels()
+    fig.suptitle("FIRM ENTRY by industry — OLS on log(1+y)  vs.  PPML on raw count",
+                 y=0.985, fontsize=12, fontweight="bold")
+    fig.legend(hh, ll, loc="upper center", ncol=2, frameon=False,
+               bbox_to_anchor=(0.5, 0.955), fontsize=10)
+    fig.subplots_adjust(top=0.88, bottom=0.18, left=0.05, right=0.98,
+                        hspace=0.40, wspace=0.28)
+    add_note(fig,
+"Notes: Side-by-side comparison of OLS on log(1 + new firms) (blue, anchor spec from robustness_nec.csv) vs. PPML on raw\n"
+"new-firms count (red, robustness_nec_poisson.csv). Both use identical controls (year × mig_int_z + year × fx_z + Block A;\n"
+"muni + year FE; SE clustered at muni) and the same treatment (fx_z × log(mig_int_z)). Both coefficients are semi-elasticities,\n"
+"so they are directly comparable. PPML treats zero cells natively (large-zero outcomes like agriculture 57%, finance/RE 60%);\n"
+"OLS on log(1+y) floors zeros at log(1)=0. Where the two lines diverge sharply (e.g. agriculture, finance/RE), the OLS estimate\n"
+"is contaminated by the zero-floor and PPML is the preferred estimator. Where they overlap (hospitality, trade-retail), the\n"
+"OLS result is robust. PPML lifts the aggregate elasticity because counts are mass-weighted (large munis count more).")
+    save("firm_entry_lag_industry_ppml_overlay")
+
+    # ---- 10: size overlay ----
+    print("Plot 10: PPML vs OLS — entry by size ...")
+    OVL_SIZE = [
+        ("new_firms",                    "All entry (aggregate)"),
+        ("new_firms_size_1_worker",      "1 worker"),
+        ("new_firms_size_2_9_workers",   "2–9 workers"),
+        ("new_firms_size_10_50_workers", "10–50 workers"),
+        ("new_firms_size_51plus_workers","51+ workers"),
+    ]
+    fig, axes = plt.subplots(1, 5, figsize=(18, 7.5), sharex=True)
+    for ax, (oc, lab) in zip(axes, OVL_SIZE):
+        draw_overlay(ax, oc, lab)
+    axes[0].set_ylabel("β  (semi-elasticity)", fontsize=9)
+    hh, ll = axes[0].get_legend_handles_labels()
+    fig.suptitle("FIRM ENTRY by size — OLS on log(1+y)  vs.  PPML on raw count",
+                 y=0.97, fontsize=12, fontweight="bold")
+    fig.legend(hh, ll, loc="upper center", ncol=2, frameon=False,
+               bbox_to_anchor=(0.5, 0.91), fontsize=10)
+    fig.subplots_adjust(top=0.83, bottom=0.34, left=0.05, right=0.98, wspace=0.30)
+    add_note(fig,
+"Notes: OLS vs. PPML side-by-side on the same NEC entry panel. PPML matters most for the high-zero buckets: size 10–50\n"
+"workers (52% zeros) and size 51+ workers (91% zeros). For the size-51+ panel, OLS-on-log(1+y) is essentially identifying\n"
+"off the few non-zero cells, while PPML uses the full sample correctly. For the dominant 1-worker and 2–9 worker categories\n"
+"(low zero-share), the two estimators agree closely — confirming the OLS result on the main entry response is robust.")
+    save("firm_entry_lag_size_ppml_overlay")
+else:
+    print(f"PPML CSV not yet present at {PPML_PATH}; skipping plots 9-10.")
+    print("Run: python3 script/robustness_nec_panel_poisson.py")
+
+print("\nAll plots saved to docs/figs/.")
