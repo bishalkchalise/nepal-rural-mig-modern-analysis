@@ -126,9 +126,11 @@ build_cohort_stock <- function(min_year) {
   agg[, n_industries_present := rowSums(.SD > 0, na.rm = TRUE), .SDcols = ind_share_cols]
   # Mean emp per firm
   agg[, mean_emp_per_firm := emp_total / pmax(n_firms, 1)]
-  # log transforms (log1p)
+  # log transforms (log1p) — force numeric to avoid silent failures when
+  # data.table reads big counts as integer64 (log1p on integer64 returns
+  # the original value as a double rather than computing the log).
   for (v in c("n_firms","emp_total","rev_total","cap_total"))
-    agg[, (paste0("log_", v)) := log1p(pmax(get(v), 0))]
+    agg[, (paste0("log_", v)) := log1p(pmax(as.numeric(get(v)), 0))]
   # Derive DIST
   agg[, DIST := lgcode %/% 100]
   agg
