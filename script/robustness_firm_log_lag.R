@@ -24,9 +24,14 @@ options(scipen = 999); setDTthreads(0)
 ROOT <- normalizePath(".")
 
 SPECS <- list(
-  S12_cmig_log_lag2 = list(lag = 2L, c_mig_log = TRUE, c_mig = TRUE, c_fx = TRUE, c_block_a = TRUE),
-  S13_cmig_log_lag3 = list(lag = 3L, c_mig_log = TRUE, c_mig = TRUE, c_fx = TRUE, c_block_a = TRUE),
-  S14_cmig_log_lag5 = list(lag = 5L, c_mig_log = TRUE, c_mig = TRUE, c_fx = TRUE, c_block_a = TRUE)
+  # Option A — keep year × fx_t (contemporaneous) alongside year × log(mig_int)
+  S12A_logmig_lag2_keep_cfx = list(lag = 2L, c_mig_log = TRUE, c_mig = TRUE, c_fx = TRUE,  c_block_a = TRUE),
+  S13A_logmig_lag3_keep_cfx = list(lag = 3L, c_mig_log = TRUE, c_mig = TRUE, c_fx = TRUE,  c_block_a = TRUE),
+  S14A_logmig_lag5_keep_cfx = list(lag = 5L, c_mig_log = TRUE, c_mig = TRUE, c_fx = TRUE,  c_block_a = TRUE),
+  # Option B — drop year × fx_t so it doesn't over-absorb lagged-shifter variation
+  S12B_logmig_lag2_drop_cfx = list(lag = 2L, c_mig_log = TRUE, c_mig = TRUE, c_fx = FALSE, c_block_a = TRUE),
+  S13B_logmig_lag3_drop_cfx = list(lag = 3L, c_mig_log = TRUE, c_mig = TRUE, c_fx = FALSE, c_block_a = TRUE),
+  S14B_logmig_lag5_drop_cfx = list(lag = 5L, c_mig_log = TRUE, c_mig = TRUE, c_fx = FALSE, c_block_a = TRUE)
 )
 THRESHOLD <- 25L
 
@@ -76,7 +81,7 @@ bxA  <- build_block_A()
 BLOCK_A      <- bxA$bx
 BLOCK_A_COLS <- bxA$cols
 
-fit <- function(outcome, lag_L, c_mig_log, threshold = 25L) {
+fit <- function(outcome, lag_L, c_mig_log, c_fx, threshold = 25L) {
   inst_use <- inst[, .(lgcode, year, fxshock, mig_intensity, total_migrants)]
   inst_use[, log_mig_intensity := log(mig_intensity + 1e-8)]
   if (lag_L != 0L) inst_use[, year := year + as.integer(lag_L)]
@@ -98,7 +103,8 @@ fit <- function(outcome, lag_L, c_mig_log, threshold = 25L) {
   x_mig <- if (c_mig_log) "log_migint_z" else "mig_int_z"
   year_cols <- character(0)
   year_cols <- c(year_cols, build_year_dummies(d, x_mig,  "cmig", 2001L))
-  year_cols <- c(year_cols, build_year_dummies(d, "fx_z", "cfx",  2001L))
+  if (c_fx)
+    year_cols <- c(year_cols, build_year_dummies(d, "fx_z", "cfx",  2001L))
   for (k in BLOCK_A_COLS)
     year_cols <- c(year_cols, build_year_dummies(d, k, paste0("cA_", k), 2001L))
   rhs <- c("treatment", year_cols)
@@ -128,11 +134,13 @@ cat(sprintf("Outcomes: %d  (NEC panel only)\n\n", length(NEC_PANEL_OUTCOMES)))
 
 for (spec_name in names(SPECS)) {
   cfg <- SPECS[[spec_name]]
-  cat(sprintf("--- %s (lag=%d, c_mig_log=%s) ---\n", spec_name, cfg$lag, cfg$c_mig_log))
+  cat(sprintf("--- %s (lag=%d, c_mig_log=%s, c_fx=%s) ---\n",
+              spec_name, cfg$lag, cfg$c_mig_log, cfg$c_fx))
   for (y in NEC_PANEL_OUTCOMES) {
-    r <- fit(y, cfg$lag, cfg$c_mig_log, THRESHOLD)
+    r <- fit(y, cfg$lag, cfg$c_mig_log, cfg$c_fx, THRESHOLD)
     base <- data.table(dataset = "nec_panel", outcome = y, spec = spec_name,
-                       threshold = THRESHOLD, lag = cfg$lag, c_mig_log_flag = cfg$c_mig_log)
+                       threshold = THRESHOLD, lag = cfg$lag,
+                       c_mig_log_flag = cfg$c_mig_log, c_fx_flag = cfg$c_fx)
     if (is.null(r))             { base[, err := "NULL/degenerate"] }
     else if (!is.null(r$err))   { base[, err := r$err] }
     else base[, `:=`(beta=r$beta, se=r$se, pval=r$pval, stars=stars_fn(r$pval),
@@ -158,7 +166,8 @@ out[, outcome_group := fcase(
   default                                = "Firm entry by industry (NEC panel)"
 )]
 out[, interpret := mapply(interpret_beta, beta, outcome, mean_y)]
-KEEP <- c("outcome_group","dataset","outcome","spec","threshold","lag","c_mig_log_flag",
+KEEP <- c("outcome_group","dataset","outcome","spec","threshold","lag",
+          "c_mig_log_flag","c_fx_flag",
           "beta","stars","se","pval","mean_y","sd_y","n","n_muni","interpret","err")
 out <- out[, intersect(KEEP, names(out)), with = FALSE]
 out[, spec := factor(spec, levels = names(SPECS))]
