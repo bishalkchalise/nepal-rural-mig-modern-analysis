@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Visualizations — Nepal SSIV</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .viz-grid { display:flex; flex-direction:column; gap:2.6rem; }
+  .viz-card {
+    border:1px solid var(--rule);
+    border-radius:4px;
+    background:var(--bg);
+    overflow:hidden;
+  }
+  .viz-card h3 {
+    margin:0;
+    padding:.9rem 1.1rem .55rem;
+    font-size:18px; font-weight:600; line-height:1.35;
+    font-family:var(--serif);
+    border-bottom:1px solid var(--rule);
+    background:var(--panel);
+  }
+  .viz-card .viz-sub {
+    margin:0;
+    padding:.45rem 1.1rem .85rem;
+    font-size:13.5px; color:var(--muted); font-style:italic; line-height:1.45;
+    border-bottom:1px solid var(--rule);
+    background:var(--panel);
+  }
+  .viz-card .viz-img-wrap {
+    padding:1rem 1.1rem 1.1rem;
+    text-align:center;
+  }
+  .viz-card img {
+    max-width:100%; height:auto;
+    display:block; margin:0 auto;
+    border:1px solid var(--rule);
+    background:#fff;
+  }
+  .viz-meta {
+    padding:.55rem 1.1rem .85rem;
+    border-top:1px solid var(--rule);
+    background:var(--panel);
+    font-size:12.5px; color:var(--muted); font-family:var(--mono);
+  }
+  .viz-meta a { color:var(--muted); }
+  .viz-meta a:hover { color:var(--accent); }
+  .viz-section-head {
+    font-size:13px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--muted); font-weight:600;
+    margin:2.2rem 0 .4rem;
+    border-bottom:1px solid var(--rule); padding-bottom:.3rem;
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <h2>Pages</h2>
+  <ul>
+    <li><a href="index.html">Intro</a></li>
+    <li><a href="explorer.html">Results</a></li>
+    <li><a href="visualizations.html" class="active">Visualizations</a></li>
+    <li><a href="definitions.html">Variable definitions</a></li>
+    <li><a href="summary.html">Summary statistics</a></li>
+    <li><a href="methods.html">Method</a></li>
+    <li><a href="robustness.html">Robustness</a></li>
+    <li><a href="presentation.html" target="_blank" rel="noopener">Presentation ↗</a></li>
+  </ul>
+</nav>
+
+<main class="content-wide" style="max-width:1180px">
+
+<header class="page-header">
+  <h1>Visualizations — firm-side lag profiles</h1>
+  <div class="sub">
+    β coefficients (with 95% CI bands) from the anchor SSIV reduced-form spec,
+    plotted against the FX-shifter lag (years 0–10). Six firm-side outcome
+    families across the two NEC datasets: annual flow (NEC panel) and 2018
+    stock (NEC cross-section). Each figure contains an embedded
+    methodological footnote.
+  </div>
+</header>
+
+<p>
+The plots below show how firm-side outcomes respond to the lagged FX-shifter
+× baseline-migrant-intensity interaction. The flow plots come from the
+NEC firm panel (muni × founding-year cells, 2001–2018). The stock plots
+come from the 2018 NEC cross-section, with three overlays where applicable:
+(a) the full 2018 stock, (b) firms founded 2001–2018 surviving to 2018, and
+(c) firms founded 2011–2018 — to separate the cohort effect from
+incumbent-clearing. All specs use the anchor controls
+(<code>year × mig_int_z</code>, <code>year × fx_z</code>,
+<code>Block A</code>, district FE; SE clustered at muni),
+sample restricted to munis with ≥ 25 baseline migrants in 2001.
+</p>
+
+<div class="viz-section-head">A. Firm flow (NEC panel, annual entry)</div>
+<div class="viz-grid">
+
+  <div class="viz-card">
+    <h3>1. Annual firm entry by industry — lag profile</h3>
+    <p class="viz-sub">
+      log(1 + new firms) in muni m founded in year t, for 7 ISIC industries
+      plus the aggregate. Hospitality &amp; food shows the deepest
+      negative response (lag 2–5); transport, trade-retail, and construction
+      follow milder negative patterns; agriculture and finance/prof/RE
+      drift positive at mid-lags.
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_entry_lag_by_industry_panels.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_entry_lag_by_industry_panels.png"
+             alt="Firm entry by industry, lag profile">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec.csv</code> (NEC panel) ·
+      <a href="figs/firm_entry_lag_by_industry_panels.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
+  <div class="viz-card">
+    <h3>2. Annual firm entry by size — lag profile</h3>
+    <p class="viz-sub">
+      Same flow spec, decomposed by 2018-observed firm size (1 / 2–9 / 10–50 /
+      51+ workers) plus aggregate. The negative aggregate effect comes mainly
+      from suppressed 2–9 worker firm formation; solo (1-worker) entry is
+      roughly flat; 10–50 worker entry is too rare for clean identification.
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_entry_lag_by_size_panels.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_entry_lag_by_size_panels.png"
+             alt="Firm entry by size, lag profile">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec.csv</code> (NEC panel) ·
+      <a href="figs/firm_entry_lag_by_size_panels.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="viz-section-head">B. Firm stock (NEC 2018 cross-section) — composition</div>
+<div class="viz-grid">
+
+  <div class="viz-card">
+    <h3>3. Industry composition in 2018 — lag profile, by cohort</h3>
+    <p class="viz-sub">
+      Muni-level share of firms in 8 grouped industries. Three datasets
+      overlaid: full 2018 stock; post-2001 cohort; post-2011 cohort.
+      Hospitality share consistently negative (≈ −1.0 pp); agriculture share
+      consistently positive (≈ +0.5 pp). Composition effects are immediate,
+      not cumulative.
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_industry_composition_lag.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_industry_composition_lag.png"
+             alt="Industry composition in 2018, cohort overlay">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec.csv</code> +
+      <code>robustness_nec_cohort.csv</code> ·
+      <a href="figs/firm_industry_composition_lag.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
+  <div class="viz-card">
+    <h3>4. Size composition in 2018 — lag profile, by cohort</h3>
+    <p class="viz-sub">
+      Muni-level share of 2018 firms in each size bucket. Headline shift:
+      +1.5 pp positive on 1-worker firms balanced by ≈ −1.5 pp negative on
+      2–9 workers — shocks reallocate the firm distribution toward solo
+      proprietors. Cohort restriction lifts the 51+ worker share slightly
+      but the effect remains tiny (≤ +0.1 pp).
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_size_composition_lag.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_size_composition_lag.png"
+             alt="Size composition in 2018, cohort overlay">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec.csv</code> +
+      <code>robustness_nec_cohort.csv</code> ·
+      <a href="figs/firm_size_composition_lag.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="viz-section-head">C. Firm stock (NEC 2018 cross-section) — scale &amp; formality</div>
+<div class="viz-grid">
+
+  <div class="viz-card">
+    <h3>5. Firm-stock scale outcomes — lag profile, by cohort</h3>
+    <p class="viz-sub">
+      Eight scale outcomes: log(# firms), log(employment), log(revenue),
+      log(capital), mean employment per firm, industry diversity, and two
+      size-share extremes. Close overlap of the full / post-2001 /
+      post-2011 lines indicates the lag-strengthening profile is intrinsic
+      to the shock-period cohort — not an artifact of pre-shock incumbents
+      clearing out.
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_lag_full_vs_cohort.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_lag_full_vs_cohort.png"
+             alt="Firm stock scale outcomes, cohort overlay">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec.csv</code> +
+      <code>robustness_nec_cohort.csv</code> ·
+      <a href="figs/firm_lag_full_vs_cohort.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
+  <div class="viz-card">
+    <h3>6. Firm formality, credit, demographics — lag profile (full 2018 stock)</h3>
+    <p class="viz-sub">
+      Eight composition outcomes — tax-registration, account-keeping,
+      registration, year-round operation, borrowing, formal credit usage,
+      female-led share, and the formality index. Tax registration drops
+      consistently (≈ −3 pp); female-led share rises (≈ +1 pp); formal credit
+      usage barely moves. Cohort-restricted versions of these vars are not
+      available without firm-level microdata.
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_formality_credit_lag.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_formality_credit_lag.png"
+             alt="Firm formality, credit, demographics">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec.csv</code> ·
+      <a href="figs/firm_formality_credit_lag.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
+</div>
+
+<h2 style="margin-top:2.6rem">Reproduce locally</h2>
+<p>
+All six figures (PNG + SVG) are regenerated from local CSVs by a single
+script:
+</p>
+<pre><code>python3 script/plot_firm_lag_robustness.py</code></pre>
+<p>
+The script reads
+<code>output/tab/robustness_nec.csv</code> and
+<code>output/tab/robustness_nec_cohort.csv</code>,
+which in turn come from
+<code>script/robustness_nec.R</code> and
+<code>script/robustness_nec_cohort.R</code>. Figures are written to
+<code>docs/figs/firm_*.{png,svg}</code>.
+</p>
+
+</main>
+</div>
+
+<footer>
+  Source: <a href="https://github.com/bishalkchalise/nepal-rural-mig-modern-analysis" target="_blank" rel="noopener">bishalkchalise/nepal-rural-mig-modern-analysis</a>.
+  Chalise &amp; Mobarak — Nepal migration / rural modernization analysis.
+</footer>
+
+</body>
+</html>
