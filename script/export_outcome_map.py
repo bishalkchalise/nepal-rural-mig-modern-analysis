@@ -38,7 +38,9 @@ for ds, m in CURATED.items():
             "keep":     "Y",
         })
 df = pd.DataFrame(rows, columns=["dataset","variable","group","label","keep"])
-df = df.sort_values(["dataset"]).reset_index(drop=True)
+# Preserve declaration order from _outcome_map.py.  No sorting — the JSON
+# builder uses CSV row order to determine which group appears first in
+# the portal dropdown.
 df.to_csv(OUT, index=False)
 print(f"Wrote {OUT}  ({len(df)} rows, {df['dataset'].nunique()} datasets)")
 print("Edit the CSV (drop rows, change group/label, set keep=N to exclude),")
