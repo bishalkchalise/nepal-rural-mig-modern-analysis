@@ -25,8 +25,12 @@ Output shape:
   }
 }
 """
-import pandas as pd, json
+import pandas as pd, json, sys
 from pathlib import Path
+
+# Load curated outcome → group / label map
+sys.path.insert(0, str(Path(__file__).parent))
+from _outcome_map import CURATED
 
 ROOT = Path(".")
 CSV       = ROOT / "output/tab/robustness_final.csv"
@@ -206,20 +210,34 @@ def main():
         if sub.empty:
             continue
         out["datasets_meta"][ds] = {"label": meta["label"]}
-        # Outcomes: prefer the results.json (dataset, outcome) -> group
-        # mapping so labels line up with the Results page (Amenities,
-        # Assets, etc. instead of lumped 'Assets / amenities').
+        # Curated map: var -> {group, label}.  Drops any outcome not in the map.
+        cmap = CURATED.get(ds, {})
         outcomes = {}
-        for v, g_csv in (sub[["outcome","outcome_group"]]
-                            .drop_duplicates()
-                            .itertuples(index=False)):
-            override = results_groups.get((ds, v))
-            if override:
-                outcomes[v] = {"label": override["label"], "group": override["group"]}
-            else:
-                outcomes[v] = {"label": v, "group": g_csv}
-        # Groups: unique sorted (over the resolved group labels)
-        groups = sorted({o["group"] for o in outcomes.values() if o.get("group")})
+        # Preserve declaration order of CURATED so groups render in a natural order
+        for var, info in cmap.items():
+            if var in set(sub["outcome"].unique()):
+                outcomes[var] = {"label": info["label"], "group": info["group"]}
+        # Track variable order (curated order) so subsequent group listing
+        # preserves it
+        # Groups: in curated order, deduped
+        seen_groups = []
+        for var, info in cmap.items():
+            if var in outcomes and info["group"] not in seen_groups:
+                seen_groups.append(info["group"])
+        groups = seen_groups
+        # Restrict sub to curated outcomes only
+        sub = sub[sub["outcome"].isin(outcomes.keys())]
+        # Drop outcomes that error in EVERY spec (no estimable cell anywhere)
+        all_err = (sub.groupby("outcome")["err"]
+                      .agg(lambda s: (s != "").all()))
+        drop_outcomes = set(all_err[all_err].index)
+        if drop_outcomes:
+            outcomes = {k: v for k, v in outcomes.items() if k not in drop_outcomes}
+            sub = sub[~sub["outcome"].isin(drop_outcomes)]
+            # also prune groups that became empty
+            remaining_groups = {info["group"] for info in outcomes.values()}
+            groups = [g for g in groups if g in remaining_groups]
+            print(f"  {ds}: dropped {len(drop_outcomes)} always-error outcomes")
         # Estimates nested
         est = {}
         for thr, df_thr in sub.groupby("threshold"):
