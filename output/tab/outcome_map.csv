@@ -132,12 +132,12 @@ census,left_mother_only,Left-behind children,Left with mother only,N
 census,left_with_relatives,Left-behind children,Left with relatives,N
 census,left_not_with_both,Left-behind children,Not with both parents,N
 census,left_without_parents,Left-behind children,Without parents,N
-census,ent_has_nonagro,HH enterprise,Has non-ag enterprise,Y
-census,ent_cottage,HH enterprise,Cottage industry,Y
-census,ent_trade,HH enterprise,Trade enterprise,Y
-census,ent_services,HH enterprise,Services enterprise,Y
-census,ent_transport,HH enterprise,Transport enterprise,Y
-census,ent_other,HH enterprise,Other enterprise,Y
+census,ent_has_nonagro,HH enterprise,Has non-ag enterprise,N
+census,ent_cottage,HH enterprise,Cottage industry,N
+census,ent_trade,HH enterprise,Trade enterprise,N
+census,ent_services,HH enterprise,Services enterprise,N
+census,ent_transport,HH enterprise,Transport enterprise,N
+census,ent_other,HH enterprise,Other enterprise,N
 hh,has_migrant_international,Migrants & remittances,HH with int'l migrant,Y
 hh,has_migrant_internal,Migrants,HH with internal migrant,N
 hh,has_only_international,Migrants,Only international migrants,N
