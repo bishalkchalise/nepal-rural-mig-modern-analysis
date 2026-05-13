@@ -40,8 +40,8 @@ SPECS <- list(
   S_both_log    = list(treatment = "log_int", lag = 0L,  c_mig_log = TRUE),
   S_both_linear = list(treatment = "lin_int", lag = 0L,  c_mig_log = FALSE)
 )
-THRESHOLDS <- c(25L)                          # primary anchor
-# THRESHOLDS <- c(0L, 25L, 50L, 100L)         # uncomment for full sample-threshold sweep
+THRESHOLDS <- c(0L, 25L, 50L, 100L)            # all four thresholds — full sweep
+# THRESHOLDS <- c(25L)                         # k=25 only (faster, ~50 min)
 
 # -----------------------------------------------------------------------------
 # 2. Outcome catalogues
