@@ -13,40 +13,7 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
 <style>
-  /* Lightweight extension: axis-pill rows under the standard controls */
-  .axis-block{
-    background:var(--panel); border:1px solid var(--rule); border-radius:3px;
-    padding:.8rem 1rem; margin-bottom:1.2rem;
-  }
-  .axis-row{
-    display:flex; flex-wrap:wrap; align-items:center; gap:8px;
-    margin:.3rem 0;
-  }
-  .axis-row .axis-label{
-    font-family:var(--sans); font-size:11px; text-transform:uppercase;
-    letter-spacing:.06em; color:var(--muted); font-weight:600;
-    flex:0 0 120px;
-  }
-  .pill{
-    display:inline-flex; align-items:center;
-    padding:5px 11px; border:1px solid var(--rule); border-radius:3px;
-    font-family:var(--sans); font-size:12px;
-    background:var(--bg); cursor:pointer; user-select:none;
-    color:var(--muted);
-  }
-  .pill.on{
-    background:var(--accent); border-color:var(--accent); color:#fff;
-    font-weight:500;
-  }
-  .pill .sub{
-    margin-left:6px; font-size:10.5px;
-    color:inherit; opacity:.75;
-  }
-  .axis-summary{
-    margin-top:.3rem; font-family:var(--sans); font-size:12px;
-    color:var(--muted);
-  }
-  .axis-summary code{ font-size:11px }
+  /* No page-local custom styles needed — uses shared style.css fully. */
 </style>
 </head>
 <body>
@@ -103,6 +70,30 @@ window.MathJax = {
     <div class="desc" id="group-desc"></div>
   </div>
   <div class="ctrl">
+    <label for="lag">Treatment lag</label>
+    <select id="lag">
+      <option value="all" selected>All lags</option>
+      <option value="0">0 (contemporaneous)</option>
+      <option value="1">1 year</option>
+      <option value="2">2 years</option>
+      <option value="3">3 years</option>
+      <option value="4">4 years</option>
+      <option value="5">5 years</option>
+      <option value="10">10 years</option>
+    </select>
+    <div class="desc">Filters lag dimension of the FX shifter in the treatment.</div>
+  </div>
+  <div class="ctrl">
+    <label for="scale">Scale form (treatment / c_mig)</label>
+    <select id="scale">
+      <option value="all" selected>All scales</option>
+      <option value="log/lin">log / lin — baseline mix</option>
+      <option value="log/log">log / log — both log</option>
+      <option value="lin/lin">lin / lin — both linear</option>
+    </select>
+    <div class="desc">Functional form of mig_int inside treatment vs c_mig.</div>
+  </div>
+  <div class="ctrl">
     <label for="display">Display</label>
     <select id="display">
       <option value="raw" selected>β (raw)</option>
@@ -112,18 +103,6 @@ window.MathJax = {
     </select>
     <div class="desc">All RHS treatments z-scored on the working sample.</div>
   </div>
-</div>
-
-<div class="axis-block">
-  <div class="axis-row">
-    <div class="axis-label">Treatment lag</div>
-    <div id="lag-pills"></div>
-  </div>
-  <div class="axis-row">
-    <div class="axis-label">Scale form (treatment / c_mig)</div>
-    <div id="scale-pills"></div>
-  </div>
-  <div class="axis-summary" id="axis-summary"></div>
 </div>
 
 <div class="meta" id="meta"></div>
@@ -150,17 +129,16 @@ window.MathJax = {
 const FAMILY = "robustness";
 let DATA = null;
 
-// Lag and scale axes. Each "spec name" lives in DATA.spec_meta with
-// {lag, treatment_form, c_mig_form}. The axis selectors compute which
-// specs to render as table columns.
-const LAG_OPTIONS = [0, 1, 2, 3, 4, 5, 10];
-const SCALE_OPTIONS = [
-  {key: "log/lin", tx: "log", cm: "lin", label: "log / lin", sub: "baseline mix"},
-  {key: "log/log", tx: "log", cm: "log", label: "log / log", sub: "both log"},
-  {key: "lin/lin", tx: "lin", cm: "lin", label: "lin / lin", sub: "both linear"},
-];
-const activeLags   = new Set(LAG_OPTIONS);
-const activeScales = new Set(SCALE_OPTIONS.map(s => s.key));
+// Lag and scale dropdowns drive which specs render as columns.
+// Empty string == "all" (no filter).
+function selectedLag(){
+  const v = document.getElementById("lag").value;
+  return v === "all" ? null : parseInt(v);
+}
+function selectedScale(){
+  const v = document.getElementById("scale").value;
+  return v === "all" ? null : v;
+}
 
 // ----- explorer.html formatters, unchanged -----
 function fmtCoef(b, p, digits=4){
@@ -200,14 +178,17 @@ function transformBeta(est, mode){
 
 // ----- Which specs render as columns -----
 function activeSpecs(){
-  const meta = DATA.spec_meta || {};
-  const all = Object.keys(DATA.families[FAMILY].specs);
-  // preserve the order in families
+  const meta  = DATA.spec_meta || {};
+  const lagF  = selectedLag();   // null = no filter
+  const scF   = selectedScale(); // null = no filter
+  const all   = Object.keys(DATA.families[FAMILY].specs);
   return all.filter(s => {
     const m = meta[s];
     if (!m) return true;
     const scaleKey = `${m.treatment_form}/${m.c_mig_form}`;
-    return activeLags.has(m.lag) && activeScales.has(scaleKey);
+    if (lagF !== null && m.lag !== lagF) return false;
+    if (scF  !== null && scaleKey !== scF) return false;
+    return true;
   });
 }
 
@@ -234,16 +215,6 @@ function rowFor(yKey, ests, displayMode, specOrder){
   }).join("");
 
   return `<tr>${cell}${meanCell}${specCells}${nCell}${nUnitCell}</tr>`;
-}
-
-function renderAxisSummary(specs){
-  const meta = DATA.spec_meta || {};
-  const lagList   = Array.from(activeLags).sort((a,b) => a-b).join(", ");
-  const scaleList = Array.from(activeScales).join(", ");
-  document.getElementById("axis-summary").innerHTML =
-    `Selected: lags = <code>${lagList || "(none)"}</code> · scale = <code>${scaleList || "(none)"}</code>. `+
-    `Showing <code>${specs.length}</code> of ${Object.keys(DATA.families[FAMILY].specs).length} specifications. `+
-    `Combinations not in the data are silently skipped.`;
 }
 
 function renderNote(){
@@ -276,7 +247,6 @@ function render(){
   const disp = document.getElementById("display").value;
 
   const specOrder = activeSpecs();
-  renderAxisSummary(specOrder);
 
   document.getElementById("dataset-desc").textContent   = D.label;
   document.getElementById("threshold-desc").textContent = DATA.thresholds[thr];
@@ -361,38 +331,6 @@ function repopulateForDataset(){
   fillSelect("group", D.groups.map(g => [g, g]));
 }
 
-function buildPills(){
-  const lagBox = document.getElementById("lag-pills");
-  LAG_OPTIONS.forEach(L => {
-    const p = document.createElement("span");
-    p.className = "pill on";
-    p.dataset.lag = String(L);
-    p.innerHTML = (L === 0)
-      ? `lag 0 <span class="sub">contemp.</span>`
-      : `lag ${L}y`;
-    p.addEventListener("click", () => {
-      if (activeLags.has(L)) activeLags.delete(L); else activeLags.add(L);
-      p.classList.toggle("on");
-      render();
-    });
-    lagBox.appendChild(p);
-  });
-  const scaleBox = document.getElementById("scale-pills");
-  SCALE_OPTIONS.forEach(opt => {
-    const p = document.createElement("span");
-    p.className = "pill on";
-    p.dataset.scale = opt.key;
-    p.innerHTML = `${opt.label} <span class="sub">${opt.sub}</span>`;
-    p.addEventListener("click", () => {
-      if (activeScales.has(opt.key)) activeScales.delete(opt.key);
-      else activeScales.add(opt.key);
-      p.classList.toggle("on");
-      render();
-    });
-    scaleBox.appendChild(p);
-  });
-}
-
 async function init(){
   try {
     const v = Date.now();
@@ -430,13 +368,11 @@ async function init(){
     }
   }
 
-  buildPills();
-
   document.getElementById("dataset").addEventListener("change", () => {
     repopulateForDataset();
     render();
   });
-  for (const id of ["threshold","group","display"]){
+  for (const id of ["threshold","group","display","lag","scale"]){
     document.getElementById(id).addEventListener("change", render);
   }
 

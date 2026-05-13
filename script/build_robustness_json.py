@@ -64,10 +64,28 @@ SPEC_LABEL = {s[0]: s[4] for s in SPECS}
 SPEC_META  = {s[0]: {"lag": s[1], "treatment_form": s[2], "c_mig_form": s[3], "desc": s[4]}
               for s in SPECS}
 
+def load_results_groups():
+    """Load the same outcome -> group mapping that explorer.html uses,
+    so robustness groups line up with Results (separate 'Amenities' and
+    'Assets', etc.) rather than the lumped 'Assets / amenities' label
+    from the CSV's outcome_group column."""
+    p = ROOT / "docs/results.json"
+    if not p.exists(): return {}
+    j = json.loads(p.read_text())
+    mapping = {}  # (dataset, outcome) -> group
+    for ds, dd in j.get("datasets", {}).items():
+        for oc, info in dd.get("outcomes", {}).items():
+            g = info.get("group")
+            lbl = info.get("label")
+            if g:
+                mapping[(ds, oc)] = {"group": g, "label": lbl or oc}
+    return mapping
+
 def main():
     if not CSV.exists():
         raise FileNotFoundError(f"{CSV} not found — run script/robustness_final.R first.")
     df = pd.read_csv(CSV)
+    results_groups = load_results_groups()
 
     # Numeric coercion
     for col in ["beta","se","pval","mean_y","sd_y","n","n_muni"]:
@@ -90,14 +108,20 @@ def main():
         if sub.empty:
             continue
         out["datasets_meta"][ds] = {"label": meta["label"]}
-        # Outcomes: map var -> {label, group}
+        # Outcomes: prefer the results.json (dataset, outcome) -> group
+        # mapping so labels line up with the Results page (Amenities,
+        # Assets, etc. instead of lumped 'Assets / amenities').
         outcomes = {}
-        for v, g in (sub[["outcome","outcome_group"]]
-                       .drop_duplicates()
-                       .itertuples(index=False)):
-            outcomes[v] = {"label": v, "group": g}
-        # Groups: unique sorted
-        groups = sorted(sub["outcome_group"].dropna().unique().tolist())
+        for v, g_csv in (sub[["outcome","outcome_group"]]
+                            .drop_duplicates()
+                            .itertuples(index=False)):
+            override = results_groups.get((ds, v))
+            if override:
+                outcomes[v] = {"label": override["label"], "group": override["group"]}
+            else:
+                outcomes[v] = {"label": v, "group": g_csv}
+        # Groups: unique sorted (over the resolved group labels)
+        groups = sorted({o["group"] for o in outcomes.values() if o.get("group")})
         # Estimates nested
         est = {}
         for thr, df_thr in sub.groupby("threshold"):
