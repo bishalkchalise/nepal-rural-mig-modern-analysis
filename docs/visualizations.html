@@ -282,74 +282,52 @@ sample restricted to munis with ≥ 25 baseline migrants in 2001.
     </div>
   </div>
 
+  <div class="viz-card">
+    <h3>9. Firm stock by industry — OLS on log(1+y) vs. PPML on raw count, by cohort</h3>
+    <p class="viz-sub">
+      2018 cross-section, β on raw firm counts in each industry. Three
+      cohort overlays (full 2018 stock; post-2001; post-2011) × two
+      estimators (OLS solid circles, PPML dashed squares) → six lines per
+      panel. PPML elasticities are uniformly ≈ 2–3× the OLS-log estimates,
+      reflecting big-firm-count mass weighting; both estimators agree on the
+      sign (negative for hospitality, manufacturing, construction, transport,
+      trade-retail, finance/prof) and on cohort ordering.
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_stock_industry_count_ppml_overlay.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_stock_industry_count_ppml_overlay.png"
+             alt="OLS vs PPML on 2018 stock by industry, by cohort">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec_cs_poisson.csv</code> ·
+      <a href="figs/firm_stock_industry_count_ppml_overlay.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
+  <div class="viz-card">
+    <h3>10. Firm stock by size — OLS on log(1+y) vs. PPML on raw count, by cohort</h3>
+    <p class="viz-sub">
+      Same OLS-vs-PPML × cohort layout for 2018 firm counts in each size
+      bucket. Size 51+ firms (54–65 % zeros across cohorts) show the
+      largest OLS–PPML divergence — PPML is the preferred estimator there.
+      For the dominant 1-worker and 2–9 worker buckets (essentially no
+      zeros) the two estimators track closely, with PPML somewhat above
+      OLS-log due to count-level weighting.
+    </p>
+    <div class="viz-img-wrap">
+      <a href="figs/firm_stock_size_count_ppml_overlay.svg" target="_blank" rel="noopener">
+        <img src="figs/firm_stock_size_count_ppml_overlay.png"
+             alt="OLS vs PPML on 2018 stock by size, by cohort">
+      </a>
+    </div>
+    <div class="viz-meta">
+      Source: <code>output/tab/robustness_nec_cs_poisson.csv</code> ·
+      <a href="figs/firm_stock_size_count_ppml_overlay.svg" target="_blank" rel="noopener">SVG</a>
+    </div>
+  </div>
+
 </div>
-
-<h2 style="margin-top:2.6rem">How to read the OLS vs. PPML overlay</h2>
-<p>
-The PPML (Poisson pseudo-MLE) panels do <em>not</em> replace the earlier
-log-OLS panels (cards&nbsp;1 and&nbsp;2). Both estimators are reported
-side-by-side so the reader can see where they agree and where they diverge.
-</p>
-
-<h3>What each estimator does</h3>
-<table style="border-collapse:collapse; width:100%; max-width:880px; margin:.5rem 0 1rem; font-size:15px">
-  <thead>
-    <tr style="border-bottom:1px solid var(--rule); text-align:left">
-      <th style="padding:.4rem .6rem">&nbsp;</th>
-      <th style="padding:.4rem .6rem">OLS on log(1 + y)</th>
-      <th style="padding:.4rem .6rem">PPML on raw y</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr style="border-bottom:1px solid var(--rule)">
-      <td style="padding:.4rem .6rem"><strong>Model</strong></td>
-      <td style="padding:.4rem .6rem">log(1 + y) = X β + α<sub>i</sub> + γ<sub>t</sub> + ε</td>
-      <td style="padding:.4rem .6rem">E[y | X] = exp(X β + α<sub>i</sub> + γ<sub>t</sub>)</td>
-    </tr>
-    <tr style="border-bottom:1px solid var(--rule)">
-      <td style="padding:.4rem .6rem"><strong>Outcome scale</strong></td>
-      <td style="padding:.4rem .6rem">Log-transformed (zeros floored at log&nbsp;1&nbsp;=&nbsp;0)</td>
-      <td style="padding:.4rem .6rem">Raw count (zeros kept natively)</td>
-    </tr>
-    <tr style="border-bottom:1px solid var(--rule)">
-      <td style="padding:.4rem .6rem"><strong>β interpretation</strong></td>
-      <td style="padding:.4rem .6rem">≈ % change in y (semi-elasticity)</td>
-      <td style="padding:.4rem .6rem">≈ % change in <em>expected</em> y (semi-elasticity)</td>
-    </tr>
-    <tr>
-      <td style="padding:.4rem .6rem"><strong>Comparable axis?</strong></td>
-      <td colspan="2" style="padding:.4rem .6rem">
-        <strong>Yes</strong> — both βs are on the same log/semi-elastic scale,
-        so the two lines can share a y-axis.
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<h3>The y variable, not the coefficient, is where they differ</h3>
-<p>
-The PPML coefficient β is interpreted on the log scale (semi-elasticity:
-β&nbsp;=&nbsp;∂&nbsp;log&nbsp;E[y]&nbsp;/&nbsp;∂&nbsp;x), but the outcome y
-enters in <em>levels</em> (raw count, no log, no +1). That's the whole point
-of PPML: keep the natural scale of the count and let the link function
-absorb the non-linearity. By contrast, OLS-on-log(1+y) applies the log
-transformation to the outcome itself, which means zero cells get artificially
-re-coded as log(1)&nbsp;=&nbsp;0 (i.e. "1 firm").
-</p>
-
-<h3>When the two diverge, PPML is the preferred estimator</h3>
-<p>
-For low-zero outcomes (hospitality, trade-retail, 1-worker, 2–9 workers)
-the two lines track each other closely and the OLS-log finding is robust.
-For high-zero outcomes (agriculture 57 % zeros, finance/RE 60 %, size 10–50 52 %,
-size 51+ 91 %) PPML can move sharply away from OLS-log, because the OLS
-estimate is partly identifying off the artificial log(1)&nbsp;=&nbsp;0 floor.
-A larger PPML coefficient at the aggregate also reflects that PPML weights
-by count level — i.e. large-firm-count municipalities contribute more —
-whereas OLS-on-log weights every muni-year symmetrically. The two
-estimators are answering slightly different questions, and reporting both
-is the honest way to handle count data with substantial zeros.
-</p>
 
 </main>
 </div>

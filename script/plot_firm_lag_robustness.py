@@ -495,4 +495,105 @@ else:
     print(f"PPML CSV not yet present at {PPML_PATH}; skipping plots 9-10.")
     print("Run: python3 script/robustness_nec_panel_poisson.py")
 
+# ====================================================================
+# Plot 11 + 12 — Stock-count OLS vs PPML overlay, by cohort
+# ====================================================================
+CS_PPML_PATH = ROOT / "output/tab/robustness_nec_cs_poisson.csv"
+if CS_PPML_PATH.exists():
+    cs_p = pd.read_csv(CS_PPML_PATH)
+    cs_p = cs_p[cs_p["err"].fillna("") == ""].copy()
+    cs_p_a = cs_p[cs_p["threshold"] == THR]
+
+    COH_LBL = {"nec_cs_full": "full 2018 stock",
+               "nec_cs_2001": "post-2001 cohort",
+               "nec_cs_2011": "post-2011 cohort"}
+    COH_COL_OLS  = {"nec_cs_full": "#a0aec0",
+                    "nec_cs_2001": "#2c5282",
+                    "nec_cs_2011": "#0987a0"}
+    COH_COL_PPML = {"nec_cs_full": "#e9b196",
+                    "nec_cs_2001": "#c53030",
+                    "nec_cs_2011": "#742a2a"}
+
+    def draw_cs_overlay(ax, raw_oc, label):
+        for ds in ["nec_cs_full", "nec_cs_2001", "nec_cs_2011"]:
+            for est, col_map, marker, ls in [
+                ("ols_log",  COH_COL_OLS,  "o", "-"),
+                ("ppml",     COH_COL_PPML, "s", "--")]:
+                s = cs_p_a[(cs_p_a["dataset"] == ds) &
+                            (cs_p_a["outcome"] == raw_oc) &
+                            (cs_p_a["estimator"] == est)].sort_values("lag")
+                if s.empty: continue
+                x, b, se = s["lag"].values, s["beta"].values, s["se"].values
+                lbl = f"{est.upper().replace('OLS_LOG','OLS log(1+y)')} · {COH_LBL[ds]}"
+                ax.plot(x, b, marker=marker, markersize=3.5, lw=1.4, ls=ls,
+                        color=col_map[ds], label=lbl, alpha=0.9)
+        ax.axhline(0, color="#1a202c", lw=0.5, ls=":")
+        ax.set_title(label, fontsize=10, fontweight="bold")
+        ax.set_xlabel("FX shifter lag (years)", fontsize=8.5)
+        ax.tick_params(labelsize=8)
+        ax.grid(axis="y", lw=0.3, alpha=0.4)
+
+    # ---- 11: industry stock overlay ----
+    print("Plot 11: Stock count by industry — OLS vs PPML by cohort ...")
+    CS_IND = [
+        ("n_firms",                   "All firms (aggregate)"),
+        ("n_firms_hospitality",       "Hospitality"),
+        ("n_firms_manufacturing",     "Manufacturing"),
+        ("n_firms_construction",      "Construction"),
+        ("n_firms_transport",         "Transport"),
+        ("n_firms_trade_retail",      "Trade & retail"),
+        ("n_firms_agriculture",       "Agriculture"),
+        ("n_firms_finance_prof_info", "Finance / prof / info"),
+    ]
+    fig, axes = plt.subplots(2, 4, figsize=(16, 12.5), sharex=True)
+    for ax, (oc, lab) in zip(axes.flatten(), CS_IND):
+        draw_cs_overlay(ax, oc, lab)
+    for ax in (axes[0,0], axes[1,0]):
+        ax.set_ylabel("β  (semi-elasticity)", fontsize=9)
+    hh, ll = axes[0,0].get_legend_handles_labels()
+    fig.suptitle("FIRM STOCK (2018) by industry — OLS on log(1+y)  vs.  PPML on raw count, by cohort",
+                 y=0.985, fontsize=12, fontweight="bold")
+    fig.legend(hh, ll, loc="upper center", ncol=3, frameon=False,
+               bbox_to_anchor=(0.5, 0.955), fontsize=9.5)
+    fig.subplots_adjust(top=0.88, bottom=0.18, left=0.05, right=0.98,
+                        hspace=0.40, wspace=0.28)
+    add_note(fig,
+"Notes: 2018 cross-section, anchor cs spec (treatment = fx_z(2018-L) × log(mig_int_z); controls mig_int_z + fx_z + Block A;\n"
+"district FE; SE clustered at district), k≥25. Each panel plots β (semi-elasticity) on raw firm counts in the named industry,\n"
+"with three cohort overlays (full 2018 stock; post-2001 cohort; post-2011 cohort) and two estimators (OLS solid circles on\n"
+"log(1+y); PPML dashed squares on raw y). Where OLS and PPML lines coincide within a cohort, the OLS-log result is robust.\n"
+"Largest divergences appear for high-zero industries (construction 60%, transport 60%, agriculture 5–6% across cohorts).\n"
+"PPML weights by count level so big-firm-count munis drive the elasticity — particularly visible on the aggregate panel.")
+    save("firm_stock_industry_count_ppml_overlay")
+
+    # ---- 12: size stock overlay ----
+    print("Plot 12: Stock count by size — OLS vs PPML by cohort ...")
+    CS_SIZE = [
+        ("n_firms",                       "All firms (aggregate)"),
+        ("n_firms_size_1_worker",         "1 worker"),
+        ("n_firms_size_2_9_workers",      "2–9 workers"),
+        ("n_firms_size_10_50_workers",    "10–50 workers"),
+        ("n_firms_size_51plus_workers",   "51+ workers"),
+    ]
+    fig, axes = plt.subplots(1, 5, figsize=(20, 8.6), sharex=True)
+    for ax, (oc, lab) in zip(axes, CS_SIZE):
+        draw_cs_overlay(ax, oc, lab)
+    axes[0].set_ylabel("β  (semi-elasticity)", fontsize=9)
+    hh, ll = axes[0].get_legend_handles_labels()
+    fig.suptitle("FIRM STOCK (2018) by size — OLS on log(1+y)  vs.  PPML on raw count, by cohort",
+                 y=0.97, fontsize=12, fontweight="bold")
+    fig.legend(hh, ll, loc="upper center", ncol=3, frameon=False,
+               bbox_to_anchor=(0.5, 0.91), fontsize=9.5)
+    fig.subplots_adjust(top=0.83, bottom=0.30, left=0.04, right=0.98, wspace=0.30)
+    add_note(fig,
+"Notes: 2018 cross-section, anchor cs spec. β (semi-elasticity) on raw firm counts in each size bucket. Three cohorts × two\n"
+"estimators (six lines per panel). For size-51+ firms (54–65% zeros depending on cohort), PPML and OLS-log diverge sharply —\n"
+"PPML preferred. For the dominant size 1 and size 2–9 categories (essentially no zeros), OLS-log and PPML track each other\n"
+"closely, with PPML somewhat above OLS-log because of count-level weighting. The aggregate panel rolls up all four size\n"
+"buckets and shows the PPML elasticity ≈ 2–3× the OLS-log estimate, consistent with big-muni mass weighting.")
+    save("firm_stock_size_count_ppml_overlay")
+else:
+    print(f"Stock PPML CSV not yet present at {CS_PPML_PATH}; skipping plots 11-12.")
+    print("Run: python3 script/robustness_nec_cs_poisson.py")
+
 print("\nAll plots saved to docs/figs/.")
