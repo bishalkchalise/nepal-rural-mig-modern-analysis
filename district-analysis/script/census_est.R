@@ -71,7 +71,7 @@
       run_ssiv_regressions(outcomes = unname(assets), data = panel_df)
       run_ssiv_regressions(outcomes = unname(housing), data = panel_df)
       
-      run_ssiv_regressions(outcomes = unname(labor), data = panel_df)
+      run_ssiv_regressions(outcomes = unname(work), data = panel_df)
       run_ssiv_regressions(outcomes = unname(occupation), data = panel_df)
       run_ssiv_regressions(outcomes = unname(industry), data = panel_df)
       run_ssiv_regressions(outcomes = unname(enterprise), data = panel_df)
@@ -202,7 +202,7 @@
       
      run_ssiv_regressions(outcomes = unname(occupation), data = panel_df)
      run_ssiv_regressions(outcomes = unname(amenities), data = panel_df)
-     run_ssiv_regressions(outcomes = unname(labor), data = panel_df)
+     run_ssiv_regressions(outcomes = unname(work), data = panel_df)
      run_ssiv_regressions(outcomes = unname(assets), data = panel_df)
      run_ssiv_regressions(outcomes = unname(education), data = panel_df)
      run_ssiv_regressions(outcomes = unname(industry), data = panel_df)
