@@ -191,7 +191,10 @@ nepal_fx <- forex_raw %>%
 fx_panel <- forex_raw %>%
   transmute(country, year, lcu_per_usd = as.numeric(forex)) %>%
   left_join(nepal_fx, by = "year") %>%
-  mutate(fx_to_npr = lcu_per_usd / npr_per_usd) %>%
+  # NPR per unit of destination LCU. Rises as NPR depreciates against the
+  # destination currency, which is the economically meaningful direction for
+  # remittance value (more NPR received per unit of LCU sent home).
+  mutate(fx_to_npr = npr_per_usd / lcu_per_usd) %>%
   filter(country != "Nepal", country != "India")
 
 fx_base_2001 <- fx_panel %>%
