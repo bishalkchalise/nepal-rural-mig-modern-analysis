@@ -90,18 +90,45 @@ mi_dofe <- dofe_panel %>%
   group_by(dname) %>%
   summarise(dofe_mig_0910 = mean(permits), .groups = "drop")
 
-# Use pop_2011 if available (contemporaneous denominator); else fall back to pop_2001
-pop_2011_path <- "district-analysis/data/clean/instrument/pop_2011_dist.csv"
-if (file.exists(pop_2011_path)) {
-  pop_use <- read.csv(pop_2011_path, stringsAsFactors = FALSE)
+# Use the locally-supplied district population file if present
+# (foreign_migration_district_population.csv). Otherwise fall back to
+# pop_2011_dist.csv, then to pop_2001 from the instrument.
+DPOP_PATH_NEW <- "district-analysis/data/clean/foreign_migration_district_population.csv"
+DPOP_PATH_OLD <- "district-analysis/data/clean/instrument/pop_2011_dist.csv"
+
+if (file.exists(DPOP_PATH_NEW)) {
+  pop_use <- read.csv(DPOP_PATH_NEW, stringsAsFactors = FALSE)
+  nm <- names(pop_use)
+
+  dist_col <- intersect(c("dname", "district", "district_name",
+                          "district_rename", "DNAME", "DISTRICT"), nm)[1]
+  pop_col  <- intersect(c("pop_2011", "population_2011", "pop", "population",
+                          "total_pop", "total_population"), nm)[1]
+  if (is.na(dist_col) || is.na(pop_col)) {
+    stop("Could not find district / population columns in ", DPOP_PATH_NEW,
+         "\n  available: ", paste(nm, collapse = ", "))
+  }
+
+  pop_use <- pop_use %>%
+    rename(dname_raw = !!dist_col, pop_denom = !!pop_col) %>%
+    mutate(upr   = toupper(str_squish(dname_raw)),
+           dname = ifelse(!is.na(dofe_to_census[upr]),
+                          dofe_to_census[upr],
+                          str_to_title(tolower(upr)))) %>%
+    select(dname, pop_denom)
+  pop_label <- sprintf("local file (%s / %s)", basename(DPOP_PATH_NEW), pop_col)
+
+} else if (file.exists(DPOP_PATH_OLD)) {
+  pop_use   <- read.csv(DPOP_PATH_OLD, stringsAsFactors = FALSE)
   pop_use$pop_denom <- pop_use$pop_2011
-  pop_label <- "pop_2011"
+  pop_label <- "pop_2011_dist.csv"
+
 } else {
   pop_use <- distinct(inst[, c("dname", "geog_pop_2001")])
   pop_use$pop_denom <- pop_use$geog_pop_2001
-  pop_label <- "pop_2001 (fallback - run _build_pop_2011.R for 2011 denom)"
+  pop_label <- "pop_2001 fallback (no 2011-era file found)"
 }
-cat(sprintf("Using denominator: %s\n", pop_label))
+cat(sprintf("Denominator source: %s\n", pop_label))
 
 mi_dofe_full <- mi_dofe %>%
   left_join(pop_use %>% select(dname, pop_denom), by = "dname") %>%
