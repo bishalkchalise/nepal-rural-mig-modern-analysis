@@ -48,7 +48,8 @@ dofe_to_census <- c(
   "KAPILVASTU" = "Kapilbastu",
   "MAKAWANPUR" = "Makwanpur",
   "TANAHUN"    = "Tanahu",
-  "TEHRATHUM"  = "Terhathum"
+  "TEHRATHUM"      = "Terhathum",
+  "KABHREPALANCHOK" = "Kavrepalanchok"
 )
 
 dofe_panel <- dofe_raw %>%

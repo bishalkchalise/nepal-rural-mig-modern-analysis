@@ -50,7 +50,8 @@ rvs_to_census <- c(
   "KAPILVASTU" = "Kapilbastu",
   "MAKAWANPUR" = "Makwanpur",
   "TANAHUN"    = "Tanahu",
-  "TEHRATHUM"  = "Terhathum"
+  "TEHRATHUM"      = "Terhathum",
+  "KABHREPALANCHOK" = "Kavrepalanchok"
 )
 
 dist_key <- if ("district_name" %in% names(mig)) "district_name" else

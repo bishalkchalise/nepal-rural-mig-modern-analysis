@@ -52,7 +52,8 @@ rvs_to_census <- c(
   "KAPILVASTU" = "Kapilbastu",
   "MAKAWANPUR" = "Makwanpur",
   "TANAHUN"    = "Tanahu",
-  "TEHRATHUM"  = "Terhathum"
+  "TEHRATHUM"      = "Terhathum",
+  "KABHREPALANCHOK" = "Kavrepalanchok"
 )
 
 rvs <- rvs %>%
