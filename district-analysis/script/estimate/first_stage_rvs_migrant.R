@@ -105,31 +105,35 @@ cat(sprintf(
 
 n_years <- length(unique(fs_df$year))
 
-run_quad <- function(outcome) {
+run_quint <- function(outcome) {
   fit <- function(rhs) {
     f <- as.formula(paste0(outcome, " ~ ", rhs, " | dname + year"))
     feols(f, data = fs_df, cluster = ~dname)
   }
   list(bare_2001  = fit("fxshock"),
        inter_2001 = fit("fx_x_logmi"),
+       full_2001  = fit("fx_x_logmi + i(year, log_mig_int) + i(year, fxshock)"),
        bare_dofe  = fit("fxshock_dofe"),
        inter_dofe = fit("fxdofe_x_logmi"))
 }
 
 if (n_years > 1) {
-  q_remit <- run_quad("log_remit")
-  q_sent  <- run_quad("remit_sent_flag")
-  q_earn  <- run_quad("log_earn_primary")
+  q_remit <- run_quint("log_remit")
+  q_sent  <- run_quint("remit_sent_flag")
+  q_earn  <- run_quint("log_earn_primary")
 
   for (lbl_q in list(list("log(remit+1)",        q_remit),
                      list("remit_sent_flag",     q_sent),
                      list("log(earn_primary+1)", q_earn))) {
     cat(sprintf("\n=== Migrant-level first-stage: %s ===\n", lbl_q[[1]]))
     q <- lbl_q[[2]]
-    print(etable(q$bare_2001, q$inter_2001, q$bare_dofe, q$inter_dofe,
+    print(etable(q$bare_2001, q$inter_2001, q$full_2001,
+                 q$bare_dofe, q$inter_dofe,
                  cluster = ~dname,
                  headers = c("fx_2001", "fx_2001 x logmi",
+                             "fx_2001 x logmi FULL",
                              "fx_dofe", "fx_dofe x logmi"),
+                 keep = "%fx",
                  digits = 4, fitstat = c("n", "r2", "wr2")))
   }
 } else {
@@ -152,12 +156,15 @@ if (n_years > 1) {
 dir.create("district-analysis/output/tab",
            recursive = TRUE, showWarnings = FALSE)
 
-summarise_quad <- function(q, label) {
-  mods   <- list(q$bare_2001, q$inter_2001, q$bare_dofe, q$inter_dofe)
-  regnms <- c("fxshock", "fx_x_logmi", "fxshock_dofe", "fxdofe_x_logmi")
+summarise_quint <- function(q, label) {
+  mods   <- list(q$bare_2001, q$inter_2001, q$full_2001,
+                 q$bare_dofe, q$inter_dofe)
+  regnms <- c("fxshock", "fx_x_logmi", "fx_x_logmi",
+              "fxshock_dofe", "fxdofe_x_logmi")
   tibble(
     outcome = label,
-    spec    = c("fx_2001", "fx_2001 x logmi", "fx_dofe", "fx_dofe x logmi"),
+    spec    = c("fx_2001", "fx_2001 x logmi", "fx_2001 x logmi FULL",
+                "fx_dofe", "fx_dofe x logmi"),
     coef    = mapply(function(m, nm) coef(m)[nm], mods, regnms),
     se      = mapply(function(m, nm)
                        sqrt(diag(vcov(m, cluster = ~dname)))[nm], mods, regnms),
@@ -170,9 +177,9 @@ summarise_quad <- function(q, label) {
 
 if (n_years > 1) {
   fs_summary <- bind_rows(
-    summarise_quad(q_remit, "log(remit+1)"),
-    summarise_quad(q_sent,  "remit_sent_flag"),
-    summarise_quad(q_earn,  "log(earn_primary+1)")
+    summarise_quint(q_remit, "log(remit+1)"),
+    summarise_quint(q_sent,  "remit_sent_flag"),
+    summarise_quint(q_earn,  "log(earn_primary+1)")
   )
 } else {
   mods <- list(m1, m1c, m2, m3)

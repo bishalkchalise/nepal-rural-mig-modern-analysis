@@ -106,27 +106,33 @@ if (length(unmatched) > 0) {
 # 3. First-stage regressions: permits on SSIV shifters
 # ------------------------------------------------------------------------------
 
-# Four specs side-by-side:
-#   m1 : bare fxshock (2001 census shares)
-#   m2 : fxshock * log(mig_int) interaction (matches the second-stage spec)
-#   m3 : bare fxshock_dofe (2009-2010 DOFE share baseline)
-#   m4 : fxshock_dofe * log(mig_int) interaction
-m1 <- feols(log_permits ~ fxshock          | dname + year,
+# Five specs side-by-side:
+#   m1 : bare fxshock_2001
+#   m2 : fxshock_2001 x log(mig_int) interaction only
+#   m3 : fxshock_2001 x log(mig_int) + i(year,log_mig_int) + i(year,fxshock)   [slide full spec]
+#   m4 : bare fxshock_dofe (2009-2010 DOFE share baseline)
+#   m5 : fxshock_dofe x log(mig_int) interaction only
+m1 <- feols(log_permits ~ fxshock                                | dname + year,
             data = fs_df, cluster = ~dname)
-m2 <- feols(log_permits ~ fx_x_logmi       | dname + year,
+m2 <- feols(log_permits ~ fx_x_logmi                             | dname + year,
             data = fs_df, cluster = ~dname)
-m3 <- feols(log_permits ~ fxshock_dofe     | dname + year,
+m3 <- feols(log_permits ~ fx_x_logmi + i(year, log_mig_int) + i(year, fxshock)
+            | dname + year,
             data = fs_df, cluster = ~dname)
-m4 <- feols(log_permits ~ fxdofe_x_logmi   | dname + year,
+m4 <- feols(log_permits ~ fxshock_dofe                           | dname + year,
+            data = fs_df, cluster = ~dname)
+m5 <- feols(log_permits ~ fxdofe_x_logmi                         | dname + year,
             data = fs_df, cluster = ~dname)
 
-cat("\n=== First-stage: log(DOFE permits + 1) on fxshock (4 specs) ===\n")
-print(etable(m1, m2, m3, m4,
+cat("\n=== First-stage: log(DOFE permits + 1) on fxshock (5 specs) ===\n")
+print(etable(m1, m2, m3, m4, m5,
              cluster = ~dname,
-             headers = c("fxshock_2001",
-                         "fxshock_2001 x logmi",
-                         "fxshock_dofe",
-                         "fxshock_dofe x logmi"),
+             headers = c("fx_2001",
+                         "fx_2001 x logmi",
+                         "fx_2001 x logmi FULL",
+                         "fx_dofe",
+                         "fx_dofe x logmi"),
+             keep = "%fx",   # show only fxshock-related coefs
              digits  = 4,
              fitstat = c("n", "r2", "wr2")))
 
@@ -137,22 +143,23 @@ print(etable(m1, m2, m3, m4,
 dir.create("district-analysis/output/tab", recursive = TRUE,
            showWarnings = FALSE)
 
-mods <- list(m1, m2, m3, m4)
+mods    <- list(m1, m2, m3, m4, m5)
+regnms  <- c("fxshock", "fx_x_logmi", "fx_x_logmi",
+             "fxshock_dofe", "fxdofe_x_logmi")
 fs_summary <- tibble(
-  spec      = c("fxshock_2001",
-                "fxshock_2001 x logmi",
-                "fxshock_dofe",
-                "fxshock_dofe x logmi"),
-  coef      = sapply(mods, function(m) coef(m)[1]),
-  se        = sapply(mods,
-                     function(m) sqrt(diag(vcov(m, cluster = ~dname)))[1]),
+  spec      = c("fx_2001",
+                "fx_2001 x logmi",
+                "fx_2001 x logmi FULL",
+                "fx_dofe",
+                "fx_dofe x logmi"),
+  coef      = mapply(function(m, nm) coef(m)[nm], mods, regnms),
+  se        = mapply(function(m, nm)
+                       sqrt(diag(vcov(m, cluster = ~dname)))[nm], mods, regnms),
   n_obs     = sapply(mods, nobs),
   r2_within = sapply(mods, function(m) fitstat(m, "wr2", simplify = TRUE))
 ) %>%
-  mutate(
-    t_stat = coef / se,
-    p_val  = 2 * pnorm(-abs(t_stat))
-  )
+  mutate(t_stat = coef / se,
+         p_val  = 2 * pnorm(-abs(t_stat)))
 
 write.csv(fs_summary,
           "district-analysis/output/tab/first_stage_dofe.csv",

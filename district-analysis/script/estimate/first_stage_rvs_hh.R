@@ -118,37 +118,37 @@ cat(sprintf(
 
 n_years <- length(unique(fs_df$year))
 
-run_quad <- function(outcome) {
-  fit <- function(regressor) {
-    f <- as.formula(paste0(outcome, " ~ ", regressor, " | dname + year"))
+run_quint <- function(outcome) {
+  fit <- function(rhs) {
+    f <- as.formula(paste0(outcome, " ~ ", rhs, " | dname + year"))
     feols(f, data = fs_df, cluster = ~dname)
   }
   list(
     bare_2001  = fit("fxshock"),
     inter_2001 = fit("fx_x_logmi"),
+    full_2001  = fit("fx_x_logmi + i(year, log_mig_int) + i(year, fxshock)"),
     bare_dofe  = fit("fxshock_dofe"),
     inter_dofe = fit("fxdofe_x_logmi")
   )
 }
 
 if (n_years > 1) {
-  q_n     <- run_quad("log_n_intl_migrants")
-  q_remit <- run_quad("log_remit_intl")
+  q_n     <- run_quint("log_n_intl_migrants")
+  q_remit <- run_quint("log_remit_intl")
 
-  cat("\n=== HH-level first-stage: log(n_intl_migrants+1) ===\n")
-  print(etable(q_n$bare_2001, q_n$inter_2001, q_n$bare_dofe, q_n$inter_dofe,
-               cluster = ~dname,
-               headers = c("fx_2001", "fx_2001 x logmi",
-                           "fx_dofe", "fx_dofe x logmi"),
-               digits = 4, fitstat = c("n", "r2", "wr2")))
-
-  cat("\n=== HH-level first-stage: log(remit_intl+1) ===\n")
-  print(etable(q_remit$bare_2001, q_remit$inter_2001,
-               q_remit$bare_dofe, q_remit$inter_dofe,
-               cluster = ~dname,
-               headers = c("fx_2001", "fx_2001 x logmi",
-                           "fx_dofe", "fx_dofe x logmi"),
-               digits = 4, fitstat = c("n", "r2", "wr2")))
+  print_etab <- function(q, lbl) {
+    cat(sprintf("\n=== HH-level first-stage: %s ===\n", lbl))
+    print(etable(q$bare_2001, q$inter_2001, q$full_2001,
+                 q$bare_dofe, q$inter_dofe,
+                 cluster = ~dname,
+                 headers = c("fx_2001", "fx_2001 x logmi",
+                             "fx_2001 x logmi FULL",
+                             "fx_dofe", "fx_dofe x logmi"),
+                 keep = "%fx",
+                 digits = 4, fitstat = c("n", "r2", "wr2")))
+  }
+  print_etab(q_n,     "log(n_intl_migrants+1)")
+  print_etab(q_remit, "log(remit_intl+1)")
 } else {
   # Single wave: dname FE alone collapses (perfect collinearity), so use
   # cross-section with log_pop control, HC1 SE.
@@ -172,12 +172,15 @@ if (n_years > 1) {
 dir.create("district-analysis/output/tab",
            recursive = TRUE, showWarnings = FALSE)
 
-summarise_quad <- function(quad, outcome_label) {
-  mods    <- list(quad$bare_2001, quad$inter_2001, quad$bare_dofe, quad$inter_dofe)
-  regnms  <- c("fxshock", "fx_x_logmi", "fxshock_dofe", "fxdofe_x_logmi")
+summarise_quint <- function(q, outcome_label) {
+  mods   <- list(q$bare_2001, q$inter_2001, q$full_2001,
+                 q$bare_dofe, q$inter_dofe)
+  regnms <- c("fxshock", "fx_x_logmi", "fx_x_logmi",
+              "fxshock_dofe", "fxdofe_x_logmi")
   tibble(
     outcome = outcome_label,
-    spec    = c("fx_2001", "fx_2001 x logmi", "fx_dofe", "fx_dofe x logmi"),
+    spec    = c("fx_2001", "fx_2001 x logmi", "fx_2001 x logmi FULL",
+                "fx_dofe", "fx_dofe x logmi"),
     coef    = mapply(function(m, nm) coef(m)[nm], mods, regnms),
     se      = mapply(function(m, nm)
                        sqrt(diag(vcov(m, cluster = ~dname)))[nm], mods, regnms),
@@ -190,8 +193,8 @@ summarise_quad <- function(quad, outcome_label) {
 
 if (n_years > 1) {
   fs_summary <- bind_rows(
-    summarise_quad(q_n,     "log(n_intl_migrants+1)"),
-    summarise_quad(q_remit, "log(remit_intl+1)")
+    summarise_quint(q_n,     "log(n_intl_migrants+1)"),
+    summarise_quint(q_remit, "log(remit_intl+1)")
   )
 } else {
   fs_summary <- tibble(
