@@ -95,24 +95,20 @@ if (length(unmatched) > 0) {
 # 3. First-stage regressions: permits on SSIV shifters
 # ------------------------------------------------------------------------------
 
+# Each spec is a fxshock-weighted level shifter (share-weighted, share-shock,
+# or per-capita absolute exposure). YoY / decadal variants intentionally
+# excluded - the level form is the headline specification.
 m1 <- feols(log_permits ~ ssiv_index_2001        | dname + year,
             data = fs_df, cluster = ~dname)
-m2 <- feols(log_permits ~ ssiv_log_yoy           | dname + year,
+m2 <- feols(log_permits ~ shareshock_index_2001  | dname + year,
             data = fs_df, cluster = ~dname)
-m3 <- feols(log_permits ~ shareshock_index_2001  | dname + year,
-            data = fs_df, cluster = ~dname)
-m4 <- feols(log_permits ~ shareshock_log_yoy     | dname + year,
-            data = fs_df, cluster = ~dname)
-m5 <- feols(log_permits ~ absexp_index_2001      | dname + year,
-            data = fs_df, cluster = ~dname)
-m6 <- feols(log_permits ~ absexp_log_yoy         | dname + year,
+m3 <- feols(log_permits ~ absexp_index_2001      | dname + year,
             data = fs_df, cluster = ~dname)
 
-cat("\n=== First-stage: log(DOFE permits + 1) on SSIV shifters ===\n")
-etable(m1, m2, m3, m4, m5, m6,
+cat("\n=== First-stage: log(DOFE permits + 1) on SSIV level shifters ===\n")
+etable(m1, m2, m3,
        cluster = ~dname,
-       headers = c("ssiv_lvl", "ssiv_yoy", "share_lvl",
-                   "share_yoy", "abs_lvl",  "abs_yoy"),
+       headers = c("ssiv_index", "shareshock_index", "absexp_index"),
        digits = 4, fitstat = c("n", "r2", "wr2"))
 
 # ------------------------------------------------------------------------------
@@ -123,15 +119,15 @@ dir.create("district-analysis/output/tab", recursive = TRUE,
            showWarnings = FALSE)
 
 fs_summary <- tibble(
-  spec       = c("ssiv_index_2001", "ssiv_log_yoy",
-                 "shareshock_index_2001", "shareshock_log_yoy",
-                 "absexp_index_2001", "absexp_log_yoy"),
-  coef       = sapply(list(m1, m2, m3, m4, m5, m6),
+  spec       = c("ssiv_index_2001",
+                 "shareshock_index_2001",
+                 "absexp_index_2001"),
+  coef       = sapply(list(m1, m2, m3),
                       function(m) coef(m)[1]),
-  se         = sapply(list(m1, m2, m3, m4, m5, m6),
+  se         = sapply(list(m1, m2, m3),
                       function(m) sqrt(diag(vcov(m, cluster = ~dname)))[1]),
-  n_obs      = sapply(list(m1, m2, m3, m4, m5, m6), nobs),
-  r2_within  = sapply(list(m1, m2, m3, m4, m5, m6),
+  n_obs      = sapply(list(m1, m2, m3), nobs),
+  r2_within  = sapply(list(m1, m2, m3),
                       function(m) fitstat(m, "wr2", simplify = TRUE))
 ) %>%
   mutate(
