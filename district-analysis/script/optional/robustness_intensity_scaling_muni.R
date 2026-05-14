@@ -1,36 +1,40 @@
 ################################################################################
 #
-# ROBUSTNESS: intensity scaling for the MUNICIPALITY second-stage
+# MUNI ROBUSTNESS: per-thousand scaling within the published S1/S2/S3 grid
 # ------------------------------------------------------------------------------
-# Mirrors the OLD muni `build_results.R` skeleton exactly (lags, shock variants,
-# control sets, asinh transform, z-scoring), but adds a robustness dimension:
-# how the intensity variable in the `mi` control is scaled.
+# Mirrors the methods documented on the published portal:
 #
-# Note on the OLD muni structure:
-#   Headline shock        : ssiv_index_2001 (per-capita; intensity is baked in
-#                            LINEARLY -- ssiv = shareshock x mig_int_linear)
-#   Intensity in controls : log_mi = asinh(geog_intensity_2001)
-#   Shock variants        : ssiv_index, ssiv_w99 (winsorized 99%)
-#   Lags                  : 0, 1, 2 years
-#   Control sets          : none, mi, khanna_full
+#   S1 : y = alpha*fxshock + beta*(fxshock x mig_intensity)
+#                          + alpha_i + gamma_t + eps                 [no controls]
+#   S2 : y = alpha*fxshock + beta*(fxshock x LOG(mig_intensity))
+#                          + lambda*(mig_intensity x tau_t)
+#                          + alpha_i + gamma_t + eps                 [main spec]
+#   S3 : y = alpha*fxshock + beta*(fxshock x mig_intensity)
+#                          + lambda*(LOG(mig_intensity) x tau_t)
+#                          + alpha_i + gamma_t + eps
 #
-# Robustness dimension added here -- the scaling of mig_int in the `mi`
-# control term:
+# Plus:
+#   - Sample threshold k in {0, 25, 50, 100} total migrants in 2001
+#   - Lags: 0, 1, 2
+#   - Each treatment term z-scored on the working sample
+#   - FE: lgcode + year, cluster ~lgcode
 #
-#   asinh(mi)            old muni default
-#   log(1000   * mi)     per-thousand log
-#   log(100000 * mi)     per-100k log (uniformly positive in muni data)
-#   mi_linear            no transform, just intensity
+# Robustness dimension added: the scaling of mig_intensity in BOTH the
+# main interaction (S2) and the year-trend control (S2, S3):
 #
-# Inputs (archived muni paths) :
-#   - data/clean/instrument/instrument_mun.csv
-#   - data/clean/census/census_outcomes_municipality.csv
+#   "log(mi)"             portal default for S2 main interaction
+#   "log(1000 * mi)"      per-thousand log
+#   "log(100000 * mi)"    per-100k log (uniformly positive)
+#   "asinh(mi)"           old build_results.R helper
 #
-# Output :
-#   - data/clean/robustness_intensity_scaling_muni.csv
-#     (one row per outcome x lag x shock x control set x mi-scaling)
+# In S2 the math says swapping log(mi) -> log(1000*mi) is absorbed by the
+# alpha*fxshock term, so beta should be unchanged. This script empirically
+# verifies that.
 #
-# Run from the original (municipality-era) project root.
+# Output:
+#   data/clean/robustness_intensity_scaling_muni.csv
+#
+# Run from the muni-era project root (NOT under district-analysis/).
 #
 ################################################################################
 
@@ -44,36 +48,23 @@ suppressPackageStartupMessages({
 })
 
 # ------------------------------------------------------------------------------
-# Configuration (matches build_results.R from main)
+# 1. Config (matches portal)
 # ------------------------------------------------------------------------------
 
-REF_YEAR <- 2011
-YEARS    <- c(2001, 2011, 2021)   # drop 2001 below
+REF_YEAR     <- 2001
+PANEL_YEARS  <- c(2001, 2011, 2021)   # drop 2001 below since SSIV=1 there
+THRESHOLDS   <- c(0, 25, 50, 100)
+LAGS         <- c(0L, 1L, 2L)
 
-LAGS <- list(
-  lag0 = 0L,
-  lag1 = 1L,
-  lag2 = 2L
-)
+SPECS <- c("S1", "S2", "S3")
 
-SHOCKS <- list(
-  ssiv_index = "ssiv_index_2001",
-  ssiv_w99   = "ssiv_w99"
-)
-
-CONTROL_SETS <- c("none", "mi", "khanna_full")
-
-# Baseline X (must match the columns present in census_outcomes_municipality)
-BASE_X_DEV <- c("amen_lighting_electricity", "amen_water_piped",
-                "ent_has_nonagro",           "head_age_mean", "edu_literate")
-BASE_X_IND <- c("work_share_agriculture", "ind_manufacturing", "flfp_all")
-BASE_X_BIG <- c(BASE_X_DEV, BASE_X_IND)
-
-INTENSITY_SCALINGS <- list(
-  "asinh(mi)        [OLD default]" = function(x) asinh(x),
-  "log(1000 * mi)"                 = function(x) log(pmax(1000   * x, 1e-12)),
-  "log(100000 * mi)"               = function(x) log(pmax(100000 * x, 1e-12)),
-  "mi_linear"                      = function(x) x
+# How to build the LOG transform of mig_intensity. The portal uses log(mi);
+# the robustness sweeps four variants.
+LOG_VARIANTS <- list(
+  "log(mi)"        = function(x) log(pmax(x,         1e-12)),
+  "log(1000*mi)"   = function(x) log(pmax(x * 1e3,   1e-12)),
+  "log(100000*mi)" = function(x) log(pmax(x * 1e5,   1e-12)),
+  "asinh(mi)"      = function(x) asinh(x)
 )
 
 OUTCOMES <- c(
@@ -85,7 +76,7 @@ OUTCOMES <- c(
 )
 
 # ------------------------------------------------------------------------------
-# Load
+# 2. Load
 # ------------------------------------------------------------------------------
 
 instrument <- read.csv(
@@ -96,88 +87,94 @@ outcomes_df <- read.csv(
   "data/clean/census/census_outcomes_municipality.csv",
   stringsAsFactors = FALSE
 )
-
 OUTCOMES <- intersect(OUTCOMES, names(outcomes_df))
-cat(sprintf("Outcomes available: %d\n  %s\n",
-            length(OUTCOMES), paste(OUTCOMES, collapse = ", ")))
+cat(sprintf("Outcomes available: %d\n", length(OUTCOMES)))
 
 # ------------------------------------------------------------------------------
-# Panel builder (mirrors build_results.R::build_panel())
+# 3. Helpers
 # ------------------------------------------------------------------------------
 
-build_panel <- function(lag_yrs, intensity_fn) {
+zscore <- function(x) {
+  s <- sd(x, na.rm = TRUE)
+  if (is.na(s) || s == 0) return(rep(0, length(x)))
+  (x - mean(x, na.rm = TRUE)) / s
+}
+
+build_panel <- function(lag_yrs, k_thresh, log_fn) {
+  # Lag the instrument
   inst_lag <- instrument %>%
     mutate(year = year + lag_yrs)
 
   p <- outcomes_df %>%
     inner_join(inst_lag, by = c("lgcode", "year")) %>%
-    filter(year %in% YEARS, year != 2001)
+    filter(year %in% PANEL_YEARS, year != 2001)
+
+  # Threshold: drop munis with fewer than k total 2001 migrants
+  p$geog_total_mig_2001 <- replace_na(p$geog_total_mig_2001, 0)
+  if (k_thresh > 0) {
+    p <- p %>% filter(geog_total_mig_2001 >= k_thresh)
+  }
+  if (nrow(p) == 0) return(NULL)
 
   p$geog_intensity_2001 <- replace_na(p$geog_intensity_2001, 0)
-  p$log_mi              <- intensity_fn(p$geog_intensity_2001)
+  p$log_mi              <- log_fn(p$geog_intensity_2001)
 
-  # Winsorized SSIV at 99th percentile
-  hi          <- quantile(p$ssiv_index_2001, 0.99, na.rm = TRUE)
-  p$ssiv_w99  <- pmin(p$ssiv_index_2001, hi)
+  # z-score the building blocks on the working sample
+  p$fxshock_z    <- zscore(p$fxshock)
+  p$mi_z         <- zscore(p$geog_intensity_2001)
+  p$log_mi_z     <- zscore(p$log_mi)
 
-  # Standardize each shock
-  for (k in names(SHOCKS)) {
-    col <- SHOCKS[[k]]
-    sd_ <- sd(p[[col]], na.rm = TRUE)
-    p[[paste0(k, "_z")]] <- if (!is.na(sd_) && sd_ > 0)
-      (p[[col]] - mean(p[[col]], na.rm = TRUE)) / sd_ else 0
-  }
+  # Interaction terms
+  p$inter_lin    <- p$fxshock_z * p$mi_z
+  p$inter_log    <- p$fxshock_z * p$log_mi_z
+  # Don't re-z-score the products themselves -- the portal z-scores the
+  # building blocks before estimation, not the interaction.
 
-  # year × X interactions
-  other_years  <- setdiff(YEARS, REF_YEAR)
-  other_years  <- other_years[other_years != 2001]
-  base_present <- intersect(paste0(BASE_X_BIG, "_2001"), names(p))
-
+  # year × control terms
+  other_years <- setdiff(unique(p$year), REF_YEAR)
   for (y in other_years) {
     ind <- as.integer(p$year == y)
-    p[[paste0("mi_x_",         y)]] <- p$log_mi                  * ind
-    p[[paste0("shareshock_x_", y)]] <- p$shareshock_index_2001   * ind
-    for (c in base_present) {
-      v <- replace_na(p[[c]], mean(p[[c]], na.rm = TRUE))
-      p[[paste0(c, "_x_", y)]] <- v * ind
-    }
+    p[[paste0("mi_z_x_",      y)]] <- p$mi_z      * ind
+    p[[paste0("log_mi_z_x_",  y)]] <- p$log_mi_z  * ind
   }
 
-  list(panel = p, other_years = other_years, base_present = base_present)
+  list(panel = p, other_years = other_years)
 }
 
-control_cols <- function(tag, other_years, base_present, panel_cols) {
-  cols <- character(0)
-  if (tag == "none") return(cols)
-  if (tag %in% c("mi", "khanna_full"))
-    cols <- c(cols, paste0("mi_x_", other_years))
-  if (tag == "khanna_full") {
-    cols <- c(cols, paste0("shareshock_x_", other_years))
-    full <- as.vector(outer(base_present, other_years,
-                            function(c, y) paste0(c, "_x_", y)))
-    cols <- c(cols, intersect(full, panel_cols))
-  }
-  cols
-}
-
-fit_one <- function(df, y, shock_z, controls) {
+fit_spec <- function(df, y, spec, other_years) {
   d <- df[!is.na(df[[y]]), ]
   if (length(unique(d[[y]])) < 2 || nrow(d) < 50) return(NULL)
-  rhs_terms <- c(shock_z, controls[controls %in% names(d)])
-  fml <- as.formula(paste0("`", y, "` ~ ",
-                           paste0("`", rhs_terms, "`", collapse = " + "),
-                           " | lgcode + year"))
+
+  base_rhs <- c("fxshock_z")
+  if (spec == "S1") {
+    main      <- "inter_lin"
+    ctrl_cols <- character(0)
+  } else if (spec == "S2") {
+    main      <- "inter_log"
+    ctrl_cols <- paste0("mi_z_x_", other_years)
+  } else if (spec == "S3") {
+    main      <- "inter_lin"
+    ctrl_cols <- paste0("log_mi_z_x_", other_years)
+  } else stop("unknown spec: ", spec)
+
+  rhs_terms <- c(base_rhs, main, ctrl_cols[ctrl_cols %in% names(d)])
+  fml <- as.formula(paste0(
+    "`", y, "` ~ ", paste0("`", rhs_terms, "`", collapse = " + "),
+    " | lgcode + year"
+  ))
   m <- tryCatch(
     feols(fml, data = d, cluster = "lgcode", warn = FALSE, notes = FALSE),
     error = function(e) e
   )
   if (inherits(m, "error")) return(list(err = substr(conditionMessage(m), 1, 80)))
+
   ct <- m$coeftable
-  if (!shock_z %in% rownames(ct)) return(list(err = "shock absorbed"))
+  if (!main %in% rownames(ct)) return(list(err = "main term absorbed"))
+
   list(
-    beta      = unname(ct[shock_z, "Estimate"]),
-    se        = unname(ct[shock_z, "Std. Error"]),
-    pval      = unname(ct[shock_z, "Pr(>|t|)"]),
+    beta      = unname(ct[main, "Estimate"]),
+    se        = unname(ct[main, "Std. Error"]),
+    pval      = unname(ct[main, "Pr(>|t|)"]),
     n         = nrow(d),
     n_mun     = length(unique(d$lgcode)),
     mean_y    = mean(d[[y]], na.rm = TRUE),
@@ -185,64 +182,66 @@ fit_one <- function(df, y, shock_z, controls) {
   )
 }
 
+stars <- function(p) {
+  if (is.na(p)) ""
+  else if (p < 0.01) "***"
+  else if (p < 0.05) "**"
+  else if (p < 0.10) "*"
+  else ""
+}
+
 # ------------------------------------------------------------------------------
-# Loop over the full grid
+# 4. Loop
 # ------------------------------------------------------------------------------
 
 cat(sprintf(
-  "Running %d outcomes x %d lags x %d shocks x %d controls x %d mi-scalings = %d cells\n",
-  length(OUTCOMES), length(LAGS), length(SHOCKS), length(CONTROL_SETS),
-  length(INTENSITY_SCALINGS),
-  length(OUTCOMES) * length(LAGS) * length(SHOCKS) *
-    length(CONTROL_SETS) * length(INTENSITY_SCALINGS)
+  "Grid: %d outcomes x %d lags x %d thresholds x %d log-variants x %d specs = %d cells\n",
+  length(OUTCOMES), length(LAGS), length(THRESHOLDS),
+  length(LOG_VARIANTS), length(SPECS),
+  length(OUTCOMES) * length(LAGS) * length(THRESHOLDS) *
+    length(LOG_VARIANTS) * length(SPECS)
 ))
 
-rows <- list()
-i <- 0L
+rows <- list(); i <- 0L
 
-for (lag_key in names(LAGS)) {
-  for (mi_label in names(INTENSITY_SCALINGS)) {
-    bp <- build_panel(LAGS[[lag_key]], INTENSITY_SCALINGS[[mi_label]])
-    df <- bp$panel
-    for (shock_key in names(SHOCKS)) {
-      shock_z <- paste0(shock_key, "_z")
-      for (ctrl_key in CONTROL_SETS) {
-        cc <- control_cols(ctrl_key, bp$other_years, bp$base_present, names(df))
+for (lag_v in LAGS) {
+  for (k in THRESHOLDS) {
+    for (log_label in names(LOG_VARIANTS)) {
+      bp <- build_panel(lag_v, k, LOG_VARIANTS[[log_label]])
+      if (is.null(bp)) next
+      df <- bp$panel
+      for (spec in SPECS) {
+        # S1 is invariant to the log-variant (no log term anywhere).
+        # Still recorded for completeness so each (k, lag, log_label, spec)
+        # has an entry, but the S1 values will be identical across log labels.
         for (y in OUTCOMES) {
-          r <- fit_one(df, y, shock_z, cc)
+          r <- fit_spec(df, y, spec, bp$other_years)
           i <- i + 1L
-          row <- tibble(
-            outcome       = y,
-            lag           = lag_key,
-            shock         = shock_key,
-            controls      = ctrl_key,
-            mi_scaling    = mi_label,
-            beta          = if (!is.null(r) && is.null(r$err)) r$beta else NA_real_,
-            se            = if (!is.null(r) && is.null(r$err)) r$se   else NA_real_,
-            t_stat        = if (!is.null(r) && is.null(r$err)) r$beta / r$se else NA_real_,
-            p_val         = if (!is.null(r) && is.null(r$err)) r$pval else NA_real_,
-            n_obs         = if (!is.null(r) && is.null(r$err)) r$n    else NA_integer_,
-            n_mun         = if (!is.null(r) && is.null(r$err)) r$n_mun else NA_integer_,
-            mean_y        = if (!is.null(r) && is.null(r$err)) r$mean_y else NA_real_,
-            r2_within     = if (!is.null(r) && is.null(r$err)) r$r2_within else NA_real_,
-            note          = if (!is.null(r) && !is.null(r$err)) r$err else ""
+          rows[[i]] <- tibble(
+            outcome     = y,
+            spec        = spec,
+            lag         = lag_v,
+            threshold   = k,
+            log_variant = log_label,
+            beta        = if (!is.null(r) && is.null(r$err)) r$beta else NA_real_,
+            se          = if (!is.null(r) && is.null(r$err)) r$se   else NA_real_,
+            t_stat      = if (!is.null(r) && is.null(r$err)) r$beta / r$se else NA_real_,
+            p_val       = if (!is.null(r) && is.null(r$err)) r$pval else NA_real_,
+            sig         = if (!is.null(r) && is.null(r$err)) stars(r$pval) else "",
+            n_obs       = if (!is.null(r) && is.null(r$err)) r$n    else NA_integer_,
+            n_mun       = if (!is.null(r) && is.null(r$err)) r$n_mun else NA_integer_,
+            mean_y      = if (!is.null(r) && is.null(r$err)) r$mean_y else NA_real_,
+            r2_within   = if (!is.null(r) && is.null(r$err)) r$r2_within else NA_real_,
+            note        = if (!is.null(r) && !is.null(r$err)) r$err else ""
           )
-          rows[[i]] <- row
         }
       }
+      cat(sprintf("  done: lag=%d, k=%d, log=%s\n", lag_v, k, log_label))
     }
-    cat(sprintf("  done: lag=%s, mi_scaling=%s\n", lag_key, mi_label))
   }
 }
 
-results <- bind_rows(rows) %>%
-  mutate(sig = case_when(
-    is.na(p_val)  ~ "",
-    p_val < 0.01  ~ "***",
-    p_val < 0.05  ~ "**",
-    p_val < 0.1   ~ "*",
-    TRUE          ~ ""
-  ))
+results <- bind_rows(rows)
 
 write.csv(results,
           "data/clean/robustness_intensity_scaling_muni.csv",
@@ -251,14 +250,28 @@ write.csv(results,
 cat(sprintf("\nSaved: data/clean/robustness_intensity_scaling_muni.csv (%d rows)\n",
             nrow(results)))
 
-# Quick console preview: how sign / sig of the main shock changes across
-# mi-scalings, for lag=0 main spec, no controls vs full controls
-cat("\n=== PREVIEW (lag=0, shock=ssiv_index): is sign/sig stable across mi-scaling? ===\n")
+# ------------------------------------------------------------------------------
+# 5. Preview the headline robustness question
+# ------------------------------------------------------------------------------
+# Within (outcome, lag, threshold, spec), how does beta change across the
+# four log-variants? In S2 the math says it should be ~identical.
+
+cat("\n=== S2 stability across log-variants (lag=0, k=0) ===\n")
 print(
   results %>%
-    filter(lag == "lag0", shock == "ssiv_index") %>%
-    select(outcome, controls, mi_scaling, beta, t_stat, sig) %>%
+    filter(spec == "S2", lag == 0, threshold == 0) %>%
+    select(outcome, log_variant, beta, t_stat, sig) %>%
     mutate(beta = round(beta, 4), t_stat = round(t_stat, 2)) %>%
-    arrange(outcome, controls, mi_scaling) %>%
+    pivot_wider(names_from = log_variant, values_from = c(beta, t_stat, sig)) %>%
+    as.data.frame()
+)
+
+cat("\n=== S3 stability across log-variants (lag=0, k=0) ===\n")
+print(
+  results %>%
+    filter(spec == "S3", lag == 0, threshold == 0) %>%
+    select(outcome, log_variant, beta, t_stat, sig) %>%
+    mutate(beta = round(beta, 4), t_stat = round(t_stat, 2)) %>%
+    pivot_wider(names_from = log_variant, values_from = c(beta, t_stat, sig)) %>%
     as.data.frame()
 )
