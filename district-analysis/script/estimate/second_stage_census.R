@@ -118,11 +118,19 @@ run_rf <- function(outcome_vec, group_name, data = panel_df) {
     )
   })
 
-  # Quick console table
+  # Quick console table with stars
   print(results %>%
           mutate(across(c(coef, se, t_stat, mean_y), ~ round(., 4)),
-                 p_val = round(p_val, 4)) %>%
-          select(outcome, n_obs, coef, se, t_stat, p_val, mean_y))
+                 p_val = round(p_val, 4),
+                 sig   = case_when(
+                   is.na(p_val) ~ "",
+                   p_val < 0.001 ~ "***",
+                   p_val < 0.01  ~ "**",
+                   p_val < 0.05  ~ "*",
+                   p_val < 0.1   ~ ".",
+                   TRUE          ~ ""
+                 )) %>%
+          select(outcome, n_obs, coef, se, t_stat, p_val, sig, mean_y))
 
   results
 }
@@ -151,7 +159,15 @@ groups <- list(
 all_results <- map_dfr(
   names(groups),
   ~ run_rf(unname(groups[[.x]]), group_name = .x)
-)
+) %>%
+  mutate(sig = case_when(
+    is.na(p_val) ~ "",
+    p_val < 0.001 ~ "***",
+    p_val < 0.01  ~ "**",
+    p_val < 0.05  ~ "*",
+    p_val < 0.1   ~ ".",
+    TRUE          ~ ""
+  ))
 
 # ------------------------------------------------------------------------------
 # 5. Save
