@@ -106,10 +106,10 @@ m3 <- feols(log_permits ~ absexp_index_2001      | dname + year,
             data = fs_df, cluster = ~dname)
 
 cat("\n=== First-stage: log(DOFE permits + 1) on SSIV level shifters ===\n")
-etable(m1, m2, m3,
-       cluster = ~dname,
-       headers = c("ssiv_index", "shareshock_index", "absexp_index"),
-       digits = 4, fitstat = c("n", "r2", "wr2"))
+print(etable(m1, m2, m3,
+             cluster = ~dname,
+             headers = c("ssiv_index", "shareshock_index", "absexp_index"),
+             digits = 4, fitstat = c("n", "r2", "wr2")))
 
 # ------------------------------------------------------------------------------
 # 4. Save coefficient table to output/tab/

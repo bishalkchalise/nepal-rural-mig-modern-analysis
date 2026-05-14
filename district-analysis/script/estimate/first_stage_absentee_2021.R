@@ -59,10 +59,10 @@ m6 <- feols(log_absentees ~ absexp_index_2001     + log_pop_2001,
             data = cs_df, se = "hetero")
 
 cat("\n=== First-stage: log(2021 non-India absentees + 1) on SSIV level shifters ===\n")
-etable(m1, m2, m3, m4, m5, m6,
-       headers = c("ssiv", "share", "abs",
-                   "ssiv+pop", "share+pop", "abs+pop"),
-       digits = 4, fitstat = c("n", "r2"))
+print(etable(m1, m2, m3, m4, m5, m6,
+             headers = c("ssiv", "share", "abs",
+                         "ssiv+pop", "share+pop", "abs+pop"),
+             digits = 4, fitstat = c("n", "r2")))
 
 # Save coefficient table
 dir.create("district-analysis/output/tab",
