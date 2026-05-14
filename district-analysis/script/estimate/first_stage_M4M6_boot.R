@@ -136,8 +136,7 @@ fit_one <- function(df, outcome, level, entity_col) {
 
 # Wild cluster bootstrap on residuals -------------------------------------
 wild_boot <- function(df, outcome, level, entity_col, B = B_BOOT) {
-  # Pre-filter to complete cases on every variable that enters the model so
-  # fitted.values / residuals align with the analysis sample.
+  # Drop rows that are NA on anything that will enter the model.
   rhs_cols <- c("treatment", "fx_z", "log_mi_z")
   if (level >= 6) rhs_cols <- c(rhs_cols, REGION_COLS)
   df <- df[complete.cases(df[, c(outcome, rhs_cols, entity_col, "year"),
@@ -152,18 +151,14 @@ wild_boot <- function(df, outcome, level, entity_col, B = B_BOOT) {
   seh <- ct["treatment","Std. Error"]
   pcl <- ct["treatment","Pr(>|t|)"]
 
-  # residuals + fitted (lengths now match df after pre-filter)
-  fitted_v <- fitted(fit)
-  resid_v  <- residuals(fit)
-  if (length(fitted_v) != nrow(df)) {
-    # Defensive: if fixest still dropped rows, drop them in df too.
-    used_idx <- as.integer(names(fitted_v))
-    if (!is.null(used_idx) && length(used_idx) > 0)
-      df <- df[used_idx, , drop = FALSE]
-  }
-  d <- df
-  d$.yhat <- as.numeric(fitted_v)
-  d$.e    <- as.numeric(resid_v)
+  # fixest may drop singleton-FE rows on top of NA drops -- use predict() so
+  # yhat aligns row-for-row with df.  Then drop the rows fixest didn't use.
+  yhat <- as.numeric(predict(fit, newdata = df))
+  e    <- df[[outcome]] - yhat
+  keep <- !is.na(yhat) & !is.na(e)
+  d    <- df[keep, , drop = FALSE]
+  d$.yhat <- yhat[keep]
+  d$.e    <- e[keep]
   ents    <- unique(d[[entity_col]])
 
   bs <- numeric(B)
