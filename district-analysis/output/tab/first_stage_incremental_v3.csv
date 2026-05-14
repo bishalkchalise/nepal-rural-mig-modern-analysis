@@ -1,0 +1,13 @@
+spec,config,beta,t,sig,p_val,n
+C1 bare,2001 share + 2001 mi (pop_2001),0.0311,2.34,**,0.0196,1110
+C1 bare,DOFE share + 2001 mi (pop_2001),0.0458,2.8,***,0.0053,1110
+C1 bare,DOFE share + DOFE mi (pop_2011),0.109,7.34,***,0.0,1110
+C2 +c_mig,2001 share + 2001 mi (pop_2001),0.1238,1.43,,0.1524,1110
+C2 +c_mig,DOFE share + 2001 mi (pop_2001),-0.2422,-3.01,***,0.0027,1110
+C2 +c_mig,DOFE share + DOFE mi (pop_2011),-0.2407,-2.52,**,0.012,1110
+C3 +c_fx,2001 share + 2001 mi (pop_2001),0.0664,0.57,,0.5663,1110
+C3 +c_fx,DOFE share + 2001 mi (pop_2001),-0.2573,-2.9,***,0.0038,1110
+C3 +c_fx,DOFE share + DOFE mi (pop_2011),-0.2313,-2.31,**,0.0209,1110
+C4 +X,2001 share + 2001 mi (pop_2001),0.0659,0.49,,0.6273,1110
+C4 +X,DOFE share + 2001 mi (pop_2001),-0.217,-2.07,**,0.0391,1110
+C4 +X,DOFE share + DOFE mi (pop_2011),-0.1764,-1.9,*,0.0579,1110

@@ -102,7 +102,9 @@ if (file.exists(DPOP_PATH_NEW)) {
 
   dist_col <- intersect(c("dname", "district", "district_name",
                           "district_rename", "DNAME", "DISTRICT"), nm)[1]
-  pop_col  <- intersect(c("pop_2011", "population_2011", "pop", "population",
+  pop_col  <- intersect(c("district_population_2011",
+                          "pop_2011", "population_2011",
+                          "pop", "population",
                           "total_pop", "total_population"), nm)[1]
   if (is.na(dist_col) || is.na(pop_col)) {
     stop("Could not find district / population columns in ", DPOP_PATH_NEW,
@@ -115,7 +117,7 @@ if (file.exists(DPOP_PATH_NEW)) {
            dname = ifelse(!is.na(dofe_to_census[upr]),
                           dofe_to_census[upr],
                           str_to_title(tolower(upr)))) %>%
-    select(dname, pop_denom)
+    distinct(dname, pop_denom)
   pop_label <- sprintf("local file (%s / %s)", basename(DPOP_PATH_NEW), pop_col)
 
 } else if (file.exists(DPOP_PATH_OLD)) {
