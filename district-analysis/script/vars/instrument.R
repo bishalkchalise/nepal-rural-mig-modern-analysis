@@ -6,19 +6,22 @@
 #           for Nepali international migration, using 2001 Census baseline
 #           destination shares and annual exchange-rate shocks (2001-2023).
 #
-# Geography : District (`dname`).  Ward / municipality variants live in
-#             script/archive/municipality/vars/instrument.R.
+# Geography : District (`dname`). The municipality-era version lives on
+#             the `main` branch.
+#
+# Working directory : run from the repo root, e.g.
+#                     source("district-analysis/script/vars/instrument.R")
 #
 # Inputs :
-#   - 2001 Census absentee (international migrant) micro-data
-#   - 2011 Census ID crosswalk + old-VDC -> new-local-level map (only used
-#     to recover `dname` from raw 2001 codes)
-#   - 2001 Census individual-level population data
-#   - Forex panel (NPR and destination LCU per USD, 2000-2023)
+#   - data/raw/Full Census Data/Census 2001/fullmi01_full_absentee.dta
+#   - data/raw/Full Census Data/Census 2011/censusid2011.xlsx
+#   - data/raw/old vdc to local level.xlsx
+#   - data/raw/Full Census Data/Census 2001/fullpi01_full.dta
+#   - district-analysis/data/clean/forex_2000_2023.csv
 #
 # Outputs :
-#   - data/clean/instrument/instrument_dist.csv         (district-year panel)
-#   - data/clean/instrument/dest_region_shares_2001.csv (district x region)
+#   - district-analysis/data/clean/instrument/instrument_dist.csv
+#   - district-analysis/data/clean/instrument/dest_region_shares_2001.csv
 #
 # Methodology : identical to the archived municipality script - five forex
 # shifters Z_{d,t} (level index, YoY growth, YoY log, decadal growth, decadal
@@ -178,7 +181,7 @@ dist_mig_intensity <- dist_pop %>%
 # SECTION 5: FOREX PANEL (SHIFTER) CONSTRUCTION
 ################################################################################
 
-forex_raw <- read.csv("data/clean/forex_2000_2023.csv") %>%
+forex_raw <- read.csv("district-analysis/data/clean/forex_2000_2023.csv") %>%
   filter(year >= 1999)
 
 nepal_fx <- forex_raw %>%
@@ -404,9 +407,10 @@ cat("\n--- FINAL DISTRICT PANEL DIMENSIONS ---\n")
 cat("District:", nrow(dist_fx_panel), "rows,",
     n_distinct(dist_fx_panel$dname), "districts\n")
 
-dir.create("data/clean/instrument", recursive = TRUE, showWarnings = FALSE)
+dir.create("district-analysis/data/clean/instrument",
+           recursive = TRUE, showWarnings = FALSE)
 write.csv(dist_fx_panel,
-          "data/clean/instrument/instrument_dist.csv",
+          "district-analysis/data/clean/instrument/instrument_dist.csv",
           row.names = FALSE)
 
 
@@ -459,7 +463,7 @@ cat("Columns: ",
     "\n\n")
 
 write.csv(dist_region_shares,
-          "data/clean/instrument/dest_region_shares_2001.csv",
+          "district-analysis/data/clean/instrument/dest_region_shares_2001.csv",
           row.names = FALSE)
 
 ################################################################################
