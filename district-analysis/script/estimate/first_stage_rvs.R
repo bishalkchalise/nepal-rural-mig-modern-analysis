@@ -70,9 +70,16 @@ rvs <- rvs %>%
 fs_df <- rvs %>%
   inner_join(instr, by = c("dname", "year")) %>%
   mutate(
-    log_intl_migrants = log(n_intl_migrants + 1),
-    log_remit_intl    = log(remit_amount_intl_12m_rs + 1),
-    log_pop_2001      = log(geog_pop_2001)
+    # Outcome 1: total number of intl migrants from the district (log+1)
+    log_n_intl_migrants = log(n_intl_migrants + 1),
+
+    # Outcome 2: share of HHs with >=1 intl migrant (extensive margin)
+    share_hh_with_migrant = n_hh_with_intl_migrant / pmax(n_hh, 1),
+
+    # Outcome 3: total intl remittance received in district, 12-mo, NPR (log+1)
+    log_remit_intl = log(remit_amount_intl_12m_rs + 1),
+
+    log_pop_2001 = log(geog_pop_2001)
   )
 
 unmatched <- setdiff(unique(rvs$dname), unique(instr$dname))
@@ -98,33 +105,36 @@ cat(sprintf(
 
 if (n_years > 1) {
   # Panel: dname + year FE, cluster by dname
-  m1 <- feols(log_intl_migrants ~ fxshock | dname + year,
+  m1 <- feols(log_n_intl_migrants   ~ fxshock | dname + year,
               data = fs_df, cluster = ~dname)
-  m2 <- feols(log_remit_intl    ~ fxshock | dname + year,
+  m2 <- feols(share_hh_with_migrant ~ fxshock | dname + year,
+              data = fs_df, cluster = ~dname)
+  m3 <- feols(log_remit_intl        ~ fxshock | dname + year,
               data = fs_df, cluster = ~dname)
 
-  cat("\n=== Panel first-stage on fxshock (dname + year FE) ===\n")
-  print(etable(m1, m2,
+  cat("\n=== District first-stage on fxshock (dname + year FE) ===\n")
+  print(etable(m1, m2, m3,
                cluster = ~dname,
-               headers = c("log(intl_migrants+1)", "log(intl_remit+1)"),
+               headers = c("log(n_intl_migrants+1)",
+                           "share_hh_with_migrant",
+                           "log(intl_remit+1)"),
                digits  = 4,
                fitstat = c("n", "r2", "wr2")))
 } else {
   # Cross-section: optional log_pop_2001 control, HC1 SE
-  m1 <- feols(log_intl_migrants ~ fxshock,
-              data = fs_df, se = "hetero")
-  m1c <- feols(log_intl_migrants ~ fxshock + log_pop_2001,
-               data = fs_df, se = "hetero")
-  m2 <- feols(log_remit_intl ~ fxshock,
-              data = fs_df, se = "hetero")
-  m2c <- feols(log_remit_intl ~ fxshock + log_pop_2001,
-               data = fs_df, se = "hetero")
+  m1  <- feols(log_n_intl_migrants   ~ fxshock,                data = fs_df, se = "hetero")
+  m1c <- feols(log_n_intl_migrants   ~ fxshock + log_pop_2001, data = fs_df, se = "hetero")
+  m2  <- feols(share_hh_with_migrant ~ fxshock,                data = fs_df, se = "hetero")
+  m2c <- feols(share_hh_with_migrant ~ fxshock + log_pop_2001, data = fs_df, se = "hetero")
+  m3  <- feols(log_remit_intl        ~ fxshock,                data = fs_df, se = "hetero")
+  m3c <- feols(log_remit_intl        ~ fxshock + log_pop_2001, data = fs_df, se = "hetero")
 
   cat(sprintf("\n=== Cross-section first-stage on fxshock (year = %d) ===\n",
               years[1]))
-  print(etable(m1, m1c, m2, m2c,
-               headers = c("intl_migr", "intl_migr+pop",
-                           "intl_remit", "intl_remit+pop"),
+  print(etable(m1, m1c, m2, m2c, m3, m3c,
+               headers = c("n_mig", "n_mig+pop",
+                           "share", "share+pop",
+                           "remit", "remit+pop"),
                digits = 4, fitstat = c("n", "r2")))
 }
 
@@ -136,32 +146,30 @@ dir.create("district-analysis/output/tab",
            recursive = TRUE, showWarnings = FALSE)
 
 if (n_years > 1) {
+  mods <- list(m1, m2, m3)
   fs_summary <- tibble(
-    outcome = c("log(intl_migrants+1)", "log(intl_remit+1)"),
-    coef    = c(coef(m1)["fxshock"], coef(m2)["fxshock"]),
-    se      = c(sqrt(diag(vcov(m1, cluster = ~dname)))["fxshock"],
-                sqrt(diag(vcov(m2, cluster = ~dname)))["fxshock"]),
-    n_obs   = c(nobs(m1), nobs(m2)),
-    r2_w    = c(fitstat(m1, "wr2", simplify = TRUE),
-                fitstat(m2, "wr2", simplify = TRUE))
+    outcome = c("log(n_intl_migrants+1)",
+                "share_hh_with_migrant",
+                "log(intl_remit+1)"),
+    coef    = sapply(mods, function(m) coef(m)["fxshock"]),
+    se      = sapply(mods,
+                     function(m) sqrt(diag(vcov(m, cluster = ~dname)))["fxshock"]),
+    n_obs   = sapply(mods, nobs),
+    r2_w    = sapply(mods, function(m) fitstat(m, "wr2", simplify = TRUE))
   ) %>%
     mutate(t_stat = coef / se,
            p_val  = 2 * pnorm(-abs(t_stat)))
 } else {
+  mods <- list(m1, m1c, m2, m2c, m3, m3c)
   fs_summary <- tibble(
-    outcome = c("intl_migrants", "intl_migrants+pop",
-                "intl_remit",    "intl_remit+pop"),
-    coef    = c(coef(m1)["fxshock"], coef(m1c)["fxshock"],
-                coef(m2)["fxshock"], coef(m2c)["fxshock"]),
-    se      = c(sqrt(diag(vcov(m1,  se = "hetero")))["fxshock"],
-                sqrt(diag(vcov(m1c, se = "hetero")))["fxshock"],
-                sqrt(diag(vcov(m2,  se = "hetero")))["fxshock"],
-                sqrt(diag(vcov(m2c, se = "hetero")))["fxshock"]),
-    n_obs   = c(nobs(m1), nobs(m1c), nobs(m2), nobs(m2c)),
-    r2      = c(fitstat(m1,  "r2", simplify = TRUE),
-                fitstat(m1c, "r2", simplify = TRUE),
-                fitstat(m2,  "r2", simplify = TRUE),
-                fitstat(m2c, "r2", simplify = TRUE))
+    outcome = c("n_intl_migrants", "n_intl_migrants+pop",
+                "share_hh_with_migrant", "share_hh_with_migrant+pop",
+                "intl_remit", "intl_remit+pop"),
+    coef    = sapply(mods, function(m) coef(m)["fxshock"]),
+    se      = sapply(mods,
+                     function(m) sqrt(diag(vcov(m, se = "hetero")))["fxshock"]),
+    n_obs   = sapply(mods, nobs),
+    r2      = sapply(mods, function(m) fitstat(m, "r2", simplify = TRUE))
   ) %>%
     mutate(t_stat = coef / se,
            p_val  = 2 * pnorm(-abs(t_stat)))
