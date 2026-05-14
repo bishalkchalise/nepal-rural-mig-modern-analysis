@@ -38,7 +38,14 @@ mig <- read_csv(
 instr <- read.csv(
   "district-analysis/data/clean/instrument/instrument_forex_dist.csv",
   stringsAsFactors = FALSE
-)
+) %>%
+  select(dname, year, fxshock, geog_intensity_2001, geog_pop_2001)
+
+instr_dofe <- read.csv(
+  "district-analysis/data/clean/instrument/instrument_dofe_dist.csv",
+  stringsAsFactors = FALSE
+) %>%
+  select(dname, year, fxshock_dofe)
 
 # ------------------------------------------------------------------------------
 # 1. Normalize district names
@@ -74,10 +81,14 @@ mig <- mig %>%
 
 fs_df <- mig %>%
   filter(is_international == 1) %>%
-  inner_join(instr, by = c("dname", "year")) %>%
+  inner_join(instr,      by = c("dname", "year")) %>%
+  inner_join(instr_dofe, by = c("dname", "year")) %>%
   mutate(
     log_remit         = log(coalesce(remit_amount_rs, 0)      + 1),
-    log_earn_primary  = log(coalesce(earning_primary_rs, 0)   + 1)
+    log_earn_primary  = log(coalesce(earning_primary_rs, 0)   + 1),
+    log_mig_int       = log(pmax(geog_intensity_2001, 1e-12)),
+    fx_x_logmi        = fxshock      * log_mig_int,
+    fxdofe_x_logmi    = fxshock_dofe * log_mig_int
   )
 
 cat(sprintf(
@@ -94,21 +105,33 @@ cat(sprintf(
 
 n_years <- length(unique(fs_df$year))
 
-if (n_years > 1) {
-  m1 <- feols(log_remit        ~ fxshock | dname + year,
-              data = fs_df, cluster = ~dname)
-  m2 <- feols(remit_sent_flag  ~ fxshock | dname + year,
-              data = fs_df, cluster = ~dname)
-  m3 <- feols(log_earn_primary ~ fxshock | dname + year,
-              data = fs_df, cluster = ~dname)
+run_quad <- function(outcome) {
+  fit <- function(rhs) {
+    f <- as.formula(paste0(outcome, " ~ ", rhs, " | dname + year"))
+    feols(f, data = fs_df, cluster = ~dname)
+  }
+  list(bare_2001  = fit("fxshock"),
+       inter_2001 = fit("fx_x_logmi"),
+       bare_dofe  = fit("fxshock_dofe"),
+       inter_dofe = fit("fxdofe_x_logmi"))
+}
 
-  cat("\n=== Migrant-level first-stage on fxshock (intl migrants) ===\n")
-  print(etable(m1, m2, m3,
-               cluster = ~dname,
-               headers = c("log(remit+1)", "remit_sent_flag",
-                           "log(earn_primary+1)"),
-               digits  = 4,
-               fitstat = c("n", "r2", "wr2")))
+if (n_years > 1) {
+  q_remit <- run_quad("log_remit")
+  q_sent  <- run_quad("remit_sent_flag")
+  q_earn  <- run_quad("log_earn_primary")
+
+  for (lbl_q in list(list("log(remit+1)",        q_remit),
+                     list("remit_sent_flag",     q_sent),
+                     list("log(earn_primary+1)", q_earn))) {
+    cat(sprintf("\n=== Migrant-level first-stage: %s ===\n", lbl_q[[1]]))
+    q <- lbl_q[[2]]
+    print(etable(q$bare_2001, q$inter_2001, q$bare_dofe, q$inter_dofe,
+                 cluster = ~dname,
+                 headers = c("fx_2001", "fx_2001 x logmi",
+                             "fx_dofe", "fx_dofe x logmi"),
+                 digits = 4, fitstat = c("n", "r2", "wr2")))
+  }
 } else {
   m1  <- feols(log_remit        ~ fxshock,                       data = fs_df, se = "hetero")
   m1c <- feols(log_remit        ~ fxshock + log(geog_pop_2001),  data = fs_df, se = "hetero")
@@ -129,18 +152,28 @@ if (n_years > 1) {
 dir.create("district-analysis/output/tab",
            recursive = TRUE, showWarnings = FALSE)
 
-if (n_years > 1) {
-  mods <- list(m1, m2, m3)
-  fs_summary <- tibble(
-    outcome = c("log(remit+1)", "remit_sent_flag", "log(earn_primary+1)"),
-    coef    = sapply(mods, function(m) coef(m)["fxshock"]),
-    se      = sapply(mods,
-                     function(m) sqrt(diag(vcov(m, cluster = ~dname)))["fxshock"]),
+summarise_quad <- function(q, label) {
+  mods   <- list(q$bare_2001, q$inter_2001, q$bare_dofe, q$inter_dofe)
+  regnms <- c("fxshock", "fx_x_logmi", "fxshock_dofe", "fxdofe_x_logmi")
+  tibble(
+    outcome = label,
+    spec    = c("fx_2001", "fx_2001 x logmi", "fx_dofe", "fx_dofe x logmi"),
+    coef    = mapply(function(m, nm) coef(m)[nm], mods, regnms),
+    se      = mapply(function(m, nm)
+                       sqrt(diag(vcov(m, cluster = ~dname)))[nm], mods, regnms),
     n_obs   = sapply(mods, nobs),
     r2_w    = sapply(mods, function(m) fitstat(m, "wr2", simplify = TRUE))
   ) %>%
     mutate(t_stat = coef / se,
            p_val  = 2 * pnorm(-abs(t_stat)))
+}
+
+if (n_years > 1) {
+  fs_summary <- bind_rows(
+    summarise_quad(q_remit, "log(remit+1)"),
+    summarise_quad(q_sent,  "remit_sent_flag"),
+    summarise_quad(q_earn,  "log(earn_primary+1)")
+  )
 } else {
   mods <- list(m1, m1c, m2, m3)
   fs_summary <- tibble(

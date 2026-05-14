@@ -56,9 +56,8 @@ nepal_fx <- forex_raw %>%
 fx_panel <- forex_raw %>%
   transmute(country, year, lcu_per_usd = as.numeric(forex)) %>%
   left_join(nepal_fx, by = "year") %>%
-  # NPR per unit of destination LCU. Rises as NPR depreciates against the
-  # destination currency (more NPR per LCU = better for remittance receivers).
-  mutate(fx_to_npr = npr_per_usd / lcu_per_usd) %>%
+  # LCU per NPR (Khanna et al convention). Falls as NPR depreciates.
+  mutate(fx_to_npr = lcu_per_usd / npr_per_usd) %>%
   filter(country != "Nepal", country != "India") %>%
   select(country, year, fx_to_npr) %>%
   filter(!is.na(fx_to_npr))
@@ -142,16 +141,19 @@ build_dofe_ssiv <- function(dofe_panel, fx_panel,
 # 4. Build the four DOFE SSIVs
 # ------------------------------------------------------------------------------
 
-ssiv_2009 <- build_dofe_ssiv(dofe, fx_panel, 2009,         "2009")
-ssiv_2010 <- build_dofe_ssiv(dofe, fx_panel, 2010,         "2010")
-ssiv_2011 <- build_dofe_ssiv(dofe, fx_panel, 2011,         "2011")
-ssiv_avg  <- build_dofe_ssiv(dofe, fx_panel, 2009:2011,    "avg")
+ssiv_2009    <- build_dofe_ssiv(dofe, fx_panel, 2009,      "2009")
+ssiv_2010    <- build_dofe_ssiv(dofe, fx_panel, 2010,      "2010")
+ssiv_2011    <- build_dofe_ssiv(dofe, fx_panel, 2011,      "2011")
+ssiv_0910    <- build_dofe_ssiv(dofe, fx_panel, 2009:2010, "dofe")  # 2009-2010 avg
 
 instrument_dofe <- ssiv_2009 %>%
   full_join(ssiv_2010, by = c("dname", "year")) %>%
   full_join(ssiv_2011, by = c("dname", "year")) %>%
-  full_join(ssiv_avg,  by = c("dname", "year")) %>%
+  full_join(ssiv_0910, by = c("dname", "year")) %>%
   arrange(dname, year)
+# `fxshock_dofe` column = SSIV built with 2009-2010 average DOFE shares.
+# Used downstream as the alternative shifter alongside the 2001-census-share
+# version (`fxshock` in instrument_forex_dist.csv).
 
 # ------------------------------------------------------------------------------
 # 5. Save

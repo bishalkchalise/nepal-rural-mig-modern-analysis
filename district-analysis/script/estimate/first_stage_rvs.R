@@ -39,7 +39,14 @@ rvs <- read.csv(
 instr <- read.csv(
   "district-analysis/data/clean/instrument/instrument_forex_dist.csv",
   stringsAsFactors = FALSE
-)
+) %>%
+  select(dname, year, fxshock, geog_intensity_2001, geog_pop_2001)
+
+instr_dofe <- read.csv(
+  "district-analysis/data/clean/instrument/instrument_dofe_dist.csv",
+  stringsAsFactors = FALSE
+) %>%
+  select(dname, year, fxshock_dofe)
 
 # ------------------------------------------------------------------------------
 # 1. Normalize NRVS district names to match instrument convention
@@ -69,18 +76,16 @@ rvs <- rvs %>%
 # ------------------------------------------------------------------------------
 
 fs_df <- rvs %>%
-  inner_join(instr, by = c("dname", "year")) %>%
+  inner_join(instr,      by = c("dname", "year")) %>%
+  inner_join(instr_dofe, by = c("dname", "year")) %>%
   mutate(
-    # Outcome 1: total number of intl migrants from the district (log+1)
-    log_n_intl_migrants = log(n_intl_migrants + 1),
-
-    # Outcome 2: share of HHs with >=1 intl migrant (extensive margin)
+    log_n_intl_migrants   = log(n_intl_migrants + 1),
     share_hh_with_migrant = n_hh_with_intl_migrant / pmax(n_hh, 1),
-
-    # Outcome 3: total intl remittance received in district, 12-mo, NPR (log+1)
-    log_remit_intl = log(remit_amount_intl_12m_rs + 1),
-
-    log_pop_2001 = log(geog_pop_2001)
+    log_remit_intl        = log(remit_amount_intl_12m_rs + 1),
+    log_pop_2001          = log(geog_pop_2001),
+    log_mig_int           = log(pmax(geog_intensity_2001, 1e-12)),
+    fx_x_logmi            = fxshock      * log_mig_int,
+    fxdofe_x_logmi        = fxshock_dofe * log_mig_int
   )
 
 unmatched <- setdiff(unique(rvs$dname), unique(instr$dname))
@@ -104,23 +109,35 @@ cat(sprintf(
 # 3. Regressions
 # ------------------------------------------------------------------------------
 
-if (n_years > 1) {
-  # Panel: dname + year FE, cluster by dname
-  m1 <- feols(log_n_intl_migrants   ~ fxshock | dname + year,
-              data = fs_df, cluster = ~dname)
-  m2 <- feols(share_hh_with_migrant ~ fxshock | dname + year,
-              data = fs_df, cluster = ~dname)
-  m3 <- feols(log_remit_intl        ~ fxshock | dname + year,
-              data = fs_df, cluster = ~dname)
+run_quad <- function(outcome) {
+  fit <- function(rhs) {
+    f <- as.formula(paste0(outcome, " ~ ", rhs, " | dname + year"))
+    feols(f, data = fs_df, cluster = ~dname)
+  }
+  list(bare_2001  = fit("fxshock"),
+       inter_2001 = fit("fx_x_logmi"),
+       bare_dofe  = fit("fxshock_dofe"),
+       inter_dofe = fit("fxdofe_x_logmi"))
+}
 
-  cat("\n=== District first-stage on fxshock (dname + year FE) ===\n")
-  print(etable(m1, m2, m3,
-               cluster = ~dname,
-               headers = c("log(n_intl_migrants+1)",
-                           "share_hh_with_migrant",
-                           "log(intl_remit+1)"),
-               digits  = 4,
-               fitstat = c("n", "r2", "wr2")))
+if (n_years > 1) {
+  q_n     <- run_quad("log_n_intl_migrants")
+  q_share <- run_quad("share_hh_with_migrant")
+  q_remit <- run_quad("log_remit_intl")
+
+  for (lbl in c("log(n_intl_migrants+1)", "share_hh_with_migrant",
+                "log(intl_remit+1)")) {
+    q <- switch(lbl,
+                "log(n_intl_migrants+1)" = q_n,
+                "share_hh_with_migrant"  = q_share,
+                "log(intl_remit+1)"      = q_remit)
+    cat(sprintf("\n=== District first-stage: %s ===\n", lbl))
+    print(etable(q$bare_2001, q$inter_2001, q$bare_dofe, q$inter_dofe,
+                 cluster = ~dname,
+                 headers = c("fx_2001", "fx_2001 x logmi",
+                             "fx_dofe", "fx_dofe x logmi"),
+                 digits = 4, fitstat = c("n", "r2", "wr2")))
+  }
 } else {
   # Cross-section: optional log_pop_2001 control, HC1 SE
   m1  <- feols(log_n_intl_migrants   ~ fxshock,                data = fs_df, se = "hetero")
@@ -146,20 +163,28 @@ if (n_years > 1) {
 dir.create("district-analysis/output/tab",
            recursive = TRUE, showWarnings = FALSE)
 
-if (n_years > 1) {
-  mods <- list(m1, m2, m3)
-  fs_summary <- tibble(
-    outcome = c("log(n_intl_migrants+1)",
-                "share_hh_with_migrant",
-                "log(intl_remit+1)"),
-    coef    = sapply(mods, function(m) coef(m)["fxshock"]),
-    se      = sapply(mods,
-                     function(m) sqrt(diag(vcov(m, cluster = ~dname)))["fxshock"]),
+summarise_quad <- function(q, label) {
+  mods   <- list(q$bare_2001, q$inter_2001, q$bare_dofe, q$inter_dofe)
+  regnms <- c("fxshock", "fx_x_logmi", "fxshock_dofe", "fxdofe_x_logmi")
+  tibble(
+    outcome = label,
+    spec    = c("fx_2001", "fx_2001 x logmi", "fx_dofe", "fx_dofe x logmi"),
+    coef    = mapply(function(m, nm) coef(m)[nm], mods, regnms),
+    se      = mapply(function(m, nm)
+                       sqrt(diag(vcov(m, cluster = ~dname)))[nm], mods, regnms),
     n_obs   = sapply(mods, nobs),
     r2_w    = sapply(mods, function(m) fitstat(m, "wr2", simplify = TRUE))
   ) %>%
     mutate(t_stat = coef / se,
            p_val  = 2 * pnorm(-abs(t_stat)))
+}
+
+if (n_years > 1) {
+  fs_summary <- bind_rows(
+    summarise_quad(q_n,     "log(n_intl_migrants+1)"),
+    summarise_quad(q_share, "share_hh_with_migrant"),
+    summarise_quad(q_remit, "log(intl_remit+1)")
+  )
 } else {
   mods <- list(m1, m1c, m2, m2c, m3, m3c)
   fs_summary <- tibble(

@@ -68,11 +68,24 @@ dofe_panel <- dofe_raw %>%
 instrument <- read.csv(
   "district-analysis/data/clean/instrument/instrument_forex_dist.csv",
   stringsAsFactors = FALSE
-)
+) %>%
+  select(dname, year, fxshock, geog_intensity_2001)
+
+instrument_dofe <- read.csv(
+  "district-analysis/data/clean/instrument/instrument_dofe_dist.csv",
+  stringsAsFactors = FALSE
+) %>%
+  select(dname, year, fxshock_dofe)
 
 fs_df <- dofe_panel %>%
-  inner_join(instrument, by = c("dname", "year")) %>%
-  mutate(log_permits = log(permits + 1))
+  inner_join(instrument,      by = c("dname", "year")) %>%
+  inner_join(instrument_dofe, by = c("dname", "year")) %>%
+  mutate(
+    log_permits      = log(permits + 1),
+    log_mig_int      = log(pmax(geog_intensity_2001, 1e-12)),
+    fx_x_logmi       = fxshock      * log_mig_int,
+    fxdofe_x_logmi   = fxshock_dofe * log_mig_int
+  )
 
 cat(sprintf(
   "First-stage panel: %d obs, %d districts, %d years (%d-%d)\n",
@@ -93,16 +106,27 @@ if (length(unmatched) > 0) {
 # 3. First-stage regressions: permits on SSIV shifters
 # ------------------------------------------------------------------------------
 
-# Headline shifter is fxshock = shareshock_index_2001:
-#   fxshock(d,t) = sum_c mig_share_2001(d,c) * fx_index_2001(c,t)
-# (set as the alias at the bottom of vars/instrument.R)
-m1 <- feols(log_permits ~ fxshock | dname + year,
+# Four specs side-by-side:
+#   m1 : bare fxshock (2001 census shares)
+#   m2 : fxshock * log(mig_int) interaction (matches the second-stage spec)
+#   m3 : bare fxshock_dofe (2009-2010 DOFE share baseline)
+#   m4 : fxshock_dofe * log(mig_int) interaction
+m1 <- feols(log_permits ~ fxshock          | dname + year,
+            data = fs_df, cluster = ~dname)
+m2 <- feols(log_permits ~ fx_x_logmi       | dname + year,
+            data = fs_df, cluster = ~dname)
+m3 <- feols(log_permits ~ fxshock_dofe     | dname + year,
+            data = fs_df, cluster = ~dname)
+m4 <- feols(log_permits ~ fxdofe_x_logmi   | dname + year,
             data = fs_df, cluster = ~dname)
 
-cat("\n=== First-stage: log(DOFE permits + 1) on fxshock (share-weighted FX) ===\n")
-print(etable(m1,
+cat("\n=== First-stage: log(DOFE permits + 1) on fxshock (4 specs) ===\n")
+print(etable(m1, m2, m3, m4,
              cluster = ~dname,
-             headers = "fxshock",
+             headers = c("fxshock_2001",
+                         "fxshock_2001 x logmi",
+                         "fxshock_dofe",
+                         "fxshock_dofe x logmi"),
              digits  = 4,
              fitstat = c("n", "r2", "wr2")))
 
@@ -113,12 +137,17 @@ print(etable(m1,
 dir.create("district-analysis/output/tab", recursive = TRUE,
            showWarnings = FALSE)
 
+mods <- list(m1, m2, m3, m4)
 fs_summary <- tibble(
-  spec      = "fxshock",
-  coef      = coef(m1)[1],
-  se        = sqrt(diag(vcov(m1, cluster = ~dname)))[1],
-  n_obs     = nobs(m1),
-  r2_within = fitstat(m1, "wr2", simplify = TRUE)
+  spec      = c("fxshock_2001",
+                "fxshock_2001 x logmi",
+                "fxshock_dofe",
+                "fxshock_dofe x logmi"),
+  coef      = sapply(mods, function(m) coef(m)[1]),
+  se        = sapply(mods,
+                     function(m) sqrt(diag(vcov(m, cluster = ~dname)))[1]),
+  n_obs     = sapply(mods, nobs),
+  r2_within = sapply(mods, function(m) fitstat(m, "wr2", simplify = TRUE))
 ) %>%
   mutate(
     t_stat = coef / se,
