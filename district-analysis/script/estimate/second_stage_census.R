@@ -124,10 +124,9 @@ run_rf <- function(outcome_vec, group_name, data = panel_df) {
                  p_val = round(p_val, 4),
                  sig   = case_when(
                    is.na(p_val) ~ "",
-                   p_val < 0.001 ~ "***",
-                   p_val < 0.01  ~ "**",
-                   p_val < 0.05  ~ "*",
-                   p_val < 0.1   ~ ".",
+                   p_val < 0.01  ~ "***",
+                   p_val < 0.05  ~ "**",
+                   p_val < 0.1   ~ "*",
                    TRUE          ~ ""
                  )) %>%
           select(outcome, n_obs, coef, se, t_stat, p_val, sig, mean_y))
@@ -161,13 +160,13 @@ all_results <- map_dfr(
   ~ run_rf(unname(groups[[.x]]), group_name = .x)
 ) %>%
   mutate(sig = case_when(
-    is.na(p_val) ~ "",
-    p_val < 0.001 ~ "***",
-    p_val < 0.01  ~ "**",
-    p_val < 0.05  ~ "*",
-    p_val < 0.1   ~ ".",
+    is.na(p_val)  ~ "",
+    p_val < 0.01  ~ "***",
+    p_val < 0.05  ~ "**",
+    p_val < 0.1   ~ "*",
     TRUE          ~ ""
   ))
+# Convention used: *** p<0.01, ** p<0.05, * p<0.1 (standard econ convention).
 
 # ------------------------------------------------------------------------------
 # 5. Save
