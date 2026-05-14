@@ -77,6 +77,10 @@ hh <- hh %>%
 
 fs_df <- hh %>%
   inner_join(instr, by = c("dname", "year")) %>%
+  # CONDITIONAL SAMPLE: HHs with at least one intl migrant. Note that this
+  # is selection-on-outcome -- the coefficient is the intensive-margin
+  # response among migrant HHs, not an unbiased average treatment effect.
+  filter(has_migrant_intl == 1) %>%
   mutate(
     log_n_intl_migrants = log(n_intl_migrants + 1),
     log_remit_intl      = log(remit_amount_intl_12m_rs + 1)
@@ -104,18 +108,16 @@ n_years <- length(unique(fs_df$year))
 
 if (n_years > 1) {
   # Panel: dname + year FE, cluster ~dname
-  m1 <- feols(has_migrant_intl    ~ fxshock | dname + year,
+  # (binary has_migrant_intl dropped: == 1 for every obs in the conditional sample)
+  m1 <- feols(log_n_intl_migrants ~ fxshock | dname + year,
               data = fs_df, cluster = ~dname)
-  m2 <- feols(log_n_intl_migrants ~ fxshock | dname + year,
-              data = fs_df, cluster = ~dname)
-  m3 <- feols(log_remit_intl      ~ fxshock | dname + year,
+  m2 <- feols(log_remit_intl      ~ fxshock | dname + year,
               data = fs_df, cluster = ~dname)
 
-  cat("\n=== HH-level first-stage on fxshock (dname + year FE, cluster by dname) ===\n")
-  print(etable(m1, m2, m3,
+  cat("\n=== HH-level first-stage on fxshock | HHs with intl migrant only ===\n")
+  print(etable(m1, m2,
                cluster = ~dname,
-               headers = c("has_migrant_intl",
-                           "log(n_intl_migrants+1)",
+               headers = c("log(n_intl_migrants+1)",
                            "log(remit_intl+1)"),
                digits  = 4,
                fitstat = c("n", "r2", "wr2")))
@@ -143,10 +145,9 @@ dir.create("district-analysis/output/tab",
            recursive = TRUE, showWarnings = FALSE)
 
 if (n_years > 1) {
-  mods <- list(m1, m2, m3)
+  mods <- list(m1, m2)
   fs_summary <- tibble(
-    outcome = c("has_migrant_intl",
-                "log(n_intl_migrants+1)",
+    outcome = c("log(n_intl_migrants+1)",
                 "log(remit_intl+1)"),
     coef    = sapply(mods, function(m) coef(m)["fxshock"]),
     se      = sapply(mods,
