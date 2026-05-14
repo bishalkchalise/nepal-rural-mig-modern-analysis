@@ -136,6 +136,14 @@ fit_one <- function(df, outcome, level, entity_col) {
 
 # Wild cluster bootstrap on residuals -------------------------------------
 wild_boot <- function(df, outcome, level, entity_col, B = B_BOOT) {
+  # Pre-filter to complete cases on every variable that enters the model so
+  # fitted.values / residuals align with the analysis sample.
+  rhs_cols <- c("treatment", "fx_z", "log_mi_z")
+  if (level >= 6) rhs_cols <- c(rhs_cols, REGION_COLS)
+  df <- df[complete.cases(df[, c(outcome, rhs_cols, entity_col, "year"),
+                              drop = FALSE]), , drop = FALSE]
+  if (nrow(df) < 50) return(NULL)
+
   fit <- tryCatch(fit_one(df, outcome, level, entity_col), error = function(e) e)
   if (inherits(fit, "error")) return(NULL)
   ct <- as.data.frame(summary(fit)$coeftable)
@@ -144,12 +152,18 @@ wild_boot <- function(df, outcome, level, entity_col, B = B_BOOT) {
   seh <- ct["treatment","Std. Error"]
   pcl <- ct["treatment","Pr(>|t|)"]
 
-  # residuals + fitted
-  fitted_v <- fit$fitted.values
+  # residuals + fitted (lengths now match df after pre-filter)
+  fitted_v <- fitted(fit)
   resid_v  <- residuals(fit)
+  if (length(fitted_v) != nrow(df)) {
+    # Defensive: if fixest still dropped rows, drop them in df too.
+    used_idx <- as.integer(names(fitted_v))
+    if (!is.null(used_idx) && length(used_idx) > 0)
+      df <- df[used_idx, , drop = FALSE]
+  }
   d <- df
-  d$.yhat <- fitted_v
-  d$.e    <- resid_v
+  d$.yhat <- as.numeric(fitted_v)
+  d$.e    <- as.numeric(resid_v)
   ents    <- unique(d[[entity_col]])
 
   bs <- numeric(B)

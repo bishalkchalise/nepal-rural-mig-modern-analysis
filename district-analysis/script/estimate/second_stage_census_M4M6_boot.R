@@ -145,6 +145,13 @@ fit_one <- function(df, outcome, level) {
 }
 
 wild_boot <- function(df, outcome, level, B = B_BOOT) {
+  # Pre-filter to complete cases on every variable that enters the model
+  rhs_cols <- c("treatment", "fx_z", "log_mi_z")
+  if (level >= 6) rhs_cols <- c(rhs_cols, REGION_COLS)
+  df <- df[complete.cases(df[, c(outcome, rhs_cols, "dname", "year"),
+                              drop = FALSE]), , drop = FALSE]
+  if (nrow(df) < 50) return(NULL)
+
   fit <- tryCatch(fit_one(df, outcome, level), error = function(e) e)
   if (inherits(fit, "error")) return(NULL)
   ct <- as.data.frame(summary(fit)$coeftable)
@@ -153,9 +160,16 @@ wild_boot <- function(df, outcome, level, B = B_BOOT) {
   seh <- ct["treatment","Std. Error"]
   pcl <- ct["treatment","Pr(>|t|)"]
 
+  fitted_v <- fitted(fit)
+  resid_v  <- residuals(fit)
+  if (length(fitted_v) != nrow(df)) {
+    used_idx <- as.integer(names(fitted_v))
+    if (!is.null(used_idx) && length(used_idx) > 0)
+      df <- df[used_idx, , drop = FALSE]
+  }
   d <- df
-  d$.yhat <- fit$fitted.values
-  d$.e    <- residuals(fit)
+  d$.yhat <- as.numeric(fitted_v)
+  d$.e    <- as.numeric(resid_v)
   ents    <- unique(d$dname)
 
   bs <- numeric(B)
