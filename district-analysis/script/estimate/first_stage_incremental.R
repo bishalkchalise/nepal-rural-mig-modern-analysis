@@ -84,10 +84,35 @@ if (have_rvs) {
 # 2. Build the analysis panels (each outcome has its own panel)
 # ------------------------------------------------------------------------------
 
+# DOFE 2009-2010 avg migrants per district (numerator for the DOFE-vintage intensity)
+mi_dofe <- dofe_panel %>%
+  filter(year %in% 2009:2010) %>%
+  group_by(dname) %>%
+  summarise(dofe_mig_0910 = mean(permits), .groups = "drop")
+
+# Use pop_2011 if available (contemporaneous denominator); else fall back to pop_2001
+pop_2011_path <- "district-analysis/data/clean/instrument/pop_2011_dist.csv"
+if (file.exists(pop_2011_path)) {
+  pop_use <- read.csv(pop_2011_path, stringsAsFactors = FALSE)
+  pop_use$pop_denom <- pop_use$pop_2011
+  pop_label <- "pop_2011"
+} else {
+  pop_use <- distinct(inst[, c("dname", "geog_pop_2001")])
+  pop_use$pop_denom <- pop_use$geog_pop_2001
+  pop_label <- "pop_2001 (fallback - run _build_pop_2011.R for 2011 denom)"
+}
+cat(sprintf("Using denominator: %s\n", pop_label))
+
+mi_dofe_full <- mi_dofe %>%
+  left_join(pop_use %>% select(dname, pop_denom), by = "dname") %>%
+  mutate(mig_int_dofe = dofe_mig_0910 / pop_denom) %>%
+  select(dname, mig_int_dofe)
+
 dofe_full <- dofe_panel %>%
   inner_join(inst,       by = c("dname", "year")) %>%
   inner_join(inst_dofe %>% select(dname, year, fxshock_dofe),
              by = c("dname", "year")) %>%
+  left_join(mi_dofe_full, by = "dname") %>%
   left_join(region_sh,   by = "dname") %>%
   mutate(log_permits = log(permits + 1))
 
@@ -116,14 +141,29 @@ zscore <- function(x) {
 # 4. Fit one cell at a given incremental level
 # ------------------------------------------------------------------------------
 
-fit_inc <- function(panel_df, outcome, share_label, level) {
+fit_inc <- function(panel_df, outcome, share_label, level,
+                    mi_vintage = c("matched", "2001")) {
 
+  mi_vintage <- match.arg(mi_vintage)
   df <- panel_df
   df$fx_raw <- if (share_label == "2001") df$fxshock else df$fxshock_dofe
 
+  # Pick the intensity vintage to match the share vintage
+  if (mi_vintage == "matched") {
+    if (share_label == "2001") {
+      df$mi_raw <- df$geog_intensity_2001
+    } else if ("mig_int_dofe" %in% names(df)) {
+      df$mi_raw <- df$mig_int_dofe
+    } else {
+      df$mi_raw <- df$geog_intensity_2001       # fallback
+    }
+  } else {
+    df$mi_raw <- df$geog_intensity_2001
+  }
+
   # z-score on the working sample
   df$fx_z     <- zscore(df$fx_raw)
-  df$mi_z     <- zscore(df$geog_intensity_2001)
+  df$mi_z     <- zscore(df$mi_raw)
 
   # Treatment = fx_z * mi_z (linear interaction; switch to log_mi_z if you prefer)
   df$treatment <- df$fx_z * df$mi_z
