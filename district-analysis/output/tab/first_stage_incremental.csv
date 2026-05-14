@@ -1,0 +1,9 @@
+dataset,outcome,share,spec,beta,se,t,p,n,r2_w,note,sig
+DOFE_permits,log_permits,2001,C1 (treatment only),0.0311,0.0133,2.34,0.0196,1110,-0.6486,,**
+DOFE_permits,log_permits,2001,C2 (+ c_mig),0.1238,0.0864,1.43,0.1524,1110,-0.8047,,
+DOFE_permits,log_permits,2001,C3 (+ c_fx),0.0664,0.1157,0.57,0.5663,1110,-0.8086,,
+DOFE_permits,log_permits,2001,C4 (+ region X),0.0659,0.1358,0.49,0.6273,1110,-1.2282,,
+DOFE_permits,log_permits,DOFE,C1 (treatment only),0.0458,0.0164,2.8,0.0053,1110,-0.2665,,***
+DOFE_permits,log_permits,DOFE,C2 (+ c_mig),-0.2422,0.0806,-3.01,0.0027,1110,-0.0595,,***
+DOFE_permits,log_permits,DOFE,C3 (+ c_fx),-0.2573,0.0888,-2.9,0.0038,1110,-1.599,,***
+DOFE_permits,log_permits,DOFE,C4 (+ region X),-0.217,0.105,-2.07,0.0391,1110,-2.1297,,**
