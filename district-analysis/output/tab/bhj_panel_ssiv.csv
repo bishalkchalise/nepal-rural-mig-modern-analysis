@@ -1,0 +1,4 @@
+spec,regressor,beta,se,t,p,sig,n,mean_y
+BHJ-1 bare shock,log_fx_z,-0.1123,0.0126,-8.9,0.0,***,24600,2.6032
+BHJ-2 +interact,log_fx_z,-0.1123,0.0124,-9.05,0.0,***,24600,2.6032
+BHJ-2 +interact,fx_x_logmi,0.0399,0.0078,5.1,0.0,***,24600,2.6032
