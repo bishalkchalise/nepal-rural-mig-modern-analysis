@@ -82,10 +82,11 @@ base <- instr %>%
              by = c("dname", "year")) %>%
   left_join(mi_dofe, by = "dname") %>%
   mutate(
-    log_mig_int       = log(pmax(geog_intensity_2001, 1e-12)),
-    log_mig_int_x1k   = log(pmax(1000 * geog_intensity_2001, 1e-12)),
-    mig_int_lin       = geog_intensity_2001,
-    mig_int_dofe      = pmax(mig_int_dofe, 1e-12)
+    log_mig_int        = log(pmax(geog_intensity_2001, 1e-12)),
+    log_mig_int_x1k    = log(pmax(1000   * geog_intensity_2001, 1e-12)),
+    log_mig_int_x100k  = log(pmax(100000 * geog_intensity_2001, 1e-12)),
+    mig_int_lin        = geog_intensity_2001,
+    mig_int_dofe       = pmax(mig_int_dofe, 1e-12)
   )
 
 # ------------------------------------------------------------------------------
