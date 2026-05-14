@@ -191,10 +191,11 @@ nepal_fx <- forex_raw %>%
 fx_panel <- forex_raw %>%
   transmute(country, year, lcu_per_usd = as.numeric(forex)) %>%
   left_join(nepal_fx, by = "year") %>%
-  # LCU per NPR (Khanna et al convention). Falls as NPR depreciates (1 NPR
-  # buys fewer units of destination LCU). A more-negative shock = better for
-  # migrant remittance value (each LCU converts to more NPR back home).
-  mutate(fx_to_npr = lcu_per_usd / npr_per_usd) %>%
+  # NPR per unit of destination LCU. Rises as NPR depreciates against the
+  # destination currency, which gives the economically intuitive positive-
+  # signed shifter (more depreciation -> more NPR per LCU -> more migration).
+  # Coefficients in this direction read as positive = positive effect.
+  mutate(fx_to_npr = npr_per_usd / lcu_per_usd) %>%
   filter(country != "Nepal", country != "India")
 
 fx_base_2001 <- fx_panel %>%

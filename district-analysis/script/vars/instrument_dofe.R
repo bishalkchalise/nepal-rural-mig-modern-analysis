@@ -56,8 +56,9 @@ nepal_fx <- forex_raw %>%
 fx_panel <- forex_raw %>%
   transmute(country, year, lcu_per_usd = as.numeric(forex)) %>%
   left_join(nepal_fx, by = "year") %>%
-  # LCU per NPR (Khanna et al convention). Falls as NPR depreciates.
-  mutate(fx_to_npr = lcu_per_usd / npr_per_usd) %>%
+  # NPR per LCU. Rises as NPR depreciates -> positive economic effect on
+  # migration shows up as positive beta in downstream regressions.
+  mutate(fx_to_npr = npr_per_usd / lcu_per_usd) %>%
   filter(country != "Nepal", country != "India") %>%
   select(country, year, fx_to_npr) %>%
   filter(!is.na(fx_to_npr))
