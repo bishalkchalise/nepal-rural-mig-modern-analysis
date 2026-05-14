@@ -78,7 +78,8 @@ hh <- hh %>%
 fs_df <- hh %>%
   inner_join(instr, by = c("dname", "year")) %>%
   mutate(
-    log_remit_intl = log(remit_amount_intl_12m_rs + 1)
+    log_n_intl_migrants = log(n_intl_migrants + 1),
+    log_remit_intl      = log(remit_amount_intl_12m_rs + 1)
   )
 
 unmatched <- setdiff(unique(hh$dname), unique(instr$dname))
@@ -103,15 +104,19 @@ n_years <- length(unique(fs_df$year))
 
 if (n_years > 1) {
   # Panel: dname + year FE, cluster ~dname
-  m1 <- feols(has_migrant_intl ~ fxshock | dname + year,
+  m1 <- feols(has_migrant_intl    ~ fxshock | dname + year,
               data = fs_df, cluster = ~dname)
-  m2 <- feols(log_remit_intl   ~ fxshock | dname + year,
+  m2 <- feols(log_n_intl_migrants ~ fxshock | dname + year,
+              data = fs_df, cluster = ~dname)
+  m3 <- feols(log_remit_intl      ~ fxshock | dname + year,
               data = fs_df, cluster = ~dname)
 
   cat("\n=== HH-level first-stage on fxshock (dname + year FE, cluster by dname) ===\n")
-  print(etable(m1, m2,
+  print(etable(m1, m2, m3,
                cluster = ~dname,
-               headers = c("has_migrant_intl", "log(remit_intl+1)"),
+               headers = c("has_migrant_intl",
+                           "log(n_intl_migrants+1)",
+                           "log(remit_intl+1)"),
                digits  = 4,
                fitstat = c("n", "r2", "wr2")))
 } else {
@@ -138,14 +143,16 @@ dir.create("district-analysis/output/tab",
            recursive = TRUE, showWarnings = FALSE)
 
 if (n_years > 1) {
+  mods <- list(m1, m2, m3)
   fs_summary <- tibble(
-    outcome = c("has_migrant_intl", "log(remit_intl+1)"),
-    coef    = c(coef(m1)["fxshock"], coef(m2)["fxshock"]),
-    se      = c(sqrt(diag(vcov(m1, cluster = ~dname)))["fxshock"],
-                sqrt(diag(vcov(m2, cluster = ~dname)))["fxshock"]),
-    n_obs   = c(nobs(m1), nobs(m2)),
-    r2_w    = c(fitstat(m1, "wr2", simplify = TRUE),
-                fitstat(m2, "wr2", simplify = TRUE))
+    outcome = c("has_migrant_intl",
+                "log(n_intl_migrants+1)",
+                "log(remit_intl+1)"),
+    coef    = sapply(mods, function(m) coef(m)["fxshock"]),
+    se      = sapply(mods,
+                    function(m) sqrt(diag(vcov(m, cluster = ~dname)))["fxshock"]),
+    n_obs   = sapply(mods, nobs),
+    r2_w    = sapply(mods, function(m) fitstat(m, "wr2", simplify = TRUE))
   ) %>%
     mutate(t_stat = coef / se,
            p_val  = 2 * pnorm(-abs(t_stat)))
