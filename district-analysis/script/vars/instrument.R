@@ -20,7 +20,7 @@
 #   - district-analysis/data/clean/forex_2000_2023.csv
 #
 # Outputs :
-#   - district-analysis/data/clean/instrument/instrument_dist.csv
+#   - district-analysis/data/clean/instrument/instrument_forex_dist.csv
 #   - district-analysis/data/clean/instrument/dest_region_shares_2001.csv
 #
 # Methodology : identical to the archived municipality script - five forex
@@ -410,7 +410,7 @@ cat("District:", nrow(dist_fx_panel), "rows,",
 dir.create("district-analysis/data/clean/instrument",
            recursive = TRUE, showWarnings = FALSE)
 write.csv(dist_fx_panel,
-          "district-analysis/data/clean/instrument/instrument_dist.csv",
+          "district-analysis/data/clean/instrument/instrument_forex_dist.csv",
           row.names = FALSE)
 
 
