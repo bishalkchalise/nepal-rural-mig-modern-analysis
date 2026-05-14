@@ -45,38 +45,27 @@ cs_df <- abst %>%
 
 cat(sprintf("Cross-section: %d districts (2021)\n", nrow(cs_df)))
 
-# Bare (no controls)
-m1 <- feols(log_absentees ~ ssiv_index_2001,       data = cs_df, se = "hetero")
-m2 <- feols(log_absentees ~ shareshock_index_2001, data = cs_df, se = "hetero")
-m3 <- feols(log_absentees ~ absexp_index_2001,     data = cs_df, se = "hetero")
+# Headline shifter is fxshock = shareshock_index_2001:
+#   fxshock(d,t) = sum_c mig_share_2001(d,c) * fx_index_2001(c,t)
+m1 <- feols(log_absentees ~ fxshock,                data = cs_df, se = "hetero")
+m2 <- feols(log_absentees ~ fxshock + log_pop_2001, data = cs_df, se = "hetero")
 
-# Controlling for 2001 population (scale of district)
-m4 <- feols(log_absentees ~ ssiv_index_2001       + log_pop_2001,
-            data = cs_df, se = "hetero")
-m5 <- feols(log_absentees ~ shareshock_index_2001 + log_pop_2001,
-            data = cs_df, se = "hetero")
-m6 <- feols(log_absentees ~ absexp_index_2001     + log_pop_2001,
-            data = cs_df, se = "hetero")
-
-cat("\n=== First-stage: log(2021 non-India absentees + 1) on SSIV level shifters ===\n")
-print(etable(m1, m2, m3, m4, m5, m6,
-             headers = c("ssiv", "share", "abs",
-                         "ssiv+pop", "share+pop", "abs+pop"),
+cat("\n=== First-stage: log(2021 non-India absentees + 1) on fxshock ===\n")
+print(etable(m1, m2,
+             headers = c("fxshock", "fxshock+log_pop"),
              digits = 4, fitstat = c("n", "r2")))
 
 # Save coefficient table
 dir.create("district-analysis/output/tab",
            recursive = TRUE, showWarnings = FALSE)
 
-mods <- list(m1, m2, m3, m4, m5, m6)
+mods <- list(m1, m2)
 fs_summary <- tibble(
-  spec       = c("ssiv_index_2001", "shareshock_index_2001", "absexp_index_2001",
-                 "ssiv_index_2001+log_pop", "shareshock_index_2001+log_pop",
-                 "absexp_index_2001+log_pop"),
-  coef       = sapply(mods, function(m) coef(m)[2]),
-  se         = sapply(mods, function(m) sqrt(diag(vcov(m, se = "hetero")))[2]),
-  n_obs      = sapply(mods, nobs),
-  r2         = sapply(mods, function(m) fitstat(m, "r2", simplify = TRUE))
+  spec  = c("fxshock", "fxshock+log_pop"),
+  coef  = sapply(mods, function(m) coef(m)["fxshock"]),
+  se    = sapply(mods, function(m) sqrt(diag(vcov(m, se = "hetero")))["fxshock"]),
+  n_obs = sapply(mods, nobs),
+  r2    = sapply(mods, function(m) fitstat(m, "r2", simplify = TRUE))
 ) %>%
   mutate(t_stat = coef / se,
          p_val  = 2 * pnorm(-abs(t_stat)))

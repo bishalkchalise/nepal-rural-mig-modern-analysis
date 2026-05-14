@@ -71,10 +71,7 @@ instrument <- read.csv(
 
 fs_df <- dofe_panel %>%
   inner_join(instrument, by = c("dname", "year")) %>%
-  mutate(
-    log_permits = log(permits + 1),
-    fxshock     = as.numeric(scale(ssiv_index_2001))
-  )
+  mutate(log_permits = log(permits + 1))
 
 cat(sprintf(
   "First-stage panel: %d obs, %d districts, %d years (%d-%d)\n",
@@ -95,21 +92,18 @@ if (length(unmatched) > 0) {
 # 3. First-stage regressions: permits on SSIV shifters
 # ------------------------------------------------------------------------------
 
-# Each spec is a fxshock-weighted level shifter (share-weighted, share-shock,
-# or per-capita absolute exposure). YoY / decadal variants intentionally
-# excluded - the level form is the headline specification.
-m1 <- feols(log_permits ~ ssiv_index_2001        | dname + year,
-            data = fs_df, cluster = ~dname)
-m2 <- feols(log_permits ~ shareshock_index_2001  | dname + year,
-            data = fs_df, cluster = ~dname)
-m3 <- feols(log_permits ~ absexp_index_2001      | dname + year,
+# Headline shifter is fxshock = shareshock_index_2001:
+#   fxshock(d,t) = sum_c mig_share_2001(d,c) * fx_index_2001(c,t)
+# (set as the alias at the bottom of vars/instrument.R)
+m1 <- feols(log_permits ~ fxshock | dname + year,
             data = fs_df, cluster = ~dname)
 
-cat("\n=== First-stage: log(DOFE permits + 1) on SSIV level shifters ===\n")
-print(etable(m1, m2, m3,
+cat("\n=== First-stage: log(DOFE permits + 1) on fxshock (share-weighted FX) ===\n")
+print(etable(m1,
              cluster = ~dname,
-             headers = c("ssiv_index", "shareshock_index", "absexp_index"),
-             digits = 4, fitstat = c("n", "r2", "wr2")))
+             headers = "fxshock",
+             digits  = 4,
+             fitstat = c("n", "r2", "wr2")))
 
 # ------------------------------------------------------------------------------
 # 4. Save coefficient table to output/tab/
@@ -119,16 +113,11 @@ dir.create("district-analysis/output/tab", recursive = TRUE,
            showWarnings = FALSE)
 
 fs_summary <- tibble(
-  spec       = c("ssiv_index_2001",
-                 "shareshock_index_2001",
-                 "absexp_index_2001"),
-  coef       = sapply(list(m1, m2, m3),
-                      function(m) coef(m)[1]),
-  se         = sapply(list(m1, m2, m3),
-                      function(m) sqrt(diag(vcov(m, cluster = ~dname)))[1]),
-  n_obs      = sapply(list(m1, m2, m3), nobs),
-  r2_within  = sapply(list(m1, m2, m3),
-                      function(m) fitstat(m, "wr2", simplify = TRUE))
+  spec      = "fxshock",
+  coef      = coef(m1)[1],
+  se        = sqrt(diag(vcov(m1, cluster = ~dname)))[1],
+  n_obs     = nobs(m1),
+  r2_within = fitstat(m1, "wr2", simplify = TRUE)
 ) %>%
   mutate(
     t_stat = coef / se,
