@@ -191,12 +191,11 @@ nepal_fx <- forex_raw %>%
 fx_panel <- forex_raw %>%
   transmute(country, year, lcu_per_usd = as.numeric(forex)) %>%
   left_join(nepal_fx, by = "year") %>%
-  # NPR per LCU. RISES as NPR depreciates (1 LCU buys more NPR back home).
-  # POSITIVE beta on fx_z * log_mi_z = "more destination-currency appreciation
-  # vs NPR -> more migration / more remittance" -- the intuitive direction.
-  # Same economic content as Khanna's LCU/NPR but reported with the sign
-  # convention that reads naturally for non-shift-share audiences.
-  mutate(fx_to_npr = npr_per_usd / lcu_per_usd) %>%
+  # LOCKED CONVENTION: LCU per NPR (Khanna et al, AER 2026).
+  # Falls as NPR depreciates.  NEGATIVE beta = positive economic effect
+  # of NPR devaluation on migration/remittance, matching the published
+  # Khanna sign convention.
+  mutate(fx_to_npr = lcu_per_usd / npr_per_usd) %>%
   filter(country != "Nepal", country != "India")
 
 fx_base_2001 <- fx_panel %>%
