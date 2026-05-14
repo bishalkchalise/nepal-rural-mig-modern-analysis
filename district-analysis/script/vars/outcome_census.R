@@ -30,7 +30,14 @@
     #####################################################################################################
     
     vdc_to_lg_map <- read_xlsx("data/raw/old vdc to local level.xlsx") %>%
-      rename(dcode = dist)
+      rename(dcode = dist, lgcode = vmun_code)
+
+    # Palika (local-government) code -> district-name lookup. Used in
+    # section 6 to attach `dname` to 2021 PCMS records (`mnid` == lgcode).
+    lg_to_dist <- vdc_to_lg_map %>%
+      distinct(lgcode, dist_name) %>%
+      rename(dname = dist_name) %>%
+      filter(!is.na(lgcode), !is.na(dname))
     
     census_2011_id <- read_xlsx("data/raw/Full Census Data/Census 2011/censusid2011.xlsx") %>%
       clean_names()
@@ -848,16 +855,20 @@
     
     
     #####################################################################################################
-    # SECTION 6 — Load 2021 files (mnid = dname directly)
+    # SECTION 6 — Load 2021 files (mnid = lgcode, joined to dname via lg_to_dist)
     #####################################################################################################
     
     cat("Loading 2021...\n")
     
     ind_21 <- read_dta("data/raw/Full Census Data/Census 2021/Data/PCMS2021_Individual.dta") %>%
-      mutate(dname = as.integer(mnid))
+      mutate(lgcode = as.integer(mnid)) %>%
+      left_join(lg_to_dist, by = "lgcode") %>%
+      filter(!is.na(dname))
     
     hh_21 <- read_dta("data/raw/Full Census Data/Census 2021/Data/PCMS2021_Household.dta") %>%
-      mutate(dname = as.integer(mnid))
+      mutate(lgcode = as.integer(mnid)) %>%
+      left_join(lg_to_dist, by = "lgcode") %>%
+      filter(!is.na(dname))
     gc(verbose = FALSE)
     
     
@@ -1129,7 +1140,9 @@
     
     # ---- Employment status (code 1 = Employee, 2 = Employer — swapped vs 2001/2011) ----
     ind_21_full <- read_dta("data/raw/Full Census Data/Census 2021/Data/PCMS2021_Individual.dta") %>%
-      mutate(dname = as.integer(mnid))
+      mutate(lgcode = as.integer(mnid)) %>%
+      left_join(lg_to_dist, by = "lgcode") %>%
+      filter(!is.na(dname))
     
     emp_21 <- ind_21_full %>%
       filter(q05 > 14, q05 < 60, q34 %in% 1:4) %>%
