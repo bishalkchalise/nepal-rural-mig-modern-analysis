@@ -162,6 +162,18 @@ rvs_hh_panel <- rvs_hh %>%
          log_remit_intl       = log(remit_amount_intl_12m_rs + 1),
          log_remit_nonindia   = log(remit_amount_nonindia_rs + 1))
 
+# Winsorize at p5 / p95 (keep middle 90%) for remittance amounts.
+# Computed within the conditional sample (has_migrant_nonindia == 1) so the
+# bounds reflect the distribution we'll regress over.
+ni_pos_idx <- rvs_hh_panel$has_migrant_nonindia == 1
+qs <- quantile(rvs_hh_panel$remit_amount_nonindia_rs[ni_pos_idx],
+               probs = c(0.05, 0.95), na.rm = TRUE)
+rvs_hh_panel$remit_amount_nonindia_w90 <- pmin(pmax(rvs_hh_panel$remit_amount_nonindia_rs,
+                                                    qs[1]), qs[2])
+rvs_hh_panel$log_remit_nonindia_w90 <- log(rvs_hh_panel$remit_amount_nonindia_w90 + 1)
+cat(sprintf("Winsor bounds (p5/p95) on remit_amount_nonindia_rs | has_migrant_nonindia=1: "
+            "[%.0f, %.0f]\n", qs[1], qs[2]))
+
 # ---- helper: attach z at lags 0..3 and standardize ----
 attach_z <- function(panel) {
   for (L in 0:3) {
@@ -285,7 +297,7 @@ all_rows[[length(all_rows)+1]] <- run_ladder(
   "RVS log(remit+1) (if has_migrant=1)", lags = 2)
 
 # Non-India intl remittance: outcome = remit from non-India migrants only,
-# sample = HHs with at least one non-India intl migrant.
+# sample = HHs with at least one non-India intl migrant.  Raw + winsor90.
 rvs_ni <- rvs_hh_panel %>% filter(has_migrant_nonindia == 1)
 all_rows[[length(all_rows)+1]] <- run_ladder(
   rvs_ni, "remit_amount_nonindia_rs", "hhid",
@@ -293,6 +305,12 @@ all_rows[[length(all_rows)+1]] <- run_ladder(
 all_rows[[length(all_rows)+1]] <- run_ladder(
   rvs_ni, "log_remit_nonindia", "hhid",
   "RVS log(remit_nonindia+1) (if has_migrant_nonindia=1)", lags = 2)
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_ni, "remit_amount_nonindia_w90", "hhid",
+  "RVS remit_amount_nonindia [w90, if has_migrant_nonindia=1]", lags = 2)
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_ni, "log_remit_nonindia_w90", "hhid",
+  "RVS log(remit_nonindia+1) [w90, if has_migrant_nonindia=1]", lags = 2)
 
 # ---- Census 2021 cross-section: 75 districts, single year ----
 # Outcome year = 2021, shifter year = 2021 - L (lag 2 -> z built from rer_{c,2019})
