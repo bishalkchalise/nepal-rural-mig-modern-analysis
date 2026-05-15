@@ -1,27 +1,26 @@
 ################################################################################
-# District-level panel first-stage ladder for v2 SSIV only.
+# Khanna-spec panel first-stage ladder, v2 SSIV.
 #
-# Spec (Khanna):
-#   y_{d,t} = beta * [ fx_{d,t-L} * log(mig_int_d) ]
-#           + C_mig  (log(mig_int_d) * year FE)
-#           + C_fx   (bare fx_{d,t-L})
-#           + C_X    (year x 6 dest-region shares)
-#           + alpha_d + gamma_t + eps_{d,t}
+# Spec:
+#   y_{i,t} = beta * [ fx_{d(i),t-L} * log(mig_int_{d(i)}) ]
+#           + C_mig  ( log(mig_int_{d(i)}) * year FE )
+#           + C_fx   ( bare fx_{d(i),t-L} )
+#           + C_X    ( year x 6 dest-region shares_{d(i),0} )
+#           + alpha_i + gamma_t + eps_{i,t}
 #
-#   fx_{d,t}  = sum_c share_dc(v2) * rer_{c,t}        ( v2 = all DOFE 2009-10 dest with positive permits )
+#   fx_{d,t}  = sum_c share_dc(v2) * rer_{c,t}
 #   rer_{c,t} = log(NPR/LCU)_{c,t} - log(NPR/LCU)_{c,2010}
-#   mig_int_d = mean DOFE permits 2009-10 / pop_2011  ( district-constant )
+#   mig_int_d = mean DOFE permits 2009-10 / pop_2011  (district-constant)
 #
-# Output: for each outcome, a 4-row x 4-col table where
-#   rows = lag L in {0,1,2,3}
-#   cols = M1 (bare), M2 (+C_mig), M3 (+C_fx), M4 (+C_X)
+# Two panels:
+#   1. DOFE permits  : alpha_i = dname,  i = district, t = year (2011-23)
+#                      outcome = log(permits + 1)
+#   2. RVS HH panel  : alpha_i = hhid,   i = household, t = year (2016-18)
+#                      outcomes = has_migrant_intl, n_intl_migrants,
+#                                 log(remit_amount_intl + 1)
 #
-# Outcomes:
-#   - DOFE panel: log(permits + 1)                      ( 75 dist x 13 yr )
-#   - RVS panel:  hh_intl_share, intl_per_hh,
-#                 log_wt_intl_mig, log_remit_per_hh     ( 50 dist x 3 yr  )
-#
-# SE clustered at ~dname.  Run with: source("district-analysis/script/_dist_panel_ladder.R")
+# SE clustered at ~dname (= "municipality" in paper notation) in both cases.
+# Columns = ladder M1->M4, rows = lag L in {0,1,2,3}.
 ################################################################################
 
 suppressPackageStartupMessages({
@@ -47,8 +46,8 @@ forex    <- read_csv("district-analysis/data/clean/forex_2000_2023.csv", show_co
 dofe_raw <- read_csv("district-analysis/data/clean/foreign_migration_district_country_annual.csv", show_col_types = FALSE)
 pop_file <- read_csv("district-analysis/data/clean/foreign_migration_district_population.csv", show_col_types = FALSE)
 regions  <- read_csv("district-analysis/data/clean/instrument/dest_region_shares_2001.csv", show_col_types = FALSE)
-rvs      <- read_csv("district-analysis/data/clean/rvs/migration_district_year.csv", show_col_types = FALSE) %>%
-              mutate(dname = to_dname(dname_raw))
+rvs_hh   <- read_csv("district-analysis/data/clean/rvs/migration_hh_year.csv", show_col_types = FALSE) %>%
+              mutate(dname = to_dname(district_name))
 
 # ---- FX: rer_ct ----
 nepal_fx <- forex %>% filter(country == "Nepal") %>%
@@ -67,7 +66,7 @@ fx <- forex %>%
   select(country, year, rer)
 fx_countries <- unique(fx$country)
 
-# ---- v2 destination set: ALL 2009-10 DOFE dest with positive permits & in FX ----
+# ---- v2 = ALL 2009-10 DOFE dest with positive permits & in FX ----
 dofe <- dofe_raw %>%
   filter(!is.na(country)) %>%
   mutate(dname = to_dname(district_rename)) %>%
@@ -80,7 +79,7 @@ v2_tot <- dofe %>% filter(year %in% c(2009, 2010)) %>%
 set_v2 <- sort(intersect(v2_tot$country[v2_tot$tot > 0], fx_countries))
 cat(sprintf("v2 destinations: %d\n", length(set_v2)))
 
-# ---- shares (v2 only) ----
+# ---- shares ----
 sh_v2 <- dofe %>%
   filter(year %in% c(2009, 2010), country %in% set_v2) %>%
   group_by(dname, country) %>%
@@ -98,7 +97,7 @@ z_v2 <- sh_v2 %>%
   summarise(z = sum(x, na.rm = TRUE), .groups = "drop") %>%
   rename(z_v2 = z)
 
-# ---- migration intensity (district-constant) ----
+# ---- migration intensity ----
 mi <- dofe %>%
   filter(year %in% c(2009, 2010)) %>%
   group_by(dname) %>%
@@ -115,7 +114,7 @@ mi <- dofe %>%
          log_mi_z = (log_mi - mean(log_mi)) / sd(log_mi)) %>%
   select(dname, log_mi_z)
 
-# ---- DOFE panel 2011-2023 ----
+# ---- DOFE district x year panel 2011-2023 ----
 districts_dofe <- sort(intersect(unique(z_v2$dname), mi$dname))
 YRS_DOFE       <- 2011:2023
 grid_dofe      <- expand_grid(dname = districts_dofe, year = YRS_DOFE)
@@ -132,16 +131,15 @@ dofe_panel <- grid_dofe %>%
   inner_join(mi, by = "dname") %>%
   left_join(regions, by = "dname")
 
-# ---- RVS panel 2016-2018 ----
-rvs_panel <- rvs %>%
+# ---- RVS HH x year panel 2016-2018 ----
+rvs_hh_panel <- rvs_hh %>%
   inner_join(mi, by = "dname") %>%
   left_join(regions, by = "dname") %>%
-  mutate(hh_intl_share    = n_hh_with_intl_migrant / n_hh,
-         intl_per_hh      = n_intl_migrants       / n_hh,
-         log_wt_intl_mig  = log(wt_intl_migrants + 1),
-         log_remit_per_hh = log((remit_amount_intl_12m_rs / n_hh) + 1))
+  mutate(has_migrant_intl   = as.numeric(has_migrant_intl),
+         n_intl_migrants    = as.numeric(n_intl_migrants),
+         log_remit_intl_p1  = log(remit_amount_intl_12m_rs + 1))
 
-# ---- helper: add z at lags 0..3 and standardize ----
+# ---- helper: attach z at lags 0..3 and standardize ----
 attach_z <- function(panel) {
   for (L in 0:3) {
     out_col <- paste0("z_v2_L", L)
@@ -149,16 +147,14 @@ attach_z <- function(panel) {
       select(dname, year, !!out_col := z_v2)
     panel <- panel %>% left_join(tmp, by = c("dname", "year"))
   }
-  # standardize across the panel
   for (L in 0:3) {
     col <- paste0("z_v2_L", L)
     panel[[paste0(col, "_std")]] <- panel[[col]] / sd(panel[[col]], na.rm = TRUE)
   }
   panel
 }
-
-dofe_panel <- attach_z(dofe_panel)
-rvs_panel  <- attach_z(rvs_panel)
+dofe_panel    <- attach_z(dofe_panel)
+rvs_hh_panel  <- attach_z(rvs_hh_panel)
 
 # ---- regression engine ----
 REGION_COLS <- c("share_e_asia", "share_gulf", "share_oecd_north",
@@ -171,24 +167,27 @@ stars <- function(p) {
                        ifelse(p < 0.10, "*", ""))))
 }
 
-run_ladder <- function(panel, ycol, label) {
+run_ladder <- function(panel, ycol, entity_fe, label) {
   refyr <- min(panel$year, na.rm = TRUE)
   region_terms <- paste(sprintf("i(year, %s, ref = %d)", REGION_COLS, refyr),
                         collapse = " + ")
 
-  tab <- list()
+  fe_str <- paste(entity_fe, "year", sep = " + ")
   rows_long <- list()
+  tab <- list()
 
   for (L in 0:3) {
     z_std <- paste0("z_v2_L", L, "_std")
     panel$z_inter <- panel[[z_std]] * panel$log_mi_z
     panel$z_bare  <- panel[[z_std]]
 
-    f_M1 <- as.formula(sprintf("%s ~ z_inter | dname + year", ycol))
-    f_M2 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) | dname + year", ycol, refyr))
-    f_M3 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare | dname + year", ycol, refyr))
-    f_M4 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare + %s | dname + year",
-                               ycol, refyr, region_terms))
+    f_M1 <- as.formula(sprintf("%s ~ z_inter | %s", ycol, fe_str))
+    f_M2 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) | %s",
+                               ycol, refyr, fe_str))
+    f_M3 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare | %s",
+                               ycol, refyr, fe_str))
+    f_M4 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare + %s | %s",
+                               ycol, refyr, region_terms, fe_str))
 
     row <- list(lag = L)
     for (mlabel in c("M1","M2","M3","M4")) {
@@ -216,39 +215,32 @@ run_ladder <- function(panel, ycol, label) {
     tab[[length(tab)+1]] <- row
   }
 
-  # ---- print column-format table ----
-  cat(sprintf("\n==== Outcome: %s   (n_dist=%d, years=%d-%d) ====\n",
-              label, length(unique(panel$dname)),
-              min(panel$year), max(panel$year)))
-  cat(sprintf("\nbeta on z_v2*log_mi_z   (clustered SE in parens, stars: *p<0.10, **p<0.05, ***p<0.01)\n\n"))
-
-  mean_y <- mean(panel[[ycol]], na.rm = TRUE)
-  cat(sprintf("Mean(Y) = %.4f\n\n", mean_y))
-
-  cat(sprintf("%-5s | %-14s | %-14s | %-14s | %-14s\n",
+  cat(sprintf("\n==== %s    entity FE = %s,  cluster = ~dname    ====\n",
+              label, entity_fe))
+  cat(sprintf("n_obs (any-lag): %d   |   mean(Y) = %.4f\n\n",
+              nrow(panel %>% filter(!is.na(.data[[ycol]]))),
+              mean(panel[[ycol]], na.rm = TRUE)))
+  cat(sprintf("%-5s | %-13s | %-13s | %-13s | %-13s\n",
               "lag", "M1 (bare)", "M2 (+C_mig)", "M3 (+C_fx)", "M4 (+C_X)"))
-  cat(strrep("-", 80), "\n", sep = "")
+  cat(strrep("-", 76), "\n", sep = "")
   for (row in tab) {
-    cells <- sapply(c("M1","M2","M3","M4"),
-                    function(m) strsplit(row[[m]], "\n")[[1]][1])
-    cat(sprintf("L=%-2d  | %-14s | %-14s | %-14s | %-14s\n",
+    cells   <- sapply(c("M1","M2","M3","M4"), function(m) strsplit(row[[m]], "\n")[[1]][1])
+    cell_se <- sapply(c("M1","M2","M3","M4"), function(m) strsplit(row[[m]], "\n")[[1]][2])
+    cat(sprintf("L=%-2d  | %-13s | %-13s | %-13s | %-13s\n",
                 row$lag, cells["M1"], cells["M2"], cells["M3"], cells["M4"]))
-    cells_se <- sapply(c("M1","M2","M3","M4"),
-                       function(m) strsplit(row[[m]], "\n")[[1]][2])
-    cat(sprintf("      | %-14s | %-14s | %-14s | %-14s\n",
-                cells_se["M1"], cells_se["M2"], cells_se["M3"], cells_se["M4"]))
+    cat(sprintf("      | %-13s | %-13s | %-13s | %-13s\n",
+                cell_se["M1"], cell_se["M2"], cell_se["M3"], cell_se["M4"]))
   }
   cat("\n")
   bind_rows(rows_long)
 }
 
-# ---- run all outcomes ----
+# ---- run ----
 all_rows <- list()
-all_rows[[length(all_rows)+1]] <- run_ladder(dofe_panel, "log_perm",         "DOFE log(permits+1)")
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_panel,  "hh_intl_share",    "RVS hh_intl_share")
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_panel,  "intl_per_hh",      "RVS intl_per_hh")
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_panel,  "log_wt_intl_mig",  "RVS log(wt_intl_mig+1)")
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_panel,  "log_remit_per_hh", "RVS log(remit_per_hh+1)")
+all_rows[[length(all_rows)+1]] <- run_ladder(dofe_panel,   "log_perm",          "dname", "DOFE log(permits+1)")
+all_rows[[length(all_rows)+1]] <- run_ladder(rvs_hh_panel, "has_migrant_intl",  "hhid",  "RVS has_migrant_intl")
+all_rows[[length(all_rows)+1]] <- run_ladder(rvs_hh_panel, "n_intl_migrants",   "hhid",  "RVS n_intl_migrants")
+all_rows[[length(all_rows)+1]] <- run_ladder(rvs_hh_panel, "log_remit_intl_p1", "hhid",  "RVS log(remit_intl+1)")
 
 out <- bind_rows(all_rows)
 dir.create("district-analysis/output/tab", recursive = TRUE, showWarnings = FALSE)
