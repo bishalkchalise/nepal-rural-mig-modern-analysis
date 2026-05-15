@@ -171,8 +171,8 @@ qs <- quantile(rvs_hh_panel$remit_amount_nonindia_rs[ni_pos_idx],
 rvs_hh_panel$remit_amount_nonindia_w90 <- pmin(pmax(rvs_hh_panel$remit_amount_nonindia_rs,
                                                     qs[1]), qs[2])
 rvs_hh_panel$log_remit_nonindia_w90 <- log(rvs_hh_panel$remit_amount_nonindia_w90 + 1)
-cat(sprintf("Winsor bounds (p5/p95) on remit_amount_nonindia_rs | has_migrant_nonindia=1: "
-            "[%.0f, %.0f]\n", qs[1], qs[2]))
+cat(sprintf("Winsor bounds (p5/p95) remit_amount_nonindia_rs | has_migrant_nonindia=1: [%.0f, %.0f]\n",
+            qs[1], qs[2]))
 
 # ---- helper: attach z at lags 0..3 and standardize ----
 attach_z <- function(panel) {
