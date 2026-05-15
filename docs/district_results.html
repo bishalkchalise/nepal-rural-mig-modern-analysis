@@ -1,0 +1,2749 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>District-level results — Nepal migration / FX shock</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css" />
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" />
+
+  <!-- Reveal.js print stylesheet for ?print-pdf -->
+  <script>
+    (function () {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet'; link.type = 'text/css';
+      link.href = window.location.search.match(/print-pdf/gi)
+        ? 'https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/css/print/pdf.css'
+        : 'https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/css/print/paper.css';
+      document.head.appendChild(link);
+    })();
+  </script>
+
+  <!-- Academic-clean web fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400&display=swap">
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$','$'], ['\\(','\\)']],
+             displayMath: [['$$','$$'], ['\\[','\\]']] },
+      svg: { fontCache: 'global', scale: 1.0 }
+    };
+  </script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <style>
+    :root {
+      --accent:   #2c5282;
+      --accent-dk:#1a365d;
+      --ink:      #1a202c;
+      --muted:    #4a5568;
+      --rule:     #cbd5e0;
+      --paper:    #ffffff;
+      --paper-2:  #f7fafc;
+    }
+    .reveal {
+      font-family: "IBM Plex Sans",
+                   -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Helvetica, Arial, sans-serif;
+      color: var(--ink); font-weight: 400;
+    }
+    .reveal h1, .reveal h2, .reveal h3 {
+      font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+      letter-spacing: 0; text-transform: none;
+      color: var(--ink); font-weight: 600;
+    }
+    .reveal h1 { font-size: 1.6em; line-height: 1.15;
+                 margin: 0 0 0.4em 0; font-weight: 500; }
+    .reveal h2 {
+      font-size: 0.9em; line-height: 1.25; font-weight: 600;
+      color: var(--ink);
+      margin: 0 0 1.2em 0;
+      padding: 0 0 0.45em 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .reveal h3 {
+      font-size: 0.55em; color: var(--accent);
+      margin: 0.6em 0 0.1em; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .reveal p, .reveal li {
+      font-size: 0.6em; line-height: 1.55; margin: 0.55em 0;
+      font-weight: 400; color: var(--ink);
+    }
+    .reveal ul, .reveal ol { margin: 0 0 0 1.3em; padding: 0; }
+    .reveal ul li::marker { color: var(--accent); }
+    .reveal ol li::marker { color: var(--accent); font-weight: 600; }
+    .reveal li { margin: 0.5em 0; }
+    .reveal strong { font-weight: 600; color: var(--ink); }
+    .reveal em { font-style: italic; color: #2d3748; }
+    .reveal .slides { text-align: left; }
+
+    .reveal section {
+      padding: 32px 96px 18px 96px;
+      background: var(--paper);
+      box-sizing: border-box;
+      height: 100%;
+      display: flex; flex-direction: column;
+    }
+    .reveal section:not(.title-slide) { justify-content: flex-start; }
+    .reveal section > * { flex: 0 0 auto; }
+
+    /* === Title slide ============================================ */
+    .title-slide {
+      text-align: center;
+      justify-content: center !important;
+      background: var(--paper) !important;
+    }
+    .title-slide h1 {
+      font-size: 2.1em; line-height: 1.15; color: var(--ink);
+      margin: 0 auto 0.5em auto; text-align: center;
+      font-weight: 500; max-width: 1000px;
+    }
+    .title-slide h2 { border: none; padding: 0; }
+    .title-slide .authors {
+      font-size: 0.8em; color: var(--ink); font-weight: 500;
+      margin-top: 1.6em; text-align: center;
+    }
+    .title-slide .pdf-link {
+      margin-top: 2.4em; font-size: 0.5em;
+    }
+    .title-slide .pdf-link a {
+      color: var(--accent); text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+    }
+
+    /* === Tables — econ-paper booktabs =========================== */
+    .reveal table,
+    .reveal table th,
+    .reveal table td,
+    .reveal table tr { border: none !important; }
+    .reveal table {
+      font-size: 0.36em; border-collapse: collapse;
+      margin: 0.4em auto; width: 100%; max-width: 1060px;
+      line-height: 1.3;
+      font-variant-numeric: tabular-nums;
+    }
+    .reveal table th, .reveal table td {
+      padding: 1px 14px; text-align: right; vertical-align: top;
+      background: transparent;
+    }
+    .reveal table thead tr:first-child th.sample-span {
+      text-align: center; font-style: italic; font-weight: 400;
+      color: var(--muted); font-size: 0.92em;
+      border-top: 1.2px solid var(--ink) !important;
+      border-bottom: 0.5px solid var(--rule) !important;
+      padding-top: 8px; padding-bottom: 4px;
+    }
+    .reveal table thead tr:first-child th.outcome-span {
+      text-align: left; font-weight: 600;
+      border-top: 1.2px solid var(--ink) !important;
+      border-bottom: 0.8px solid var(--ink) !important;
+      padding-top: 8px; padding-bottom: 4px;
+      vertical-align: bottom;
+    }
+    .reveal table thead tr.threshold-row th {
+      border-top: none !important;
+      border-bottom: 0.8px solid var(--ink) !important;
+      font-weight: 600; padding-top: 2px; padding-bottom: 6px;
+    }
+    .reveal table thead tr.threshold-row th:first-child { border-bottom: 0.8px solid var(--ink) !important; }
+    .reveal table th:first-child, .reveal table td:first-child {
+      text-align: left; padding-left: 0;
+    }
+    .reveal table th:last-child, .reveal table td:last-child { padding-right: 0; }
+    .reveal table thead tr:first-child th {
+      border-top: 1.2px solid var(--ink) !important;
+      padding-top: 8px;
+      font-weight: 600;
+    }
+    .reveal table thead tr.subhead th {
+      font-weight: 400; font-size: 0.92em; color: var(--muted);
+      padding-top: 0; padding-bottom: 7px;
+      border-bottom: 0.8px solid var(--ink) !important;
+    }
+    .reveal table tbody tr.outcomehead td {
+      padding-top: 7px; font-weight: 600; vertical-align: bottom;
+    }
+    .reveal table tbody tr.outcomehead td:first-child {
+      font-weight: 600; color: var(--ink);
+    }
+    .reveal table tbody tr.outcomesub td:first-child {
+      font-weight: 400; font-size: 0.9em; color: var(--muted);
+      padding-bottom: 4px;
+    }
+    .reveal table tbody tr:last-child td {
+      border-bottom: 1.2px solid var(--ink) !important;
+      padding-bottom: 8px;
+    }
+    .reveal table .se    { color: var(--muted); font-size: 0.95em; }
+    .reveal table .pct   { color: var(--muted); font-size: 0.9em; }
+    .reveal table .stars { color: var(--accent); font-weight: 600; }
+
+    /* === Math =================================================== */
+    .reveal mjx-container[display="true"] {
+      font-size: 0.62em !important;
+      margin: 0.8em auto !important; display: block !important;
+    }
+    .reveal .eq-cap {
+      font-size: 0.33em; color: var(--muted);
+      margin: 0.2em 0 0 0; text-align: left; line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section class="title-slide">
+  <h1>District-level robustness</h1>
+  <h2 style="border:none;padding:0;font-weight:400;color:var(--muted);font-size:0.7em;">
+    Khanna shift-share IV, lag-2, district panel
+  </h2>
+  <div class="authors">Bishal K. Chalise &middot; Mushfiq Mobarak</div>
+  <p style="text-align:center;font-size:0.55em;color:var(--muted);margin-top:1.4em;max-width:780px;margin-left:auto;margin-right:auto;">
+    Three panels &mdash; census 2011/2021 (77 dist. &times; 2 yrs), HRVS 2016-18
+    (residualised to district &times; year), and NEC 2018 firm cross-section
+    (77 dist.). Each table walks the Khanna control ladder.
+  </p>
+  <p class="pdf-link"><a href="presentation.html">&larr; main presentation</a></p>
+</section>
+
+<section>
+  <h2>Specification</h2>
+  <p>$y_{d,t} = \beta\, z\bigl(\log(\mathrm{mig}_{d,t-2}/1000)\bigr) + \boldsymbol{\delta}'\mathbf{C}_{d,t} + \alpha_d + \tau_t + \varepsilon_{d,t}$</p>
+  <ul>
+    <li>$z(\log(\mathrm{mig}/1000))$ instrumented by 2009-10 DOFE-share &times; year shifter (26 destinations).</li>
+    <li>Lag 2 throughout. SE clustered at district.</li>
+    <li>Three controls compared per table:
+      <ul>
+        <li><strong>+ $C_{\mathrm{mig}}$ (M2):</strong> year &times; baseline log(mig) interaction.</li>
+        <li><strong>+ $C_{\mathrm{fx}}$ (M3):</strong> M2 + bare $z$ (FX-anchored shifter).</li>
+        <li><strong>+ $C_{X}$ (M4):</strong> M3 + year &times; 6 region shares.</li>
+      </ul>
+    </li>
+  </ul>
+  <p class="eq-cap">Dependent variable scaling: log of continuous outcomes, level for indicator / share outcomes. Mean(Y) reported in the original (level) scale.</p>
+</section>
+
+<section>
+  <h2>Migration (census 2011-2021)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) In-migrant share</strong></td>
+          <td>$-$0.246 <span class="stars">***</span></td>
+          <td>$-$0.222 <span class="stars">***</span></td>
+          <td>$-$0.140 <span class="stars">*</span></td>
+          <td>0.140</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.080)</td>
+          <td class="se">(0.067)</td>
+          <td class="se">(0.078)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Absent-HH share</strong></td>
+          <td>$-$0.013</td>
+          <td>$-$0.041</td>
+          <td>0.009</td>
+          <td>0.241</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.040)</td>
+          <td class="se">(0.027)</td>
+          <td class="se">(0.034)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) In-migrants, domestic share</strong></td>
+          <td>$-$0.246 <span class="stars">***</span></td>
+          <td>$-$0.221 <span class="stars">***</span></td>
+          <td>$-$0.134 <span class="stars">*</span></td>
+          <td>0.127</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.077)</td>
+          <td class="se">(0.062)</td>
+          <td class="se">(0.069)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) In-migrants, international share</strong></td>
+          <td>$-$0.000</td>
+          <td>$-$0.001</td>
+          <td>$-$0.006</td>
+          <td>0.013</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.015)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) In-migrants from rural</strong></td>
+          <td>$-$0.130 <span class="stars">**</span></td>
+          <td>$-$0.119 <span class="stars">**</span></td>
+          <td>$-$0.081</td>
+          <td>0.103</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.052)</td>
+          <td class="se">(0.047)</td>
+          <td class="se">(0.056)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) In-migrants from urban</strong></td>
+          <td>$-$0.145 <span class="stars">***</span></td>
+          <td>$-$0.131 <span class="stars">***</span></td>
+          <td>$-$0.077 <span class="stars">***</span></td>
+          <td>0.023</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.036)</td>
+          <td class="se">(0.027)</td>
+          <td class="se">(0.028)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Reason: economic</strong></td>
+          <td>$-$0.110 <span class="stars">***</span></td>
+          <td>$-$0.098 <span class="stars">***</span></td>
+          <td>$-$0.035</td>
+          <td>0.037</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.030)</td>
+          <td class="se">(0.025)</td>
+          <td class="se">(0.039)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Reason: marriage</strong></td>
+          <td>0.010</td>
+          <td>0.006</td>
+          <td>$-$0.000</td>
+          <td>0.059</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.033)</td>
+          <td class="se">(0.037)</td>
+          <td class="se">(0.039)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Reason: non-economic</strong></td>
+          <td>$-$0.147 <span class="stars">***</span></td>
+          <td>$-$0.136 <span class="stars">***</span></td>
+          <td>$-$0.112 <span class="stars">**</span></td>
+          <td>0.099</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.056)</td>
+          <td class="se">(0.051)</td>
+          <td class="se">(0.050)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Reason: study</strong></td>
+          <td>$-$0.021 <span class="stars">***</span></td>
+          <td>$-$0.017 <span class="stars">***</span></td>
+          <td>$-$0.004</td>
+          <td>0.010</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.004)</td>
+          <td class="se">(0.007)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Industry employment shares (census)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Agri/forestry/fish</strong></td>
+          <td>$-$0.047</td>
+          <td>$-$0.052</td>
+          <td>$-$0.155 <span class="stars">***</span></td>
+          <td>0.672</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.044)</td>
+          <td class="se">(0.048)</td>
+          <td class="se">(0.057)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Manufacturing</strong></td>
+          <td>0.046 <span class="stars">***</span></td>
+          <td>0.043 <span class="stars">***</span></td>
+          <td>0.039 <span class="stars">***</span></td>
+          <td>0.037</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.015)</td>
+          <td class="se">(0.014)</td>
+          <td class="se">(0.013)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Construction</strong></td>
+          <td>$-$0.016</td>
+          <td>$-$0.026</td>
+          <td>$-$0.002</td>
+          <td>0.048</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.018)</td>
+          <td class="se">(0.020)</td>
+          <td class="se">(0.021)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Wholesale/retail</strong></td>
+          <td>0.021</td>
+          <td>0.018</td>
+          <td>0.026</td>
+          <td>0.074</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.018)</td>
+          <td class="se">(0.017)</td>
+          <td class="se">(0.020)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Transport/accomm.</strong></td>
+          <td>0.003</td>
+          <td>0.003</td>
+          <td>0.000</td>
+          <td>0.034</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.008)</td>
+          <td class="se">(0.009)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Finance/RE/prof.</strong></td>
+          <td>$-$0.011 <span class="stars">*</span></td>
+          <td>$-$0.008</td>
+          <td>0.000</td>
+          <td>0.018</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.007)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Education</strong></td>
+          <td>0.015 <span class="stars">***</span></td>
+          <td>0.016 <span class="stars">***</span></td>
+          <td>0.019 <span class="stars">***</span></td>
+          <td>0.037</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.006)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Health</strong></td>
+          <td>$-$0.001</td>
+          <td>0.000</td>
+          <td>0.000</td>
+          <td>0.009</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.003)</td>
+          <td class="se">(0.003)</td>
+          <td class="se">(0.003)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Public admin/defence</strong></td>
+          <td>0.001</td>
+          <td>0.002</td>
+          <td>0.056 <span class="stars">**</span></td>
+          <td>0.021</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.016)</td>
+          <td class="se">(0.017)</td>
+          <td class="se">(0.024)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Arts/recreation</strong></td>
+          <td>$-$0.012 <span class="stars">***</span></td>
+          <td>$-$0.011 <span class="stars">***</span></td>
+          <td>$-$0.009 <span class="stars">***</span></td>
+          <td>0.002</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.004)</td>
+          <td class="se">(0.003)</td>
+          <td class="se">(0.002)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(11) Other</strong></td>
+          <td>0.000</td>
+          <td>0.013</td>
+          <td>0.025</td>
+          <td>0.047</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.028)</td>
+          <td class="se">(0.022)</td>
+          <td class="se">(0.029)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Occupation shares (census)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Managers</strong></td>
+          <td>$-$0.037 <span class="stars">***</span></td>
+          <td>$-$0.028 <span class="stars">**</span></td>
+          <td>$-$0.023 <span class="stars">*</span></td>
+          <td>0.030</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.012)</td>
+          <td class="se">(0.011)</td>
+          <td class="se">(0.013)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Professionals</strong></td>
+          <td>0.012 <span class="stars">*</span></td>
+          <td>0.014 <span class="stars">*</span></td>
+          <td>0.016 <span class="stars">*</span></td>
+          <td>0.043</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.008)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Technicians</strong></td>
+          <td>0.014 <span class="stars">**</span></td>
+          <td>0.016 <span class="stars">**</span></td>
+          <td>0.020 <span class="stars">***</span></td>
+          <td>0.018</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.007)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Office assistants</strong></td>
+          <td>$-$0.008 <span class="stars">*</span></td>
+          <td>$-$0.006 <span class="stars">*</span></td>
+          <td>$-$0.006 <span class="stars">*</span></td>
+          <td>0.012</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.004)</td>
+          <td class="se">(0.003)</td>
+          <td class="se">(0.004)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Service & sales</strong></td>
+          <td>0.043 <span class="stars">**</span></td>
+          <td>0.040 <span class="stars">**</span></td>
+          <td>0.043 <span class="stars">**</span></td>
+          <td>0.061</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.021)</td>
+          <td class="se">(0.019)</td>
+          <td class="se">(0.018)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Skilled agri</strong></td>
+          <td>$-$0.015</td>
+          <td>$-$0.020</td>
+          <td>$-$0.102 <span class="stars">**</span></td>
+          <td>0.636</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.038)</td>
+          <td class="se">(0.041)</td>
+          <td class="se">(0.048)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Craft & trades</strong></td>
+          <td>0.067 <span class="stars">***</span></td>
+          <td>0.056 <span class="stars">***</span></td>
+          <td>0.062 <span class="stars">***</span></td>
+          <td>0.059</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.021)</td>
+          <td class="se">(0.015)</td>
+          <td class="se">(0.016)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Machine operators</strong></td>
+          <td>0.014 <span class="stars">***</span></td>
+          <td>0.013 <span class="stars">***</span></td>
+          <td>0.014 <span class="stars">***</span></td>
+          <td>0.020</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.005)</td>
+          <td class="se">(0.004)</td>
+          <td class="se">(0.005)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Elementary</strong></td>
+          <td>$-$0.084 <span class="stars">**</span></td>
+          <td>$-$0.079 <span class="stars">**</span></td>
+          <td>$-$0.066 <span class="stars">*</span></td>
+          <td>0.117</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.039)</td>
+          <td class="se">(0.038)</td>
+          <td class="se">(0.037)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Armed forces</strong></td>
+          <td>$-$0.008</td>
+          <td>$-$0.007</td>
+          <td>0.042 <span class="stars">**</span></td>
+          <td>0.005</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.019)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Work-status & employment type (census)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Wage non-agri</strong></td>
+          <td>$-$0.026</td>
+          <td>$-$0.025</td>
+          <td>0.042</td>
+          <td>0.155</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.017)</td>
+          <td class="se">(0.018)</td>
+          <td class="se">(0.030)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Own-account non-agri</strong></td>
+          <td>0.002</td>
+          <td>0.003</td>
+          <td>$-$0.000</td>
+          <td>0.070</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.012)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Agri work</strong></td>
+          <td>0.058</td>
+          <td>0.044</td>
+          <td>$-$0.070</td>
+          <td>0.444</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.053)</td>
+          <td class="se">(0.057)</td>
+          <td class="se">(0.065)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Non-agri work</strong></td>
+          <td>$-$0.040</td>
+          <td>$-$0.033</td>
+          <td>0.031</td>
+          <td>0.255</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.029)</td>
+          <td class="se">(0.028)</td>
+          <td class="se">(0.041)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) HH chores</strong></td>
+          <td>0.064</td>
+          <td>0.069</td>
+          <td>0.047</td>
+          <td>0.171</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.060)</td>
+          <td class="se">(0.062)</td>
+          <td class="se">(0.065)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Student</strong></td>
+          <td>0.053 <span class="stars">**</span></td>
+          <td>0.044 <span class="stars">*</span></td>
+          <td>0.045 <span class="stars">**</span></td>
+          <td>0.168</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.025)</td>
+          <td class="se">(0.023)</td>
+          <td class="se">(0.021)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Job-seeking</strong></td>
+          <td>0.056 <span class="stars">**</span></td>
+          <td>0.049 <span class="stars">**</span></td>
+          <td>0.043</td>
+          <td>0.055</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.028)</td>
+          <td class="se">(0.024)</td>
+          <td class="se">(0.028)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) No work</strong></td>
+          <td>$-$0.012 <span class="stars">**</span></td>
+          <td>$-$0.011 <span class="stars">**</span></td>
+          <td>$-$0.005</td>
+          <td>0.026</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.005)</td>
+          <td class="se">(0.005)</td>
+          <td class="se">(0.007)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Employee</strong></td>
+          <td>0.003</td>
+          <td>0.008</td>
+          <td>0.082 <span class="stars">***</span></td>
+          <td>0.240</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.024)</td>
+          <td class="se">(0.026)</td>
+          <td class="se">(0.030)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Employer</strong></td>
+          <td>0.007</td>
+          <td>0.011</td>
+          <td>0.013 <span class="stars">**</span></td>
+          <td>0.015</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.008)</td>
+          <td class="se">(0.009)</td>
+          <td class="se">(0.006)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(11) Self-employed</strong></td>
+          <td>$-$0.035</td>
+          <td>$-$0.042</td>
+          <td>$-$0.090 <span class="stars">*</span></td>
+          <td>0.674</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.035)</td>
+          <td class="se">(0.037)</td>
+          <td class="se">(0.047)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(12) Unpaid family worker</strong></td>
+          <td>0.025</td>
+          <td>0.024</td>
+          <td>$-$0.005</td>
+          <td>0.070</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.021)</td>
+          <td class="se">(0.023)</td>
+          <td class="se">(0.033)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>LFP &mdash; female &amp; male (census)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Female LFP</strong></td>
+          <td>$-$0.037</td>
+          <td>$-$0.058</td>
+          <td>$-$0.084</td>
+          <td>0.661</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.069)</td>
+          <td class="se">(0.075)</td>
+          <td class="se">(0.071)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Female LFP, agri</strong></td>
+          <td>0.020</td>
+          <td>$-$0.006</td>
+          <td>$-$0.082</td>
+          <td>0.490</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.065)</td>
+          <td class="se">(0.071)</td>
+          <td class="se">(0.070)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Female LFP, non-agri</strong></td>
+          <td>$-$0.051</td>
+          <td>$-$0.045</td>
+          <td>$-$0.005</td>
+          <td>0.153</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.031)</td>
+          <td class="se">(0.027)</td>
+          <td class="se">(0.033)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Female LFP, wage</strong></td>
+          <td>$-$0.041 <span class="stars">**</span></td>
+          <td>$-$0.037 <span class="stars">*</span></td>
+          <td>0.004</td>
+          <td>0.088</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.021)</td>
+          <td class="se">(0.019)</td>
+          <td class="se">(0.025)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Female: chores only</strong></td>
+          <td>$-$0.012</td>
+          <td>0.011</td>
+          <td>0.019</td>
+          <td>0.195</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.053)</td>
+          <td class="se">(0.060)</td>
+          <td class="se">(0.063)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Female employment rate</strong></td>
+          <td>$-$0.030</td>
+          <td>$-$0.051</td>
+          <td>$-$0.087</td>
+          <td>0.643</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.068)</td>
+          <td class="se">(0.074)</td>
+          <td class="se">(0.072)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Male LFP</strong></td>
+          <td>0.055</td>
+          <td>0.060</td>
+          <td>0.005</td>
+          <td>0.784</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.038)</td>
+          <td class="se">(0.039)</td>
+          <td class="se">(0.047)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Male LFP, agri</strong></td>
+          <td>0.103 <span class="stars">**</span></td>
+          <td>0.104 <span class="stars">**</span></td>
+          <td>$-$0.014</td>
+          <td>0.428</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.046)</td>
+          <td class="se">(0.049)</td>
+          <td class="se">(0.063)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Male LFP, non-agri</strong></td>
+          <td>$-$0.038</td>
+          <td>$-$0.034</td>
+          <td>0.026</td>
+          <td>0.334</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.036)</td>
+          <td class="se">(0.039)</td>
+          <td class="se">(0.046)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) LFP gap (M-F)</strong></td>
+          <td>0.091</td>
+          <td>0.118 <span class="stars">*</span></td>
+          <td>0.089</td>
+          <td>0.123</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.064)</td>
+          <td class="se">(0.071)</td>
+          <td class="se">(0.070)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Education &amp; marriage (census)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Literate</strong></td>
+          <td>0.076 <span class="stars">**</span></td>
+          <td>0.057 <span class="stars">**</span></td>
+          <td>0.045</td>
+          <td>0.703</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.035)</td>
+          <td class="se">(0.026)</td>
+          <td class="se">(0.028)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Literate, male</strong></td>
+          <td>0.046 <span class="stars">*</span></td>
+          <td>0.029</td>
+          <td>0.024</td>
+          <td>0.794</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.026)</td>
+          <td class="se">(0.021)</td>
+          <td class="se">(0.026)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Literate, female</strong></td>
+          <td>0.101 <span class="stars">**</span></td>
+          <td>0.077 <span class="stars">**</span></td>
+          <td>0.054</td>
+          <td>0.618</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.045)</td>
+          <td class="se">(0.034)</td>
+          <td class="se">(0.035)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) School attend 6-16</strong></td>
+          <td>0.022</td>
+          <td>0.011</td>
+          <td>0.030</td>
+          <td>0.895</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.025)</td>
+          <td class="se">(0.027)</td>
+          <td class="se">(0.028)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) School attend 6-16, M</strong></td>
+          <td>0.003</td>
+          <td>$-$0.006</td>
+          <td>0.012</td>
+          <td>0.900</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.021)</td>
+          <td class="se">(0.024)</td>
+          <td class="se">(0.025)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) School attend 6-16, F</strong></td>
+          <td>0.041</td>
+          <td>0.028</td>
+          <td>0.049</td>
+          <td>0.890</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.034)</td>
+          <td class="se">(0.035)</td>
+          <td class="se">(0.033)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Ever married 15-60</strong></td>
+          <td>$-$0.059 <span class="stars">***</span></td>
+          <td>$-$0.048 <span class="stars">***</span></td>
+          <td>$-$0.039 <span class="stars">**</span></td>
+          <td>0.737</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.019)</td>
+          <td class="se">(0.017)</td>
+          <td class="se">(0.019)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Never married 15-60</strong></td>
+          <td>0.059 <span class="stars">***</span></td>
+          <td>0.048 <span class="stars">***</span></td>
+          <td>0.039 <span class="stars">**</span></td>
+          <td>0.263</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.019)</td>
+          <td class="se">(0.017)</td>
+          <td class="se">(0.019)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Female age at first marriage</strong></td>
+          <td>1.200 <span class="stars">***</span></td>
+          <td>1.131 <span class="stars">***</span></td>
+          <td>1.092 <span class="stars">***</span></td>
+          <td>18.164</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.336)</td>
+          <td class="se">(0.354)</td>
+          <td class="se">(0.369)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Female married by 18</strong></td>
+          <td>$-$0.148 <span class="stars">**</span></td>
+          <td>$-$0.118 <span class="stars">**</span></td>
+          <td>$-$0.114 <span class="stars">**</span></td>
+          <td>0.393</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.061)</td>
+          <td class="se">(0.053)</td>
+          <td class="se">(0.052)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(11) Female married by 20</strong></td>
+          <td>$-$0.131 <span class="stars">***</span></td>
+          <td>$-$0.121 <span class="stars">***</span></td>
+          <td>$-$0.101 <span class="stars">**</span></td>
+          <td>0.717</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.039)</td>
+          <td class="se">(0.039)</td>
+          <td class="se">(0.048)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Assets (census)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Mobile</strong></td>
+          <td>0.301 <span class="stars">***</span></td>
+          <td>0.235 <span class="stars">***</span></td>
+          <td>0.166 <span class="stars">**</span></td>
+          <td>0.747</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.116)</td>
+          <td class="se">(0.072)</td>
+          <td class="se">(0.084)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Landline</strong></td>
+          <td>0.124 <span class="stars">***</span></td>
+          <td>0.115 <span class="stars">***</span></td>
+          <td>0.100 <span class="stars">***</span></td>
+          <td>0.038</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.026)</td>
+          <td class="se">(0.022)</td>
+          <td class="se">(0.024)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Internet</strong></td>
+          <td>$-$0.304 <span class="stars">***</span></td>
+          <td>$-$0.246 <span class="stars">***</span></td>
+          <td>$-$0.195 <span class="stars">**</span></td>
+          <td>0.146</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.117)</td>
+          <td class="se">(0.084)</td>
+          <td class="se">(0.091)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Computer</strong></td>
+          <td>$-$0.056 <span class="stars">***</span></td>
+          <td>$-$0.046 <span class="stars">***</span></td>
+          <td>$-$0.030 <span class="stars">*</span></td>
+          <td>0.063</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.020)</td>
+          <td class="se">(0.013)</td>
+          <td class="se">(0.016)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) TV</strong></td>
+          <td>0.076</td>
+          <td>0.106 <span class="stars">*</span></td>
+          <td>0.124 <span class="stars">*</span></td>
+          <td>0.323</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.051)</td>
+          <td class="se">(0.056)</td>
+          <td class="se">(0.067)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Radio</strong></td>
+          <td>0.276 <span class="stars">***</span></td>
+          <td>0.228 <span class="stars">***</span></td>
+          <td>0.192 <span class="stars">**</span></td>
+          <td>0.462</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.078)</td>
+          <td class="se">(0.057)</td>
+          <td class="se">(0.078)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Fridge</strong></td>
+          <td>$-$0.129 <span class="stars">***</span></td>
+          <td>$-$0.101 <span class="stars">**</span></td>
+          <td>$-$0.073</td>
+          <td>0.083</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.048)</td>
+          <td class="se">(0.044)</td>
+          <td class="se">(0.069)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Motorcycle</strong></td>
+          <td>$-$0.105 <span class="stars">*</span></td>
+          <td>$-$0.108 <span class="stars">*</span></td>
+          <td>$-$0.039</td>
+          <td>0.109</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.055)</td>
+          <td class="se">(0.056)</td>
+          <td class="se">(0.069)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Car</strong></td>
+          <td>$-$0.027 <span class="stars">***</span></td>
+          <td>$-$0.021 <span class="stars">***</span></td>
+          <td>$-$0.020 <span class="stars">***</span></td>
+          <td>0.013</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.007)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Cycle</strong></td>
+          <td>0.003</td>
+          <td>0.002</td>
+          <td>0.006</td>
+          <td>0.194</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.020)</td>
+          <td class="se">(0.022)</td>
+          <td class="se">(0.025)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(11) Mean asset count</strong></td>
+          <td>0.223</td>
+          <td>0.135</td>
+          <td>0.192</td>
+          <td>2.671</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.267)</td>
+          <td class="se">(0.273)</td>
+          <td class="se">(0.333)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Amenities &mdash; lighting / cooking (census)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Lighting: electricity</strong></td>
+          <td>0.223</td>
+          <td>0.127</td>
+          <td>$-$0.027</td>
+          <td>0.846</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.139)</td>
+          <td class="se">(0.078)</td>
+          <td class="se">(0.093)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Lighting: kerosene</strong></td>
+          <td>0.012</td>
+          <td>0.072</td>
+          <td>$-$0.009</td>
+          <td>0.089</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.092)</td>
+          <td class="se">(0.089)</td>
+          <td class="se">(0.088)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Lighting: biogas</strong></td>
+          <td>0.002</td>
+          <td>0.002</td>
+          <td>0.001</td>
+          <td>0.002</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.002)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Lighting: other</strong></td>
+          <td>$-$0.511 <span class="stars">**</span></td>
+          <td>$-$0.453 <span class="stars">**</span></td>
+          <td>$-$0.110</td>
+          <td>0.130</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.218)</td>
+          <td class="se">(0.204)</td>
+          <td class="se">(0.248)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Cooking: modern</strong></td>
+          <td>0.011</td>
+          <td>$-$0.004</td>
+          <td>0.120</td>
+          <td>0.209</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.054)</td>
+          <td class="se">(0.056)</td>
+          <td class="se">(0.079)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Cooking: traditional</strong></td>
+          <td>$-$0.008</td>
+          <td>0.005</td>
+          <td>$-$0.124</td>
+          <td>0.787</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.055)</td>
+          <td class="se">(0.056)</td>
+          <td class="se">(0.079)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Cooking: electric</strong></td>
+          <td>$-$0.003</td>
+          <td>$-$0.004</td>
+          <td>$-$0.005</td>
+          <td>0.002</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.003)</td>
+          <td class="se">(0.003)</td>
+          <td class="se">(0.004)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Cooking: LPG</strong></td>
+          <td>0.021</td>
+          <td>0.015</td>
+          <td>0.124</td>
+          <td>0.194</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.059)</td>
+          <td class="se">(0.061)</td>
+          <td class="se">(0.086)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Cooking: biogas</strong></td>
+          <td>$-$0.010</td>
+          <td>$-$0.017</td>
+          <td>0.002</td>
+          <td>0.014</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.014)</td>
+          <td class="se">(0.015)</td>
+          <td class="se">(0.020)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Cooking: kerosene</strong></td>
+          <td>0.024 <span class="stars">***</span></td>
+          <td>0.024 <span class="stars">***</span></td>
+          <td>0.015 <span class="stars">***</span></td>
+          <td>0.004</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.005)</td>
+          <td class="se">(0.005)</td>
+          <td class="se">(0.005)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(11) Cooking: wood</strong></td>
+          <td>$-$0.019</td>
+          <td>$-$0.027</td>
+          <td>$-$0.092</td>
+          <td>0.741</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.078)</td>
+          <td class="se">(0.087)</td>
+          <td class="se">(0.102)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Amenities &mdash; toilet / water / housing (census)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Toilet: modern</strong></td>
+          <td>0.181</td>
+          <td>0.123</td>
+          <td>0.028</td>
+          <td>0.505</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.170)</td>
+          <td class="se">(0.165)</td>
+          <td class="se">(0.167)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Toilet: ordinary</strong></td>
+          <td>0.095</td>
+          <td>0.041</td>
+          <td>0.204</td>
+          <td>0.270</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.218)</td>
+          <td class="se">(0.218)</td>
+          <td class="se">(0.187)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Toilet: any</strong></td>
+          <td>0.277</td>
+          <td>0.165</td>
+          <td>0.234</td>
+          <td>0.777</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.193)</td>
+          <td class="se">(0.164)</td>
+          <td class="se">(0.164)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Toilet: none</strong></td>
+          <td>$-$0.275</td>
+          <td>$-$0.164</td>
+          <td>$-$0.237</td>
+          <td>0.219</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.192)</td>
+          <td class="se">(0.163)</td>
+          <td class="se">(0.163)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Water: piped</strong></td>
+          <td>0.103</td>
+          <td>0.062</td>
+          <td>$-$0.013</td>
+          <td>0.652</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.083)</td>
+          <td class="se">(0.064)</td>
+          <td class="se">(0.067)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Water: traditional</strong></td>
+          <td>0.038</td>
+          <td>0.065</td>
+          <td>0.129 <span class="stars">*</span></td>
+          <td>0.330</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.069)</td>
+          <td class="se">(0.062)</td>
+          <td class="se">(0.068)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Housing: own</strong></td>
+          <td>$-$0.075 <span class="stars">***</span></td>
+          <td>$-$0.070 <span class="stars">***</span></td>
+          <td>$-$0.069 <span class="stars">***</span></td>
+          <td>0.902</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.020)</td>
+          <td class="se">(0.019)</td>
+          <td class="se">(0.022)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Housing: rented</strong></td>
+          <td>0.064 <span class="stars">***</span></td>
+          <td>0.060 <span class="stars">***</span></td>
+          <td>0.063 <span class="stars">***</span></td>
+          <td>0.080</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.020)</td>
+          <td class="se">(0.018)</td>
+          <td class="se">(0.018)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Foundation: modern</strong></td>
+          <td>$-$0.095</td>
+          <td>$-$0.102</td>
+          <td>$-$0.044</td>
+          <td>0.239</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.069)</td>
+          <td class="se">(0.074)</td>
+          <td class="se">(0.104)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Foundation: traditional</strong></td>
+          <td>0.085</td>
+          <td>0.092</td>
+          <td>0.030</td>
+          <td>0.756</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.069)</td>
+          <td class="se">(0.074)</td>
+          <td class="se">(0.103)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(11) Roof: modern</strong></td>
+          <td>0.102</td>
+          <td>0.054</td>
+          <td>0.006</td>
+          <td>0.546</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.104)</td>
+          <td class="se">(0.087)</td>
+          <td class="se">(0.135)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(12) Roof: traditional</strong></td>
+          <td>$-$0.008</td>
+          <td>0.016</td>
+          <td>0.206 <span class="stars">*</span></td>
+          <td>0.135</td>
+          <td>150</td></tr>
+      <tr class="outcomesub"><td>District panel: 2011, 2021 (2 yrs &times; 77 dist).</td>
+          <td class="se">(0.098)</td>
+          <td class="se">(0.097)</td>
+          <td class="se">(0.117)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>HH physical investment (RVS)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Owns powered machinery</strong></td>
+          <td>0.000</td>
+          <td>0.001</td>
+          <td>0.005</td>
+          <td>0.027</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.004)</td>
+          <td class="se">(0.004)</td>
+          <td class="se">(0.005)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Owns irrigation kit</strong></td>
+          <td>0.025</td>
+          <td>0.021</td>
+          <td>$-$0.015</td>
+          <td>0.098</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.025)</td>
+          <td class="se">(0.022)</td>
+          <td class="se">(0.032)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Owns plough</strong></td>
+          <td>$-$0.041</td>
+          <td>$-$0.040</td>
+          <td>$-$0.043</td>
+          <td>0.626</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.028)</td>
+          <td class="se">(0.027)</td>
+          <td class="se">(0.040)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Owns storage structure</strong></td>
+          <td>$-$0.099 <span class="stars">*</span></td>
+          <td>$-$0.109 <span class="stars">**</span></td>
+          <td>$-$0.050</td>
+          <td>0.239</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.056)</td>
+          <td class="se">(0.050)</td>
+          <td class="se">(0.062)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Owns transport vehicle</strong></td>
+          <td>0.004</td>
+          <td>0.002</td>
+          <td>$-$0.012</td>
+          <td>0.026</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.009)</td>
+          <td class="se">(0.008)</td>
+          <td class="se">(0.011)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Equipment stock value (Rs)</strong></td>
+          <td>$-$1,296.9</td>
+          <td>$-$920.57</td>
+          <td>833.56</td>
+          <td>16,462.1</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(1,830.8)</td>
+          <td class="se">(1,980.5)</td>
+          <td class="se">(4,159.4)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) # equipment categories</strong></td>
+          <td>$-$0.111</td>
+          <td>$-$0.125 <span class="stars">*</span></td>
+          <td>$-$0.115</td>
+          <td>1.016</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.072)</td>
+          <td class="se">(0.066)</td>
+          <td class="se">(0.086)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) # powered equipment types</strong></td>
+          <td>0.000</td>
+          <td>0.000</td>
+          <td>0.005</td>
+          <td>0.030</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.004)</td>
+          <td class="se">(0.004)</td>
+          <td class="se">(0.006)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Capex, 12m (Rs)</strong></td>
+          <td>$-$1,624.9</td>
+          <td>$-$2,071.4</td>
+          <td>$-$4,799.4</td>
+          <td>19,331.6</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(3,492.4)</td>
+          <td class="se">(3,002.7)</td>
+          <td class="se">(3,662.4)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Durables stock value (Rs)</strong></td>
+          <td>$-$1,119.3</td>
+          <td>$-$7,040.5</td>
+          <td>$-$12,139.4</td>
+          <td>155,049.6</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(7,944.1)</td>
+          <td class="se">(7,099.6)</td>
+          <td class="se">(9,411.0)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(11) Durables use value, 12m</strong></td>
+          <td>$-$111.93</td>
+          <td>$-$704.05</td>
+          <td>$-$1,213.9</td>
+          <td>15,505.0</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(794.41)</td>
+          <td class="se">(709.96)</td>
+          <td class="se">(941.10)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>HH human capital (RVS)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Education spend, 12m</strong></td>
+          <td>$-$3,560.1 <span class="stars">***</span></td>
+          <td>$-$3,274.4 <span class="stars">***</span></td>
+          <td>$-$3,938.7 <span class="stars">***</span></td>
+          <td>15,282.3</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(815.65)</td>
+          <td class="se">(890.45)</td>
+          <td class="se">(905.48)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Health spend, 12m</strong></td>
+          <td>151.35</td>
+          <td>310.45</td>
+          <td>1,393.9</td>
+          <td>12,835.0</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(904.87)</td>
+          <td class="se">(1,133.4)</td>
+          <td class="se">(1,450.4)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>HH enterprise / employment (RVS)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Has enterprise</strong></td>
+          <td>$-$0.006</td>
+          <td>$-$0.006</td>
+          <td>$-$0.004</td>
+          <td>0.164</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.009)</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.010)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) # enterprises</strong></td>
+          <td>$-$0.006</td>
+          <td>$-$0.007</td>
+          <td>$-$0.008</td>
+          <td>0.178</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.010)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) # workers</strong></td>
+          <td>$-$0.135 <span class="stars">*</span></td>
+          <td>$-$0.141 <span class="stars">*</span></td>
+          <td>$-$0.192 <span class="stars">*</span></td>
+          <td>0.300</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.080)</td>
+          <td class="se">(0.085)</td>
+          <td class="se">(0.103)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Enterprise revenue, 12m</strong></td>
+          <td>$-$13,178.1</td>
+          <td>$-$17,271.6</td>
+          <td>$-$24,880.6</td>
+          <td>82,933.0</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(14,965.7)</td>
+          <td class="se">(14,255.4)</td>
+          <td class="se">(16,729.5)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Enterprise profit, 12m</strong></td>
+          <td>$-$6,388.8</td>
+          <td>$-$8,406.2</td>
+          <td>$-$11,870.2</td>
+          <td>24,941.5</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(6,269.7)</td>
+          <td class="se">(6,229.5)</td>
+          <td class="se">(7,934.0)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Enterprise expenses, 12m</strong></td>
+          <td>$-$6,789.3</td>
+          <td>$-$8,865.3</td>
+          <td>$-$13,010.3</td>
+          <td>57,991.5</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(11,173.9)</td>
+          <td class="se">(9,947.6)</td>
+          <td class="se">(12,508.9)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Sector: manufacturing</strong></td>
+          <td>$-$0.001</td>
+          <td>$-$0.001</td>
+          <td>$-$0.002</td>
+          <td>0.012</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.003)</td>
+          <td class="se">(0.002)</td>
+          <td class="se">(0.003)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Sector: services</strong></td>
+          <td>0.004 <span class="stars">***</span></td>
+          <td>0.004 <span class="stars">***</span></td>
+          <td>0.003 <span class="stars">**</span></td>
+          <td>0.004</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.002)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Sector: trade</strong></td>
+          <td>$-$0.003</td>
+          <td>$-$0.003</td>
+          <td>$-$0.003</td>
+          <td>0.051</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.008)</td>
+          <td class="se">(0.008)</td>
+          <td class="se">(0.009)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Sector: transport</strong></td>
+          <td>$-$0.003 <span class="stars">***</span></td>
+          <td>$-$0.003 <span class="stars">***</span></td>
+          <td>$-$0.005 <span class="stars">***</span></td>
+          <td>0.004</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.001)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(11) Sector: hospitality</strong></td>
+          <td>$-$0.000</td>
+          <td>$-$0.000</td>
+          <td>$-$0.002</td>
+          <td>0.008</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.002)</td>
+          <td class="se">(0.002)</td>
+          <td class="se">(0.002)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>HH agriculture &mdash; land use (RVS)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Share own-cultivated, wet</strong></td>
+          <td>$-$0.008</td>
+          <td>$-$0.006</td>
+          <td>$-$0.004</td>
+          <td>0.857</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.012)</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.012)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Share own-cultivated, dry</strong></td>
+          <td>0.038</td>
+          <td>0.029</td>
+          <td>0.040</td>
+          <td>0.701</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.024)</td>
+          <td class="se">(0.021)</td>
+          <td class="se">(0.028)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Share rented out, wet</strong></td>
+          <td>$-$0.005</td>
+          <td>$-$0.002</td>
+          <td>0.000</td>
+          <td>0.070</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.008)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Share fallow, wet</strong></td>
+          <td>0.014</td>
+          <td>0.011</td>
+          <td>0.011</td>
+          <td>0.065</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.009)</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.009)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Share fallow, dry</strong></td>
+          <td>$-$0.036</td>
+          <td>$-$0.027</td>
+          <td>$-$0.037</td>
+          <td>0.231</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.025)</td>
+          <td class="se">(0.022)</td>
+          <td class="se">(0.029)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Share cropped both</strong></td>
+          <td>0.035</td>
+          <td>0.028</td>
+          <td>0.039</td>
+          <td>0.696</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.023)</td>
+          <td class="se">(0.021)</td>
+          <td class="se">(0.027)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>HH agriculture &mdash; input costs (RVS)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Input intensity / sqm</strong></td>
+          <td>$-$0.700 <span class="stars">**</span></td>
+          <td>$-$0.659 <span class="stars">**</span></td>
+          <td>$-$0.873 <span class="stars">***</span></td>
+          <td>2.479</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.281)</td>
+          <td class="se">(0.259)</td>
+          <td class="se">(0.277)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Total input cost (Rs)</strong></td>
+          <td>$-$874.51</td>
+          <td>$-$977.91</td>
+          <td>$-$1,469.8</td>
+          <td>7,324.9</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(841.79)</td>
+          <td class="se">(884.71)</td>
+          <td class="se">(942.30)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Wet: fertilizer cost</strong></td>
+          <td>12.231</td>
+          <td>$-$41.356</td>
+          <td>$-$153.94</td>
+          <td>1,573.4</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(169.49)</td>
+          <td class="se">(155.46)</td>
+          <td class="se">(195.88)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Wet: seed cost</strong></td>
+          <td>$-$146.78 <span class="stars">**</span></td>
+          <td>$-$146.30 <span class="stars">**</span></td>
+          <td>$-$211.46 <span class="stars">**</span></td>
+          <td>501.26</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(64.967)</td>
+          <td class="se">(65.773)</td>
+          <td class="se">(82.806)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Wet: labour cost</strong></td>
+          <td>$-$58.947</td>
+          <td>$-$129.60</td>
+          <td>$-$275.31</td>
+          <td>1,707.2</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(164.88)</td>
+          <td class="se">(164.69)</td>
+          <td class="se">(194.98)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Wet: insecticide cost</strong></td>
+          <td>$-$17.994</td>
+          <td>$-$32.402</td>
+          <td>$-$65.931</td>
+          <td>199.79</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(43.009)</td>
+          <td class="se">(44.622)</td>
+          <td class="se">(57.541)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Dry: fertilizer cost</strong></td>
+          <td>176.46</td>
+          <td>195.82</td>
+          <td>176.76</td>
+          <td>996.25</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(143.25)</td>
+          <td class="se">(172.96)</td>
+          <td class="se">(185.55)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Dry: seed cost</strong></td>
+          <td>$-$67.555</td>
+          <td>$-$69.765</td>
+          <td>$-$90.797</td>
+          <td>419.47</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(72.101)</td>
+          <td class="se">(73.968)</td>
+          <td class="se">(92.933)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Dry: labour cost</strong></td>
+          <td>118.30</td>
+          <td>41.566</td>
+          <td>34.267</td>
+          <td>824.79</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(130.99)</td>
+          <td class="se">(111.57)</td>
+          <td class="se">(137.42)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Dry: insecticide cost</strong></td>
+          <td>17.765</td>
+          <td>19.221</td>
+          <td>10.544</td>
+          <td>159.09</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(31.963)</td>
+          <td class="se">(36.715)</td>
+          <td class="se">(43.415)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>HH food consumption &amp; security (RVS)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Food exp, 7d</strong></td>
+          <td>$-$214.67 <span class="stars">**</span></td>
+          <td>$-$226.27 <span class="stars">**</span></td>
+          <td>$-$213.16 <span class="stars">*</span></td>
+          <td>2,224.9</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(90.701)</td>
+          <td class="se">(90.668)</td>
+          <td class="se">(119.03)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Food: staples, 7d</strong></td>
+          <td>$-$76.178 <span class="stars">**</span></td>
+          <td>$-$76.825 <span class="stars">**</span></td>
+          <td>$-$85.359 <span class="stars">**</span></td>
+          <td>651.76</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(30.068)</td>
+          <td class="se">(32.416)</td>
+          <td class="se">(38.733)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Food: protein, 7d</strong></td>
+          <td>$-$63.979 <span class="stars">**</span></td>
+          <td>$-$67.137 <span class="stars">**</span></td>
+          <td>$-$78.543 <span class="stars">*</span></td>
+          <td>695.35</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(29.755)</td>
+          <td class="se">(30.509)</td>
+          <td class="se">(41.362)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Food: purchased, 7d</strong></td>
+          <td>$-$100.41 <span class="stars">**</span></td>
+          <td>$-$90.475 <span class="stars">**</span></td>
+          <td>$-$99.876 <span class="stars">*</span></td>
+          <td>812.72</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(45.013)</td>
+          <td class="se">(41.717)</td>
+          <td class="se">(53.322)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Food: home-produced, 7d</strong></td>
+          <td>$-$109.76 <span class="stars">**</span></td>
+          <td>$-$133.67 <span class="stars">**</span></td>
+          <td>$-$121.15</td>
+          <td>1,369.1</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(54.053)</td>
+          <td class="se">(55.697)</td>
+          <td class="se">(74.889)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Food: vice, 7d</strong></td>
+          <td>$-$19.404</td>
+          <td>$-$29.449 <span class="stars">**</span></td>
+          <td>$-$12.266</td>
+          <td>154.75</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(15.119)</td>
+          <td class="se">(13.650)</td>
+          <td class="se">(15.811)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Food-insecure (any)</strong></td>
+          <td>$-$0.024</td>
+          <td>$-$0.030</td>
+          <td>$-$0.030</td>
+          <td>0.142</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.035)</td>
+          <td class="se">(0.033)</td>
+          <td class="se">(0.036)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Food insecurity score</strong></td>
+          <td>$-$0.186</td>
+          <td>$-$0.281</td>
+          <td>$-$0.328</td>
+          <td>0.898</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.258)</td>
+          <td class="se">(0.226)</td>
+          <td class="se">(0.258)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Worried about food</strong></td>
+          <td>$-$0.023</td>
+          <td>$-$0.028</td>
+          <td>$-$0.028</td>
+          <td>0.143</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.035)</td>
+          <td class="se">(0.033)</td>
+          <td class="se">(0.036)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>HH non-food consumption (RVS)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Non-food exp, 30d</strong></td>
+          <td>$-$513.62 <span class="stars">***</span></td>
+          <td>$-$480.70 <span class="stars">**</span></td>
+          <td>$-$364.96</td>
+          <td>1,722.2</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(189.09)</td>
+          <td class="se">(188.32)</td>
+          <td class="se">(233.08)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Non-food exp, 12m</strong></td>
+          <td>$-$21,550.5 <span class="stars">**</span></td>
+          <td>$-$27,321.8 <span class="stars">***</span></td>
+          <td>$-$29,848.1 <span class="stars">**</span></td>
+          <td>90,491.6</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(9,408.4)</td>
+          <td class="se">(9,156.6)</td>
+          <td class="se">(11,907.6)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Clothing/footwear</strong></td>
+          <td>$-$1,813.1 <span class="stars">***</span></td>
+          <td>$-$1,805.3 <span class="stars">**</span></td>
+          <td>$-$1,188.6</td>
+          <td>11,884.4</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(650.65)</td>
+          <td class="se">(728.77)</td>
+          <td class="se">(912.21)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Communication</strong></td>
+          <td>74.328</td>
+          <td>216.75</td>
+          <td>232.04</td>
+          <td>1,173.7</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(230.49)</td>
+          <td class="se">(210.90)</td>
+          <td class="se">(243.92)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Transport</strong></td>
+          <td>$-$3,239.0 <span class="stars">**</span></td>
+          <td>$-$2,674.7 <span class="stars">**</span></td>
+          <td>$-$1,428.0</td>
+          <td>12,059.4</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(1,460.9)</td>
+          <td class="se">(1,325.6)</td>
+          <td class="se">(1,493.4)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Electronics/tech</strong></td>
+          <td>$-$79.313</td>
+          <td>$-$63.267</td>
+          <td>$-$68.972</td>
+          <td>56.922</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(66.981)</td>
+          <td class="se">(68.659)</td>
+          <td class="se">(73.570)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Household goods</strong></td>
+          <td>$-$855.10 <span class="stars">**</span></td>
+          <td>$-$1,025.8 <span class="stars">**</span></td>
+          <td>$-$1,215.0 <span class="stars">**</span></td>
+          <td>3,115.5</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(418.73)</td>
+          <td class="se">(427.16)</td>
+          <td class="se">(618.83)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(8) Housing improvement</strong></td>
+          <td>$-$8,172.4</td>
+          <td>$-$13,150.2 <span class="stars">*</span></td>
+          <td>$-$15,404.1</td>
+          <td>24,587.3</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(7,301.4)</td>
+          <td class="se">(7,535.7)</td>
+          <td class="se">(10,454.6)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(9) Fuel/lighting</strong></td>
+          <td>$-$131.44</td>
+          <td>$-$351.06</td>
+          <td>$-$364.98</td>
+          <td>4,310.7</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(414.02)</td>
+          <td class="se">(333.15)</td>
+          <td class="se">(410.31)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(10) Personal care</strong></td>
+          <td>$-$698.91 <span class="stars">**</span></td>
+          <td>$-$556.13 <span class="stars">**</span></td>
+          <td>$-$572.74 <span class="stars">*</span></td>
+          <td>4,157.2</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(299.29)</td>
+          <td class="se">(255.04)</td>
+          <td class="se">(317.15)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(11) Ceremonies</strong></td>
+          <td>$-$4,050.8 <span class="stars">**</span></td>
+          <td>$-$4,866.4 <span class="stars">**</span></td>
+          <td>$-$5,964.7 <span class="stars">***</span></td>
+          <td>24,202.5</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(1,725.0)</td>
+          <td class="se">(2,008.4)</td>
+          <td class="se">(1,873.8)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(12) Jewellery/luxury</strong></td>
+          <td>$-$1,124.5 <span class="stars">**</span></td>
+          <td>$-$1,434.1 <span class="stars">**</span></td>
+          <td>$-$1,855.9 <span class="stars">***</span></td>
+          <td>2,656.7</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(499.02)</td>
+          <td class="se">(573.59)</td>
+          <td class="se">(610.56)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(13) Entertainment</strong></td>
+          <td>$-$91.181</td>
+          <td>$-$93.521</td>
+          <td>$-$108.20</td>
+          <td>445.44</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(72.342)</td>
+          <td class="se">(72.439)</td>
+          <td class="se">(87.138)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(14) Other non-food</strong></td>
+          <td>$-$610.01 <span class="stars">**</span></td>
+          <td>$-$532.34 <span class="stars">**</span></td>
+          <td>$-$662.28 <span class="stars">**</span></td>
+          <td>674.29</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(275.44)</td>
+          <td class="se">(261.18)</td>
+          <td class="se">(302.49)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(15) Taxes</strong></td>
+          <td>$-$35.746</td>
+          <td>$-$35.368</td>
+          <td>$-$21.241</td>
+          <td>223.03</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(27.247)</td>
+          <td class="se">(29.251)</td>
+          <td class="se">(33.157)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>HH remittance (RVS)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Remittance received (any)</strong></td>
+          <td>$-$0.021</td>
+          <td>$-$0.024</td>
+          <td>$-$0.006</td>
+          <td>0.338</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(0.018)</td>
+          <td class="se">(0.018)</td>
+          <td class="se">(0.018)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Intl. remittance amount, 12m</strong></td>
+          <td>$-$9,795.0 <span class="stars">*</span></td>
+          <td>$-$7,664.6 <span class="stars">*</span></td>
+          <td>$-$5,937.0</td>
+          <td>58,574.2</td>
+          <td>17,559</td></tr>
+      <tr class="outcomesub"><td>District &times; year panel from HH residualised RVS 2016-18.</td>
+          <td class="se">(5,438.6)</td>
+          <td class="se">(4,301.7)</td>
+          <td class="se">(5,175.7)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Firm structure &mdash; scale &amp; size (NEC 2018)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) # firms</strong></td>
+          <td>$-$9,332.9 <span class="stars">**</span></td>
+          <td>$-$8,731.6 <span class="stars">**</span></td>
+          <td>$-$9,291.5 <span class="stars">***</span></td>
+          <td>12,251.9</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(4,174.7)</td>
+          <td class="se">(3,578.8)</td>
+          <td class="se">(2,696.6)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Total employment</strong></td>
+          <td>$-$44,281.6 <span class="stars">**</span></td>
+          <td>$-$41,286.7 <span class="stars">**</span></td>
+          <td>$-$43,093.2 <span class="stars">***</span></td>
+          <td>42,923.5</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(20,230.9)</td>
+          <td class="se">(17,245.6)</td>
+          <td class="se">(12,945.3)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Mean employment / firm</strong></td>
+          <td>$-$0.183 <span class="stars">***</span></td>
+          <td>$-$0.150 <span class="stars">***</span></td>
+          <td>$-$0.036</td>
+          <td>3.222</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.067)</td>
+          <td class="se">(0.053)</td>
+          <td class="se">(0.075)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Share micro (1 worker)</strong></td>
+          <td>0.005</td>
+          <td>0.002</td>
+          <td>$-$0.005</td>
+          <td>0.372</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.009)</td>
+          <td class="se">(0.009)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Share small (2-9)</strong></td>
+          <td>$-$0.001</td>
+          <td>0.001</td>
+          <td>0.007</td>
+          <td>0.583</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.008)</td>
+          <td class="se">(0.009)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Share medium (10-50)</strong></td>
+          <td>$-$0.003 <span class="stars">**</span></td>
+          <td>$-$0.002</td>
+          <td>$-$0.001</td>
+          <td>0.042</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.002)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(7) Share large (51+)</strong></td>
+          <td>$-$0.001 <span class="stars">***</span></td>
+          <td>$-$0.001 <span class="stars">***</span></td>
+          <td>$-$0.000</td>
+          <td>0.003</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.000)</td>
+          <td class="se">(0.000)</td>
+          <td class="se">(0.000)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Firm structure &mdash; formality &amp; credit (NEC 2018)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Share registered</strong></td>
+          <td>$-$0.001</td>
+          <td>0.002</td>
+          <td>$-$0.002</td>
+          <td>0.512</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.009)</td>
+          <td class="se">(0.010)</td>
+          <td class="se">(0.012)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Share tax-registered</strong></td>
+          <td>$-$0.011</td>
+          <td>$-$0.011</td>
+          <td>$-$0.006</td>
+          <td>0.634</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.013)</td>
+          <td class="se">(0.014)</td>
+          <td class="se">(0.014)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Share keeps accounts</strong></td>
+          <td>0.018</td>
+          <td>0.024</td>
+          <td>0.039 <span class="stars">**</span></td>
+          <td>0.505</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.024)</td>
+          <td class="se">(0.022)</td>
+          <td class="se">(0.019)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(4) Share with formal credit</strong></td>
+          <td>0.008</td>
+          <td>0.007</td>
+          <td>0.002</td>
+          <td>0.268</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.008)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(5) Share borrowed (any)</strong></td>
+          <td>0.012 <span class="stars">**</span></td>
+          <td>0.010 <span class="stars">*</span></td>
+          <td>0.001</td>
+          <td>0.347</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.005)</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.009)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(6) Formality index</strong></td>
+          <td>$-$0.001</td>
+          <td>0.001</td>
+          <td>0.004</td>
+          <td>0.536</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.006)</td>
+          <td class="se">(0.005)</td>
+          <td class="se">(0.005)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+<section>
+  <h2>Firm structure &mdash; workforce &amp; capital (NEC 2018)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Outcome variable</th>
+        <th colspan="3" class="sample-span">Khanna control ladder</th>
+        <th rowspan="2">Mean(Y)</th>
+        <th rowspan="2">$N$</th>
+      </tr>
+      <tr class="threshold-row">
+        <th>+ $C_{\mathrm{mig}}$</th>
+        <th>+ $C_{\mathrm{fx}}$</th>
+        <th>+ $C_{X}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="outcomehead"><td><strong>(1) Share female employees</strong></td>
+          <td>$-$0.002</td>
+          <td>0.003</td>
+          <td>$-$0.003</td>
+          <td>0.386</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.008)</td>
+          <td class="se">(0.007)</td>
+          <td class="se">(0.009)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(2) Share foreign employees</strong></td>
+          <td>$-$0.000</td>
+          <td>$-$0.000</td>
+          <td>0.001</td>
+          <td>0.005</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.001)</td>
+          <td class="se">(0.001)</td>
+          <td></td><td></td></tr>
+      <tr class="outcomehead"><td><strong>(3) Share with foreign capital</strong></td>
+          <td>0.002</td>
+          <td>0.003</td>
+          <td>0.001</td>
+          <td>0.009</td>
+          <td>73</td></tr>
+      <tr class="outcomesub"><td>District cross-section, NEC 2018 (n = 77).</td>
+          <td class="se">(0.003)</td>
+          <td class="se">(0.004)</td>
+          <td class="se">(0.003)</td>
+          <td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\beta$ on $z(\log(\mathrm{mig}_{d,t-2}/1000))$. SE in (), clustered at district. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.<br/>
+    M2 +$C_{\mathrm{mig}}$: year &times; log(mig). M3 +$C_{\mathrm{fx}}$: M2 + bare $z$. M4 +$C_{X}$: M3 + year &times; 6 region shares.
+  </p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+<script>
+  Reveal.initialize({
+    width:   1280,
+    height:  800,
+    margin:  0.06,
+    minScale: 0.2,
+    maxScale: 2.0,
+    hash:    true,
+    slideNumber: 'c/t',
+    transition:  'fade',
+    controls:    true,
+    progress:    true,
+    center:      false,
+    plugins:     [ RevealMarkdown ]
+  });
+  if (window.location.search.match(/print-pdf/gi)) {
+    Reveal.on('ready', function () {
+      var fire = function () { setTimeout(function () { window.print(); }, 500); };
+      if (window.MathJax && window.MathJax.startup) {
+        window.MathJax.startup.promise.then(fire);
+      } else {
+        setTimeout(fire, 1500);
+      }
+    });
+  }
+</script>
+</body>
+</html>
