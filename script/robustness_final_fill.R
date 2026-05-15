@@ -314,6 +314,7 @@ save_partial <- function() {
             "beta","stars","se","pval","mean_y","sd_y","n","n_muni","interpret","err")
   d <- d[, intersect(KEEP, names(d)), with = FALSE]
   d[, spec := factor(spec, levels = names(SPECS))]
+  dir.create(dirname(out_path), recursive = TRUE, showWarnings = FALSE)
   fwrite(d[order(outcome_group, dataset, outcome, spec, threshold)], out_path)
 }
 

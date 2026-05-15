@@ -183,6 +183,7 @@ firm_level <- NEC_2018 |>
     ac3_interest_rate = ac3
   )
 
+dir.create("data/clean/nec2018", recursive = TRUE, showWarnings = FALSE)
 write_csv(firm_level, "data/clean/nec2018/firm_level.csv")
 cat("Wrote data/clean/nec2018/firm_level.csv  |  ",
     nrow(firm_level), "rows  x  ", ncol(firm_level), "cols\n")

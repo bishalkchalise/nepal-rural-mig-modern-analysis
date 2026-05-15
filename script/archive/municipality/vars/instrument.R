@@ -725,8 +725,11 @@
       cat("District:     ", nrow(dist_fx_panel), "rows,",
           n_distinct(dist_fx_panel$dname), "districts\n")
       
+      dir.create("data/clean/instrument", recursive = TRUE, showWarnings = FALSE)
       write.csv(ward_fx_panel, "data/clean/instrument/instrument_ward.csv", row.names = FALSE)
+      dir.create("data/clean/instrument", recursive = TRUE, showWarnings = FALSE)
       write.csv(mun_fx_panel,  "data/clean/instrument/instrument_mun.csv",  row.names = FALSE)
+      dir.create("data/clean/instrument", recursive = TRUE, showWarnings = FALSE)
       write.csv(dist_fx_panel, "data/clean/instrument/instrument_dist.csv", row.names = FALSE)
 
 

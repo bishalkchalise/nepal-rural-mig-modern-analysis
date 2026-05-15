@@ -195,6 +195,7 @@ nsic_map <- nsic_ref |>
     modernity      = modernity_map(nsic_2digt, section)
   )
 
+dir.create("data/clean/nec2018", recursive = TRUE, showWarnings = FALSE)
 write_csv(nsic_map, "data/clean/nec2018/nsic_classification_map.csv")
 
 cat("Wrote data/clean/nec2018/nsic_classification_map.csv  |  ",

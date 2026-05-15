@@ -1273,5 +1273,6 @@
     
     cat(sprintf("Final: %d rows x %d cols\n", nrow(panel_muni), ncol(panel_muni)))
     
+    dir.create(file.path(DIR_CLEAN, "census"), recursive = TRUE, showWarnings = FALSE)
     write.csv(panel_muni, file.path(DIR_CLEAN, "census/census_outcomes_municipality.csv"), row.names = FALSE)
     cat("Saved: data/clean/outcomes_municipality.csv\n")

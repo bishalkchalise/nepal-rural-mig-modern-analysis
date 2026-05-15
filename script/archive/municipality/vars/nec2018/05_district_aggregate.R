@@ -235,6 +235,7 @@ district <- dist_core |>
   left_join(dist_struct,      by = "DIST") |>
   arrange(DIST)
 
+dir.create("data/clean/nec2018", recursive = TRUE, showWarnings = FALSE)
 write_csv(district, "data/clean/nec2018/district_analysis.csv")
 cat("Wrote data/clean/nec2018/district_analysis.csv  |  ",
     nrow(district), "rows x ", ncol(district), "cols\n")

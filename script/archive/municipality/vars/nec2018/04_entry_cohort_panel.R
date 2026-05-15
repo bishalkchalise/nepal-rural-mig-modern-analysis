@@ -108,6 +108,7 @@ entry_cohort <- panel_core |>
   mutate(across(starts_with("n_firms_surviving_"), ~ replace_na(., 0L))) |>
   arrange(lgcode, founding_year_ad)
 
+dir.create("data/clean/nec2018", recursive = TRUE, showWarnings = FALSE)
 write_csv(entry_cohort, "data/clean/nec2018/entry_cohort_panel.csv")
 cat("Wrote data/clean/nec2018/entry_cohort_panel.csv  |  ",
     nrow(entry_cohort), "rows x ", ncol(entry_cohort), "cols\n")

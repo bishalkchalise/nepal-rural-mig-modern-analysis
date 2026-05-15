@@ -243,6 +243,7 @@ municipality <- mun_core |>
   left_join(mun_struct,      by = "lgcode") |>
   relocate(lgcode, DIST, n_firms)
 
+dir.create("data/clean/nec2018", recursive = TRUE, showWarnings = FALSE)
 write_csv(municipality, "data/clean/nec2018/municipality_analysis.csv")
 cat("Wrote data/clean/nec2018/municipality_analysis.csv  |  ",
     nrow(municipality), "rows x ", ncol(municipality), "cols\n")
