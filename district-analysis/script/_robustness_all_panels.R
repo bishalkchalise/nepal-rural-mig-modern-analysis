@@ -384,8 +384,14 @@ if (file.exists(NEC_PANEL_FILE)) {
     inner_join(z_lag2, by = c("dname","year")) %>%
     filter(!is.na(z_L)) %>%
     mutate(z_L_std = (z_L - mean(z_L, na.rm = TRUE)) / sd(z_L, na.rm = TRUE))
-  cat(sprintf("Running NEC panel (%d obs)...\n", nrow(npd)))
-  out_rows[[4]] <- run_outcomes(npd, NEC_PANEL_OUTCOMES, mode = "dname", refyr = 2011L, ds_label = "nec_panel")
+  # Append all log_n_new_firms_<sector> outcomes that exist in the data
+  sector_log_cols <- grep("^log_n_new_firms_(?!size_)", names(npd),
+                          value = TRUE, perl = TRUE)
+  NEC_PANEL_OUTCOMES_FULL <- c(NEC_PANEL_OUTCOMES, sector_log_cols)
+  cat(sprintf("Running NEC panel (%d obs, %d outcomes)...\n",
+              nrow(npd), length(NEC_PANEL_OUTCOMES_FULL)))
+  out_rows[[4]] <- run_outcomes(npd, NEC_PANEL_OUTCOMES_FULL, mode = "dname",
+                                refyr = 2011L, ds_label = "nec_panel")
 } else {
   cat(sprintf("Skipping NEC panel: %s not found.\nRun district-analysis/script/_build_nec_panel_district.R first.\n", NEC_PANEL_FILE))
 }
