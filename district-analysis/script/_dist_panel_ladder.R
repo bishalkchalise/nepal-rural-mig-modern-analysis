@@ -135,9 +135,10 @@ dofe_panel <- grid_dofe %>%
 rvs_hh_panel <- rvs_hh %>%
   inner_join(mi, by = "dname") %>%
   left_join(regions, by = "dname") %>%
-  mutate(has_migrant_intl   = as.numeric(has_migrant_intl),
-         n_intl_migrants    = as.numeric(n_intl_migrants),
-         log_remit_intl_p1  = log(remit_amount_intl_12m_rs + 1))
+  mutate(across(c(has_migrant, has_migrant_internal, has_migrant_intl,
+                  n_migrants, n_intl_migrants, remit_received,
+                  remit_amount_12m_rs, remit_amount_intl_12m_rs),
+                as.numeric))
 
 # ---- helper: attach z at lags 0..3 and standardize ----
 attach_z <- function(panel) {
@@ -167,7 +168,7 @@ stars <- function(p) {
                        ifelse(p < 0.10, "*", ""))))
 }
 
-run_ladder <- function(panel, ycol, entity_fe, label) {
+run_ladder <- function(panel, ycol, entity_fe, label, lags = 0:3) {
   refyr <- min(panel$year, na.rm = TRUE)
   region_terms <- paste(sprintf("i(year, %s, ref = %d)", REGION_COLS, refyr),
                         collapse = " + ")
@@ -176,7 +177,7 @@ run_ladder <- function(panel, ycol, entity_fe, label) {
   rows_long <- list()
   tab <- list()
 
-  for (L in 0:3) {
+  for (L in lags) {
     z_std <- paste0("z_v2_L", L, "_std")
     panel$z_inter <- panel[[z_std]] * panel$log_mi_z
     panel$z_bare  <- panel[[z_std]]
@@ -237,10 +238,30 @@ run_ladder <- function(panel, ycol, entity_fe, label) {
 
 # ---- run ----
 all_rows <- list()
-all_rows[[length(all_rows)+1]] <- run_ladder(dofe_panel,   "log_perm",          "dname", "DOFE log(permits+1)")
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_hh_panel, "has_migrant_intl",  "hhid",  "RVS has_migrant_intl")
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_hh_panel, "n_intl_migrants",   "hhid",  "RVS n_intl_migrants")
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_hh_panel, "log_remit_intl_p1", "hhid",  "RVS log(remit_intl+1)")
+
+# DOFE: all 4 lags
+all_rows[[length(all_rows)+1]] <- run_ladder(dofe_panel, "log_perm", "dname",
+                                             "DOFE log(permits+1)")
+
+# RVS: lag 2 only, all ladder, 8 outcomes
+# Full sample
+for (yc in c("has_migrant", "has_migrant_internal", "has_migrant_intl",
+             "n_migrants", "n_intl_migrants", "remit_received")) {
+  all_rows[[length(all_rows)+1]] <- run_ladder(rvs_hh_panel, yc, "hhid",
+                                               paste0("RVS ", yc), lags = 2)
+}
+
+# remit_amount_12m_rs : conditional on has_migrant == 1
+rvs_amt <- rvs_hh_panel %>% filter(has_migrant == 1)
+all_rows[[length(all_rows)+1]] <- run_ladder(rvs_amt, "remit_amount_12m_rs", "hhid",
+                                             "RVS remit_amount_12m_rs (if has_migrant=1)",
+                                             lags = 2)
+
+# remit_amount_intl_12m_rs : conditional on has_migrant_intl == 1
+rvs_intl_amt <- rvs_hh_panel %>% filter(has_migrant_intl == 1)
+all_rows[[length(all_rows)+1]] <- run_ladder(rvs_intl_amt, "remit_amount_intl_12m_rs", "hhid",
+                                             "RVS remit_amount_intl_12m_rs (if has_migrant_intl=1)",
+                                             lags = 2)
 
 out <- bind_rows(all_rows)
 dir.create("district-analysis/output/tab", recursive = TRUE, showWarnings = FALSE)
