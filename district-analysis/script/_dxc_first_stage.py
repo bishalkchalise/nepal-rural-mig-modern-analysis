@@ -5,8 +5,18 @@ Two baseline-share versions of the SSIV:
   v1 (2001):    share_dc from 2001 census migration  (dist_mig_pop_2001.csv)
   v2 (2009-10): share_dc from average DOFE permits in 2009-2010
 
-Exposure shifter:
-  z_dct = share_dc(base) * log_fx_ct       (Khanna direction: LCU per NPR)
+Exposure shifter (built in the migrant's-eye direction):
+
+  npr_per_lcu_{c,t}   = NPR you receive for 1 unit of country-c currency in year t
+  rer_{c,t}           = log( npr_per_lcu_{c,t} / npr_per_lcu_{c,2010} )
+                       = log NPR-per-LCU change since 2010, country c
+                       ( > 0  =  NPR has depreciated since 2010, more NPR per LCU
+                         < 0  =  NPR has appreciated, fewer NPR per LCU         )
+
+  z_dct = share_dc(base) * rer_ct
+
+  RER rises when migrants would receive more NPR for the same LCU earnings.
+  Expected sign of beta on z_dct is POSITIVE.
 
 Outcome:
   y_dct = log(dofe_permits_dct + 1)
@@ -40,14 +50,25 @@ forex = pd.read_csv("district-analysis/data/clean/forex_2000_2023.csv").dropna(s
 dofe_raw = pd.read_csv("district-analysis/data/clean/foreign_migration_district_country_annual.csv").dropna(subset=["country"])
 m01 = pd.read_csv("district-analysis/data/clean/dist_mig_pop_2001.csv")
 
-# FX in Khanna direction (LCU per NPR)
+# Build FX in migrant's-eye direction: NPR per LCU.
+# Raw 'forex' table is LCU per USD.  So:
+#   npr_per_usd_t  = forex_Nepal_t
+#   lcu_per_usd_t  = forex_c_t
+#   npr_per_lcu_ct = npr_per_usd_t / lcu_per_usd_t
 nepal_fx = forex[forex.country == "Nepal"][["year","forex"]].rename(columns={"forex":"npr_per_usd"})
 fx = (forex.rename(columns={"forex":"lcu_per_usd"})[["country","year","lcu_per_usd"]]
         .merge(nepal_fx, on="year")
         .query("country not in ['Nepal','India']")
-        .assign(fx_lcu_per_npr=lambda d: d.lcu_per_usd / d.npr_per_usd))
-fx["log_fx"] = np.log(fx.fx_lcu_per_npr)
-fx = fx[["country","year","log_fx"]].dropna()
+        .assign(npr_per_lcu=lambda d: d.npr_per_usd / d.lcu_per_usd))
+fx["log_npr_per_lcu"] = np.log(fx.npr_per_lcu)
+fx = fx[["country","year","log_npr_per_lcu"]].dropna()
+
+# Anchor each country's series to its 2010 value to get a clean depreciation index.
+base2010 = (fx[fx.year == 2010].set_index("country")
+              .log_npr_per_lcu.rename("base_2010"))
+fx = fx.join(base2010, on="country").dropna(subset=["base_2010"])
+fx["rer"] = fx["log_npr_per_lcu"] - fx["base_2010"]   # > 0 = NPR depreciated since 2010
+fx = fx[["country","year","rer"]]
 
 # DOFE annual permits at district x country x year
 dofe = (dofe_raw.assign(dname=lambda d: d.district_rename.map(to_dname))
@@ -107,10 +128,12 @@ panel = (grid.merge(dofe, on=["dname","country","year"], how="left")
               .fillna({"share_v1":0., "share_v2":0.}))
 
 panel["log_perm"] = np.log(panel.permits + 1)
-panel["z_v1"] = panel.share_v1 * panel.log_fx
-panel["z_v2"] = panel.share_v2 * panel.log_fx
-panel = panel.dropna(subset=["log_fx"])
-print(f"Panel: {len(panel)} rows ({len(districts)} d x {len(common)} c x {len(YRS)} y)\n")
+panel["z_v1"] = panel.share_v1 * panel.rer
+panel["z_v2"] = panel.share_v2 * panel.rer
+panel = panel.dropna(subset=["rer"])
+print(f"Panel: {len(panel)} rows ({len(districts)} d x {len(common)} c x {len(YRS)} y)")
+print(f"rer (log NPR/LCU change since 2010) range: "
+      f"[{panel.rer.min():.3f}, {panel.rer.max():.3f}]  mean={panel.rer.mean():.3f}\n")
 
 # ------------------------------------------------------------------------------
 # 4. Regressions
@@ -175,19 +198,19 @@ pooled_df.to_csv("district-analysis/output/tab/dxc_first_stage_pooled.csv", inde
 print("\n" + "=" * 78)
 print("B/C. CROSS-SECTION (collapse over 2011-2023): TOTAL and AVERAGE permits")
 print("=" * 78)
-mean_logfx = (fx[fx.year.between(2011,2023)].groupby("country").log_fx.mean()
-                .rename("mean_log_fx").reset_index())
+mean_rer = (fx[fx.year.between(2011,2023)].groupby("country").rer.mean()
+                .rename("mean_rer").reset_index())
 cs_base = (panel.groupby(["dname","country"])
                 .agg(perm_total=("permits","sum"), perm_mean=("permits","mean"))
                 .reset_index()
                 .merge(sh01, on=["dname","country"], how="left")
                 .merge(sh11, on=["dname","country"], how="left")
-                .merge(mean_logfx, on="country", how="left")
+                .merge(mean_rer, on="country", how="left")
                 .fillna({"share_v1":0., "share_v2":0.}))
 cs_base["log_total"] = np.log(cs_base.perm_total + 1)
 cs_base["log_mean"]  = np.log(cs_base.perm_mean  + 1)
-cs_base["z_v1"]      = cs_base.share_v1 * cs_base.mean_log_fx
-cs_base["z_v2"]      = cs_base.share_v2 * cs_base.mean_log_fx
+cs_base["z_v1"]      = cs_base.share_v1 * cs_base.mean_rer
+cs_base["z_v2"]      = cs_base.share_v2 * cs_base.mean_rer
 
 cs_rows = []
 for outcome in ["log_total", "log_mean"]:
@@ -242,9 +265,10 @@ for ver in ["v1_2001", "v2_2009_10"]:
 
 ax.axhline(0, color="black", linewidth=0.8, linestyle="--", alpha=0.6)
 ax.set_xlabel("Year", fontsize=11)
-ax.set_ylabel(r"$\beta$ on $z_{dct} = \mathrm{share}_{dc}^{base} \times \log\,\mathrm{FX}_{ct}$", fontsize=11)
-ax.set_title("Yearwise BHJ exposure first-stage: log(DOFE permits + 1) on FX shock\n"
-             "district + country FE, cluster ~ dname, 95% CI", fontsize=12)
+ax.set_ylabel(r"$\beta$ on $z_{dct}=\mathrm{share}_{dc}^{\,base}\times\Delta\log(\mathrm{NPR/LCU})_{c,t}$", fontsize=11)
+ax.set_title("Yearwise BHJ exposure first-stage: log(DOFE permits + 1)\n"
+             "shifter = baseline share x log(NPR per LCU) change since 2010\n"
+             "district + country FE, cluster ~ dname, 95% CI", fontsize=11)
 ax.legend(loc="best", frameon=True, fontsize=10)
 ax.set_xticks(YRS)
 ax.grid(True, axis="y", linestyle=":", alpha=0.4)
