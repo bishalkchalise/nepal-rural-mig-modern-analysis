@@ -49,22 +49,17 @@ regions  <- read_csv("district-analysis/data/clean/instrument/dest_region_shares
 rvs_hh   <- read_csv("district-analysis/data/clean/rvs/migration_hh_year.csv", show_col_types = FALSE) %>%
               mutate(dname = to_dname(district_name))
 
-# Build non-India intl aggregates from migrant-level (v2 SSIV excludes India)
+# Compute has_migrant_nonindia from migrant-level (used only as a sample filter,
+# matches the v2 SSIV's exclusion of India). NOT added as an outcome.
 mig_year <- read_csv("district-analysis/data/clean/rvs/migration_migrant_year.csv",
                      show_col_types = FALSE)
-nonindia_agg <- mig_year %>%
+nonindia_flag <- mig_year %>%
   filter(is_international == 1, dest_india == 0) %>%
-  group_by(hhid, year) %>%
-  summarise(
-    has_migrant_nonindia       = 1L,
-    n_nonindia_migrants        = dplyr::n(),
-    remit_amount_nonindia_rs   = sum(remit_amount_rs, na.rm = TRUE),
-    .groups = "drop"
-  )
+  distinct(hhid, year) %>%
+  mutate(has_migrant_nonindia = 1L)
 rvs_hh <- rvs_hh %>%
-  left_join(nonindia_agg, by = c("hhid","year")) %>%
-  mutate(across(c(has_migrant_nonindia, n_nonindia_migrants, remit_amount_nonindia_rs),
-                ~ coalesce(.x, 0)))
+  left_join(nonindia_flag, by = c("hhid","year")) %>%
+  mutate(has_migrant_nonindia = coalesce(has_migrant_nonindia, 0L))
 
 # ---- FX: rer_ct ----
 nepal_fx <- forex %>% filter(country == "Nepal") %>%
@@ -156,25 +151,10 @@ rvs_hh_panel <- rvs_hh %>%
                   n_migrants, n_intl_migrants, remit_received,
                   remit_amount_12m_rs, remit_amount_intl_12m_rs),
                 as.numeric),
-         log_n_migrants       = log(n_migrants + 1),
-         log_n_intl_mig       = log(n_intl_migrants + 1),
-         log_n_nonindia_mig   = log(n_nonindia_migrants + 1),
-         log_remit            = log(remit_amount_12m_rs + 1),
-         log_remit_intl       = log(remit_amount_intl_12m_rs + 1),
-         log_remit_nonindia   = log(remit_amount_nonindia_rs + 1))
-
-# Winsorize remittance variables at 98% (p1/p99) and 95% (p2.5/p97.5)
-winsor <- function(x, lo, hi) {
-  qs <- quantile(x, probs = c(lo, hi), na.rm = TRUE)
-  pmin(pmax(x, qs[1]), qs[2])
-}
-for (v in c("remit_amount_12m_rs", "remit_amount_intl_12m_rs",
-            "remit_amount_nonindia_rs")) {
-  rvs_hh_panel[[paste0(v, "_w98")]]     <- winsor(rvs_hh_panel[[v]], 0.01,  0.99)
-  rvs_hh_panel[[paste0(v, "_w95")]]     <- winsor(rvs_hh_panel[[v]], 0.025, 0.975)
-  rvs_hh_panel[[paste0("log_", v, "_w98")]] <- log(rvs_hh_panel[[paste0(v, "_w98")]] + 1)
-  rvs_hh_panel[[paste0("log_", v, "_w95")]] <- log(rvs_hh_panel[[paste0(v, "_w95")]] + 1)
-}
+         log_n_migrants    = log(n_migrants + 1),
+         log_n_intl_mig    = log(n_intl_migrants + 1),
+         log_remit         = log(remit_amount_12m_rs + 1),
+         log_remit_intl    = log(remit_amount_intl_12m_rs + 1))
 
 # ---- helper: attach z at lags 0..3 and standardize ----
 attach_z <- function(panel) {
@@ -283,94 +263,29 @@ all_rows[[length(all_rows)+1]] <- run_ladder(dofe_panel, "log_perm", "dname",
 # RVS: lag 2 only, all ladder
 # Full sample - binary 0/1 (LPM) and counts
 for (yc in c("has_migrant", "has_migrant_internal", "has_migrant_intl",
-             "has_migrant_nonindia",
-             "n_migrants", "n_intl_migrants", "n_nonindia_migrants",
-             "remit_received",
-             "log_n_migrants", "log_n_intl_mig", "log_n_nonindia_mig")) {
+             "n_migrants", "n_intl_migrants", "remit_received",
+             "log_n_migrants", "log_n_intl_mig")) {
   all_rows[[length(all_rows)+1]] <- run_ladder(rvs_hh_panel, yc, "hhid",
                                                paste0("RVS ", yc), lags = 2)
 }
 
-# Total remittance: three sample variants
+# Total remittance: condition on has_migrant == 1
+rvs_amt <- rvs_hh_panel %>% filter(has_migrant == 1)
 all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_hh_panel, "remit_amount_12m_rs", "hhid",
-  "RVS remit_amount (all HH)", lags = 2)
+  rvs_amt, "remit_amount_12m_rs", "hhid",
+  "RVS remit_amount (if has_migrant=1)", lags = 2)
 all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_hh_panel, "log_remit", "hhid",
-  "RVS log(remit+1) (all HH)", lags = 2)
+  rvs_amt, "log_remit", "hhid",
+  "RVS log(remit+1) (if has_migrant=1)", lags = 2)
 
-rvs_amt_pos <- rvs_hh_panel %>% filter(remit_amount_12m_rs > 0)
+# International remittance: condition on has_migrant_nonindia == 1 (excl India)
+rvs_ni <- rvs_hh_panel %>% filter(has_migrant_nonindia == 1)
 all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_amt_pos, "remit_amount_12m_rs", "hhid",
-  "RVS remit_amount (if remit>0)", lags = 2)
+  rvs_ni, "remit_amount_intl_12m_rs", "hhid",
+  "RVS remit_amount_intl (if has_migrant_nonindia=1)", lags = 2)
 all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_amt_pos, "log_remit", "hhid",
-  "RVS log(remit+1) (if remit>0)", lags = 2)
-
-# International remittance (incl India): two sample variants
-all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_hh_panel, "remit_amount_intl_12m_rs", "hhid",
-  "RVS remit_amount_intl (all HH)", lags = 2)
-all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_hh_panel, "log_remit_intl", "hhid",
-  "RVS log(remit_intl+1) (all HH)", lags = 2)
-
-rvs_intl_pos <- rvs_hh_panel %>% filter(remit_amount_intl_12m_rs > 0)
-all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_intl_pos, "remit_amount_intl_12m_rs", "hhid",
-  "RVS remit_amount_intl (if remit_intl>0)", lags = 2)
-all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_intl_pos, "log_remit_intl", "hhid",
-  "RVS log(remit_intl+1) (if remit_intl>0)", lags = 2)
-
-# Non-India remittance (matches v2 SSIV destination set): two sample variants
-all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_hh_panel, "remit_amount_nonindia_rs", "hhid",
-  "RVS remit_amount_nonindia (all HH)", lags = 2)
-all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_hh_panel, "log_remit_nonindia", "hhid",
-  "RVS log(remit_nonindia+1) (all HH)", lags = 2)
-
-rvs_ni_pos <- rvs_hh_panel %>% filter(remit_amount_nonindia_rs > 0)
-all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_ni_pos, "remit_amount_nonindia_rs", "hhid",
-  "RVS remit_amount_nonindia (if remit_nonindia>0)", lags = 2)
-all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_ni_pos, "log_remit_nonindia", "hhid",
-  "RVS log(remit_nonindia+1) (if remit_nonindia>0)", lags = 2)
-
-# ---- Winsorized remittance outcomes ----
-# All-HH samples
-for (v in c("remit_amount_12m_rs", "remit_amount_intl_12m_rs",
-            "remit_amount_nonindia_rs")) {
-  for (w in c("w98", "w95")) {
-    all_rows[[length(all_rows)+1]] <- run_ladder(
-      rvs_hh_panel, paste0(v, "_", w), "hhid",
-      paste0("RVS ", v, " [", w, ", all HH]"), lags = 2)
-    all_rows[[length(all_rows)+1]] <- run_ladder(
-      rvs_hh_panel, paste0("log_", v, "_", w), "hhid",
-      paste0("RVS log(", v, "+1) [", w, ", all HH]"), lags = 2)
-  }
-}
-
-# Conditional positive-remittance samples
-sample_pairs <- list(
-  c("remit_amount_12m_rs",       "remit_amount_12m_rs"),
-  c("remit_amount_intl_12m_rs",  "remit_amount_intl_12m_rs"),
-  c("remit_amount_nonindia_rs",  "remit_amount_nonindia_rs")
-)
-for (pair in sample_pairs) {
-  v <- pair[1]
-  flt <- rvs_hh_panel %>% filter(.data[[v]] > 0)
-  for (w in c("w98", "w95")) {
-    all_rows[[length(all_rows)+1]] <- run_ladder(
-      flt, paste0(v, "_", w), "hhid",
-      paste0("RVS ", v, " [", w, ", if >0]"), lags = 2)
-    all_rows[[length(all_rows)+1]] <- run_ladder(
-      flt, paste0("log_", v, "_", w), "hhid",
-      paste0("RVS log(", v, "+1) [", w, ", if >0]"), lags = 2)
-  }
-}
+  rvs_ni, "log_remit_intl", "hhid",
+  "RVS log(remit_intl+1) (if has_migrant_nonindia=1)", lags = 2)
 
 # ---- Census 2021 cross-section: 75 districts, single year ----
 # Outcome year = 2021, shifter year = 2021 - L (lag 2 -> z built from rer_{c,2019})
