@@ -81,11 +81,24 @@ parts <- lapply(c("mun_industry_structure","mun_productivity_profitability","mun
                   if (file.exists(p)) fread(p) else NULL
                 })
 parts <- parts[!sapply(parts, is.null)]
+if (length(parts) == 0) {
+  # Fallback: the three thematic files don't exist on this machine.
+  # Use the consolidated municipality_analysis.csv from 03_municipality_wide.R.
+  fallback_p <- "data/clean/nec2018/municipality_analysis.csv"
+  if (!file.exists(fallback_p)) {
+    stop("None of mun_industry_structure / mun_productivity_profitability / ",
+         "mun_size_formality found, and fallback ", fallback_p,
+         " is also missing.\nRun script/archive/municipality/vars/nec2018/03_municipality_wide.R first.")
+  }
+  cat("  using fallback NEC cs file: ", fallback_p, "\n", sep = "")
+  parts <- list(fread(fallback_p))
+}
 nec_cs <- Reduce(function(a, b) {
   new_cols <- setdiff(names(b), names(a))
   if (length(new_cols)) merge(a, b[, c("lgcode", new_cols), with = FALSE],
                               by = "lgcode", all = TRUE) else a
 }, parts)
+if (!data.table::is.data.table(nec_cs)) nec_cs <- as.data.table(nec_cs)
 nec_cs[, DIST := lgcode %/% 100]
 for (v in c("n_firms","emp_total","rev_total","value_added_total","cap_total",
             "exp_total","profit_proxy_total")) {
