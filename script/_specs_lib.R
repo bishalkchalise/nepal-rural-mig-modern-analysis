@@ -392,8 +392,10 @@ run_spec <- function(spec_label,
 
   # Z-score treatments on muni-year working sample
   muni_yr <- unique(sub[, .(lgcode, year, fxshock, mig_intensity, log_mig_intensity)])
+  # Linear scaling: standardize migration share expressed per-100-population.
+  # The *100 constant cancels under z-scoring; explicit for readability.
   muni_yr[, `:=`(fx_z         = zscore(fxshock),
-                 mig_int_z    = zscore(mig_intensity),
+                 mig_int_z    = zscore(mig_intensity * 100),
                  log_migint_z = zscore(log_mig_intensity))]
   sub <- merge(sub, muni_yr[, .(lgcode, year, fx_z, mig_int_z, log_migint_z)],
                by = c("lgcode","year"))

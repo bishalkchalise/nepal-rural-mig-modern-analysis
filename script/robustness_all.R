@@ -48,18 +48,18 @@ ROOT <- normalizePath(".")
 #     (run_spec defaults treatment to "log_int" and uses muni + year FE.)
 # -----------------------------------------------------------------------------
 SPECS <- list(
-  S0_baseline     = list(lag = 0L,  c_mig_log = FALSE, c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
-  S1_cmig_log     = list(lag = 0L,  c_mig_log = TRUE,  c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
-  S2_lag1         = list(lag = 1L,  c_mig_log = FALSE, c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
-  S3_lag2         = list(lag = 2L,  c_mig_log = FALSE, c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
-  S4_lag3         = list(lag = 3L,  c_mig_log = FALSE, c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
-  S5_lag4         = list(lag = 4L,  c_mig_log = FALSE, c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
-  S6_lag5         = list(lag = 5L,  c_mig_log = FALSE, c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
-  S7_lag10        = list(lag = 10L, c_mig_log = FALSE, c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
-  S8_no_cmig      = list(lag = 0L,  c_mig_log = FALSE, c_mig = FALSE, c_fx = TRUE,  c_block_a = TRUE),
-  S9_no_cfx       = list(lag = 0L,  c_mig_log = FALSE, c_mig = TRUE,  c_fx = FALSE, c_block_a = TRUE),
-  S10_only_blockA = list(lag = 0L,  c_mig_log = FALSE, c_mig = FALSE, c_fx = FALSE, c_block_a = TRUE),
-  S11_FE_only     = list(lag = 0L,  c_mig_log = FALSE, c_mig = FALSE, c_fx = FALSE, c_block_a = FALSE)
+  # All log/log to match district-level analysis (log/lin baseline removed).
+  S0_baseline     = list(lag = 0L,  c_mig_log = TRUE,  c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
+  S2_lag1         = list(lag = 1L,  c_mig_log = TRUE,  c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
+  S3_lag2         = list(lag = 2L,  c_mig_log = TRUE,  c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
+  S4_lag3         = list(lag = 3L,  c_mig_log = TRUE,  c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
+  S5_lag4         = list(lag = 4L,  c_mig_log = TRUE,  c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
+  S6_lag5         = list(lag = 5L,  c_mig_log = TRUE,  c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
+  S7_lag10        = list(lag = 10L, c_mig_log = TRUE,  c_mig = TRUE,  c_fx = TRUE,  c_block_a = TRUE),
+  S8_no_cmig      = list(lag = 0L,  c_mig_log = TRUE,  c_mig = FALSE, c_fx = TRUE,  c_block_a = TRUE),
+  S9_no_cfx       = list(lag = 0L,  c_mig_log = TRUE,  c_mig = TRUE,  c_fx = FALSE, c_block_a = TRUE),
+  S10_only_blockA = list(lag = 0L,  c_mig_log = TRUE,  c_mig = FALSE, c_fx = FALSE, c_block_a = TRUE),
+  S11_FE_only     = list(lag = 0L,  c_mig_log = TRUE,  c_mig = FALSE, c_fx = FALSE, c_block_a = FALSE)
 )
 THRESHOLDS <- c(0L, 25L, 50L, 100L)
 
