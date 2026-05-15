@@ -62,9 +62,11 @@ dofe_raw <- read_csv("district-analysis/data/clean/foreign_migration_district_co
 pop_file <- read_csv("district-analysis/data/clean/foreign_migration_district_population.csv", show_col_types = FALSE)
 regions  <- read_csv("district-analysis/data/clean/instrument/dest_region_shares_2001.csv", show_col_types = FALSE)
 census   <- read_csv("district-analysis/data/clean/census/outcomes_district.csv", show_col_types = FALSE)
-nec_cs   <- if (file.exists("district-analysis/data/clean/nec/nec_2018_district.csv"))
+nec_cs   <- if (file.exists("district-analysis/data/clean/nec/nec_2018_district.csv")) {
               read_csv("district-analysis/data/clean/nec/nec_2018_district.csv", show_col_types = FALSE)
-            else NULL
+            } else {
+              NULL
+            }
 if (!is.null(nec_cs) && "DIST" %in% names(nec_cs) && !"dname" %in% names(nec_cs)) {
   nec_cs$dname <- DIST_LOOKUP[as.character(nec_cs$DIST)]
 }
