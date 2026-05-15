@@ -131,9 +131,20 @@ panel["log_perm"] = np.log(panel.permits + 1)
 panel["z_v1"] = panel.share_v1 * panel.rer
 panel["z_v2"] = panel.share_v2 * panel.rer
 panel = panel.dropna(subset=["rer"])
+
+# Standardize the shifter for interpretability: 1-sd of share-weighted
+# depreciation exposure.  Use the panel sd (across d x c x y) so that
+# yearwise coefficients are comparable on the same scale.
+SD_V1 = panel.z_v1.std(ddof=0)
+SD_V2 = panel.z_v2.std(ddof=0)
+panel["z_v1_std"] = panel.z_v1 / SD_V1
+panel["z_v2_std"] = panel.z_v2 / SD_V2
+
 print(f"Panel: {len(panel)} rows ({len(districts)} d x {len(common)} c x {len(YRS)} y)")
 print(f"rer (log NPR/LCU change since 2010) range: "
-      f"[{panel.rer.min():.3f}, {panel.rer.max():.3f}]  mean={panel.rer.mean():.3f}\n")
+      f"[{panel.rer.min():.3f}, {panel.rer.max():.3f}]  mean={panel.rer.mean():.3f}")
+print(f"z_v1: mean={panel.z_v1.mean():.4f}, sd={SD_V1:.4f}")
+print(f"z_v2: mean={panel.z_v2.mean():.4f}, sd={SD_V2:.4f}\n")
 
 # ------------------------------------------------------------------------------
 # 4. Regressions
@@ -182,7 +193,7 @@ print("=" * 78)
 print("A. POOLED 2011-2023, log(permits+1) on z_dct, FE(d,c,y), cluster ~ dname")
 print("=" * 78)
 pooled_rows = []
-for ver, zcol in [("v1_2001", "z_v1"), ("v2_2009_10", "z_v2")]:
+for ver, zcol in [("v1_2001", "z_v1_std"), ("v2_2009_10", "z_v2_std")]:
     r = fit_dummy_fe(panel, "log_perm", [zcol],
                      fe_cols=["dname","country","year"], cluster_col="dname")
     info = r[zcol]
@@ -211,10 +222,13 @@ cs_base["log_total"] = np.log(cs_base.perm_total + 1)
 cs_base["log_mean"]  = np.log(cs_base.perm_mean  + 1)
 cs_base["z_v1"]      = cs_base.share_v1 * cs_base.mean_rer
 cs_base["z_v2"]      = cs_base.share_v2 * cs_base.mean_rer
+# Standardize using the cross-section's own sd (d x c, not d x c x y)
+cs_base["z_v1_std"]  = cs_base.z_v1 / cs_base.z_v1.std(ddof=0)
+cs_base["z_v2_std"]  = cs_base.z_v2 / cs_base.z_v2.std(ddof=0)
 
 cs_rows = []
 for outcome in ["log_total", "log_mean"]:
-    for ver, zcol in [("v1_2001","z_v1"), ("v2_2009_10","z_v2")]:
+    for ver, zcol in [("v1_2001","z_v1_std"), ("v2_2009_10","z_v2_std")]:
         r = fit_dummy_fe(cs_base, outcome, [zcol],
                          fe_cols=["dname","country"], cluster_col="dname")
         info = r[zcol]
@@ -233,7 +247,7 @@ print("=" * 78)
 yw_rows = []
 for y in YRS:
     sub = panel[panel.year == y].copy()
-    for ver, zcol in [("v1_2001","z_v1"), ("v2_2009_10","z_v2")]:
+    for ver, zcol in [("v1_2001","z_v1_std"), ("v2_2009_10","z_v2_std")]:
         r = fit_dummy_fe(sub, "log_perm", [zcol],
                          fe_cols=["dname","country"], cluster_col="dname")
         info = r[zcol]
@@ -265,9 +279,9 @@ for ver in ["v1_2001", "v2_2009_10"]:
 
 ax.axhline(0, color="black", linewidth=0.8, linestyle="--", alpha=0.6)
 ax.set_xlabel("Year", fontsize=11)
-ax.set_ylabel(r"$\beta$ on $z_{dct}=\mathrm{share}_{dc}^{\,base}\times\Delta\log(\mathrm{NPR/LCU})_{c,t}$", fontsize=11)
-ax.set_title("Yearwise BHJ exposure first-stage: log(DOFE permits + 1)\n"
-             "shifter = baseline share x log(NPR per LCU) change since 2010\n"
+ax.set_ylabel(r"$\beta$ on standardized $z_{dct}$  (log permits per 1-sd of exposure shock)",
+              fontsize=11)
+ax.set_title("Yearwise BHJ first-stage: log(DOFE permits + 1) on 1-sd of share x $\\Delta$log(NPR/LCU)$_{c,t}$\n"
              "district + country FE, cluster ~ dname, 95% CI", fontsize=11)
 ax.legend(loc="best", frameon=True, fontsize=10)
 ax.set_xticks(YRS)
