@@ -26,3 +26,4 @@ data/raw/
 .DS_Store
 Thumbs.db
 .vscode/
+district-analysis/data/clean/migration_2001.csv
