@@ -110,9 +110,8 @@ mi <- dofe %>%
     by = "dname"
   ) %>%
   mutate(mig_int  = num / pop_2011,
-         log_mi   = log(pmax(mig_int, 1e-12)),
-         log_mi_z = (log_mi - mean(log_mi)) / sd(log_mi)) %>%
-  select(dname, log_mi_z)
+         mig_per_1000 = mig_int * 1000) %>%
+  select(dname, mig_per_1000)
 
 # ---- DOFE district x year panel 2011-2023 ----
 districts_dofe <- sort(intersect(unique(z_v2$dname), mi$dname))
@@ -184,15 +183,15 @@ run_ladder <- function(panel, ycol, entity_fe, label, lags = 0:3) {
 
   for (L in lags) {
     z_std <- paste0("z_v2_L", L, "_std")
-    panel$z_inter <- panel[[z_std]] * panel$log_mi_z
+    panel$z_inter <- panel[[z_std]] * panel$mig_per_1000
     panel$z_bare  <- panel[[z_std]]
 
     f_M1 <- as.formula(sprintf("%s ~ z_inter | %s", ycol, fe_str))
-    f_M2 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) | %s",
+    f_M2 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_per_1000, ref = %d) | %s",
                                ycol, refyr, fe_str))
-    f_M3 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare | %s",
+    f_M3 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_per_1000, ref = %d) + z_bare | %s",
                                ycol, refyr, fe_str))
-    f_M4 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare + %s | %s",
+    f_M4 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_per_1000, ref = %d) + z_bare + %s | %s",
                                ycol, refyr, region_terms, fe_str))
 
     row <- list(lag = L)
@@ -308,14 +307,14 @@ for (L in 0:3) {
 
 run_cs_ladder <- function(panel, ycol, label, L = 2) {
   z_std <- paste0("z_v2_L", L, "_std")
-  panel$z_inter <- panel[[z_std]] * panel$log_mi_z
+  panel$z_inter <- panel[[z_std]] * panel$mig_per_1000
   panel$z_bare  <- panel[[z_std]]
 
   region_terms <- paste(REGION_COLS, collapse = " + ")
   f_M1 <- as.formula(sprintf("%s ~ z_inter", ycol))
-  f_M2 <- as.formula(sprintf("%s ~ z_inter + log_mi_z", ycol))
-  f_M3 <- as.formula(sprintf("%s ~ z_inter + log_mi_z + z_bare", ycol))
-  f_M4 <- as.formula(sprintf("%s ~ z_inter + log_mi_z + z_bare + %s", ycol, region_terms))
+  f_M2 <- as.formula(sprintf("%s ~ z_inter + mig_per_1000", ycol))
+  f_M3 <- as.formula(sprintf("%s ~ z_inter + mig_per_1000 + z_bare", ycol))
+  f_M4 <- as.formula(sprintf("%s ~ z_inter + mig_per_1000 + z_bare + %s", ycol, region_terms))
 
   rows_long <- list(); cells <- list(); cells_se <- list()
   for (mlabel in c("M1","M2","M3","M4")) {
