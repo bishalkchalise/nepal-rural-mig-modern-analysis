@@ -109,21 +109,27 @@ c11 <- tibble(
   ) %>%
   mutate(
     district       = as.character(collapse_splits(factor(district))),
-    birth_district = as.character(collapse_splits(factor(birth_district)))
+    birth_district = as.character(collapse_splits(factor(birth_district))),
+    # When Q16A is "same district", Q16B is typically blank/NA -> treat as native.
+    birth_district = if_else(!is_other_dist & is.na(birth_district),
+                             district, birth_district)
   ) %>%
-  filter(!is.na(district), !is.na(birth_district),
-         district != "Not Stated", birth_district != "Not Stated")
+  filter(!is.na(district), district != "Not Stated")
 
 cat(sprintf("  2011 sample dname after title-case: %s\n",
             paste(head(sort(unique(c11$district)), 5), collapse = ", ")))
 
-# Native population (born here OR lived here always) — denominator for shares.
-# In 2011 Q16A categories that are "non-migrant" relative to current district:
-#   "Same district / Born in this district"  (exact label may vary)
-# We approximate native pop as everyone whose birth_district == current district.
+# Native population (denominator) = STAYERS in district d (Q16A says
+# "Same district" / equivalent — i.e., currently in d AND not an inter-district
+# migrant). Conceptually matches 2021's
+# `place_birth %in% c("Same local unit", "Other local unit (same district)")`.
 native_pop_11 <- c11 %>%
-  filter(district == birth_district) %>%
+  filter(!is_other_dist) %>%
   count(district, name = "native_pop")
+cat(sprintf("  2011 native_pop range: min=%d  median=%d  max=%d\n",
+            min(native_pop_11$native_pop),
+            as.integer(median(native_pop_11$native_pop)),
+            max(native_pop_11$native_pop)))
 
 # Inter-district migrants only
 mig_11 <- c11 %>%
