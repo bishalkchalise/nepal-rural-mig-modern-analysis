@@ -75,10 +75,29 @@ path_11 <- find_first(file.path(CENSUS_FOLDER, "Census 2011"),
 cat(sprintf("  reading %s\n", path_11))
 census_ind_11 <- read_dta(path_11)
 
+cat("  available columns matching Q16/Q19/DIST (case-insens.):\n  ")
+cat(grep("^q1[69]|^dist", names(census_ind_11),
+         ignore.case = TRUE, value = TRUE), sep = " | ")
+cat("\n")
+
+q16a_raw <- col(census_ind_11, "Q16A")
+q16a_fct <- as_factor(q16a_raw)
+cat("  Q16A value levels (first 10): ",
+    paste(head(levels(q16a_fct), 10), collapse = " | "), "\n")
+cat("  Q16A value counts:\n")
+print(head(sort(table(as.character(q16a_fct), useNA = "ifany"),
+                decreasing = TRUE), 10))
+
+# Flexible "Other district" matcher — case/whitespace tolerant
+is_other_dist_11 <- grepl("other.*district", as.character(q16a_fct),
+                          ignore.case = TRUE)
+cat(sprintf("  Rows flagged as 'Other district' (flexible match): %d (of %d)\n",
+            sum(is_other_dist_11), length(is_other_dist_11)))
+
 c11 <- tibble(
     district       = as.character(collapse_splits(as_factor(col(census_ind_11, "DIST")))),
     birth_district = as.character(collapse_splits(as_factor(col(census_ind_11, "Q16B")))),
-    birth_place    = as_factor(col(census_ind_11, "Q16A"))
+    is_other_dist  = is_other_dist_11
   ) %>%
   filter(!is.na(district), !is.na(birth_district),
          district != "Not Stated", birth_district != "Not Stated")
@@ -93,7 +112,8 @@ native_pop_11 <- c11 %>%
 
 # Inter-district migrants only
 mig_11 <- c11 %>%
-  filter(birth_place == "Other district", district != birth_district)
+  filter(is_other_dist, district != birth_district)
+cat(sprintf("  2011: %d inter-district migrant rows after filter\n", nrow(mig_11)))
 
 inmig_11 <- mig_11 %>%
   count(district, name = "inmig_count")
