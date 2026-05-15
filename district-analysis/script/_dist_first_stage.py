@@ -56,7 +56,8 @@ dofe = (dofe_raw.assign(dname=lambda d: d.district_rename.map(to_dname))
                 .rename(columns={"total_migrants":"permits"}))
 dofe = dofe[~dofe.country.isin(["Nepal","India"])]
 v2_totals = dofe[dofe.year.isin([2009,2010])].groupby("country").permits.sum()
-set_v2 = sorted(set(v2_totals[v2_totals >= 50].index) & fx_countries)
+# v2 = ALL 2009-10 DOFE destinations with positive permits (no threshold)
+set_v2 = sorted(set(v2_totals[v2_totals > 0].index) & fx_countries)
 print(f"v1: {len(set_v1)} dest  |  v2: {len(set_v2)} dest")
 
 # ---------------- shares ----------------

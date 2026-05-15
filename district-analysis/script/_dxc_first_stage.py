@@ -66,11 +66,10 @@ m01 = m01.rename(columns={"dist_mig_pop_2001":"mig01"})
 # 2. Define destination sets
 # ------------------------------------------------------------------------------
 set_v1 = sorted(set(m01.country.unique()) & fx_countries)
-# v2: DOFE destinations with >=50 permits in 2009-10 AND in FX
+# v2: ALL 2009-10 DOFE destinations with positive permits AND in FX (no threshold)
 do2 = dofe[dofe.year.isin([2009,2010])]
 v2_totals = do2.groupby("country").permits.sum()
-v2_keep   = sorted(set(v2_totals[v2_totals >= 50].index) & fx_countries)
-set_v2 = v2_keep
+set_v2 = sorted(set(v2_totals[v2_totals > 0].index) & fx_countries)
 
 # Unified outcome panel = union of v1 and v2 destination sets
 dest = sorted(set(set_v1) | set(set_v2))

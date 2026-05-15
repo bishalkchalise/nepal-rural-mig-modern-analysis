@@ -71,7 +71,8 @@ dofe <- dofe_raw %>%
 set_v1 <- sort(intersect(unique(m01$country), fx_countries))
 v2_tot <- dofe %>% filter(year %in% c(2009, 2010)) %>%
   group_by(country) %>% summarise(tot = sum(permits), .groups = "drop")
-set_v2 <- sort(intersect(v2_tot$country[v2_tot$tot >= 50], fx_countries))
+# v2 = ALL 2009-10 DOFE destinations with positive permits, intersected with FX
+set_v2 <- sort(intersect(v2_tot$country[v2_tot$tot > 0], fx_countries))
 cat(sprintf("v1: %d destinations | v2: %d destinations\n", length(set_v1), length(set_v2)))
 
 # ---- shares ----
@@ -95,7 +96,7 @@ sh_v2 <- dofe %>%
 # ---- district SSIV at every year (incl pre-2011 for lags) ----
 build_z <- function(shares) {
   shares %>%
-    inner_join(fx, by = "country") %>%
+    inner_join(fx, by = "country", relationship = "many-to-many") %>%
     mutate(x = share * rer) %>%
     group_by(dname, year) %>%
     summarise(z = sum(x, na.rm = TRUE), .groups = "drop")
@@ -197,7 +198,8 @@ for (ver in c("v1", "v2")) {
       se <- s["z_inter", "Std. Error"]
       tv <- s["z_inter", "t value"]
       pv <- s["z_inter", "Pr(>|t|)"]
-      mean_y <- mean(model.frame(fit)$log_perm, na.rm = TRUE)
+      # mean of Y over the sample actually used by fixest
+      mean_y <- mean(predict(fit) + residuals(fit), na.rm = TRUE)
       results[[length(results) + 1]] <- tibble(
         version = ver, lag = L, model = mlabel,
         beta = round(b, 4), se = round(se, 4),

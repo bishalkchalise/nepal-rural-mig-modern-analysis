@@ -62,7 +62,8 @@ dofe = (dofe_raw.assign(dname=lambda d: d.district_rename.map(to_dname))
                 .rename(columns={"total_migrants":"permits"}))
 dofe = dofe[~dofe.country.isin(["Nepal","India"])]
 v2_tot = dofe[dofe.year.isin([2009,2010])].groupby("country").permits.sum()
-set_v2 = sorted(set(v2_tot[v2_tot >= 50].index) & fx_countries)
+# v2 = ALL 2009-10 DOFE destinations with positive permits, intersected with FX
+set_v2 = sorted(set(v2_tot[v2_tot > 0].index) & fx_countries)
 
 m01 = m01.rename(columns={"dist_mig_pop_2001":"mig01"})
 sh_v1 = (m01[m01.country.isin(set_v1)]
