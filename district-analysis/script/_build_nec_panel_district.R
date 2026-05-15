@@ -77,14 +77,41 @@ panel_size <- firm_cohort %>%
               names_glue = "n_new_firms_size_{size_cat}",
               values_from = n, values_fill = 0)
 
-# By sector
+# Sector groupings matching the robustness portal (9 broad sectors)
+SECTOR_GROUP <- c(
+  agro          = "agriculture",
+  mining        = "other_services",
+  manuf         = "manufacturing",
+  energy        = "other_services",
+  water_waste   = "other_services",
+  construct     = "construction",
+  wholesale     = "trade_retail",
+  transport     = "transport_storage",
+  hospitality   = "hospitality_food",
+  info_comm     = "finance_prof_realestate",
+  finance       = "finance_prof_realestate",
+  real_estate   = "finance_prof_realestate",
+  prof_tech     = "finance_prof_realestate",
+  admin_sup     = "other_services",
+  public_admin  = "education_health_social",
+  education     = "education_health_social",
+  health        = "education_health_social",
+  arts          = "other_services",
+  services      = "other_services",
+  hh_prod       = "other_services",
+  extra_orgs    = "other_services"
+)
+
+# By sector (using broad groupings)
 panel_sector <- firm_cohort %>%
   filter(!is.na(sector_short)) %>%
-  group_by(DIST, founding_year_ad, sector_short) %>%
+  mutate(sector_grp = SECTOR_GROUP[sector_short]) %>%
+  filter(!is.na(sector_grp)) %>%
+  group_by(DIST, founding_year_ad, sector_grp) %>%
   summarise(n = n(), .groups = "drop") %>%
   pivot_wider(id_cols = c(DIST, founding_year_ad),
-              names_from = sector_short,
-              names_glue = "n_new_firms_{sector_short}",
+              names_from = sector_grp,
+              names_glue = "n_new_firms_{sector_grp}",
               values_from = n, values_fill = 0)
 
 district_panel <- panel_core %>%
