@@ -265,12 +265,14 @@ yw_df.to_csv("district-analysis/output/tab/dxc_first_stage_yearwise.csv", index=
 import os
 os.makedirs("district-analysis/output/fig", exist_ok=True)
 
+PLOT_YRS = [y for y in YRS if y >= 2014]  # drop 2011-12 (small-rer arithmetic spikes)
 fig, ax = plt.subplots(figsize=(8, 5))
 colors = {"v1_2001": "#1f77b4", "v2_2009_10": "#d62728"}
 labels = {"v1_2001": "v1: 2001 census shares", "v2_2009_10": "v2: 2009-10 DOFE shares"}
 offsets = {"v1_2001": -0.1, "v2_2009_10": 0.1}
 for ver in ["v1_2001", "v2_2009_10"]:
-    sub = yw_df[yw_df.version == ver].sort_values("year").reset_index(drop=True)
+    sub = (yw_df[(yw_df.version == ver) & (yw_df.year.isin(PLOT_YRS))]
+           .sort_values("year").reset_index(drop=True))
     xs = sub.year + offsets[ver]
     ax.errorbar(xs, sub.beta,
                 yerr=[sub.beta - sub.ci_lo, sub.ci_hi - sub.beta],
@@ -281,10 +283,11 @@ ax.axhline(0, color="black", linewidth=0.8, linestyle="--", alpha=0.6)
 ax.set_xlabel("Year", fontsize=11)
 ax.set_ylabel(r"$\beta$ on standardized $z_{dct}$  (log permits per 1-sd of exposure shock)",
               fontsize=11)
-ax.set_title("Yearwise BHJ first-stage: log(DOFE permits + 1) on 1-sd of share x $\\Delta$log(NPR/LCU)$_{c,t}$\n"
-             "district + country FE, cluster ~ dname, 95% CI", fontsize=11)
+ax.set_title("Yearwise BHJ first-stage (2014-2023): log(DOFE permits + 1)\n"
+             "on 1-sd of share x $\\Delta$log(NPR/LCU)$_{c,t}$; district + country FE, cluster ~ dname",
+             fontsize=11)
 ax.legend(loc="best", frameon=True, fontsize=10)
-ax.set_xticks(YRS)
+ax.set_xticks(PLOT_YRS)
 ax.grid(True, axis="y", linestyle=":", alpha=0.4)
 plt.tight_layout()
 plt.savefig("district-analysis/output/fig/dxc_first_stage_yearwise.png", dpi=160)
