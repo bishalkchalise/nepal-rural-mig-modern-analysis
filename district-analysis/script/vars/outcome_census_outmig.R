@@ -45,6 +45,14 @@ collapse_splits <- function(fct) {
   )
 }
 
+# Helper — convert district label strings to Title Case so 2011 (which arrives
+# as 'kathmandu') matches 2021 / outcomes_district.csv ('Kathmandu').
+tc_dname <- function(x) {
+  out <- tools::toTitleCase(tolower(as.character(x)))
+  # toTitleCase doesn't capitalise after spaces in older R; fix explicitly.
+  gsub("(^|[[:space:]/-])([a-z])", "\\1\\U\\2", out, perl = TRUE)
+}
+
 # Helper — find the first existing path among candidates (case-insensitive).
 # Searches recursively inside `dir` for files matching any of `pats`.
 find_first <- function(dir, pats) {
@@ -95,12 +103,19 @@ cat(sprintf("  Rows flagged as 'Other district' (flexible match): %d (of %d)\n",
             sum(is_other_dist_11), length(is_other_dist_11)))
 
 c11 <- tibble(
-    district       = as.character(collapse_splits(as_factor(col(census_ind_11, "DIST")))),
-    birth_district = as.character(collapse_splits(as_factor(col(census_ind_11, "Q16B")))),
+    district       = tc_dname(as_factor(col(census_ind_11, "DIST"))),
+    birth_district = tc_dname(as_factor(col(census_ind_11, "Q16B"))),
     is_other_dist  = is_other_dist_11
+  ) %>%
+  mutate(
+    district       = as.character(collapse_splits(factor(district))),
+    birth_district = as.character(collapse_splits(factor(birth_district)))
   ) %>%
   filter(!is.na(district), !is.na(birth_district),
          district != "Not Stated", birth_district != "Not Stated")
+
+cat(sprintf("  2011 sample dname after title-case: %s\n",
+            paste(head(sort(unique(c11$district)), 5), collapse = ", ")))
 
 # Native population (born here OR lived here always) — denominator for shares.
 # In 2011 Q16A categories that are "non-migrant" relative to current district:
