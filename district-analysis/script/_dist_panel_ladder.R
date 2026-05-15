@@ -163,6 +163,19 @@ rvs_hh_panel <- rvs_hh %>%
          log_remit_intl       = log(remit_amount_intl_12m_rs + 1),
          log_remit_nonindia   = log(remit_amount_nonindia_rs + 1))
 
+# Winsorize remittance variables at 98% (p1/p99) and 95% (p2.5/p97.5)
+winsor <- function(x, lo, hi) {
+  qs <- quantile(x, probs = c(lo, hi), na.rm = TRUE)
+  pmin(pmax(x, qs[1]), qs[2])
+}
+for (v in c("remit_amount_12m_rs", "remit_amount_intl_12m_rs",
+            "remit_amount_nonindia_rs")) {
+  rvs_hh_panel[[paste0(v, "_w98")]]     <- winsor(rvs_hh_panel[[v]], 0.01,  0.99)
+  rvs_hh_panel[[paste0(v, "_w95")]]     <- winsor(rvs_hh_panel[[v]], 0.025, 0.975)
+  rvs_hh_panel[[paste0("log_", v, "_w98")]] <- log(rvs_hh_panel[[paste0(v, "_w98")]] + 1)
+  rvs_hh_panel[[paste0("log_", v, "_w95")]] <- log(rvs_hh_panel[[paste0(v, "_w95")]] + 1)
+}
+
 # ---- helper: attach z at lags 0..3 and standardize ----
 attach_z <- function(panel) {
   for (L in 0:3) {
@@ -325,6 +338,39 @@ all_rows[[length(all_rows)+1]] <- run_ladder(
 all_rows[[length(all_rows)+1]] <- run_ladder(
   rvs_ni_pos, "log_remit_nonindia", "hhid",
   "RVS log(remit_nonindia+1) (if remit_nonindia>0)", lags = 2)
+
+# ---- Winsorized remittance outcomes ----
+# All-HH samples
+for (v in c("remit_amount_12m_rs", "remit_amount_intl_12m_rs",
+            "remit_amount_nonindia_rs")) {
+  for (w in c("w98", "w95")) {
+    all_rows[[length(all_rows)+1]] <- run_ladder(
+      rvs_hh_panel, paste0(v, "_", w), "hhid",
+      paste0("RVS ", v, " [", w, ", all HH]"), lags = 2)
+    all_rows[[length(all_rows)+1]] <- run_ladder(
+      rvs_hh_panel, paste0("log_", v, "_", w), "hhid",
+      paste0("RVS log(", v, "+1) [", w, ", all HH]"), lags = 2)
+  }
+}
+
+# Conditional positive-remittance samples
+sample_pairs <- list(
+  c("remit_amount_12m_rs",       "remit_amount_12m_rs"),
+  c("remit_amount_intl_12m_rs",  "remit_amount_intl_12m_rs"),
+  c("remit_amount_nonindia_rs",  "remit_amount_nonindia_rs")
+)
+for (pair in sample_pairs) {
+  v <- pair[1]
+  flt <- rvs_hh_panel %>% filter(.data[[v]] > 0)
+  for (w in c("w98", "w95")) {
+    all_rows[[length(all_rows)+1]] <- run_ladder(
+      flt, paste0(v, "_", w), "hhid",
+      paste0("RVS ", v, " [", w, ", if >0]"), lags = 2)
+    all_rows[[length(all_rows)+1]] <- run_ladder(
+      flt, paste0("log_", v, "_", w), "hhid",
+      paste0("RVS log(", v, "+1) [", w, ", if >0]"), lags = 2)
+  }
+}
 
 # ---- Census 2021 cross-section: 75 districts, single year ----
 # Outcome year = 2021, shifter year = 2021 - L (lag 2 -> z built from rer_{c,2019})
