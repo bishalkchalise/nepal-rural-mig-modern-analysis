@@ -237,8 +237,9 @@ run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
 CENSUS_OUTCOMES <- c(
   # Out-migration (built by outcome_census_outmig.R; omitted automatically if CSV missing)
   # Population-denominator out-migration rates (comparable to mig_in_*):
-  'mig_out_internal_share','net_internal_mig_share',
+  'mig_out_internal_share','mig_in_internal_share','net_internal_mig_share',
   'mig_out_economic_share','mig_out_noneconomic_share',
+  'mig_in_economic_share','mig_in_noneconomic_share',
   'mig_out_male_share','mig_out_female_share','mig_out_age_15_30_share',
   # Composition-of-out-migrants shares (sum to 1 within group, sensitivity):
   'mig_out_of_outmig_econ_share','mig_out_of_outmig_noecon_share',
