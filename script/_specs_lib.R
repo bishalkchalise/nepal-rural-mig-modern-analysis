@@ -68,7 +68,10 @@ load_instrument <- function() {
     mig_intensity  = get(mig_col),
     total_migrants = get(tmig_col)
   )]
-  inst[, log_mig_intensity := log(mig_intensity + 1e-8)]
+  # Match district transformation: log of (permits per 1,000 population), then
+  # z-scored downstream.  The * 1000 constant cancels under z-scoring, but
+  # makes the muni transformation literally identical to the district one.
+  inst[, log_mig_intensity := log(pmax(mig_intensity * 1000, 1e-6))]
   .inst_cache <<- inst
   inst
 }

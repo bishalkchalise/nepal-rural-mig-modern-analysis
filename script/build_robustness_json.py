@@ -78,13 +78,13 @@ THRESHOLD_LABELS = {
 }
 # Spec catalogue with lag + scale axes
 SPECS = [
-    ("S0_baseline",        0,  "log", "lin", "anchor: fx × log(mig_int_z); year × mig_int_z"),
-    ("S_lag1",             1,  "log", "lin", "FX shifter lagged 1 year (log/lin)"),
-    ("S_lag2",             2,  "log", "lin", "FX shifter lagged 2 years (log/lin)"),
-    ("S_lag3",             3,  "log", "lin", "FX shifter lagged 3 years (log/lin)"),
-    ("S_lag4",             4,  "log", "lin", "FX shifter lagged 4 years (log/lin)"),
-    ("S_lag5",             5,  "log", "lin", "FX shifter lagged 5 years (log/lin)"),
-    ("S_lag10",            10, "log", "lin", "FX shifter lagged 10 years (log/lin)"),
+    ("S0_baseline",        0,  "log", "log", "anchor: fx × log(mig_int_z); year × log(mig_int_z)  (log/log)"),
+    ("S_lag1",             1,  "log", "log", "FX shifter lagged 1 year (log/log)"),
+    ("S_lag2",             2,  "log", "log", "FX shifter lagged 2 years (log/log)"),
+    ("S_lag3",             3,  "log", "log", "FX shifter lagged 3 years (log/log)"),
+    ("S_lag4",             4,  "log", "log", "FX shifter lagged 4 years (log/log)"),
+    ("S_lag5",             5,  "log", "log", "FX shifter lagged 5 years (log/log)"),
+    ("S_lag10",            10, "log", "log", "FX shifter lagged 10 years (log/log)"),
     ("S_both_log",         0,  "log", "log", "log/log at lag 0"),
     ("S_both_log_lag1",    1,  "log", "log", "log/log at lag 1y"),
     ("S_both_log_lag2",    2,  "log", "log", "log/log at lag 2y"),

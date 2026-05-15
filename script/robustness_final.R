@@ -30,13 +30,15 @@ ROOT <- normalizePath(".")
 # 1. Spec list + thresholds  (edit these to extend the sweep)
 # -----------------------------------------------------------------------------
 SPECS <- list(
-  S0_baseline   = list(treatment = "log_int", lag = 0L,  c_mig_log = FALSE),
-  S_lag1        = list(treatment = "log_int", lag = 1L,  c_mig_log = FALSE),
-  S_lag2        = list(treatment = "log_int", lag = 2L,  c_mig_log = FALSE),
-  S_lag3        = list(treatment = "log_int", lag = 3L,  c_mig_log = FALSE),
-  S_lag4        = list(treatment = "log_int", lag = 4L,  c_mig_log = FALSE),
-  S_lag5        = list(treatment = "log_int", lag = 5L,  c_mig_log = FALSE),
-  S_lag10       = list(treatment = "log_int", lag = 10L, c_mig_log = FALSE),
+  # Headline is now log/log to match the district-level analysis (district
+  # uses fx_z * log_mi_z everywhere, with year x log_mi_z as C_mig).
+  S0_baseline   = list(treatment = "log_int", lag = 0L,  c_mig_log = TRUE),
+  S_lag1        = list(treatment = "log_int", lag = 1L,  c_mig_log = TRUE),
+  S_lag2        = list(treatment = "log_int", lag = 2L,  c_mig_log = TRUE),
+  S_lag3        = list(treatment = "log_int", lag = 3L,  c_mig_log = TRUE),
+  S_lag4        = list(treatment = "log_int", lag = 4L,  c_mig_log = TRUE),
+  S_lag5        = list(treatment = "log_int", lag = 5L,  c_mig_log = TRUE),
+  S_lag10       = list(treatment = "log_int", lag = 10L, c_mig_log = TRUE),
   S_both_log    = list(treatment = "log_int", lag = 0L,  c_mig_log = TRUE),
   S_both_linear = list(treatment = "lin_int", lag = 0L,  c_mig_log = FALSE)
 )
