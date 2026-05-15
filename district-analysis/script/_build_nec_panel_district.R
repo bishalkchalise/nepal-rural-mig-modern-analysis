@@ -7,7 +7,7 @@
 #   one row per (DIST, dname, founding_year_ad)
 #
 # CAVEAT: NEC 2018 only observes firms still operating in 2018, so cohort
-# counts are SURVIVORS, not true entry counts.  Names use n_firms_surviving_*.
+# counts are SURVIVORS, not true entry counts.  Names use n_new_firms_*.
 ################################################################################
 
 suppressPackageStartupMessages({
@@ -58,10 +58,10 @@ cat("Firms in cohort window:", nrow(firm_cohort), "\n")
 panel_core <- firm_cohort %>%
   group_by(DIST, founding_year_ad) %>%
   summarise(
-    n_firms_surviving = n(),
-    emp_surviving     = sum(nz(pe_tot)),
-    rev_surviving     = sum(nz(rev_annual)),
-    cap_surviving     = sum(nz(cap_total)),
+    n_new_firms = n(),
+    emp_new_firms     = sum(nz(pe_tot)),
+    rev_new_firms     = sum(nz(rev_annual)),
+    cap_new_firms     = sum(nz(cap_total)),
     .groups = "drop"
   )
 
@@ -74,7 +74,7 @@ panel_size <- firm_cohort %>%
   summarise(n = n(), .groups = "drop") %>%
   pivot_wider(id_cols = c(DIST, founding_year_ad),
               names_from = size_cat,
-              names_glue = "n_firms_size_{size_cat}",
+              names_glue = "n_new_firms_size_{size_cat}",
               values_from = n, values_fill = 0)
 
 # By sector
@@ -84,7 +84,7 @@ panel_sector <- firm_cohort %>%
   summarise(n = n(), .groups = "drop") %>%
   pivot_wider(id_cols = c(DIST, founding_year_ad),
               names_from = sector_short,
-              names_glue = "n_firms_{sector_short}",
+              names_glue = "n_new_firms_{sector_short}",
               values_from = n, values_fill = 0)
 
 district_panel <- panel_core %>%
@@ -95,9 +95,9 @@ district_panel <- panel_core %>%
          year  = founding_year_ad)
 
 # Add log versions
-log_cols <- c("n_firms_surviving","emp_surviving","rev_surviving","cap_surviving",
-              grep("^n_firms_size_", names(district_panel), value = TRUE),
-              grep("^n_firms_(sec_|)", names(district_panel), value = TRUE))
+log_cols <- c("n_new_firms","emp_new_firms","rev_new_firms","cap_new_firms",
+              grep("^n_new_firms_size_", names(district_panel), value = TRUE),
+              grep("^n_new_firms_", names(district_panel), value = TRUE))
 log_cols <- intersect(log_cols, names(district_panel))
 for (c in log_cols) {
   district_panel[[paste0("log_", c)]] <- log(pmax(district_panel[[c]], 0) + 1)

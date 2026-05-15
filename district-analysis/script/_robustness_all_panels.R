@@ -250,11 +250,7 @@ CENSUS_OUTCOMES <- c('absent_hh_share','mig_in_share','mig_in_domestic','mig_in_
   'amen_toilet_ordinary','amen_toilet_none','amen_asset_count_mean',
   'amen_assets_mobile','amen_assets_radio','amen_assets_tv','amen_assets_fridge',
   'amen_assets_computer','amen_assets_internet','amen_assets_landline',
-  'amen_assets_cycle','amen_assets_motorcycle','amen_assets_car',
-  # ---- macro-group composites ----
-  'ind_services_private','ind_services_public',
-  'occ_high_skill','occ_clerical_service','occ_manual',
-  'work_working','emp_entrepreneur','amen_lighting_nonelec')
+  'amen_assets_cycle','amen_assets_motorcycle','amen_assets_car')
 
 NEC_CS_OUTCOMES <- c('n_firms','emp_total','mean_emp_per_firm','formality_index',
   'share_registered','share_tax_registered','share_keeps_accounts',
@@ -282,15 +278,7 @@ HH_OUTCOMES <- c('has_migrant_international','log_n_migrants_international',
   'nonfood_other_nonfood_12m','durables_stock_value','durables_use_value_12m',
   'hlt_spend_total','edu_spend_total_12m','has_enterprise','n_enterprises',
   'n_workers_total','revenue_12m','profit_12m','expenses_12m','capex_12m',
-  'sector_trade','sector_manufacturing','sector_services','sector_hotels','sector_transport',
-  # ---- log composites of monetary outcomes ----
-  'log_remit_amount_intl_12m_rs','log_total_input_cost_rs','log_equip_stock_value_rs',
-  'log_food_exp_total_7day','log_food_exp_protein_7day','log_food_exp_purchased_7day',
-  'log_nonfood_exp_12m','log_nonfood_exp_30day','log_nonfood_housing_improvement_12m',
-  'log_nonfood_electronics_tech_12m','log_nonfood_jewellery_luxury_12m',
-  'log_durables_stock_value','log_durables_use_value_12m',
-  'log_hlt_spend_total','log_edu_spend_total_12m',
-  'log_revenue_12m','log_profit_12m','log_expenses_12m','log_capex_12m')
+  'sector_trade','sector_manufacturing','sector_services','sector_hotels','sector_transport')
 
 # Source paths to look for HH files (district-analysis first, then archive)
 HH_FILE_PATHS <- c(
@@ -323,31 +311,6 @@ cdf <- census %>% filter(year %in% c(2011, 2021)) %>%
   left_join(z_lag2, by = c("dname", "year")) %>%
   filter(!is.na(z_L)) %>%
   mutate(z_L_std = (z_L - mean(z_L, na.rm = TRUE)) / sd(z_L, na.rm = TRUE))
-
-# Macro-group composites (kept alongside originals)
-safe_sum <- function(...) {
-  args <- list(...)
-  Reduce(`+`, lapply(args, function(x) ifelse(is.na(x), 0, x)))
-}
-cdf <- cdf %>% mutate(
-  # Industry macro-groups (partition-respecting collapse of 11 -> 6)
-  ind_services_private = safe_sum(ind_wholesale_retail, ind_transport_accommodation,
-                                  ind_finance_real_estate_prof, ind_arts_recreation),
-  ind_services_public  = safe_sum(ind_public_admin_defence, ind_education, ind_health),
-  # Occupation macro-groups (10 -> 5)
-  occ_high_skill       = safe_sum(occ_share_managers, occ_share_professionals,
-                                  occ_share_technicians),
-  occ_clerical_service = safe_sum(occ_share_office_assistants, occ_share_service_sales),
-  occ_manual           = safe_sum(occ_share_craft_trades, occ_share_machine_operators,
-                                  occ_share_elementary),
-  # Work share macro
-  work_working         = safe_sum(work_share_agriculture, work_share_nonagriculture),
-  # Employment composite (entrepreneur)
-  emp_entrepreneur     = safe_sum(emp_share_employer, emp_share_self_employed),
-  # Lighting composite (1 - electricity)
-  amen_lighting_nonelec = safe_sum(amen_lighting_kerosene, amen_lighting_biogas,
-                                   amen_lighting_others)
-)
 
 cat(sprintf("Census panel: %d obs over %d districts\n",
             nrow(cdf), n_distinct(cdf$dname)))
@@ -390,25 +353,6 @@ hh <- hh %>%
   left_join(regions, by = "dname") %>%
   inner_join(z_lag2, by = c("dname","year")) %>%
   mutate(z_L_std = (z_L - mean(z_L, na.rm = TRUE)) / sd(z_L, na.rm = TRUE))
-
-# HH log composites of monetary outcomes (kept alongside levels)
-logp1 <- function(x) log(pmax(x, 0) + 1)
-add_log_cols <- function(df, vars) {
-  for (v in vars) {
-    if (v %in% names(df)) df[[paste0("log_", v)]] <- logp1(df[[v]])
-  }
-  df
-}
-hh <- add_log_cols(hh, c(
-  "remit_amount_intl_12m_rs",
-  "total_input_cost_rs","equip_stock_value_rs",
-  "food_exp_total_7day","food_exp_protein_7day","food_exp_purchased_7day",
-  "nonfood_exp_12m","nonfood_exp_30day","nonfood_housing_improvement_12m",
-  "nonfood_electronics_tech_12m","nonfood_jewellery_luxury_12m",
-  "durables_stock_value","durables_use_value_12m",
-  "hlt_spend_total","edu_spend_total_12m",
-  "revenue_12m","profit_12m","expenses_12m","capex_12m"
-))
 cat(sprintf("HH panel: %d obs over %d districts, %d HH\n",
             nrow(hh), n_distinct(hh$dname), n_distinct(hh$hhid)))
 
@@ -425,12 +369,12 @@ if (!is.null(ncs)) {
   out_rows[[3]] <- run_outcomes(ncs, NEC_CS_OUTCOMES, mode = "cs", refyr = NA_integer_, ds_label = "nec_cs")
 }
 
-# ---- NEC panel (entry-cohort) ----
+# ---- NEC panel (entry-cohort: n_new_firms by founding year × district) ----
 NEC_PANEL_FILE <- "district-analysis/data/clean/nec/nec_panel_district.csv"
 NEC_PANEL_OUTCOMES <- c(
-  "log_n_firms_surviving","log_emp_surviving","log_rev_surviving","log_cap_surviving",
-  "log_n_firms_size_micro_1","log_n_firms_size_small_2_9",
-  "log_n_firms_size_medium_10_50","log_n_firms_size_large_51p"
+  "log_n_new_firms","log_emp_new_firms","log_rev_new_firms","log_cap_new_firms",
+  "log_n_new_firms_size_micro_1","log_n_new_firms_size_small_2_9",
+  "log_n_new_firms_size_medium_10_50","log_n_new_firms_size_large_51p"
 )
 if (file.exists(NEC_PANEL_FILE)) {
   npd <- read_csv(NEC_PANEL_FILE, show_col_types = FALSE) %>%
