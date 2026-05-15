@@ -1,9 +1,11 @@
 ################################################################################
 # Plot M3 coefficients for NEC panel: new firm entry by industry and firm size.
 # Reads output/tab/robustness_all_panels.csv after _robustness_all_panels.R has
-# been run.
+# been run.  Shows only "log" scaling (w90 dropped per user request).
 #
-# Output: output/fig/nec_panel_industry_size_M3.png
+# Output:
+#   output/fig/nec_panel_industry_M3.png
+#   output/fig/nec_panel_size_M3.png
 ################################################################################
 
 suppressPackageStartupMessages({
@@ -16,61 +18,69 @@ if (!file.exists(OUT_FILE)) {
 }
 
 df <- read_csv(OUT_FILE, show_col_types = FALSE) %>%
-  filter(dataset == "nec_panel", model == "M3")
+  filter(dataset == "nec_panel", model == "M3", scaling == "log")
 
-if (nrow(df) == 0) stop("No nec_panel M3 rows in output CSV.")
+if (nrow(df) == 0) stop("No nec_panel/M3/log rows in output CSV.")
 
-# Categorize outcomes into 'size' vs 'industry'
 df <- df %>%
-  mutate(
-    category = case_when(
-      grepl("size_", outcome) ~ "Firm size",
-      outcome %in% c("log_n_new_firms","log_emp_new_firms",
-                     "log_rev_new_firms","log_cap_new_firms") ~ "Aggregate",
-      TRUE ~ "Industry"
-    ),
-    # Strip prefix for nicer labels
-    label = gsub("^log_n_new_firms_size_", "size: ", outcome) |>
-            gsub("^log_n_new_firms_", "ind: ", x = _) |>
-            gsub("^log_", "", x = _)
-  ) %>%
   mutate(ci_lo = beta - 1.96 * se,
          ci_hi = beta + 1.96 * se)
 
-# Two-panel plot, one for industry one for size
-plot_block <- function(d, title) {
-  # Order labels by mean(beta) across scalings (one position per outcome)
-  ord <- d %>% group_by(label) %>% summarise(m = mean(beta, na.rm = TRUE), .groups = "drop") %>%
-    arrange(m) %>% pull(label)
-  d <- d %>% mutate(label = factor(label, levels = ord))
-  ggplot(d, aes(x = beta, y = label, color = scaling)) +
-    geom_vline(xintercept = 0, linetype = "dashed", color = "gray60") +
-    geom_errorbarh(aes(xmin = ci_lo, xmax = ci_hi),
-                   height = 0, linewidth = 0.6,
-                   position = position_dodge(width = 0.5)) +
-    geom_point(size = 2.5, position = position_dodge(width = 0.5)) +
-    scale_color_manual(values = c(log = "#1f77b4", w90 = "#d62728"),
-                       labels = c(log = "log (outcome raw)",
-                                  w90 = "w90 (outcome winsorized p5/p95)")) +
-    labs(x = expression(beta * " on " * z[d*","*t-2]^{std} %*% log_mi[z]),
-         y = NULL, color = "Outcome scaling",
-         title = title) +
-    theme_minimal(base_size = 11) +
-    theme(panel.grid.major.y = element_blank(),
-          legend.position = "bottom")
-}
+# ---- Firm-size plot: explicit micro -> small -> medium -> large order ----
+SIZE_ORDER <- c(
+  "log_n_new_firms_size_micro_1"     = "Micro (1 worker)",
+  "log_n_new_firms_size_small_2_9"   = "Small (2-9)",
+  "log_n_new_firms_size_medium_10_50"= "Medium (10-50)",
+  "log_n_new_firms_size_large_51p"   = "Large (51+)"
+)
+size_df <- df %>% filter(outcome %in% names(SIZE_ORDER)) %>%
+  mutate(label = factor(SIZE_ORDER[outcome], levels = unname(SIZE_ORDER)))
 
-p_ind  <- plot_block(df %>% filter(category == "Industry"),
-                     "NEC panel M3: new firm entry by industry (log_n_new_firms_{sector})")
-p_size <- plot_block(df %>% filter(category == "Firm size"),
-                     "NEC panel M3: new firm entry by firm size (log_n_new_firms_size_{size})")
+p_size <- ggplot(size_df, aes(x = beta, y = label)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray60") +
+  geom_errorbarh(aes(xmin = ci_lo, xmax = ci_hi),
+                 height = 0, linewidth = 0.7, color = "#1f77b4") +
+  geom_point(size = 3, color = "#1f77b4") +
+  labs(x = expression(beta ~ "(M3, log scaling)"),
+       y = NULL,
+       title = "NEC panel M3: new firm entry by firm size",
+       subtitle = "outcome = log(n_new_firms + 1) by founding-year x district, lag-2 SSIV") +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.y = element_blank())
+
+# ---- Industry plot: intuitive labels, order by sectoral logic ----
+IND_ORDER <- c(
+  "log_n_new_firms_agriculture"             = "Agriculture",
+  "log_n_new_firms_manufacturing"           = "Manufacturing",
+  "log_n_new_firms_construction"            = "Construction",
+  "log_n_new_firms_trade_retail"            = "Trade & retail",
+  "log_n_new_firms_hospitality_food"        = "Hospitality & food",
+  "log_n_new_firms_transport_storage"       = "Transport & storage",
+  "log_n_new_firms_finance_prof_realestate" = "Finance / prof. / real estate",
+  "log_n_new_firms_education_health_social" = "Education / health / social",
+  "log_n_new_firms_other_services"          = "Other services"
+)
+ind_df <- df %>% filter(outcome %in% names(IND_ORDER)) %>%
+  mutate(label = factor(IND_ORDER[outcome], levels = rev(unname(IND_ORDER))))
+
+p_ind <- ggplot(ind_df, aes(x = beta, y = label)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray60") +
+  geom_errorbarh(aes(xmin = ci_lo, xmax = ci_hi),
+                 height = 0, linewidth = 0.7, color = "#1f77b4") +
+  geom_point(size = 3, color = "#1f77b4") +
+  labs(x = expression(beta ~ "(M3, log scaling)"),
+       y = NULL,
+       title = "NEC panel M3: new firm entry by industry",
+       subtitle = "outcome = log(n_new_firms + 1) by founding-year x district, lag-2 SSIV") +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.y = element_blank())
 
 dir.create("district-analysis/output/fig", recursive = TRUE, showWarnings = FALSE)
-ggsave("district-analysis/output/fig/nec_panel_industry_M3.png",
-       p_ind, width = 9, height = 5, dpi = 160)
 ggsave("district-analysis/output/fig/nec_panel_size_M3.png",
        p_size, width = 8, height = 3.5, dpi = 160)
+ggsave("district-analysis/output/fig/nec_panel_industry_M3.png",
+       p_ind, width = 9, height = 5, dpi = 160)
 
 cat("Saved:\n",
-    "  district-analysis/output/fig/nec_panel_industry_M3.png\n",
-    "  district-analysis/output/fig/nec_panel_size_M3.png\n", sep = "")
+    "  district-analysis/output/fig/nec_panel_size_M3.png\n",
+    "  district-analysis/output/fig/nec_panel_industry_M3.png\n", sep = "")

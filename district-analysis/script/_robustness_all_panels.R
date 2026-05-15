@@ -210,7 +210,7 @@ run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
   rows <- list()
   for (yc in outcomes) {
     if (!yc %in% names(panel)) next
-    for (slbl in c("log", "w90")) {
+    for (slbl in c("log")) {                 # w90 dropped per user request
       r <- fit_one(panel, yc, slbl, mode, refyr)
       r$dataset <- ds_label
       r$outcome <- yc
@@ -222,35 +222,21 @@ run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
   bind_rows(rows)
 }
 
-# ---- outcome lists (from docs/robustness.json) ----
-CENSUS_OUTCOMES <- c('absent_hh_share','mig_in_share','mig_in_domestic','mig_in_international',
-  'mig_in_from_rural','mig_in_from_urban','mig_in_reason_economic','mig_in_reason_marriage',
-  'mig_in_reason_study','mig_in_reason_noneconomic','mlfp_all','mlfp_agri','mlfp_nonagri',
-  'flfp_all','flfp_agri','flfp_nonagri','flfp_wage','flfp_chores_only','fem_employment_rate',
-  'gap_lfp_m_minus_f','ind_agri_forestry_fish','ind_manufacturing','ind_construction',
-  'ind_wholesale_retail','ind_transport_accommodation','ind_finance_real_estate_prof',
-  'ind_public_admin_defence','ind_education','ind_health','ind_arts_recreation','ind_others',
-  'occ_share_managers','occ_share_professionals','occ_share_technicians',
-  'occ_share_office_assistants','occ_share_service_sales','occ_share_agriculture',
-  'occ_share_craft_trades','occ_share_machine_operators','occ_share_elementary',
-  'occ_share_armed_forces','work_share_agriculture','work_share_nonagriculture',
-  'work_share_wage_nonagri','work_share_own_nonagri','work_share_student',
-  'work_share_household_chores','work_share_job_seeking','work_share_no_work',
-  'emp_share_employee','emp_share_employer','emp_share_self_employed',
-  'emp_share_unpaid_family_worker','mar_ever_married_15_60','mar_never_married_15_60',
-  'mar_female_age_first_mean','mar_female_married_by_18','mar_female_married_by_20',
-  'edu_literate','edu_literate_female','edu_literate_male',
-  'edu_school_attend_6_16','edu_school_attend_6_16_female','edu_school_attend_6_16_male',
-  'housing_own','housing_rented','housing_foundation_modern',
-  'housing_foundation_traditional','housing_roof_modern','housing_roof_traditional',
-  'amen_cooking_modern','amen_cooking_traditional','amen_cooking_lpg','amen_cooking_electric',
-  'amen_cooking_biogas','amen_cooking_wood','amen_cooking_kerosene',
-  'amen_lighting_electricity','amen_lighting_kerosene','amen_lighting_biogas','amen_lighting_others',
-  'amen_water_piped','amen_water_traditional','amen_toilet_any','amen_toilet_modern',
-  'amen_toilet_ordinary','amen_toilet_none','amen_asset_count_mean',
+# ---- outcome lists (trimmed per user request) ----
+CENSUS_OUTCOMES <- c(
+  # Headline migration/industry/occupation/employment
+  'mig_in_share','ind_agri_forestry_fish','occ_share_managers','emp_share_employee',
+  # Assets group (all amen_assets_* + count)
+  'amen_asset_count_mean',
   'amen_assets_mobile','amen_assets_radio','amen_assets_tv','amen_assets_fridge',
   'amen_assets_computer','amen_assets_internet','amen_assets_landline',
-  'amen_assets_cycle','amen_assets_motorcycle','amen_assets_car')
+  'amen_assets_cycle','amen_assets_motorcycle','amen_assets_car',
+  # Amenities (non-assets amen_*)
+  'amen_cooking_modern','amen_cooking_traditional','amen_cooking_lpg',
+  'amen_cooking_electric','amen_cooking_biogas','amen_cooking_wood','amen_cooking_kerosene',
+  'amen_lighting_electricity','amen_lighting_kerosene','amen_lighting_biogas','amen_lighting_others',
+  'amen_water_piped','amen_water_traditional',
+  'amen_toilet_any','amen_toilet_modern','amen_toilet_ordinary','amen_toilet_none')
 
 NEC_CS_OUTCOMES <- c('n_firms','emp_total','mean_emp_per_firm','formality_index',
   'share_registered','share_tax_registered','share_keeps_accounts',
@@ -259,25 +245,24 @@ NEC_CS_OUTCOMES <- c('n_firms','emp_total','mean_emp_per_firm','formality_index'
   'share_firms_size_medium_10_50','share_firms_size_large_51p',
   'share_borrowed_any','share_formal_credit','share_any_foreign_cap')
 
-HH_OUTCOMES <- c('has_migrant_international','log_n_migrants_international',
+HH_OUTCOMES <- c(
+  # Migration / remittance
+  'has_migrant_international','log_n_migrants_international',
   'remit_amount_intl_12m_rs','log_remit_amount_intl_12m_rs','remit_received',
+  # Agriculture (kept)
   'share_self_wet','share_self_dry','share_both_seasons','share_fallow_wet',
   'share_fallow_dry','share_rented_out_wet','owns_plough','owns_powered_machinery',
   'owns_irrigation_kit','owns_storage_struct','owns_transport',
   'n_equip_categories','n_powered_types','equip_stock_value_rs',
   'total_input_cost_rs','wet_cost_seed','dry_cost_seed','wet_cost_fert','dry_cost_fert',
   'wet_cost_labour','dry_cost_labour','wet_cost_insect','dry_cost_insect',
-  'input_intensity_per_sqm','food_exp_total_7day','food_exp_protein_7day',
-  'food_exp_staples_7day','food_exp_purchased_7day','food_exp_homeprod_7day',
-  'food_exp_vice_7day','food_insec_score','food_insec_any','food_insec_worried',
-  'nonfood_exp_12m','nonfood_exp_30day','nonfood_clothing_footwear_12m',
-  'nonfood_fuel_lighting_12m','nonfood_transport_12m','nonfood_communication_12m',
-  'nonfood_personal_care_12m','nonfood_household_goods_12m','nonfood_housing_improvement_12m',
-  'nonfood_electronics_tech_12m','nonfood_jewellery_luxury_12m',
-  'nonfood_entertainment_leisure_12m','nonfood_ceremonies_12m','nonfood_taxes_12m',
-  'nonfood_other_nonfood_12m','durables_stock_value','durables_use_value_12m',
-  'hlt_spend_total','edu_spend_total_12m','has_enterprise','n_enterprises',
-  'n_workers_total','revenue_12m','profit_12m','expenses_12m','capex_12m',
+  'input_intensity_per_sqm',
+  # Spending (trimmed to 6 specific items)
+  'food_exp_total_7day','food_exp_purchased_7day','food_exp_homeprod_7day',
+  'nonfood_exp_12m','edu_spend_total_12m','hlt_spend_total',
+  # Enterprise (kept)
+  'has_enterprise','n_enterprises','n_workers_total','revenue_12m','profit_12m',
+  'expenses_12m','capex_12m',
   'sector_trade','sector_manufacturing','sector_services','sector_hotels','sector_transport')
 
 # Source paths to look for HH files (district-analysis first, then archive)
