@@ -49,17 +49,22 @@ regions  <- read_csv("district-analysis/data/clean/instrument/dest_region_shares
 rvs_hh   <- read_csv("district-analysis/data/clean/rvs/migration_hh_year.csv", show_col_types = FALSE) %>%
               mutate(dname = to_dname(district_name))
 
-# Compute has_migrant_nonindia from migrant-level (used only as a sample filter,
-# matches the v2 SSIV's exclusion of India). NOT added as an outcome.
+# Build non-India intl filter + non-India remittance sum from migrant-level.
+# (v2 SSIV excludes India; outcome should match.)
 mig_year <- read_csv("district-analysis/data/clean/rvs/migration_migrant_year.csv",
                      show_col_types = FALSE)
-nonindia_flag <- mig_year %>%
+nonindia_agg <- mig_year %>%
   filter(is_international == 1, dest_india == 0) %>%
-  distinct(hhid, year) %>%
-  mutate(has_migrant_nonindia = 1L)
+  group_by(hhid, year) %>%
+  summarise(
+    has_migrant_nonindia      = 1L,
+    remit_amount_nonindia_rs  = sum(remit_amount_rs, na.rm = TRUE),
+    .groups = "drop"
+  )
 rvs_hh <- rvs_hh %>%
-  left_join(nonindia_flag, by = c("hhid","year")) %>%
-  mutate(has_migrant_nonindia = coalesce(has_migrant_nonindia, 0L))
+  left_join(nonindia_agg, by = c("hhid","year")) %>%
+  mutate(has_migrant_nonindia      = coalesce(has_migrant_nonindia, 0L),
+         remit_amount_nonindia_rs  = coalesce(remit_amount_nonindia_rs, 0))
 
 # ---- FX: rer_ct ----
 nepal_fx <- forex %>% filter(country == "Nepal") %>%
@@ -151,10 +156,11 @@ rvs_hh_panel <- rvs_hh %>%
                   n_migrants, n_intl_migrants, remit_received,
                   remit_amount_12m_rs, remit_amount_intl_12m_rs),
                 as.numeric),
-         log_n_migrants    = log(n_migrants + 1),
-         log_n_intl_mig    = log(n_intl_migrants + 1),
-         log_remit         = log(remit_amount_12m_rs + 1),
-         log_remit_intl    = log(remit_amount_intl_12m_rs + 1))
+         log_n_migrants       = log(n_migrants + 1),
+         log_n_intl_mig       = log(n_intl_migrants + 1),
+         log_remit            = log(remit_amount_12m_rs + 1),
+         log_remit_intl       = log(remit_amount_intl_12m_rs + 1),
+         log_remit_nonindia   = log(remit_amount_nonindia_rs + 1))
 
 # ---- helper: attach z at lags 0..3 and standardize ----
 attach_z <- function(panel) {
@@ -278,14 +284,15 @@ all_rows[[length(all_rows)+1]] <- run_ladder(
   rvs_amt, "log_remit", "hhid",
   "RVS log(remit+1) (if has_migrant=1)", lags = 2)
 
-# International remittance: condition on has_migrant_nonindia == 1 (excl India)
+# Non-India intl remittance: outcome = remit from non-India migrants only,
+# sample = HHs with at least one non-India intl migrant.
 rvs_ni <- rvs_hh_panel %>% filter(has_migrant_nonindia == 1)
 all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_ni, "remit_amount_intl_12m_rs", "hhid",
-  "RVS remit_amount_intl (if has_migrant_nonindia=1)", lags = 2)
+  rvs_ni, "remit_amount_nonindia_rs", "hhid",
+  "RVS remit_amount_nonindia (if has_migrant_nonindia=1)", lags = 2)
 all_rows[[length(all_rows)+1]] <- run_ladder(
-  rvs_ni, "log_remit_intl", "hhid",
-  "RVS log(remit_intl+1) (if has_migrant_nonindia=1)", lags = 2)
+  rvs_ni, "log_remit_nonindia", "hhid",
+  "RVS log(remit_nonindia+1) (if has_migrant_nonindia=1)", lags = 2)
 
 # ---- Census 2021 cross-section: 75 districts, single year ----
 # Outcome year = 2021, shifter year = 2021 - L (lag 2 -> z built from rer_{c,2019})
