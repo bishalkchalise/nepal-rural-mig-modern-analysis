@@ -184,12 +184,7 @@ run_ladder <- function(panel, ycol, entity_fe, label, lags = 0:3) {
 
   for (L in lags) {
     z_std <- paste0("z_v2_L", L, "_std")
-    z_raw <- paste0("z_v2_L", L)
-    # Option (a): build raw interaction (z_raw * mig_per_1000), then z-score it.
-    raw_inter <- panel[[z_raw]] * panel$mig_per_1000
-    m_inter <- mean(raw_inter, na.rm = TRUE)
-    s_inter <- sd(raw_inter,   na.rm = TRUE)
-    panel$z_inter <- (raw_inter - m_inter) / s_inter
+    panel$z_inter <- panel[[z_std]] * panel$mig_per_1000_z
     panel$z_bare  <- panel[[z_std]]
 
     f_M1 <- as.formula(sprintf("%s ~ z_inter | %s", ycol, fe_str))
@@ -262,23 +257,37 @@ for (yc in c("has_migrant", "has_migrant_internal", "has_migrant_intl",
                                                paste0("RVS ", yc), lags = 2)
 }
 
-# remit_amount_12m_rs : conditional on has_migrant == 1
-rvs_amt <- rvs_hh_panel %>% filter(has_migrant == 1)
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_amt, "remit_amount_12m_rs", "hhid",
-                                             "RVS remit_amount (if has_migrant=1)",
-                                             lags = 2)
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_amt, "log_remit", "hhid",
-                                             "RVS log(remit+1) (if has_migrant=1)",
-                                             lags = 2)
+# Total remittance: three sample variants
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_hh_panel, "remit_amount_12m_rs", "hhid",
+  "RVS remit_amount (all HH)", lags = 2)
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_hh_panel, "log_remit", "hhid",
+  "RVS log(remit+1) (all HH)", lags = 2)
 
-# remit_amount_intl_12m_rs : conditional on has_migrant_intl == 1
-rvs_intl_amt <- rvs_hh_panel %>% filter(has_migrant_intl == 1)
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_intl_amt, "remit_amount_intl_12m_rs", "hhid",
-                                             "RVS remit_amount_intl (if has_migrant_intl=1)",
-                                             lags = 2)
-all_rows[[length(all_rows)+1]] <- run_ladder(rvs_intl_amt, "log_remit_intl", "hhid",
-                                             "RVS log(remit_intl+1) (if has_migrant_intl=1)",
-                                             lags = 2)
+rvs_amt_pos <- rvs_hh_panel %>% filter(remit_amount_12m_rs > 0)
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_amt_pos, "remit_amount_12m_rs", "hhid",
+  "RVS remit_amount (if remit>0)", lags = 2)
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_amt_pos, "log_remit", "hhid",
+  "RVS log(remit+1) (if remit>0)", lags = 2)
+
+# International remittance: three sample variants
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_hh_panel, "remit_amount_intl_12m_rs", "hhid",
+  "RVS remit_amount_intl (all HH)", lags = 2)
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_hh_panel, "log_remit_intl", "hhid",
+  "RVS log(remit_intl+1) (all HH)", lags = 2)
+
+rvs_intl_pos <- rvs_hh_panel %>% filter(remit_amount_intl_12m_rs > 0)
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_intl_pos, "remit_amount_intl_12m_rs", "hhid",
+  "RVS remit_amount_intl (if remit_intl>0)", lags = 2)
+all_rows[[length(all_rows)+1]] <- run_ladder(
+  rvs_intl_pos, "log_remit_intl", "hhid",
+  "RVS log(remit_intl+1) (if remit_intl>0)", lags = 2)
 
 # ---- Census 2021 cross-section: 75 districts, single year ----
 # Outcome year = 2021, shifter year = 2021 - L (lag 2 -> z built from rer_{c,2019})
@@ -313,10 +322,7 @@ for (L in 0:3) {
 
 run_cs_ladder <- function(panel, ycol, label, L = 2) {
   z_std <- paste0("z_v2_L", L, "_std")
-  z_raw <- paste0("z_v2_L", L)
-  # Option (a): build raw interaction then z-score
-  raw_inter <- panel[[z_raw]] * panel$mig_per_1000
-  panel$z_inter <- (raw_inter - mean(raw_inter, na.rm = TRUE)) / sd(raw_inter, na.rm = TRUE)
+  panel$z_inter <- panel[[z_std]] * panel$mig_per_1000_z
   panel$z_bare  <- panel[[z_std]]
 
   region_terms <- paste(REGION_COLS, collapse = " + ")
