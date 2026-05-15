@@ -1,0 +1,7 @@
+# Standardize line endings — prevents Git from rewriting files on checkout/pull
+# (which triggers OneDrive/RStudio file locks on Windows).
+* text=auto eol=lf
+*.R   text eol=lf
+*.py  text eol=lf
+*.csv text eol=lf
+*.md  text eol=lf
