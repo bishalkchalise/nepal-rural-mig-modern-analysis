@@ -45,20 +45,40 @@ collapse_splits <- function(fct) {
   )
 }
 
+# Helper — find the first existing path among candidates (case-insensitive).
+# Searches recursively inside `dir` for files matching any of `pats`.
+find_first <- function(dir, pats) {
+  if (!dir.exists(dir)) stop("Folder does not exist: ", dir)
+  hits <- list.files(dir, recursive = TRUE, full.names = TRUE,
+                     ignore.case = TRUE, pattern = paste(pats, collapse = "|"))
+  if (length(hits) == 0)
+    stop("No file matching {", paste(pats, collapse = ", "), "} under ", dir)
+  hits[[1]]
+}
+
+# Helper — fetch a column by name, case-insensitive (handles DIST vs dist).
+col <- function(df, name) {
+  hit <- match(tolower(name), tolower(names(df)))
+  if (is.na(hit))
+    stop("Column not found (case-insensitive): ", name,
+         ". Available columns: ", paste(names(df), collapse = ", "))
+  df[[hit]]
+}
+
 # ============================================================================
 #  CENSUS 2011 — lifetime out-migration by birth district
 # ============================================================================
 cat("=== 2011 ===\n")
 
-census_ind_11 <- read_dta(
-  file.path(CENSUS_FOLDER, "Census 2011/raw_data11/Individual02.dta")
-)
+path_11 <- find_first(file.path(CENSUS_FOLDER, "Census 2011"),
+                     c("^individual02\\.dta$"))
+cat(sprintf("  reading %s\n", path_11))
+census_ind_11 <- read_dta(path_11)
 
-c11 <- census_ind_11 %>%
-  mutate(
-    district       = as.character(collapse_splits(as_factor(DIST))),
-    birth_district = as.character(collapse_splits(as_factor(Q16B))),
-    birth_place    = as_factor(Q16A)
+c11 <- tibble(
+    district       = as.character(collapse_splits(as_factor(col(census_ind_11, "DIST")))),
+    birth_district = as.character(collapse_splits(as_factor(col(census_ind_11, "Q16B")))),
+    birth_place    = as_factor(col(census_ind_11, "Q16A"))
   ) %>%
   filter(!is.na(district), !is.na(birth_district),
          district != "Not Stated", birth_district != "Not Stated")
@@ -113,16 +133,21 @@ rm(census_ind_11, c11, mig_11, inmig_11, outmig_11, native_pop_11); gc(verbose =
 # ============================================================================
 cat("=== 2021 ===\n")
 
-census_ind_21 <- read_dta(
-  file.path(CENSUS_FOLDER, "Census 2021/Data/PCMS2021_Individual.dta")
-)
+path_21 <- find_first(file.path(CENSUS_FOLDER, "Census 2021"),
+                     c("^PCMS2021_Individual\\.dta$"))
+cat(sprintf("  reading %s\n", path_21))
+census_ind_21 <- read_dta(path_21)
 
-c21 <- census_ind_21 %>%
-  mutate(
-    district       = as.character(collapse_splits(as_factor(dist))),
-    place_birth    = as_factor(q19),
-    birth_district = as.character(collapse_splits(as_factor(q20))),
-    reason         = as_factor(q25)
+# Pull the weight column case-insensitively (some exports name it INDIVIDUAL_WT)
+wt_21 <- tryCatch(col(census_ind_21, "individual_wt"),
+                  error = function(e) rep(1, nrow(census_ind_21)))
+
+c21 <- tibble(
+    district       = as.character(collapse_splits(as_factor(col(census_ind_21, "dist")))),
+    place_birth    = as_factor(col(census_ind_21, "q19")),
+    birth_district = as.character(collapse_splits(as_factor(col(census_ind_21, "q20")))),
+    reason         = as_factor(col(census_ind_21, "q25")),
+    individual_wt  = wt_21
   ) %>%
   mutate(
     reason_category = case_when(
