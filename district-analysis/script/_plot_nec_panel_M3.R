@@ -61,7 +61,9 @@ IND_ORDER <- c(
   "log_n_new_firms_other_services"          = "Other services"
 )
 ind_df <- df %>% filter(outcome %in% names(IND_ORDER)) %>%
-  mutate(label = factor(IND_ORDER[outcome], levels = rev(unname(IND_ORDER))))
+  mutate(label = unname(IND_ORDER[outcome])) %>%
+  arrange(desc(beta)) %>%                       # positive at top, negative at bottom
+  mutate(label = factor(label, levels = rev(label)))
 
 p_ind <- ggplot(ind_df, aes(x = beta, y = label)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray60") +
