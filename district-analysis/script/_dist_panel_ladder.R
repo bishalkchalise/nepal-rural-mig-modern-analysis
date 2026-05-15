@@ -112,7 +112,7 @@ mi <- dofe %>%
   mutate(mig_int      = num / pop_2011,
          mig_per_1000 = mig_int * 1000,
          mig_per_1000_z = (mig_per_1000 - mean(mig_per_1000)) / sd(mig_per_1000)) %>%
-  select(dname, mig_per_1000_z)
+  select(dname, mig_per_1000, mig_per_1000_z)
 
 # ---- DOFE district x year panel 2011-2023 ----
 districts_dofe <- sort(intersect(unique(z_v2$dname), mi$dname))
@@ -184,7 +184,12 @@ run_ladder <- function(panel, ycol, entity_fe, label, lags = 0:3) {
 
   for (L in lags) {
     z_std <- paste0("z_v2_L", L, "_std")
-    panel$z_inter <- panel[[z_std]] * panel$mig_per_1000_z
+    z_raw <- paste0("z_v2_L", L)
+    # Option (a): build raw interaction (z_raw * mig_per_1000), then z-score it.
+    raw_inter <- panel[[z_raw]] * panel$mig_per_1000
+    m_inter <- mean(raw_inter, na.rm = TRUE)
+    s_inter <- sd(raw_inter,   na.rm = TRUE)
+    panel$z_inter <- (raw_inter - m_inter) / s_inter
     panel$z_bare  <- panel[[z_std]]
 
     f_M1 <- as.formula(sprintf("%s ~ z_inter | %s", ycol, fe_str))
@@ -308,7 +313,10 @@ for (L in 0:3) {
 
 run_cs_ladder <- function(panel, ycol, label, L = 2) {
   z_std <- paste0("z_v2_L", L, "_std")
-  panel$z_inter <- panel[[z_std]] * panel$mig_per_1000_z
+  z_raw <- paste0("z_v2_L", L)
+  # Option (a): build raw interaction then z-score
+  raw_inter <- panel[[z_raw]] * panel$mig_per_1000
+  panel$z_inter <- (raw_inter - mean(raw_inter, na.rm = TRUE)) / sd(raw_inter, na.rm = TRUE)
   panel$z_bare  <- panel[[z_std]]
 
   region_terms <- paste(REGION_COLS, collapse = " + ")
