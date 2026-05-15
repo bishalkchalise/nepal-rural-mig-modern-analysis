@@ -52,11 +52,9 @@ p_size <- ggplot(size_df, aes(x = beta, y = label)) +
   geom_point(size = 3, color = "#1f77b4") +
   labs(x = "Effect on (log) new firm entry per 1-SD of share-weighted FX shock",
        y = NULL,
-       title = "New Firm Entry, 2011-2018, by firm size",
-       caption = caption_txt) +
+       title = "New Firm Entry, 2011-2018, by firm size") +
   theme_minimal(base_size = 12) +
-  theme(panel.grid.major.y = element_blank(),
-        plot.caption = element_text(hjust = 0, size = 8.5, color = "gray30"))
+  theme(panel.grid.major.y = element_blank())
 
 # ---- Industry plot: intuitive labels, order by sectoral logic ----
 IND_ORDER <- c(
@@ -82,17 +80,15 @@ p_ind <- ggplot(ind_df, aes(x = beta, y = label)) +
   geom_point(size = 3, color = "#1f77b4") +
   labs(x = "Effect on (log) new firm entry per 1-SD of share-weighted FX shock",
        y = NULL,
-       title = "New Firm Entry, 2011-2018, by industry",
-       caption = caption_txt) +
+       title = "New Firm Entry, 2011-2018, by industry") +
   theme_minimal(base_size = 12) +
-  theme(panel.grid.major.y = element_blank(),
-        plot.caption = element_text(hjust = 0, size = 8.5, color = "gray30"))
+  theme(panel.grid.major.y = element_blank())
 
 dir.create("district-analysis/output/fig", recursive = TRUE, showWarnings = FALSE)
 ggsave("district-analysis/output/fig/nec_panel_size_M3.png",
-       p_size, width = 9, height = 5.5, dpi = 160)
+       p_size, width = 8, height = 3.5, dpi = 160)
 ggsave("district-analysis/output/fig/nec_panel_industry_M3.png",
-       p_ind, width = 9.5, height = 6.5, dpi = 160)
+       p_ind, width = 9, height = 5, dpi = 160)
 
 cat("Saved:\n",
     "  district-analysis/output/fig/nec_panel_size_M3.png\n",
