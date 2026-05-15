@@ -62,6 +62,17 @@ dofe_raw <- read_csv("district-analysis/data/clean/foreign_migration_district_co
 pop_file <- read_csv("district-analysis/data/clean/foreign_migration_district_population.csv", show_col_types = FALSE)
 regions  <- read_csv("district-analysis/data/clean/instrument/dest_region_shares_2001.csv", show_col_types = FALSE)
 census   <- read_csv("district-analysis/data/clean/census/outcomes_district.csv", show_col_types = FALSE)
+
+# Out-migration outcomes (built by district-analysis/script/vars/outcome_census_outmig.R)
+outmig_path <- "district-analysis/data/clean/census/outmig_district_long.csv"
+if (file.exists(outmig_path)) {
+  outmig <- read_csv(outmig_path, show_col_types = FALSE)
+  census <- census %>% left_join(outmig, by = c("dname", "year"))
+  cat(sprintf("Joined out-migration outcomes from %s (%d rows)\n",
+              outmig_path, nrow(outmig)))
+} else {
+  cat(sprintf("NOTE: %s not found — out-migration outcomes skipped\n", outmig_path))
+}
 nec_cs   <- if (file.exists("district-analysis/data/clean/nec/nec_2018_district.csv")) {
               read_csv("district-analysis/data/clean/nec/nec_2018_district.csv", show_col_types = FALSE)
             } else {
@@ -224,6 +235,13 @@ run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
 
 # ---- outcome lists (trimmed per user request) ----
 CENSUS_OUTCOMES <- c(
+  # Out-migration (built by outcome_census_outmig.R; omitted automatically if CSV missing)
+  # Population-denominator out-migration rates (comparable to mig_in_*):
+  'mig_out_internal_share','net_internal_mig_share',
+  'mig_out_economic_share','mig_out_noneconomic_share',
+  'mig_out_male_share','mig_out_female_share','mig_out_age_15_30_share',
+  # Composition-of-out-migrants shares (sum to 1 within group, sensitivity):
+  'mig_out_of_outmig_econ_share','mig_out_of_outmig_noecon_share',
   # Headline migration/industry/occupation/employment
   'mig_in_share','ind_agri_forestry_fish','occ_share_managers','emp_share_employee',
   # Assets group (all amen_assets_* + count)
