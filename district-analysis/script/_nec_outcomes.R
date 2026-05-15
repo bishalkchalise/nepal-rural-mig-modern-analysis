@@ -4,13 +4,13 @@
 # 77-district aggregation produced by 05_district_aggregate.R.
 #
 # Spec (cross-section, 75 districts, no district FE since 1 obs/district):
-#   y_d = alpha + beta * (z_{d, 2018-LAG}_std * mig_per_1000_z)
+#   y_d = alpha + beta * (z_{d, 2018-LAG}_std * log_mi_z)
 #         + lambda' * controls_d
 #         + eps_d                             cov = HC1 robust
 #
 # Ladder M1 - M4 same as Khanna spec:
 #   M1: bare interaction
-#   M2: + mig_per_1000_z
+#   M2: + log_mi_z
 #   M3: + bare z_lagged_std (C_fx)
 #   M4: + 6 dest-region shares (C_X)
 #
@@ -156,8 +156,9 @@ mi <- dofe %>%
   ) %>%
   mutate(mig_int      = num / pop_2011,
          mig_per_1000 = mig_int * 1000,
-         mig_per_1000_z = (mig_per_1000 - mean(mig_per_1000)) / sd(mig_per_1000)) %>%
-  select(dname, mig_per_1000_z)
+         log_mi       = log(pmax(mig_per_1000, 1e-6)),
+         log_mi_z     = (log_mi - mean(log_mi)) / sd(log_mi)) %>%
+  select(dname, log_mi_z)
 
 # ---- cross-section assembly ----
 cs <- nec %>%
@@ -186,14 +187,14 @@ run_ladder_cs <- function(panel, ycol, is_log) {
   if (is_log) y <- log1p(pmax(y, 0))   # asinh-like for safety
   panel$.y <- y
 
-  panel$z_inter <- panel$z_lagged_std * panel$mig_per_1000_z
+  panel$z_inter <- panel$z_lagged_std * panel$log_mi_z
   panel$z_bare  <- panel$z_lagged_std
 
   region_terms <- paste(REGION_COLS, collapse = " + ")
   f_M1 <- as.formula(".y ~ z_inter")
-  f_M2 <- as.formula(".y ~ z_inter + mig_per_1000_z")
-  f_M3 <- as.formula(".y ~ z_inter + mig_per_1000_z + z_bare")
-  f_M4 <- as.formula(sprintf(".y ~ z_inter + mig_per_1000_z + z_bare + %s", region_terms))
+  f_M2 <- as.formula(".y ~ z_inter + log_mi_z")
+  f_M3 <- as.formula(".y ~ z_inter + log_mi_z + z_bare")
+  f_M4 <- as.formula(sprintf(".y ~ z_inter + log_mi_z + z_bare + %s", region_terms))
 
   rows <- list()
   for (mlabel in c("M1","M2","M3","M4")) {

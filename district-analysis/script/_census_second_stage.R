@@ -2,8 +2,8 @@
 # Census 2011-2021 panel SECOND-STAGE on v2 SSIV.
 #
 # Spec (same as first-stage ladder, only outcome changes):
-#   y_{d,t} = beta * [ z_{d,t-2} * mig_per_1000_z ]
-#           + C_mig  (mig_per_1000_z * year FE)
+#   y_{d,t} = beta * [ z_{d,t-2} * log_mi_z ]
+#           + C_mig  (log_mi_z * year FE)
 #           + C_fx   (bare z_{d,t-2})
 #           + C_X    (year x 6 dest-region shares)
 #           + alpha_d + gamma_t + eps_{d,t}
@@ -107,8 +107,9 @@ mi <- dofe %>%
   ) %>%
   mutate(mig_int      = num / pop_2011,
          mig_per_1000 = mig_int * 1000,
-         mig_per_1000_z = (mig_per_1000 - mean(mig_per_1000)) / sd(mig_per_1000)) %>%
-  select(dname, mig_per_1000, mig_per_1000_z)
+         log_mi       = log(pmax(mig_per_1000, 1e-6)),
+         log_mi_z     = (log_mi - mean(log_mi)) / sd(log_mi)) %>%
+  select(dname, log_mi_z)
 
 # ---- census 2011-2021 panel ----
 census_panel <- census %>%
@@ -142,15 +143,15 @@ run_ladder_cs <- function(panel, ycol, label, group) {
   region_terms <- paste(sprintf("i(year, %s, ref = %d)", REGION_COLS, refyr),
                         collapse = " + ")
 
-  panel$z_inter <- panel$z_v2_L2_std * panel$mig_per_1000_z
+  panel$z_inter <- panel$z_v2_L2_std * panel$log_mi_z
   panel$z_bare  <- panel$z_v2_L2_std
 
   f_M1 <- as.formula(sprintf("%s ~ z_inter | dname + year", ycol))
-  f_M2 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_per_1000_z, ref = %d) | dname + year",
+  f_M2 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) | dname + year",
                              ycol, refyr))
-  f_M3 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_per_1000_z, ref = %d) + z_bare | dname + year",
+  f_M3 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare | dname + year",
                              ycol, refyr))
-  f_M4 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_per_1000_z, ref = %d) + z_bare + %s | dname + year",
+  f_M4 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare + %s | dname + year",
                              ycol, refyr, region_terms))
 
   rows_long <- list()

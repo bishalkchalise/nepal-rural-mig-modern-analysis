@@ -97,8 +97,9 @@ mi <- dofe %>%
   ) %>%
   mutate(mig_int      = num / pop_2011,
          mig_per_1000 = mig_int * 1000,
-         mig_per_1000_z = (mig_per_1000 - mean(mig_per_1000)) / sd(mig_per_1000)) %>%
-  select(dname, mig_per_1000_z)
+         log_mi       = log(pmax(mig_per_1000, 1e-6)),
+         log_mi_z     = (log_mi - mean(log_mi)) / sd(log_mi)) %>%
+  select(dname, log_mi_z)
 
 # ---- helper to load + standardize z (lag 2) into HH panel ----
 prep_panel <- function(df) {
@@ -136,15 +137,15 @@ run_ladder <- function(panel, ycol, group, label) {
   region_terms <- paste(sprintf("i(year, %s, ref = %d)", REGION_COLS, refyr),
                         collapse = " + ")
 
-  panel$z_inter <- panel$z_v2_L2_std * panel$mig_per_1000_z
+  panel$z_inter <- panel$z_v2_L2_std * panel$log_mi_z
   panel$z_bare  <- panel$z_v2_L2_std
 
   f_M1 <- as.formula(sprintf("%s ~ z_inter | hhid + year", ycol))
-  f_M2 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_per_1000_z, ref = %d) | hhid + year",
+  f_M2 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) | hhid + year",
                              ycol, refyr))
-  f_M3 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_per_1000_z, ref = %d) + z_bare | hhid + year",
+  f_M3 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare | hhid + year",
                              ycol, refyr))
-  f_M4 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_per_1000_z, ref = %d) + z_bare + %s | hhid + year",
+  f_M4 <- as.formula(sprintf("%s ~ z_inter + i(year, log_mi_z, ref = %d) + z_bare + %s | hhid + year",
                              ycol, refyr, region_terms))
 
   rows <- list()
