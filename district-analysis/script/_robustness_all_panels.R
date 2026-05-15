@@ -138,10 +138,8 @@ mi <- dofe %>%
   ) %>%
   mutate(mig_per_1000 = (num / pop_2011) * 1000,
          mig_log     = log(pmax(mig_per_1000, 1e-6)),
-         mig_log_z   = (mig_log - mean(mig_log)) / sd(mig_log),
-         mig_w90     = winsor(mig_per_1000, 0.05, 0.95),
-         mig_w90_z   = (mig_w90 - mean(mig_w90)) / sd(mig_w90)) %>%
-  select(dname, mig_log_z, mig_w90_z)
+         log_mi_z    = (mig_log - mean(mig_log)) / sd(mig_log)) %>%
+  select(dname, log_mi_z)
 
 REGION_COLS <- c("share_e_asia", "share_gulf", "share_oecd_north",
                  "share_s_asia", "share_se_asia", "share_oecd_europe")
@@ -152,8 +150,15 @@ stars <- function(p) {
 }
 
 # ---- regression dispatcher ----
-fit_one <- function(panel, ycol, mig_col, mode, refyr = NA) {
-  panel$mig_var <- panel[[mig_col]]
+# scaling:
+#   "log" -> use raw outcome, log_mi_z treatment scaling
+#   "w90" -> winsorize the OUTCOME at p5/p95 (within non-missing rows), keep log_mi_z scaling
+fit_one <- function(panel, ycol, scaling, mode, refyr = NA) {
+  panel$mig_var <- panel$log_mi_z
+  y_use <- panel[[ycol]]
+  if (scaling == "w90") {
+    panel[[ycol]] <- winsor(y_use, 0.05, 0.95)
+  }
   panel$z_inter <- panel$z_L_std * panel$mig_var
   panel$z_bare  <- panel$z_L_std
 
@@ -205,9 +210,8 @@ run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
   rows <- list()
   for (yc in outcomes) {
     if (!yc %in% names(panel)) next
-    for (mig_col in c("mig_log_z", "mig_w90_z")) {
-      slbl <- if (mig_col == "mig_log_z") "log" else "w90"
-      r <- fit_one(panel, yc, mig_col, mode, refyr)
+    for (slbl in c("log", "w90")) {
+      r <- fit_one(panel, yc, slbl, mode, refyr)
       r$dataset <- ds_label
       r$outcome <- yc
       r$scaling <- slbl
