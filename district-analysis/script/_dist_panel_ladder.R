@@ -138,7 +138,11 @@ rvs_hh_panel <- rvs_hh %>%
   mutate(across(c(has_migrant, has_migrant_internal, has_migrant_intl,
                   n_migrants, n_intl_migrants, remit_received,
                   remit_amount_12m_rs, remit_amount_intl_12m_rs),
-                as.numeric))
+                as.numeric),
+         log_n_migrants     = log(n_migrants + 1),
+         log_n_intl_mig     = log(n_intl_migrants + 1),
+         log_remit          = log(remit_amount_12m_rs + 1),
+         log_remit_intl     = log(remit_amount_intl_12m_rs + 1))
 
 # ---- helper: attach z at lags 0..3 and standardize ----
 attach_z <- function(panel) {
@@ -243,10 +247,11 @@ all_rows <- list()
 all_rows[[length(all_rows)+1]] <- run_ladder(dofe_panel, "log_perm", "dname",
                                              "DOFE log(permits+1)")
 
-# RVS: lag 2 only, all ladder, 8 outcomes
-# Full sample
+# RVS: lag 2 only, all ladder
+# Full sample - binary 0/1 (LPM) and counts
 for (yc in c("has_migrant", "has_migrant_internal", "has_migrant_intl",
-             "n_migrants", "n_intl_migrants", "remit_received")) {
+             "n_migrants", "n_intl_migrants", "remit_received",
+             "log_n_migrants", "log_n_intl_mig")) {
   all_rows[[length(all_rows)+1]] <- run_ladder(rvs_hh_panel, yc, "hhid",
                                                paste0("RVS ", yc), lags = 2)
 }
@@ -254,14 +259,101 @@ for (yc in c("has_migrant", "has_migrant_internal", "has_migrant_intl",
 # remit_amount_12m_rs : conditional on has_migrant == 1
 rvs_amt <- rvs_hh_panel %>% filter(has_migrant == 1)
 all_rows[[length(all_rows)+1]] <- run_ladder(rvs_amt, "remit_amount_12m_rs", "hhid",
-                                             "RVS remit_amount_12m_rs (if has_migrant=1)",
+                                             "RVS remit_amount (if has_migrant=1)",
+                                             lags = 2)
+all_rows[[length(all_rows)+1]] <- run_ladder(rvs_amt, "log_remit", "hhid",
+                                             "RVS log(remit+1) (if has_migrant=1)",
                                              lags = 2)
 
 # remit_amount_intl_12m_rs : conditional on has_migrant_intl == 1
 rvs_intl_amt <- rvs_hh_panel %>% filter(has_migrant_intl == 1)
 all_rows[[length(all_rows)+1]] <- run_ladder(rvs_intl_amt, "remit_amount_intl_12m_rs", "hhid",
-                                             "RVS remit_amount_intl_12m_rs (if has_migrant_intl=1)",
+                                             "RVS remit_amount_intl (if has_migrant_intl=1)",
                                              lags = 2)
+all_rows[[length(all_rows)+1]] <- run_ladder(rvs_intl_amt, "log_remit_intl", "hhid",
+                                             "RVS log(remit_intl+1) (if has_migrant_intl=1)",
+                                             lags = 2)
+
+# ---- Census 2021 cross-section: 75 districts, single year ----
+# Outcome year = 2021, shifter year = 2021 - L (lag 2 -> z built from rer_{c,2019})
+census <- read_csv("district-analysis/data/clean/census/outcomes_district.csv",
+                   show_col_types = FALSE) %>%
+  filter(year == 2021) %>%
+  select(dname, absent_hh_share, mig_in_international, mig_in_share, mig_in_domestic)
+
+absentee21 <- read_csv("district-analysis/data/clean/census/absentee_2021_non_india_dist.csv",
+                       show_col_types = FALSE) %>%
+  transmute(dname,
+            log_n_absentees    = log(n_absentees + 1),
+            log_n_absentees_wt = log(n_absentees_weighted + 1),
+            log_n_male         = log(n_male + 1),
+            log_n_female       = log(n_female + 1))
+
+cs21 <- census %>% full_join(absentee21, by = "dname") %>%
+  inner_join(mi, by = "dname") %>%
+  left_join(regions, by = "dname")
+
+# Build z at year 2021-L per lag from the panel z_v2 series
+for (L in 0:3) {
+  zsub <- z_v2 %>% filter(year == 2021 - L) %>%
+    transmute(dname, !!paste0("z_v2_L", L) := z_v2)
+  cs21 <- cs21 %>% left_join(zsub, by = "dname")
+}
+for (L in 0:3) {
+  col <- paste0("z_v2_L", L)
+  cs21[[paste0(col, "_std")]] <- cs21[[col]] / sd(cs21[[col]], na.rm = TRUE)
+}
+
+run_cs_ladder <- function(panel, ycol, label, L = 2) {
+  z_std <- paste0("z_v2_L", L, "_std")
+  panel$z_inter <- panel[[z_std]] * panel$log_mi_z
+  panel$z_bare  <- panel[[z_std]]
+
+  region_terms <- paste(REGION_COLS, collapse = " + ")
+  f_M1 <- as.formula(sprintf("%s ~ z_inter", ycol))
+  f_M2 <- as.formula(sprintf("%s ~ z_inter + log_mi_z", ycol))
+  f_M3 <- as.formula(sprintf("%s ~ z_inter + log_mi_z + z_bare", ycol))
+  f_M4 <- as.formula(sprintf("%s ~ z_inter + log_mi_z + z_bare + %s", ycol, region_terms))
+
+  rows_long <- list(); cells <- list(); cells_se <- list()
+  for (mlabel in c("M1","M2","M3","M4")) {
+    f <- switch(mlabel, M1=f_M1, M2=f_M2, M3=f_M3, M4=f_M4)
+    fit <- tryCatch(feols(f, data = panel, vcov = "hetero"),
+                    error = function(e) NULL)
+    if (is.null(fit)) { cells[[mlabel]] <- "—"; cells_se[[mlabel]] <- ""; next }
+    s <- summary(fit)$coeftable
+    if (!"z_inter" %in% rownames(s)) { cells[[mlabel]] <- "—"; cells_se[[mlabel]] <- ""; next }
+    b  <- s["z_inter","Estimate"]; se <- s["z_inter","Std. Error"]
+    pv <- s["z_inter","Pr(>|t|)"]
+    mean_y <- mean(panel[[ycol]], na.rm = TRUE)
+    cells[[mlabel]]    <- sprintf("%.4f%s", b, stars(pv))
+    cells_se[[mlabel]] <- sprintf("(%.4f)", se)
+    rows_long[[length(rows_long)+1]] <- tibble(
+      outcome=label, lag=L, model=mlabel,
+      beta=round(b,4), se=round(se,4),
+      t=round(s["z_inter","t value"],2), p=round(pv,4),
+      sig=stars(pv), mean_y=round(mean_y,4),
+      pct_of_mean=round(100*b/mean_y,2), n=nobs(fit))
+  }
+
+  cat(sprintf("\n==== %s    cross-section (75 districts, lag %d), HC1 SE ====\n",
+              label, L))
+  cat(sprintf("mean(Y) = %.4f\n\n", mean(panel[[ycol]], na.rm = TRUE)))
+  cat(sprintf("%-5s | %-13s | %-13s | %-13s | %-13s\n",
+              "lag", "M1 (bare)", "M2 (+log_mi)", "M3 (+z bare)", "M4 (+regions)"))
+  cat(strrep("-", 76), "\n", sep = "")
+  cat(sprintf("L=%-2d  | %-13s | %-13s | %-13s | %-13s\n",
+              L, cells$M1, cells$M2, cells$M3, cells$M4))
+  cat(sprintf("      | %-13s | %-13s | %-13s | %-13s\n",
+              cells_se$M1, cells_se$M2, cells_se$M3, cells_se$M4))
+  cat("\n")
+  bind_rows(rows_long)
+}
+
+for (yc in c("absent_hh_share", "mig_in_international", "mig_in_share", "mig_in_domestic",
+             "log_n_absentees", "log_n_absentees_wt", "log_n_male", "log_n_female")) {
+  all_rows[[length(all_rows)+1]] <- run_cs_ladder(cs21, yc, paste0("Census 2021 ", yc))
+}
 
 out <- bind_rows(all_rows)
 dir.create("district-analysis/output/tab", recursive = TRUE, showWarnings = FALSE)
