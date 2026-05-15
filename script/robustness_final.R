@@ -370,15 +370,17 @@ for (spec_name in names(SPECS)) {
       r[, treatment_kind := cfg$treatment]; r[, c_mig_log_flag := cfg$c_mig_log]
       all_rows[[length(all_rows)+1]] <- r
     }
-    # hh via run_spec
-    r <- run_quiet(spec_label = spec_name, dataset = "hh", threshold = thr,
-                   treatment = cfg$treatment, c_mig = TRUE,
-                   c_mig_log = cfg$c_mig_log, c_fx = TRUE,
-                   c_block_a = TRUE, c_block_b = FALSE, c_block_c = FALSE,
-                   outcomes = list(robust = outcs$hh), save = FALSE, lag = cfg$lag)
-    if (!is.null(r) && nrow(r) > 0) {
-      r[, treatment_kind := cfg$treatment]; r[, c_mig_log_flag := cfg$c_mig_log]
-      all_rows[[length(all_rows)+1]] <- r
+    # hh via run_spec (skip entirely if no HH outcomes / files missing)
+    if (length(outcs$hh) > 0) {
+      r <- run_quiet(spec_label = spec_name, dataset = "hh", threshold = thr,
+                     treatment = cfg$treatment, c_mig = TRUE,
+                     c_mig_log = cfg$c_mig_log, c_fx = TRUE,
+                     c_block_a = TRUE, c_block_b = FALSE, c_block_c = FALSE,
+                     outcomes = list(robust = outcs$hh), save = FALSE, lag = cfg$lag)
+      if (!is.null(r) && nrow(r) > 0) {
+        r[, treatment_kind := cfg$treatment]; r[, c_mig_log_flag := cfg$c_mig_log]
+        all_rows[[length(all_rows)+1]] <- r
+      }
     }
     # NEC panel
     for (y in NEC_PANEL_OUTCOMES) {
