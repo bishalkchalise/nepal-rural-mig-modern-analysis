@@ -387,11 +387,31 @@ run_spec <- function(spec_label,
 
   base_data <- if (dataset == "census") load_census() else load_hh()
 
+  # Defensive: drop any duplicate column names in base_data before merge
+  # (some outcome_census.R aggregation paths can produce duplicate lgcode/year)
+  if (!is.null(base_data) && any(duplicated(names(base_data)))) {
+    dup <- names(base_data)[duplicated(names(base_data))]
+    warning("base_data has duplicate columns: ", paste(unique(dup), collapse=", "),
+            " - keeping first occurrence of each.")
+    base_data <- base_data[, !duplicated(names(base_data)), with = FALSE]
+  }
+  # Coerce key columns to integer to avoid factor/character mismatch
+  if (!is.null(base_data)) {
+    if ("lgcode" %in% names(base_data)) base_data[, lgcode := as.integer(lgcode)]
+    if ("year"   %in% names(base_data)) base_data[, year   := as.integer(year)]
+  }
+
   # Apply lag: shift the instrument so outcome year t merges with shock at t-L.
   inst_use <- inst[, .(lgcode, year, fxshock, mig_intensity, log_mig_intensity, total_migrants)]
+  inst_use[, lgcode := as.integer(lgcode)]
+  inst_use[, year   := as.integer(year)]
   if (lag != 0L) {
     inst_use <- copy(inst_use)
     inst_use[, year := year + as.integer(lag)]   # shock at y becomes the row for outcome year y + L
+  }
+  if (!"lgcode" %in% names(base_data) || !"year" %in% names(base_data)) {
+    stop("base_data for dataset='", dataset, "' is missing required key column(s). ",
+         "Found cols: ", paste(head(names(base_data),20), collapse=", "), " ...")
   }
   panel <- merge(base_data, inst_use, by = c("lgcode","year"))
 
