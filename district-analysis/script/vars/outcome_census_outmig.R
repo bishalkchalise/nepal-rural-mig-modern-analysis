@@ -39,20 +39,25 @@ rm(list = ls()); cat("\14")
 suppressPackageStartupMessages({
   library(tidyverse)
   library(haven)
+  library(readxl)
+  library(janitor)
 })
 
 OUT_DIR <- "district-analysis/data/clean/census"
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 
-# Lookup that maps dist codes (numeric) to dname (current 77-district names)
-census_2011_mapped <- read_csv(
-  "district-analysis/data/clean/census/census_2011_to_dname.csv",
-  show_col_types = FALSE
-)
-# A minimal numeric dcode -> dname lookup at district level (one row per district)
-dcode_lookup <- census_2011_mapped %>%
-  distinct(dcode, dname) %>%
-  filter(!is.na(dname))
+# ---- Build dcode -> dname lookup (same source as outcome_census.R) ----
+vdc_to_lg_map <- read_xlsx("data/raw/old vdc to local level.xlsx") %>%
+  rename(dcode = dist, lgcode = vmun_code)
+
+# District-level lookup: numeric dcode -> dname (current 77-district names)
+dcode_lookup <- vdc_to_lg_map %>%
+  distinct(dcode, dist_name) %>%
+  rename(dname = dist_name) %>%
+  filter(!is.na(dcode), !is.na(dname))
+
+# Sanity: should be 77 (or up to 75 for older boundaries)
+cat(sprintf("dcode_lookup: %d districts\n", nrow(dcode_lookup)))
 
 # ╔══════════════════════════════════════════════════════════════════════════╗
 # ║  COLUMN NAME OVERRIDES — VERIFY LOCALLY                                  ║
