@@ -49,7 +49,11 @@ build_outcomes <- function() {
              "wt_hh","psu","vdc","vmun_code","s00q03a","s00q03b","s00q03c",
              "member_id","fxshock","mig_intensity","log_mig_intensity",
              "total_migrants","fx_z","mig_int_z","log_migint_z")
-  hh_num <- setdiff(names(hh)[sapply(hh, is.numeric)], hh_id)
+  if (is.null(hh) || nrow(hh) == 0) {
+    hh_num <- character(0)
+  } else {
+    hh_num <- setdiff(names(hh)[sapply(hh, is.numeric)], hh_id)
+  }
   list(census = cen_num, hh = hh_num)
 }
 

@@ -256,7 +256,14 @@ load_census <- function() {
 load_hh <- function() {
   if (!is.null(.hh_cache)) return(.hh_cache)
   base_path <- "data/clean/rvs_outcomes"
-  agri <- fread(file.path(base_path, "agriculture_hh_year.csv"))
+  agri_p <- file.path(base_path, "agriculture_hh_year.csv")
+  if (!file.exists(agri_p)) {
+    warning("RVS HH file not found: ", agri_p,
+            "\n  load_hh() returning NULL; HH dataset will be skipped.")
+    .hh_cache <<- NULL
+    return(NULL)
+  }
+  agri <- fread(agri_p)
   setnames(agri, old = intersect("vmun_code", names(agri)), new = "lgcode")
   drop_idents <- c("wt_hh","psu","vdc","lgname","district77","district_name",
                    "s00q03a","s00q03b","s00q03c","district","member_id","vmun_code")
