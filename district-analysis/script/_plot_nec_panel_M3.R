@@ -39,7 +39,10 @@ df <- df %>%
 
 # Two-panel plot, one for industry one for size
 plot_block <- function(d, title) {
-  d <- d %>% arrange(beta) %>% mutate(label = factor(label, levels = label))
+  # Order labels by mean(beta) across scalings (one position per outcome)
+  ord <- d %>% group_by(label) %>% summarise(m = mean(beta, na.rm = TRUE), .groups = "drop") %>%
+    arrange(m) %>% pull(label)
+  d <- d %>% mutate(label = factor(label, levels = ord))
   ggplot(d, aes(x = beta, y = label, color = scaling)) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray60") +
     geom_errorbarh(aes(xmin = ci_lo, xmax = ci_hi),
