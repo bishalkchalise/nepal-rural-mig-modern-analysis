@@ -154,7 +154,8 @@ attach_z <- function(panel) {
   }
   for (L in 0:3) {
     col <- paste0("z_v2_L", L)
-    panel[[paste0(col, "_std")]] <- panel[[col]] / sd(panel[[col]], na.rm = TRUE)
+    m  <- mean(panel[[col]], na.rm = TRUE)
+    panel[[paste0(col, "_std")]] <- (panel[[col]] - m) / sd(panel[[col]], na.rm = TRUE)
   }
   panel
 }
@@ -301,7 +302,8 @@ for (L in 0:3) {
 }
 for (L in 0:3) {
   col <- paste0("z_v2_L", L)
-  cs21[[paste0(col, "_std")]] <- cs21[[col]] / sd(cs21[[col]], na.rm = TRUE)
+  m <- mean(cs21[[col]], na.rm = TRUE)
+  cs21[[paste0(col, "_std")]] <- (cs21[[col]] - m) / sd(cs21[[col]], na.rm = TRUE)
 }
 
 run_cs_ladder <- function(panel, ycol, label, L = 2) {
