@@ -1,0 +1,83 @@
+variable,source,definition
+sp_cash_oldage_rec,14a,1 if HH received Old Age Pension
+sp_cash_oldage_amt,14a s14q04a,Old-age pension annual amount (Rs.)
+sp_cash_widow_rec,14a,1 if HH received Widow Pension
+sp_cash_widow_amt,14a s14q04a,Widow pension annual amount (Rs.)
+sp_cash_disability_rec,14a,1 if HH received Disability Allowance
+sp_cash_disability_amt,14a s14q04a,Disability allowance amount (Rs.)
+sp_cash_child_grant_rec,14a,1 if HH received Child Grant
+sp_cash_child_grant_amt,14a s14q04a,Child grant amount (Rs.)
+sp_cash_endangered_ethnic_rec,14a,1 if HH received Endangered Ethnicities allowance
+sp_cash_endangered_ethnic_amt,14a s14q04a,Endangered-ethnic amount (Rs.)
+sp_cash_maternal_incentive_rec,14a,1 if HH received Maternal Incentive Scheme
+sp_cash_maternal_incentive_amt,14a s14q04a,Maternal incentive amount (Rs.)
+sp_cash_scholarship_rec,14a,1 if HH received govt scholarship (14a)
+sp_cash_scholarship_amt,14a s14q04a,Govt scholarship amount (Rs.)
+sp_cash_eq_relief_gov_rec,14a,1 if HH received earthquake relief (govt)
+sp_cash_eq_relief_gov_amt,14a s14q04a,EQ relief from government (Rs.)
+sp_cash_eq_relief_ngo_rec,14a,1 if HH received earthquake relief (NGO)
+sp_cash_eq_relief_ngo_amt,14a s14q04a,EQ relief from NGO (Rs.)
+sp_cash_emergency_adhoc_gov_rec,14a,1 if HH received emergency ad-hoc (govt)
+sp_cash_emergency_adhoc_gov_amt,14a s14q04a,"Emergency ad-hoc (govt, Rs.)"
+sp_cash_emergency_adhoc_ngo_rec,14a,1 if HH received emergency ad-hoc (NGO)
+sp_cash_emergency_adhoc_ngo_amt,14a s14q04a,"Emergency ad-hoc (NGO, Rs.)"
+sp_cash_health_assistance_rec,14a,1 if HH received catastrophic health assistance
+sp_cash_health_assistance_amt,14a s14q04a,Health assistance amount (Rs.)
+sp_cash_martyr_benefit_rec,14a,1 if HH received Martyr's Family Benefits
+sp_cash_martyr_benefit_amt,14a s14q04a,Martyr benefit amount (Rs.)
+sp_cash_movement_victim_rec,14a,1 if HH received People's Movement Victim Benefits
+sp_cash_movement_victim_amt,14a s14q04a,Movement victim amount (Rs.)
+sp_cash_other_cash_rec,14a,1 if HH received other unclassified public cash
+sp_cash_other_cash_amt,14a s14q04a,Other public cash amount (Rs.)
+sp_cash_any_rec,14a,1 if HH received any public cash transfer
+sp_cash_total_amt,14a,Total public cash transfers (Rs.)
+sp_cash_disaster_rec,derived,1 if any disaster-triggered cash (EQ/emergency ad-hoc)
+sp_cash_disaster_amt,derived,Sum of disaster-triggered cash (Rs.)
+sp_cash_demographic_rec,derived,1 if any demographic cash (pension/widow/disab/child/maternal/ethnic)
+sp_cash_demographic_amt,derived,Sum of demographic cash (Rs.)
+sp_kind_rec,14b s14q11,1 if HH received public in-kind transfer
+sp_kind_amt,14b s14q13a_q+b_q,In-kind cash value (Rs.)
+sp_pw_rec,14c s14q17,1 if HH participated in public works
+sp_pw_days,14c s14q19,Days worked in public works
+sp_pw_earnings,14c,Public works total earnings (Rs.)
+sp_pw_n_programs,14c,Number of public works programs
+gift_rec,13a,1 if HH received private gift
+gift_cash_amt,13a s13q07a,Private gift cash (Rs.)
+gift_inkind_amt,13a s13q07b,Private gift in-kind value (Rs.)
+gift_total_amt,13a derived,Total private gifts (Rs.)
+gift_n_episodes,13a,Number of gift episodes
+ngo_rec,13c,1 if HH received NGO assistance
+ngo_cash_amt,13c s13q19a,NGO cash amount (Rs.)
+ngo_inkind_amt,13c s13q19c,NGO in-kind (Rs.)
+ngo_total_amt,13c derived,Total NGO assistance (Rs.)
+remit_rec,13d s13q22,1 if HH received remittance
+remit_inkind_rec,13d s13q24a,1 if HH received in-kind remittance
+remit_amt,13d s13q23,Remittance amount summed per HH-year (Rs.)
+any_public_support,derived,"1 if any of {14a, 14b, 14c} received"
+any_private_support,derived,"1 if any of {13a gift, 13c NGO} received"
+any_remittance,derived,1 if HH received remittance (13d)
+any_support,derived,1 if any support of any kind received
+any_shock,15a,1 if HH experienced any shock in 12m
+n_shocks,15a,Number of shocks experienced
+total_loss_rs,15a s15q03,Sum of shock loss values (Rs.)
+cope_private_transfer,15a s15q06,1 if coped via community/family support for any shock
+cope_sell_assets,15a s15q07a,1 if coped by selling assets
+cope_savings,15a s15q08a,1 if coped via savings/reduced consumption
+cope_borrow,15a s15q09a,1 if coped by borrowing
+cope_gov_transfer,15a s15q10a,1 if coped via gov/NGO assistance
+cope_remittance,15a s15q11a,1 if coped via migration/remittance
+cope_other_mech,15a s15q12a,1 if coped via other mechanism
+primary_savings,15a s15q13a/b,'savings' named as primary/secondary
+primary_borrow,15a s15q13a/b,'borrow' named as primary/secondary
+primary_sell_assets,15a s15q13a/b,'sell assets' named as primary/secondary
+primary_gov_transfer,15a s15q13a/b,'gov transfer' named as primary/secondary
+primary_private_transfer,15a s15q13a/b,'private transfer' named as primary/secondary
+primary_remittance,15a s15q13a/b,'remittance/migration' named as primary/secondary
+primary_none,15a s15q13a/b,'none' named for all shocks
+shock_type_illness,15a shockid,1 if illness/injury shock
+shock_type_death,15a shockid,1 if death in family
+shock_type_natural_disaster,15a shockid,1 if earthquake/flood/landslide/fire/hail
+shock_type_agricultural,15a shockid,1 if drought/pest/livestock/harvest loss
+shock_type_economic_price,15a shockid,1 if price/fuel/blockage shock
+shock_type_economic_job,15a shockid,1 if job loss/bankruptcy/displacement
+shock_type_other_shock,15a shockid,1 if other shock type

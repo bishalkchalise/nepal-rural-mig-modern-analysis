@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robustness — Nepal SSIV</title>
+<link rel="stylesheet" href="style.css">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+<style>
+  /* No page-local custom styles needed — uses shared style.css fully. */
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <h2>Pages</h2>
+  <ul>
+    <li><a href="index.html">Intro</a></li>
+    <li><a href="explorer.html">Results</a></li>
+    <li><a href="visualizations.html">Visualizations</a></li>
+    <li><a href="robustness.html" class="active">Robustness</a>
+      <ul class="subnav">
+        <li><a href="#" id="nav-dataset">Active dataset</a></li>
+        <li><a href="#" id="nav-group">Active group</a></li>
+      </ul>
+    </li>
+    <li><a href="test.html">Test (Family A)</a></li>
+    <li><a href="test_b.html">Test B (Family B)</a></li>
+    <li><a href="definitions.html">Variable definitions</a></li>
+    <li><a href="summary.html">Summary statistics</a></li>
+    <li><a href="methods.html">Method</a></li>
+    <li><a href="presentation.html" target="_blank" rel="noopener">Presentation ↗</a></li>
+  </ul>
+</nav>
+
+<main class="content-wide">
+
+<header class="page-header">
+  <h1>Robustness</h1>
+  <div class="sub">
+    Same stargazer layout as <a href="explorer.html">Results</a>: rows are
+    outcomes, columns are specifications. The baseline column is the
+    headline spec; the other columns vary one design choice at a time —
+    <strong>treatment lag</strong> and <strong>scale form</strong> of the
+    share term that appears in both the treatment and the
+    <code>year × mig_int</code> control.
+  </div>
+</header>
+
+<div class="controls">
+  <div class="ctrl">
+    <label for="dataset">Dataset</label>
+    <select id="dataset"></select>
+    <div class="desc" id="dataset-desc"></div>
+  </div>
+  <div class="ctrl">
+    <label for="threshold">Sample threshold</label>
+    <select id="threshold"></select>
+    <div class="desc" id="threshold-desc"></div>
+  </div>
+  <div class="ctrl">
+    <label for="group">Outcome group</label>
+    <select id="group"></select>
+    <div class="desc" id="group-desc"></div>
+  </div>
+  <div class="ctrl">
+    <label for="lag">Treatment lag</label>
+    <select id="lag">
+      <option value="all" selected>All lags</option>
+      <option value="0">0 (contemporaneous)</option>
+      <option value="1">1 year</option>
+      <option value="2">2 years</option>
+      <option value="3">3 years</option>
+      <option value="4">4 years</option>
+      <option value="5">5 years</option>
+      <option value="10">10 years</option>
+    </select>
+    <div class="desc">Filters lag dimension of the FX shifter in the treatment.</div>
+  </div>
+  <div class="ctrl">
+    <label for="scale">Scale form (treatment / c_mig)</label>
+    <select id="scale">
+      <option value="all" selected>All scales</option>
+      <option value="log/lin">log / lin — baseline mix</option>
+      <option value="log/log">log / log — both log</option>
+      <option value="lin/lin">lin / lin — both linear</option>
+    </select>
+    <div class="desc">Functional form of mig_int inside treatment vs c_mig.</div>
+  </div>
+  <div class="ctrl">
+    <label for="display">Display</label>
+    <select id="display">
+      <option value="raw" selected>β (raw)</option>
+      <option value="pp">β as pp (×100)</option>
+      <option value="pct_mean">β as % of mean</option>
+      <option value="pct_sd">β as % of SD</option>
+    </select>
+    <div class="desc">All RHS treatments z-scored on the working sample.</div>
+  </div>
+</div>
+
+<div class="meta" id="meta"></div>
+
+<div id="table-wrap">
+  <table id="results" class="results">
+    <thead><tr id="thead-row"></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div class="table-note" id="table-note"></div>
+
+</main>
+</div>
+
+<footer>
+  Generated from <code>output/tab/robustness_final.csv</code> by
+  <code>script/robustness_final.R</code> and
+  <code>script/build_robustness_json.py</code>.
+</footer>
+
+<script>
+const FAMILY = "robustness";
+let DATA = null;
+
+// Lag and scale dropdowns drive which specs render as columns.
+// Empty string == "all" (no filter).
+function selectedLag(){
+  const v = document.getElementById("lag").value;
+  return v === "all" ? null : parseInt(v);
+}
+function selectedScale(){
+  const v = document.getElementById("scale").value;
+  return v === "all" ? null : v;
+}
+
+// ----- explorer.html formatters, unchanged -----
+function fmtCoef(b, p, digits=4){
+  if (b == null || isNaN(b)) return "";
+  const sign = b >= 0 ? "+" : "";
+  const stars = p == null ? "" : (p<0.01?"***":(p<0.05?"**":(p<0.1?"*":"")));
+  const cls = (p == null || p>=0.1) ? "nsig" : (b>=0?"pos":"neg");
+  return `<span class="${cls}">${sign}${b.toFixed(digits)}</span><span class="stars">${stars}</span>`;
+}
+function fmtSE(se, digits=4){
+  if (se == null || isNaN(se)) return "";
+  return `<span class="se">(${se.toFixed(digits)})</span>`;
+}
+function fmtMean(m){
+  if (m == null || isNaN(m)) return "";
+  const a = Math.abs(m);
+  if (a >= 1e6)  return (m/1e6).toFixed(2)+"M";
+  if (a >= 1e5)  return (m/1e3).toFixed(1)+"k";
+  if (a >= 1e3)  return Math.round(m).toLocaleString();
+  if (a >= 100)  return (+m.toFixed(1)).toString();
+  if (a >= 1)    return m.toFixed(2);
+  if (a >= 0.01) return m.toFixed(3);
+  if (a === 0)   return "0";
+  return m.toPrecision(3);
+}
+function ds(){ return DATA.datasets[document.getElementById("dataset").value]; }
+function unitName(){
+  const k = document.getElementById("dataset").value;
+  return ({census:"muni", hh:"HH", nec_panel:"muni", nec_cs:"muni"})[k] || "unit";
+}
+function transformBeta(est, mode){
+  if (mode === "pp")        return [est.beta * 100, est.se * 100, 2];
+  if (mode === "pct_mean")  return est.mean_y ? [(est.beta/est.mean_y)*100, (est.se/Math.abs(est.mean_y))*100, 1] : [null, null, 1];
+  if (mode === "pct_sd")    return est.sd_y   ? [(est.beta/est.sd_y)*100,   (est.se/Math.abs(est.sd_y))*100,   1] : [null, null, 1];
+  return [est.beta, est.se, 4];
+}
+
+// ----- Which specs render as columns -----
+function activeSpecs(){
+  const meta  = DATA.spec_meta || {};
+  const lagF  = selectedLag();   // null = no filter
+  const scF   = selectedScale(); // null = no filter
+  const all   = Object.keys(DATA.families[FAMILY].specs);
+  return all.filter(s => {
+    const m = meta[s];
+    if (!m) return true;
+    const scaleKey = `${m.treatment_form}/${m.c_mig_form}`;
+    if (lagF !== null && m.lag !== lagF) return false;
+    if (scF  !== null && scaleKey !== scF) return false;
+    return true;
+  });
+}
+
+function rowFor(yKey, ests, displayMode, specOrder){
+  const D = ds();
+  const meta = D.outcomes[yKey] || {};
+  const label = meta.label || yKey;
+  const cell = `<td><span class="outcome-cell"><a href="definitions.html#${yKey}">${label}</a></span><br><code style="font-size:11px;color:var(--muted)">${yKey}</code></td>`;
+
+  // mean(y) — pull from any successful spec
+  const sample = specOrder.map(s => ests[s]).find(e => e && !e.err && e.beta != null) || {};
+  const meanCell = `<td>${fmtMean(sample.mean_y)}</td>`;
+  const nCell = `<td>${sample.n ? sample.n.toLocaleString() : ""}</td>`;
+  const nUnitVal = sample.n_unit ?? sample.n_muni;
+  const nUnitCell = `<td>${nUnitVal ? nUnitVal.toLocaleString() : ""}</td>`;
+
+  const specCells = specOrder.map(s => {
+    const e = ests[s];
+    if (!e)               return `<td><span class="se">—</span></td>`;
+    if (e.err)            return `<td><span class="se" title="${e.err}">err</span></td>`;
+    if (e.beta == null)   return `<td><span class="se">—</span></td>`;
+    const [b, se, dig] = transformBeta(e, displayMode);
+    if (b == null)        return `<td><span class="se">—</span></td>`;
+    return `<td>${fmtCoef(b, e.pval, dig)}<br>${fmtSE(se, dig)}</td>`;
+  }).join("");
+
+  return `<tr>${cell}${meanCell}${specCells}${nCell}${nUnitCell}</tr>`;
+}
+
+function renderNote(){
+  const D = ds();
+  const dsKey = document.getElementById("dataset").value;
+  const thr   = document.getElementById("threshold").value;
+  const grp   = document.getElementById("group").value;
+  const fe = ({census:"lgcode + year", hh:"hhid + year",
+               nec_panel:"lgcode + year", nec_cs:"district (cs)"})[dsKey] || "entity + year";
+  return `
+    <strong>Reading.</strong> ${D.label}. Each cell reports the treatment
+    coefficient β under one of the nine robustness specifications.
+    All specs share the same regression form with
+    <em>year × fx_z</em>, Block A × year, entity FE (${fe}), and year FE;
+    they differ only in (i) whether the FX shifter inside the treatment
+    is lagged and (ii) whether the share enters in log or linear form
+    inside the treatment and the <em>year × mig_int_z</em> control.
+    Sample: <strong>${DATA.thresholds[thr]}</strong>. SE clustered at
+    municipality (district for NEC cs).
+    Significance: *** p&lt;0.01, ** p&lt;0.05, * p&lt;0.10.
+    Click an outcome name for its long definition.
+  `;
+}
+
+function render(){
+  const D = ds();
+  if (!D) return;
+  const thr  = document.getElementById("threshold").value;
+  const grp  = document.getElementById("group").value;
+  const disp = document.getElementById("display").value;
+
+  const specOrder = activeSpecs();
+
+  document.getElementById("dataset-desc").textContent   = D.label;
+  document.getElementById("threshold-desc").textContent = DATA.thresholds[thr];
+  document.getElementById("group-desc").textContent     = grp;
+
+  document.getElementById("nav-dataset").textContent = "Dataset: " + (D.label || "—");
+  document.getElementById("nav-group").textContent   = "Group: "   + grp;
+
+  const famSpecs = DATA.families[FAMILY].specs;
+  const specMeta = DATA.spec_meta || {};
+  const specHeaders = specOrder.map(s => {
+    const m = specMeta[s] || {};
+    const sub = `lag ${m.lag||0} · ${m.treatment_form||"?"}/${m.c_mig_form||"?"}`;
+    return `<th>${s}<br><span class="se" style="font-weight:400">${sub}</span></th>`;
+  }).join("");
+
+  document.getElementById("thead-row").innerHTML = `
+    <th style="text-align:left">Outcome</th>
+    <th>mean(y)</th>
+    ${specHeaders}
+    <th>N total</th>
+    <th>N ${unitName()}</th>`;
+
+  const allYs = Object.keys(D.outcomes).filter(y => D.outcomes[y].group === grp);
+  document.getElementById("tbody").innerHTML =
+    allYs.map(y => {
+      const ests = {};
+      for (const s of specOrder) {
+        const e = (D.estimates?.[thr]?.[FAMILY]?.[s] || {})[y];
+        if (e) ests[s] = e;
+      }
+      return rowFor(y, ests, disp, specOrder);
+    }).join("") ||
+    `<tr><td colspan="${4 + specOrder.length}" class="se" style="text-align:center;padding:20px">No outcomes in this group.</td></tr>`;
+
+  // meta line summarising the model
+  const entitySym = ({census:"\\alpha_m", hh:"\\alpha_i", nec_panel:"\\alpha_m", nec_cs:"\\delta_d"})
+                    [document.getElementById("dataset").value] || "\\alpha_i";
+  const entityWord = ({census:"municipality", hh:"household",
+                       nec_panel:"municipality", nec_cs:"district"})
+                    [document.getElementById("dataset").value] || "entity";
+  document.getElementById("meta").innerHTML = `
+    <div style="background:var(--panel);border:1px solid var(--rule);
+                border-radius:3px;padding:1rem 1.2rem;margin-bottom:1rem;
+                font-family:var(--serif);font-size:14px;line-height:1.55">
+      <div style="font-family:var(--sans);font-size:11px;text-transform:uppercase;
+                  letter-spacing:.06em;color:var(--muted);font-weight:600;
+                  margin-bottom:.6rem">
+        Robustness specification — what each column changes
+      </div>
+      <div style="text-align:center;margin:0.4rem 0">
+        \\[ y_{it} \\;=\\; \\underbrace{\\beta\\bigl[\\mathrm{fx}_z(\\text{lag}) \\cdot \\phi(\\mathrm{mig\\_int}_z)\\bigr]}_{\\text{varies across columns}}
+        \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_1'\\bigl(\\psi(\\mathrm{mig\\_int}_z)\\,\\boldsymbol{\\tau}_t\\bigr)}_{\\text{c_mig: scale also varies}}
+        \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_2'\\bigl(\\mathrm{fx}_z\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_{\\text{fx}}}
+        \\;+\\; \\underbrace{\\boldsymbol{\\delta}'\\bigl(\\mathbf{X}_{m(i),0}\\,\\boldsymbol{\\tau}_t\\bigr)}_{\\text{Block A}}
+        \\;+\\; ${entitySym} \\;+\\; \\gamma_t \\;+\\; \\varepsilon_{it} \\]
+      </div>
+      <div style="font-family:var(--sans);font-size:12px;color:var(--muted);
+                  margin-top:.4rem;line-height:1.6">
+        ${entitySym} = ${entityWord} fixed effect; $\\gamma_t$ = year FE.
+        $\\phi$ and $\\psi$ are the scale functions applied to mig_int_z
+        (log or linear); the FX shifter can be lagged by 0–10 years.
+        S0_baseline uses log inside treatment and linear inside c_mig
+        (the literature-standard mixed form). See the
+        <a href="explorer.html">Results page</a> for the saturated A4
+        specification by family.
+      </div>
+    </div>
+  `;
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([document.getElementById("meta")]).catch(()=>{});
+  }
+  document.getElementById("table-note").innerHTML = renderNote();
+}
+
+function fillSelect(id, items){
+  document.getElementById(id).innerHTML =
+    items.map(([v, lab]) => `<option value="${v}">${lab}</option>`).join("");
+}
+function repopulateForDataset(){
+  const D = ds();
+  fillSelect("group", D.groups.map(g => [g, g]));
+}
+
+async function init(){
+  try {
+    const v = Date.now();
+    const r = await fetch(`robustness.json?v=${v}`, {cache:"no-store"});
+    if (!r.ok) throw new Error("robustness.json: HTTP " + r.status);
+    DATA = await r.json();
+  } catch (e) {
+    document.getElementById("table-wrap").innerHTML =
+      `<div class="err">Failed to load robustness.json: ${e.message}<br>` +
+      `Run <code>python3 script/build_robustness_json.py</code> after refreshing the CSV.</div>`;
+    return;
+  }
+
+  fillSelect("dataset",
+    Object.entries(DATA.datasets_meta).map(([k,v]) => [k, v.label]));
+  fillSelect("threshold",
+    Object.entries(DATA.thresholds).map(([k,v]) => [k, v]));
+
+  // default threshold = 25 if present
+  if (document.querySelector('#threshold option[value="25"]')) {
+    document.getElementById("threshold").value = "25";
+  }
+
+  // honour hash params
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const dsv = hash.get("ds");
+  if (dsv && DATA.datasets[dsv]) document.getElementById("dataset").value = dsv;
+
+  repopulateForDataset();
+
+  for (const [k, elId] of Object.entries({thr:"threshold", grp:"group", disp:"display"})){
+    const v = hash.get(k);
+    if (v && document.querySelector(`#${elId} option[value="${CSS.escape(v)}"]`)){
+      document.getElementById(elId).value = v;
+    }
+  }
+
+  document.getElementById("dataset").addEventListener("change", () => {
+    repopulateForDataset();
+    render();
+  });
+  for (const id of ["threshold","group","display","lag","scale"]){
+    document.getElementById(id).addEventListener("change", render);
+  }
+
+  render();
+}
+
+init();
+</script>
+</body>
+</html>

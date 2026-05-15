@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Variable definitions — Nepal SSIV</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <h2>Pages</h2>
+  <ul>
+    <li><a href="index.html">Intro</a></li>
+    <li><a href="explorer.html">Results</a></li>
+    <li><a href="test.html">Test (Family A)</a></li>
+    <li><a href="test_b.html">Test B (Family B)</a></li>
+    <li><a href="definitions.html" class="active">Variable definitions</a>
+      <ul class="subnav">
+        <li><a href="#ds-census">Census (2001/11/21)</a></li>
+        <li><a href="#ds-hh">Household (2016–18)</a></li>
+        <li><a href="#ds-nec_panel">NEC firm entry panel</a></li>
+        <li><a href="#ds-nec_cs">NEC firms (2018)</a></li>
+      </ul>
+    </li>
+    <li><a href="summary.html">Summary statistics</a></li>
+    <li><a href="methods.html">Method</a></li>
+  </ul>
+</nav>
+
+<main class="content-wide">
+
+<header class="page-header">
+  <h1>Variable definitions</h1>
+  <div class="sub">
+    Long-form definitions for every outcome variable used in the four
+    datasets. Variables are grouped by dataset, then by outcome family.
+  </div>
+</header>
+
+<div id="dsroot"></div>
+
+</main>
+</div>
+
+<footer>
+  Codebook: <code>data/clean/census/outcomes_census_codebook.csv</code> +
+  <code>data/clean/rvs_outcomes/agriculture_codebook.csv</code>.
+</footer>
+
+<script>
+const DATASETS = [
+  {key:"census",    label:"Census panel — Population &amp; Housing"},
+  {key:"hh",        label:"HRVS HH × year (all domains)"},
+  {key:"nec_panel", label:"NEC firm entry — muni × founding-year"},
+  {key:"nec_cs",    label:"NEC 2018 — firm cross-section"},
+];
+
+async function init(){
+  let META;
+  try {
+    const r = await fetch(`meta.json?v=${Date.now()}`,{cache:"no-store"});
+    META = await r.json();
+  } catch (e) {
+    document.getElementById("dsroot").innerHTML =
+      `<div class="err">Failed to load meta.json: ${e.message}</div>`;
+    return;
+  }
+
+  // Bucket: dataset → group → [{k, def}]
+  const buckets = {};
+  for (const [k, def] of Object.entries(META.definitions)){
+    const ds = (META.summary[k] || {}).dataset || "census";
+    buckets[ds] = buckets[ds] || {};
+    buckets[ds][def.group] = buckets[ds][def.group] || [];
+    buckets[ds][def.group].push([k, def]);
+  }
+
+  const root = document.getElementById("dsroot");
+  let html = "";
+  for (const ds of DATASETS){
+    const grouped = buckets[ds.key] || {};
+    if (!Object.keys(grouped).length) continue;
+    html += `<h2 id="ds-${ds.key}">${ds.label}</h2>`;
+    html += `<table class="var-table">
+              <thead>
+                <tr>
+                  <th style="text-align:left;width:30%">Variable / label</th>
+                  <th style="text-align:left">Definition</th>
+                  <th style="text-align:left;width:20%">Universe</th>
+                </tr>
+              </thead><tbody>`;
+    const orderedGroups = Object.keys(grouped).sort();
+    for (const g of orderedGroups){
+      html += `<tr class="group-header"><td colspan="3">${g}</td></tr>`;
+      for (const [k, v] of grouped[g]){
+        html += `<tr id="${k}">
+                   <td><strong>${v.label}</strong><br><code>${k}</code></td>
+                   <td>${v.long || v.short}</td>
+                   <td>${v.universe || '<span class="nsig">—</span>'}</td>
+                 </tr>`;
+      }
+    }
+    html += `</tbody></table>`;
+  }
+  root.innerHTML = html;
+
+  if (location.hash){
+    setTimeout(() => {
+      const el = document.querySelector(location.hash);
+      if (el) el.scrollIntoView({behavior:"smooth", block:"center"});
+    }, 100);
+  }
+}
+init();
+</script>
+</body>
+</html>

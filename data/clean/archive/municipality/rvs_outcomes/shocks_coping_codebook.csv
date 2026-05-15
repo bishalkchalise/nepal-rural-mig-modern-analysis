@@ -1,0 +1,27 @@
+variable,definition
+any_shock,Always 1 in this file; file is restricted to HH-years with shocks.
+n_shocks,Number of shocks experienced by HH in year.
+total_loss_rs,Total reported monetary loss from all shocks.
+mean_loss_per_shock_rs,Average loss per shock.
+health_shock_any,1 if HH experienced illness or injury shock.
+death_shock_any,1 if HH experienced death-related shock.
+natural_disaster_shock_any,"1 if HH experienced earthquake, flood, landslide, fire, hail, or lightning shock."
+agricultural_shock_any,"1 if HH experienced drought, pest, livestock, or harvest shock."
+economic_shock_any,"1 if HH experienced price, fuel, job, bankruptcy, contract, default, or displacement shock."
+other_shock_any,1 if HH experienced other shock.
+any_coping_reported,1 if HH reported any coping response.
+cope_self_insurance_any,1 if HH used savings/reduced consumption or sold assets.
+cope_credit_or_asset_any,1 if HH borrowed or sold assets.
+cope_external_support_any,"1 if HH used family/community, public/NGO aid, or migration/remittance."
+cope_savings_any,1 if HH used savings or reduced consumption.
+cope_borrow_any,1 if HH borrowed.
+cope_sell_assets_any,1 if HH sold assets.
+cope_family_community_any,1 if HH used family/community help.
+cope_public_private_aid_any,"1 if HH used government, NGO, or aid support."
+cope_migration_remittance_any,1 if HH used migration or remittance to cope.
+main_coping_savings_consumption,1 if savings/reduced consumption was listed as primary or secondary coping.
+main_coping_borrow,1 if borrowing was listed as primary or secondary coping.
+main_coping_sell_assets,1 if selling assets was listed as primary or secondary coping.
+main_coping_external_support,1 if external support was listed as primary or secondary coping.
+severe_loss_any,1 if total shock loss is above median among shocked HH-years.
+multiple_shocks,1 if HH experienced two or more shocks.

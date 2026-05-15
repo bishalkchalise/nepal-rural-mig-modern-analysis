@@ -1,0 +1,401 @@
+dataset,variable,group,label,keep
+census,absent_hh_share,Migrants & migration,Share of HH with migrant member,Y
+census,hh_death_12m,Migrants & migration,HH with death in last 12m,N
+census,mig_in_share,Migrants & migration,In-migrant share (population),Y
+census,mig_in_domestic,Migrants & migration,In-migrants from within Nepal,Y
+census,mig_in_international,Migrants & migration,In-migrants from abroad,Y
+census,mig_in_from_rural,Migrants & migration,In-migrants from rural Nepal,Y
+census,mig_in_from_urban,Migrants & migration,In-migrants from urban Nepal,Y
+census,mig_in_reason_economic,Migrants & migration,In-mig: economic reason,Y
+census,mig_in_reason_marriage,Migrants & migration,In-mig: marriage reason,Y
+census,mig_in_reason_study,Migrants & migration,In-mig: study reason,Y
+census,mig_in_reason_noneconomic,Migrants & migration,In-mig: non-economic reason,Y
+census,mlfp_all,Labour force,Male LFP (all),Y
+census,mlfp_agri,Labour force,Male LFP in agriculture,Y
+census,mlfp_nonagri,Labour force,Male LFP in non-agriculture,Y
+census,flfp_all,Labour force,Female LFP (all),Y
+census,flfp_agri,Labour force,Female LFP in agriculture,Y
+census,flfp_nonagri,Labour force,Female LFP in non-agriculture,Y
+census,flfp_wage,Labour force,Female wage-LFP,Y
+census,flfp_chores_only,Labour force,Female: chores only,Y
+census,fem_employment_rate,Labour force,Female employment rate,Y
+census,gap_lfp_m_minus_f,Labour force,Gender gap in LFP (M − F),Y
+census,gap_nonagri_m_minus_f,Labour force,Gender gap in non-ag (M − F),N
+census,work_lfp,Labour force,Working population LFP,N
+census,ind_agri_forestry_fish,Industry (sector),"Agriculture, forestry, fishing",Y
+census,ind_manufacturing,Industry (sector),Manufacturing,Y
+census,ind_construction,Industry (sector),Construction,Y
+census,ind_wholesale_retail,Industry (sector),Wholesale & retail trade,Y
+census,ind_transport_accommodation,Industry (sector),Transport & accommodation,Y
+census,ind_finance_real_estate_prof,Industry (sector),Finance / real estate / prof,Y
+census,ind_public_admin_defence,Industry (sector),Public admin & defence,Y
+census,ind_education,Industry (sector),Education sector,Y
+census,ind_health,Industry (sector),Health sector,Y
+census,ind_arts_recreation,Industry (sector),Arts & recreation,Y
+census,ind_others,Industry (sector),Other industries,Y
+census,occ_share_managers,Occupation,Managers,Y
+census,occ_share_professionals,Occupation,Professionals,Y
+census,occ_share_technicians,Occupation,Technicians,Y
+census,occ_share_office_assistants,Occupation,Office assistants,Y
+census,occ_share_service_sales,Occupation,Service & sales,Y
+census,occ_share_agriculture,Occupation,Agricultural occupations,Y
+census,occ_share_craft_trades,Occupation,Craft & trades,Y
+census,occ_share_machine_operators,Occupation,Machine operators,Y
+census,occ_share_elementary,Occupation,Elementary,Y
+census,occ_share_armed_forces,Occupation,Armed forces,Y
+census,work_share_agriculture,Work activity,Working in agriculture,Y
+census,work_share_nonagriculture,Work activity,Working in non-agriculture,Y
+census,work_share_wage_nonagri,Work activity,"Wage employment, non-ag",Y
+census,work_share_own_nonagri,Work activity,"Self-employed, non-ag",Y
+census,work_share_student,Work activity,Studying,Y
+census,work_share_household_chores,Work activity,Household chores only,Y
+census,work_share_job_seeking,Work activity,Job-seeking,Y
+census,work_share_no_work,Work activity,Not working,Y
+census,emp_share_employee,Work activity,Employed for wages,Y
+census,emp_share_employer,Work activity,Self: employer,Y
+census,emp_share_self_employed,Work activity,Self: own-account,Y
+census,emp_share_unpaid_family_worker,Work activity,Unpaid family worker,Y
+census,mar_ever_married_15_60,Marriage,Ever married (15–60),Y
+census,mar_never_married_15_60,Marriage,Never married (15–60),Y
+census,mar_female_age_first_mean,Marriage,Female age at first marriage,Y
+census,mar_female_married_by_18,Marriage,Female married by 18,Y
+census,mar_female_married_by_20,Marriage,Female married by 20,Y
+census,fert_birth_mean,Fertility,Total births per woman,N
+census,fert_birth_son_mean,Fertility,Sons born per woman,N
+census,fert_birth_dau_mean,Fertility,Daughters born per woman,N
+census,fert_births_last12m_rate,Fertility,Births in last 12m (rate),N
+census,fert_births_last12m_share,Fertility,Births in last 12m (share),N
+census,mort_child_dead_any,Child mortality,Any child death,N
+census,mort_child_death_ratio,Child mortality,Child deaths per woman (ratio),N
+census,mort_children_dead_mean,Child mortality,Mean children dead,N
+census,edu_literate,Education,Literacy rate,Y
+census,edu_literate_female,Education,Female literacy,Y
+census,edu_literate_male,Education,Male literacy,Y
+census,edu_school_attend_6_16,Education,School attendance 6–16,Y
+census,edu_school_attend_6_16_female,Education,Female attendance 6–16,Y
+census,edu_school_attend_6_16_male,Education,Male attendance 6–16,Y
+census,edu_years_mean,Education,Mean years of schooling,N
+census,edu_attain_primary_plus,Education,Attained primary+,N
+census,edu_attain_secondary_plus,Education,Attained secondary+,N
+census,edu_attain_higher_secondary_plus,Education,Attained higher-secondary+,N
+census,edu_attain_tertiary,Education,Attained tertiary,N
+census,housing_own,Housing,Own dwelling,Y
+census,housing_rented,Housing,Rented dwelling,Y
+census,housing_foundation_modern,Housing,Modern foundation,Y
+census,housing_foundation_traditional,Housing,Traditional foundation,Y
+census,housing_roof_modern,Housing,Modern roof,Y
+census,housing_roof_traditional,Housing,Traditional roof,Y
+census,amen_cooking_modern,Amenities,Modern cooking fuel,Y
+census,amen_cooking_traditional,Amenities,Traditional cooking fuel,Y
+census,amen_cooking_lpg,Amenities,Cooks with LPG,Y
+census,amen_cooking_electric,Amenities,Cooks with electricity,Y
+census,amen_cooking_biogas,Amenities,Cooks with biogas,Y
+census,amen_cooking_wood,Amenities,Cooks with wood,Y
+census,amen_cooking_kerosene,Amenities,Cooks with kerosene,Y
+census,amen_lighting_electricity,Amenities,Electricity for lighting,Y
+census,amen_lighting_kerosene,Amenities,Kerosene lighting,Y
+census,amen_lighting_biogas,Amenities,Biogas lighting,Y
+census,amen_lighting_others,Amenities,Other lighting,Y
+census,amen_water_piped,Amenities,Piped water,Y
+census,amen_water_traditional,Amenities,Traditional water source,Y
+census,amen_toilet_any,Amenities,Any toilet,Y
+census,amen_toilet_modern,Amenities,Modern toilet,Y
+census,amen_toilet_ordinary,Amenities,Ordinary toilet,Y
+census,amen_toilet_none,Amenities,No toilet,Y
+census,amen_asset_count_mean,Assets (durables),Durables per HH (count),Y
+census,amen_assets_mobile,Assets (durables),Owns mobile,Y
+census,amen_assets_radio,Assets (durables),Owns radio,Y
+census,amen_assets_tv,Assets (durables),Owns TV,Y
+census,amen_assets_fridge,Assets (durables),Owns fridge,Y
+census,amen_assets_computer,Assets (durables),Owns computer,Y
+census,amen_assets_internet,Assets (durables),Has internet,Y
+census,amen_assets_landline,Assets (durables),Has landline,Y
+census,amen_assets_cycle,Assets (durables),Owns bicycle,Y
+census,amen_assets_motorcycle,Assets (durables),Owns motorcycle,Y
+census,amen_assets_car,Assets (durables),Owns car,Y
+census,amen_assets_none,Assets (durables),No durables,N
+census,fem_ownership_house,Female autonomy,Female owns house,N
+census,fem_ownership_land,Female autonomy,Female owns land,N
+census,fem_ownership_both,Female autonomy,Female owns house + land,N
+census,fem_share_of_ag_workers,Female autonomy,Female share of ag workers,N
+census,fem_wage_share_of_employment,Female autonomy,Female share of wage emp,N
+census,fem_ag_specialization_ratio,Female autonomy,Female ag-specialisation ratio,N
+census,head_female_share,HH demographics,Female-headed HH,N
+census,head_age_mean,HH demographics,Mean head age,N
+census,head_elderly_share,HH demographics,Elderly head,N
+census,head_young_share,HH demographics,Young head,N
+census,head_female_elderly,HH demographics,Female elderly head,N
+census,share_men,HH demographics,Male population share,N
+census,share_women,HH demographics,Female population share,N
+census,left_father_only,Left-behind children,Left with father only,N
+census,left_mother_only,Left-behind children,Left with mother only,N
+census,left_with_relatives,Left-behind children,Left with relatives,N
+census,left_not_with_both,Left-behind children,Not with both parents,N
+census,left_without_parents,Left-behind children,Without parents,N
+census,ent_has_nonagro,HH enterprise,Has non-ag enterprise,N
+census,ent_cottage,HH enterprise,Cottage industry,N
+census,ent_trade,HH enterprise,Trade enterprise,N
+census,ent_services,HH enterprise,Services enterprise,N
+census,ent_transport,HH enterprise,Transport enterprise,N
+census,ent_other,HH enterprise,Other enterprise,N
+hh,has_migrant_international,Migrants & remittances,HH with int'l migrant,Y
+hh,has_migrant_internal,Migrants,HH with internal migrant,N
+hh,has_only_international,Migrants,Only international migrants,N
+hh,has_only_internal,Migrants,Only internal migrants,N
+hh,has_both_internal_and_international,Migrants,Both internal + international,N
+hh,n_migrants_total,Migrants,Total migrants per HH,N
+hh,n_migrants_international,Migrants,Int'l migrants per HH,N
+hh,n_migrants_internal,Migrants,Internal migrants per HH,N
+hh,n_migrants_male,Migrants,Male migrants per HH,N
+hh,n_migrants_female,Migrants,Female migrants per HH,N
+hh,log_n_migrants_total,Migrants,log(# migrants total),N
+hh,log_n_migrants_international,Migrants & remittances,log(# int'l migrants),Y
+hh,log_n_migrants_male,Migrants,log(# male migrants),N
+hh,log_n_migrants_female,Migrants,log(# female migrants),N
+hh,share_long_term_migrants,Migrants,Share long-term migrants,N
+hh,share_male_migrants,Migrants,Share male migrants,N
+hh,intl_migration_share,Migrants,Share of intl in migrants,N
+hh,remit_amount_intl_12m_rs,Migrants & remittances,"Intl remit, Rs (12m)",Y
+hh,remit_amount_12m_rs,Remittances,"Total remit, Rs (12m)",N
+hh,log_remit_amount_intl_12m_rs,Migrants & remittances,"log(intl remit, Rs)",Y
+hh,log_remit_amount_12m_rs,Remittances,"log(total remit, Rs)",N
+hh,remittance_amt,Remittances,Remittance amount (alt),N
+hh,remittance_any,Remittances,Receives any remittance,N
+hh,log_remittance_amt,Remittances,log(remittance amt),N
+hh,remit_received,Migrants & remittances,Any remittance received,Y
+hh,remit_per_international_migrant,Remittances,Remit per intl migrant,N
+hh,remit_per_migrant,Remittances,Remit per migrant,N
+hh,share_migrants_sending,Remittances,Share of migrants sending,N
+hh,mig_cost_12m_rs,Migrants & remittances,"Mig cost (12m, Rs)",Y
+hh,mig_cost_financed_by_loan_any,Migration costs,Loan-financed cost,N
+hh,cost_per_migrant,Migrants & remittances,Cost per migrant (Rs),Y
+hh,cost_to_monthly_earning_ratio,Migration costs,Cost/earnings ratio,N
+hh,migrant_monthly_earning_total_rs,Migration costs,Migrant monthly earnings,N
+hh,remit_use_consumption_any,Remittance use,Used for consumption,N
+hh,remit_use_human_capital_any,Remittance use,Used for human capital,N
+hh,remit_use_business_investment_any,Remittance use,Used for business inv.,N
+hh,remit_use_land_housing_any,Remittance use,Used for land / housing,N
+hh,remit_use_investment_any_hh,Remittance use,Used for any investment,N
+hh,remit_use_debt_any,Remittance use,Used to repay debt,N
+hh,agro_hh,Land area,Agricultural HH,N
+hh,cultivated_area_sqm,Land area,Cultivated area (sqm),N
+hh,cultivated_area_total_sqm,Land area,Total cultivated area,N
+hh,total_owned_area_sqm,Land area,Total owned area,N
+hh,rented_in_area_sqm,Land area,Rented-in area,N
+hh,n_plots_owned,Land area,# plots owned,N
+hh,share_self_wet,Land use,"Own-cultivated, wet",Y
+hh,share_self_dry,Land use,"Own-cultivated, dry",Y
+hh,share_both_seasons,Land use,Cultivated both seasons,Y
+hh,share_fallow_wet,Land use,"Fallow, wet",Y
+hh,share_fallow_dry,Land use,"Fallow, dry",Y
+hh,share_rented_out_wet,Land use,"Rented out, wet",Y
+hh,crop_simpson_diversity,Cropping,Crop diversity (Simpson),N
+hh,crop_hhi,Cropping,Crop HHI,N
+hh,effective_n_crops,Cropping,Effective # crops,N
+hh,n_crops_total,Cropping,# crops (total),N
+hh,n_crops_wet,Cropping,# crops (wet),N
+hh,n_crops_dry,Cropping,# crops (dry),N
+hh,grows_horticulture,Cropping,Grows horticulture,N
+hh,grows_staple,Cropping,Grows staple,N
+hh,grows_cashcrop,Cropping,Grows cash crop,N
+hh,multi_season,Cropping,Cultivates multi-season,N
+hh,any_crop_sold,Cropping,Any crop sold,N
+hh,crop_sale_rs_12m,Cropping,Crop sales (Rs/12m),N
+hh,crop_sale_share,Cropping,Crop-sale share,N
+hh,horti_value_share,Cropping,Horticulture value share,N
+hh,staple_value_share,Cropping,Staple value share,N
+hh,cashcrop_value_share,Cropping,Cash-crop value share,N
+hh,share_irr_groundwater_wet,Irrigation,"Groundwater irr., wet",N
+hh,share_irr_groundwater_dry,Irrigation,"Groundwater irr., dry",N
+hh,share_irr_surface_wet,Irrigation,"Surface irr., wet",N
+hh,share_irr_surface_dry,Irrigation,"Surface irr., dry",N
+hh,share_irr_rainfed_wet,Irrigation,"Rainfed, wet",N
+hh,share_irr_rainfed_dry,Irrigation,"Rainfed, dry",N
+hh,n_irrigation_types,Irrigation,# irrigation types,N
+hh,owns_plough,Capital equipment,Owns plough,Y
+hh,owns_powered_machinery,Capital equipment,Owns powered machinery,Y
+hh,owns_irrigation_kit,Capital equipment,Owns irrigation equipment,Y
+hh,owns_storage_struct,Capital equipment,Owns storage structure,Y
+hh,owns_transport,Capital equipment,Owns transport,Y
+hh,n_equip_categories,Capital equipment,# equipment categories,Y
+hh,n_powered_types,Capital equipment,# powered types,Y
+hh,equip_stock_value_rs,Capital equipment,Equipment stock (Rs),Y
+hh,total_input_cost_rs,Input costs,Total input cost (Rs),Y
+hh,wet_cost_seed,Input costs,Seed cost (wet),Y
+hh,dry_cost_seed,Input costs,Seed cost (dry),Y
+hh,wet_cost_fert,Input costs,Fertiliser cost (wet),Y
+hh,dry_cost_fert,Input costs,Fertiliser cost (dry),Y
+hh,wet_cost_labour,Input costs,Hired labour (wet),Y
+hh,dry_cost_labour,Input costs,Hired labour (dry),Y
+hh,wet_cost_insect,Input costs,Pesticide cost (wet),Y
+hh,dry_cost_insect,Input costs,Pesticide cost (dry),Y
+hh,input_intensity_per_sqm,Input costs,Input intensity per sqm,Y
+hh,livestock_has,Livestock,Owns livestock,N
+hh,food_exp_total_7day,Food consumption,Food spending / week (Rs),Y
+hh,food_exp_protein_7day,Food consumption,Protein spending / week,Y
+hh,food_exp_staples_7day,Food consumption,Staples spending / week,Y
+hh,food_exp_purchased_7day,Food consumption,Purchased food / week,Y
+hh,food_exp_homeprod_7day,Food consumption,Home-produced food / week,Y
+hh,food_exp_vice_7day,Food consumption,Alcohol & tobacco / week,Y
+hh,food_insec_score,Food consumption,Food insecurity score (HFIAS),Y
+hh,food_insec_any,Food consumption,Any food insecurity,Y
+hh,food_insec_worried,Food consumption,Worried about food,Y
+hh,nonfood_exp_12m,Non-food consumption,Non-food spending (12m),Y
+hh,nonfood_exp_30day,Non-food consumption,Non-food spending (30d),Y
+hh,nonfood_clothing_footwear_12m,Non-food consumption,Clothing & footwear,Y
+hh,nonfood_fuel_lighting_12m,Non-food consumption,Fuel & lighting,Y
+hh,nonfood_transport_12m,Non-food consumption,Transport,Y
+hh,nonfood_communication_12m,Non-food consumption,Communication,Y
+hh,nonfood_personal_care_12m,Non-food consumption,Personal care,Y
+hh,nonfood_household_goods_12m,Non-food consumption,Household goods,Y
+hh,nonfood_housing_improvement_12m,Non-food consumption,Housing improvement,Y
+hh,nonfood_electronics_tech_12m,Non-food consumption,Electronics / tech,Y
+hh,nonfood_jewellery_luxury_12m,Non-food consumption,Jewellery / luxury,Y
+hh,nonfood_entertainment_leisure_12m,Non-food consumption,Entertainment,Y
+hh,nonfood_ceremonies_12m,Non-food consumption,Ceremonies,Y
+hh,nonfood_taxes_12m,Non-food consumption,Taxes,Y
+hh,nonfood_other_nonfood_12m,Non-food consumption,Other non-food,Y
+hh,durables_stock_value,Non-food consumption,Durables stock value,Y
+hh,durables_use_value_12m,Non-food consumption,Durables use-value (12m),Y
+hh,any_health_spending,Health,Any health spending,N
+hh,any_insured,Health,Any insurance,N
+hh,n_insured,Health,# insured members,N
+hh,n_chronic,Health,# chronic conditions,N
+hh,n_acute_illness,Health,# acute illnesses,N
+hh,hlt_spend_total,Health & education spending,Health spending total (Rs),Y
+hh,hlt_spend_medicines,Health,Medicines spending,N
+hh,hlt_spend_hospital,Health,Hospital spending,N
+hh,hlt_spend_fees,Health,Doctor fees,N
+hh,hlt_spend_tests,Health,Diagnostic tests,N
+hh,hlt_spend_other,Health,Other health spending,N
+hh,any_enrolled,Education,Any HH member enrolled,N
+hh,n_enrolled,Education,# enrolled,N
+hh,n_private_school,Education,# in private school,N
+hh,n_scholarship,Education,# with scholarship,N
+hh,scholarship_amt_12m,Education,Scholarship amt (12m),N
+hh,n_school_age,Education,# school-age children,N
+hh,edu_spend_total_12m,Health & education spending,Total education spend (12m),Y
+hh,edu_spend_tuition_12m,Education,Tuition spend,N
+hh,edu_spend_books_12m,Education,Books / stationery,N
+hh,edu_spend_uniforms_12m,Education,Uniforms,N
+hh,edu_spend_transport_12m,Education,Education transport,N
+hh,edu_spend_food_lodging_12m,Education,Food & lodging (edu),N
+hh,edu_spend_other_12m,Education,Other education spend,N
+hh,edu_spend_per_enrolled,Education,Spend per enrolled,N
+hh,has_enterprise,HH enterprise,Has any enterprise,Y
+hh,n_enterprises,HH enterprise,# enterprises,Y
+hh,n_workers_total,HH enterprise,# enterprise workers,Y
+hh,revenue_12m,HH enterprise,Enterprise revenue,Y
+hh,profit_12m,HH enterprise,Enterprise profit,Y
+hh,expenses_12m,HH enterprise,Enterprise expenses,Y
+hh,capex_12m,HH enterprise,Enterprise capex,Y
+hh,sector_trade,HH enterprise,Trade enterprise,Y
+hh,sector_manufacturing,HH enterprise,Manufacturing enterprise,Y
+hh,sector_services,HH enterprise,Services enterprise,Y
+hh,sector_hotels,HH enterprise,Hotels / hospitality,Y
+hh,sector_transport,HH enterprise,Transport enterprise,Y
+hh,any_shock,Shocks,Any shock,N
+hh,agricultural_shock_any,Shocks,Agricultural shock,N
+hh,economic_shock_any,Shocks,Economic shock,N
+hh,death_shock_any,Shocks,Death shock,N
+hh,health_shock_any,Shocks,Health shock,N
+hh,natural_disaster_shock_any,Shocks,Natural disaster shock,N
+hh,multiple_shocks,Shocks,Multiple shocks (>1),N
+hh,n_shocks,Shocks,# shocks,N
+hh,severe_loss_any,Shocks,Severe loss,N
+hh,total_loss_rs,Shocks,Total loss (Rs),N
+hh,mean_loss_per_shock_rs,Shocks,Mean loss per shock,N
+hh,any_coping_reported,Coping,Any coping reported,N
+hh,cope_borrow_any,Coping,Borrowed to cope,N
+hh,cope_savings_any,Coping,Used savings,N
+hh,cope_sell_assets_any,Coping,Sold assets,N
+hh,cope_migration_remittance_any,Coping,Used migration / remit,N
+hh,cope_public_private_aid_any,Coping,Took public / private aid,N
+hh,cope_credit_or_asset_any,Coping,Credit or asset sale,N
+hh,cope_external_support_any,Coping,External support,N
+hh,cope_self_insurance_any,Coping,Self-insurance,N
+hh,main_coping_borrow,Coping,Main coping: borrow,N
+hh,main_coping_savings_consumption,Coping,Main: savings / cut cons.,N
+hh,main_coping_sell_assets,Coping,Main: sell assets,N
+hh,main_coping_external_support,Coping,Main: external support,N
+hh,public_cash_any,Social protection,Public cash transfer,N
+hh,public_cash_amt,Social protection,Public cash amount,N
+hh,public_inkind_any,Social protection,Public in-kind,N
+hh,public_inkind_amt,Social protection,Public in-kind amount,N
+hh,public_support_any,Social protection,Any public support,N
+hh,public_support_amt,Social protection,Public support amount,N
+hh,public_work_any,Social protection,Public works employed,N
+hh,public_work_days,Social protection,Public works days,N
+hh,public_work_earnings,Social protection,Public works earnings,N
+hh,demographic_cash_any,Social protection,Demographic cash,N
+hh,demographic_cash_amt,Social protection,Demographic cash amount,N
+hh,disaster_cash_any,Social protection,Disaster cash,N
+hh,disaster_cash_amt,Social protection,Disaster cash amount,N
+hh,private_gift_any,Social protection,Private gift received,N
+hh,private_gift_amt,Social protection,Private gift amount,N
+hh,private_support_any,Social protection,Any private support,N
+hh,private_support_amt,Social protection,Private support amount,N
+hh,ngo_support_any,Social protection,NGO support,N
+hh,informal_support_any,Social protection,Informal support,N
+hh,external_support_any,Social protection,External support (any),N
+hh,total_support_amt,Social protection,Total support amount,N
+hh,support_diversified,Social protection,Support diversified,N
+hh,n_support_sources,Social protection,# support sources,N
+nec_panel,log_new_firms,Firm entry — total + by size,All new firms (log),Y
+nec_panel,log_new_firms_size_1_worker,Firm entry — total + by size,Size: 1 worker,Y
+nec_panel,log_new_firms_size_2_9_workers,Firm entry — total + by size,Size: 2–9 workers,Y
+nec_panel,log_new_firms_size_10_50_workers,Firm entry — total + by size,Size: 10–50 workers,Y
+nec_panel,log_new_firms_size_51plus_workers,Firm entry — total + by size,Size: 51+ workers,Y
+nec_panel,log_new_firms_agriculture,Firm entry — by industry,Agriculture,Y
+nec_panel,log_new_firms_manufacturing,Firm entry — by industry,Manufacturing,Y
+nec_panel,log_new_firms_construction,Firm entry — by industry,Construction,Y
+nec_panel,log_new_firms_trade_retail,Firm entry — by industry,Trade & retail,Y
+nec_panel,log_new_firms_hospitality_food,Firm entry — by industry,Hospitality & food,Y
+nec_panel,log_new_firms_transport_storage,Firm entry — by industry,Transport & storage,Y
+nec_panel,log_new_firms_finance_prof_realestate,Firm entry — by industry,Finance / RE / prof,Y
+nec_panel,log_new_firms_education_health_social,Firm entry — by industry,Education / health / social,Y
+nec_panel,log_new_firms_other_services,Firm entry — by industry,Other services,Y
+nec_cs,log_n_firms,Firm count & scale,log(# firms),Y
+nec_cs,log_emp_total,Firm count & scale,log(total employment),Y
+nec_cs,log_rev_total,Firm count & scale,log(revenue),Y
+nec_cs,log_cap_total,Firm count & scale,log(capital stock),Y
+nec_cs,log_exp_total,Firm count & scale,log(expenses),Y
+nec_cs,log_value_added_total,Firm count & scale,log(value added),Y
+nec_cs,log_profit_proxy_total,Firm count & scale,log(profit proxy),Y
+nec_cs,mean_emp_per_firm,Firm count & scale,Mean emp per firm,Y
+nec_cs,mean_value_added_per_worker,Per-worker productivity,Value added / worker (mean),Y
+nec_cs,median_value_added_per_worker,Per-worker productivity,Value added / worker (median),Y
+nec_cs,mean_rev_per_worker,Per-worker productivity,Revenue / worker,Y
+nec_cs,mean_capital_per_worker,Per-worker productivity,Capital / worker,Y
+nec_cs,mean_profit_per_worker,Per-worker productivity,Profit / worker,Y
+nec_cs,mean_profit_margin,Profitability & factor shares,Profit margin,Y
+nec_cs,wage_share_of_revenue,Profitability & factor shares,Wage share of revenue,Y
+nec_cs,value_added_share_of_revenue,Profitability & factor shares,Value-added share,Y
+nec_cs,capital_intensity_aggregate,Profitability & factor shares,Capital intensity (agg),Y
+nec_cs,formality_index,Formality,Formality index,Y
+nec_cs,share_registered,Formality,Share registered,Y
+nec_cs,share_tax_registered,Formality,Share tax-registered,Y
+nec_cs,share_keeps_accounts,Formality,Keeps accounts,Y
+nec_cs,share_operates_year_round,Formality,Year-round operation,Y
+nec_cs,share_borrowed,Credit,Share borrowed,Y
+nec_cs,share_uses_formal_credit,Credit,Uses formal credit,Y
+nec_cs,share_has_foreign_capital,Credit,Foreign capital,Y
+nec_cs,share_female_led,Firm demographics,Female-led firms,Y
+nec_cs,share_size_1_worker,Firm size distribution,1 worker (share),Y
+nec_cs,share_size_2_9_workers,Firm size distribution,2–9 workers (share),Y
+nec_cs,share_size_10_50_workers,Firm size distribution,10–50 workers (share),Y
+nec_cs,share_size_51plus_workers,Firm size distribution,51+ workers (share),Y
+nec_cs,industry_diversity,Industry composition,Industry diversity (1−HHI),Y
+nec_cs,industry_hhi,Industry composition,Industry HHI,Y
+nec_cs,n_industries_present,Industry composition,# industries present,Y
+nec_cs,share_modern_proxy,Industry composition,Share 'modern' firms,Y
+nec_cs,share_services_total,Industry composition,Share services (total),Y
+nec_cs,share_agriculture,Industry shares,Agriculture,Y
+nec_cs,share_manufacturing,Industry shares,Manufacturing,Y
+nec_cs,share_construction,Industry shares,Construction,Y
+nec_cs,share_trade_retail,Industry shares,Trade & retail,Y
+nec_cs,share_hospitality,Industry shares,Hospitality,Y
+nec_cs,share_transport,Industry shares,Transport,Y
+nec_cs,share_finance_prof_info,Industry shares,Finance / prof / info,Y
+nec_cs,share_social_services,Industry shares,Social services,Y
+nec_cs,share_other_services,Industry shares,Other services,Y

@@ -1,0 +1,46 @@
+variable,level,definition
+has_migrant,HH-year,1 for all rows in migrant-HH-year file.
+has_migrant_internal,HH-year,1 if household has at least one domestic migrant.
+has_migrant_international,HH-year,1 if household has at least one international migrant.
+has_only_internal,HH-year,1 if household has domestic migrant(s) only.
+has_only_international,HH-year,1 if household has international migrant(s) only.
+has_both_internal_and_international,HH-year,1 if household has both domestic and international migrants.
+n_migrants_total,HH-year,Number of migrants in household.
+n_migrants_internal,HH-year,Number of domestic migrants.
+n_migrants_international,HH-year,Number of international migrants.
+intl_migration_share,HH-year,Share of household migrants who are international.
+share_male_migrants,HH-year,Share of migrants who are male.
+migrant_mean_age,HH-year,Mean age of household migrants.
+migrant_mean_months_away,HH-year,Mean months away among household migrants.
+share_long_term_migrants,HH-year,Share of migrants away more than 24 months.
+mig_reason_work,HH-year,1 if any migrant moved for work/job/business.
+mig_reason_education,HH-year,1 if any migrant moved for education/training.
+mig_reason_marriage_family,HH-year,1 if any migrant moved for marriage/family.
+mig_reason_disaster,HH-year,1 if any migrant moved because of natural disaster.
+dest_india_share,HH-year,Share of international migrants in India.
+dest_gulf_share,HH-year,Share of international migrants in Gulf countries.
+dest_malaysia_share,HH-year,Share of international migrants in Malaysia.
+dest_other_country_share,HH-year,Share of international migrants in other countries.
+dest_diversified,HH-year,1 if household has international migrants in two or more destination groups.
+remit_received,HH-year,1 if any migrant sent remittance.
+share_migrants_sending,HH-year,Share of migrants who sent remittance.
+remit_amount_12m_rs,HH-year,Total remittance received from all migrants in past 12 months.
+remit_amount_intl_12m_rs,HH-year,Total remittance received from international migrants.
+remit_per_migrant,HH-year,Total remittance divided by number of migrants.
+remit_per_international_migrant,HH-year,International remittance divided by number of international migrants.
+remit_frequency_avg,HH-year,Average frequency of remittance sends per year.
+remit_via_formal_any,HH-year,1 if any migrant used formal remittance channel.
+remit_via_informal_any,HH-year,1 if any migrant used informal channel.
+remit_via_hundi_any,HH-year,1 if any migrant used hundi.
+remit_use_consumption_any,HH-year,1 if remittance used for consumption or ceremonies.
+remit_use_human_capital_any,HH-year,1 if remittance used for education or health.
+remit_use_business_investment_any,HH-year,1 if remittance used for business investment.
+remit_use_land_housing_any,HH-year,1 if remittance used for land or housing.
+remit_use_investment_any,HH-year,"1 if remittance used for business, land, or housing investment."
+remit_use_debt_any,HH-year,1 if remittance used to repay debt.
+mig_cost_12m_rs,HH-year,Total migration cost across all household migrants.
+cost_per_migrant,HH-year,Migration cost divided by number of migrants.
+mig_cost_financed_by_loan_any,HH-year,1 if any migrant financed migration cost through loan.
+migrant_monthly_earning_total_rs,HH-year,Total current monthly earnings across household migrants.
+migrant_has_secondary_job_any,HH-year,1 if any migrant has a secondary job.
+cost_to_monthly_earning_ratio,HH-year,Total migration cost divided by total monthly migrant earnings.
