@@ -147,14 +147,24 @@ run_destk_one <- function(panel, ycol, mode, refyr, zk_panel) {
   # Replace z columns in panel with destination-k specific z.
   pn <- panel
   pn$z_L_k <- NA_real_
-  # Match z_k by (dname, year-BASELINE_LAG): same lag-2 logic as main spec.
-  zk_lag <- zk_panel %>% mutate(year = year + BASELINE_LAG) %>%
-              select(dname, year, z_k_lagged = z_k)
-  pn <- pn %>% left_join(zk_lag, by = c("dname","year"))
+
+  if (mode == "cs") {
+    # Cross-section (no year column on panel). Pick z_k at fixed year
+    # 2018 - BASELINE_LAG (same convention as the main NEC cs build).
+    yr <- 2018L - BASELINE_LAG
+    zk_at <- zk_panel %>% filter(year == yr) %>%
+               select(dname, z_k_lagged = z_k)
+    pn <- pn %>% left_join(zk_at, by = "dname")
+  } else {
+    # Panel: match z_k by (dname, year - BASELINE_LAG)
+    zk_lag <- zk_panel %>% mutate(year = year + BASELINE_LAG) %>%
+                select(dname, year, z_k_lagged = z_k)
+    pn <- pn %>% left_join(zk_lag, by = c("dname","year"))
+  }
+
   if (!"mig_var" %in% names(pn)) {
     pn$mig_var <- pn[[mi_col_for("log")]]
   }
-  # Standardise z_k within panel (analogous to z_L_std)
   if (all(is.na(pn$z_k_lagged))) return(NULL)
   pn$z_L_std <- (pn$z_k_lagged - mean(pn$z_k_lagged, na.rm = TRUE)) /
                 sd(pn$z_k_lagged, na.rm = TRUE)
