@@ -32,12 +32,12 @@ DIST_LOOKUP <- c(
   "305"="Nuwakot","306"="Kathmandu","307"="Bhaktapur","308"="Lalitpur",
   "309"="Kavrepalanchok","310"="Ramechhap","311"="Sindhuli","312"="Makwanpur",
   "313"="Chitawan","401"="Gorkha","402"="Manang","403"="Mustang","404"="Myagdi",
-  "405"="Kaski","406"="Lamjung","407"="Tanahu","408"="Nawalparasi_E","409"="Syangja",
-  "410"="Parbat","411"="Baglung","501"="Rukum_E","502"="Rolpa","503"="Pyuthan",
-  "504"="Gulmi","505"="Arghakhanchi","506"="Palpa","507"="Nawalparasi_W",
+  "405"="Kaski","406"="Lamjung","407"="Tanahu","408"="Nawalparasi","409"="Syangja",
+  "410"="Parbat","411"="Baglung","501"="Rukum","502"="Rolpa","503"="Pyuthan",
+  "504"="Gulmi","505"="Arghakhanchi","506"="Palpa","507"="Nawalparasi",
   "508"="Rupandehi","509"="Kapilbastu","510"="Dang","511"="Banke","512"="Bardiya",
   "601"="Dolpa","602"="Mugu","603"="Humla","604"="Jumla","605"="Kalikot",
-  "606"="Dailekh","607"="Jajarkot","608"="Rukum_W","609"="Salyan","610"="Surkhet",
+  "606"="Dailekh","607"="Jajarkot","608"="Rukum","609"="Salyan","610"="Surkhet",
   "701"="Bajura","702"="Bajhang","703"="Darchula","704"="Baitadi","705"="Dadeldhura",
   "706"="Doti","707"="Achham","708"="Kailali","709"="Kanchanpur"
 )
@@ -120,6 +120,20 @@ district_panel <- panel_core %>%
   arrange(DIST, founding_year_ad) %>%
   mutate(dname = DIST_LOOKUP[as.character(DIST)],
          year  = founding_year_ad)
+
+# Collapse split-district duplicates (Nawalparasi 408+507 -> "Nawalparasi",
+# Rukum 501+608 -> "Rukum") so the panel matches the 75-district codeframe
+# used by mi / z_v2 / regions / outcomes_district.
+count_cols <- setdiff(names(district_panel)[vapply(district_panel, is.numeric, logical(1))],
+                      c("DIST", "founding_year_ad", "year"))
+district_panel <- district_panel %>%
+  group_by(dname, year) %>%
+  summarise(
+    DIST              = first(DIST),
+    founding_year_ad  = first(founding_year_ad),
+    across(all_of(count_cols), ~ sum(.x, na.rm = TRUE)),
+    .groups = "drop"
+  )
 
 # Add log versions
 log_cols <- c("n_new_firms","emp_new_firms","rev_new_firms","cap_new_firms",

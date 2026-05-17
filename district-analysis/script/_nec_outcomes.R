@@ -57,13 +57,13 @@ DIST_LOOKUP <- c(
   "309"="Kavrepalanchok","310"="Ramechhap","311"="Sindhuli","312"="Makwanpur",
   "313"="Chitawan",
   "401"="Gorkha","402"="Manang","403"="Mustang","404"="Myagdi","405"="Kaski",
-  "406"="Lamjung","407"="Tanahu","408"="Nawalparasi_E","409"="Syangja",
+  "406"="Lamjung","407"="Tanahu","408"="Nawalparasi","409"="Syangja",
   "410"="Parbat","411"="Baglung",
-  "501"="Rukum_E","502"="Rolpa","503"="Pyuthan","504"="Gulmi","505"="Arghakhanchi",
-  "506"="Palpa","507"="Nawalparasi_W","508"="Rupandehi","509"="Kapilbastu",
+  "501"="Rukum","502"="Rolpa","503"="Pyuthan","504"="Gulmi","505"="Arghakhanchi",
+  "506"="Palpa","507"="Nawalparasi","508"="Rupandehi","509"="Kapilbastu",
   "510"="Dang","511"="Banke","512"="Bardiya",
   "601"="Dolpa","602"="Mugu","603"="Humla","604"="Jumla","605"="Kalikot",
-  "606"="Dailekh","607"="Jajarkot","608"="Rukum_W","609"="Salyan","610"="Surkhet",
+  "606"="Dailekh","607"="Jajarkot","608"="Rukum","609"="Salyan","610"="Surkhet",
   "701"="Bajura","702"="Bajhang","703"="Darchula","704"="Baitadi","705"="Dadeldhura",
   "706"="Doti","707"="Achham","708"="Kailali","709"="Kanchanpur"
 )
@@ -146,7 +146,7 @@ z_lagged <- sh_v2 %>%
 mi <- dofe %>%
   filter(year %in% c(2009, 2010)) %>%
   group_by(dname) %>%
-  summarise(num = mean(permits), .groups = "drop") %>%
+  summarise(num = sum(permits, na.rm = TRUE) / 2, .groups = "drop") %>%   # avg annual permits across 2009-10
   left_join(
     pop_file %>%
       mutate(dname = to_dname(district)) %>%

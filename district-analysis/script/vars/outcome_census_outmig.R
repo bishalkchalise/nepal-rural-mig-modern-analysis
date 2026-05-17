@@ -131,9 +131,15 @@ cat(sprintf("  2011 native_pop range: min=%d  median=%d  max=%d\n",
             as.integer(median(native_pop_11$native_pop)),
             max(native_pop_11$native_pop)))
 
-# Inter-district migrants only
+# Inter-district migrants only — drop birth_district labels that are unreliable
+# placeholders ("Don't Know", "Not Reported", numeric refusal codes).
+JUNK_DNAMES <- c("Don't Know", "Don'T Know", "Not Reported", "Not Stated",
+                 "Refused", "997")
 mig_11 <- c11 %>%
-  filter(is_other_dist, district != birth_district)
+  filter(is_other_dist,
+         district       != birth_district,
+         !district       %in% JUNK_DNAMES,
+         !birth_district %in% JUNK_DNAMES)
 cat(sprintf("  2011: %d inter-district migrant rows after filter\n", nrow(mig_11)))
 
 inmig_11 <- mig_11 %>%
@@ -207,11 +213,13 @@ native_pop_21 <- c21 %>%
   group_by(district) %>%
   summarise(native_pop = sum(individual_wt, na.rm = TRUE), .groups = "drop")
 
-# Inter-district migrants (weighted)
+# Inter-district migrants (weighted) — drop refusal / unknown birth-district
+# labels so they don't inflate outmig_count for real districts via misallocation.
 mig_21 <- c21 %>%
   filter(place_birth == "Other district", district != birth_district,
          !is.na(district), !is.na(birth_district),
-         district != "997", birth_district != "997")
+         !district       %in% JUNK_DNAMES,
+         !birth_district %in% JUNK_DNAMES)
 
 inmig_21 <- mig_21 %>%
   group_by(district) %>%

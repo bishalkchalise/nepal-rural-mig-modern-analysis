@@ -105,7 +105,7 @@ z_v2 <- sh_v2 %>%
 mi <- dofe %>%
   filter(year %in% c(2009, 2010)) %>%
   group_by(dname) %>%
-  summarise(num = mean(permits), .groups = "drop") %>%
+  summarise(num = sum(permits, na.rm = TRUE) / 2, .groups = "drop") %>%
   left_join(
     pop_file %>%
       mutate(dname = to_dname(district)) %>%

@@ -82,6 +82,33 @@ if (!is.null(nec_cs) && "DIST" %in% names(nec_cs) && !"dname" %in% names(nec_cs)
   nec_cs$dname <- DIST_LOOKUP[as.character(nec_cs$DIST)]
 }
 
+# Collapse split districts (Nawalparasi_E/W, Rukum_E/W) to base names so they
+# match mi / z_v2 / regions / outcomes_district. Aggregate duplicates: sums for
+# counts, weighted means (by n_firms) for shares/indices.
+collapse_nec_splits <- function(df) {
+  if (is.null(df) || !"dname" %in% names(df)) return(df)
+  df <- df %>%
+    mutate(dname = case_when(
+      dname %in% c("Nawalparasi_E", "Nawalparasi_W") ~ "Nawalparasi",
+      dname %in% c("Rukum_E", "Rukum_W")             ~ "Rukum",
+      TRUE                                           ~ dname
+    ))
+  if (!"n_firms" %in% names(df)) return(df)
+  share_cols <- grep("^share_|formality_index|^mean_|^p50_|^p90_|_per_firm$",
+                     names(df), value = TRUE)
+  count_cols <- setdiff(names(df)[vapply(df, is.numeric, logical(1))],
+                        c(share_cols, "DIST", "n_firms"))
+  df %>%
+    group_by(dname) %>%
+    summarise(
+      across(all_of(share_cols), ~ weighted.mean(.x, w = n_firms, na.rm = TRUE)),
+      across(all_of(count_cols), ~ sum(.x, na.rm = TRUE)),
+      n_firms = sum(n_firms, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
+nec_cs <- collapse_nec_splits(nec_cs)
+
 # HH dname crosswalk
 hh_dist <- read_csv("district-analysis/data/clean/rvs/migration_hh_year.csv",
                     show_col_types = FALSE) %>%
@@ -139,7 +166,7 @@ winsor <- function(x, lo, hi) {
 mi <- dofe %>%
   filter(year %in% c(2009, 2010)) %>%
   group_by(dname) %>%
-  summarise(num = mean(permits), .groups = "drop") %>%
+  summarise(num = sum(permits, na.rm = TRUE) / 2, .groups = "drop") %>%   # avg annual permits across 2009-10
   left_join(
     pop_file %>%
       mutate(dname = to_dname(district)) %>%
@@ -154,6 +181,17 @@ mi <- dofe %>%
 
 REGION_COLS <- c("share_e_asia", "share_gulf", "share_oecd_north",
                  "share_s_asia", "share_se_asia", "share_oecd_europe")
+
+# Districts with no 2001 foreign migrants (e.g. Kalikot) have NA region shares,
+# which causes feols to silently drop them from M4. Fill with 0 so the row is
+# kept (substantively: a district with no recorded 2001 destinations
+# contributes 0 to all destination-region interactions).
+fill_region_na <- function(df) {
+  if (is.null(df)) return(df)
+  cols <- intersect(REGION_COLS, names(df))
+  if (!length(cols)) return(df)
+  df %>% mutate(across(all_of(cols), ~ if_else(is.na(.x), 0, .x)))
+}
 
 stars <- function(p) {
   ifelse(is.na(p), "",
@@ -236,15 +274,16 @@ run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
 # ---- outcome lists (trimmed per user request) ----
 CENSUS_OUTCOMES <- c(
   # Out-migration (built by outcome_census_outmig.R; omitted automatically if CSV missing)
-  # Population-denominator out-migration rates (comparable to mig_in_*):
+  # Population-denominator out/in/net internal-migration rates -- consistent
+  # birth-district definitions across 2011 and 2021.
   'mig_out_internal_share','mig_in_internal_share','net_internal_mig_share',
   'mig_out_economic_share','mig_out_noneconomic_share',
   'mig_in_economic_share','mig_in_noneconomic_share',
-  'mig_out_male_share','mig_out_female_share','mig_out_age_15_30_share',
-  # Composition-of-out-migrants shares (sum to 1 within group, sensitivity):
-  'mig_out_of_outmig_econ_share','mig_out_of_outmig_noecon_share',
-  # Headline migration/industry/occupation/employment
-  'mig_in_share','ind_agri_forestry_fish','occ_share_managers','emp_share_employee',
+  # Note: `mig_in_share` (outcome_census.R) is DROPPED from the headline list
+  #   because its definition differs across rounds (2011: 5-year residents only,
+  #   age >= 5, codes {2,3}; 2021: full sample, codes {2,3,4} incl. abroad).
+  # Headline industry/occupation/employment
+  'ind_agri_forestry_fish','occ_share_managers','emp_share_employee',
   # Assets group (all amen_assets_* + count)
   'amen_asset_count_mean',
   'amen_assets_mobile','amen_assets_radio','amen_assets_tv','amen_assets_fridge',
@@ -266,8 +305,8 @@ NEC_CS_OUTCOMES <- c('n_firms','emp_total','mean_emp_per_firm','formality_index'
 
 HH_OUTCOMES <- c(
   # Migration / remittance
-  'has_migrant_international','log_n_migrants_international',
-  'remit_amount_intl_12m_rs','log_remit_amount_intl_12m_rs','remit_received',
+  'has_migrant_intl','n_intl_migrants',
+  'remit_amount_intl_12m_rs','remit_received',
   # Agriculture (kept)
   'share_self_wet','share_self_dry','share_both_seasons','share_fallow_wet',
   'share_fallow_dry','share_rented_out_wet','owns_plough','owns_powered_machinery',
@@ -311,7 +350,7 @@ z_lag2 <- z_v2 %>% mutate(year = year + 2) %>% rename(z_L = z_v2)
 # 1. census
 cdf <- census %>% filter(year %in% c(2011, 2021)) %>%
   inner_join(mi, by = "dname") %>%
-  left_join(regions, by = "dname") %>%
+  left_join(regions, by = "dname") %>% fill_region_na() %>%
   left_join(z_lag2, by = c("dname", "year")) %>%
   filter(!is.na(z_L)) %>%
   mutate(z_L_std = (z_L - mean(z_L, na.rm = TRUE)) / sd(z_L, na.rm = TRUE))
@@ -325,7 +364,7 @@ if (!is.null(nec_cs)) {
   ncs <- nec_cs %>%
     inner_join(z_nec, by = "dname") %>%
     inner_join(mi, by = "dname") %>%
-    left_join(regions, by = "dname") %>%
+    left_join(regions, by = "dname") %>% fill_region_na() %>%
     mutate(z_L_std = (z_L - mean(z_L, na.rm = TRUE)) / sd(z_L, na.rm = TRUE))
   cat(sprintf("NEC cs: %d districts\n", nrow(ncs)))
 } else {
@@ -354,7 +393,7 @@ hh <- load_hh()
 hh <- hh %>%
   inner_join(hh_dist, by = c("hhid","year")) %>%
   inner_join(mi, by = "dname") %>%
-  left_join(regions, by = "dname") %>%
+  left_join(regions, by = "dname") %>% fill_region_na() %>%
   inner_join(z_lag2, by = c("dname","year")) %>%
   mutate(z_L_std = (z_L - mean(z_L, na.rm = TRUE)) / sd(z_L, na.rm = TRUE))
 cat(sprintf("HH panel: %d obs over %d districts, %d HH\n",
@@ -384,7 +423,7 @@ if (file.exists(NEC_PANEL_FILE)) {
   npd <- read_csv(NEC_PANEL_FILE, show_col_types = FALSE) %>%
     filter(year >= 2011, year <= 2018) %>%   # restrict to post-2010 cohort years
     inner_join(mi, by = "dname") %>%
-    left_join(regions, by = "dname") %>%
+    left_join(regions, by = "dname") %>% fill_region_na() %>%
     inner_join(z_lag2, by = c("dname","year")) %>%
     filter(!is.na(z_L)) %>%
     mutate(z_L_std = (z_L - mean(z_L, na.rm = TRUE)) / sd(z_L, na.rm = TRUE))
