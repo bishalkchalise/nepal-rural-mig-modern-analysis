@@ -455,6 +455,12 @@ cat(sprintf("HH panel: %d obs over %d districts, %d HH\n",
             nrow(hh), n_distinct(hh$dname), n_distinct(hh$hhid)))
 
 # ---- RUN ----
+# Other scripts (e.g. _robustness_drop_districts.R) may source this file just
+# to reuse the panel-build / helpers. Set SKIP_RUN <- TRUE before sourcing to
+# skip the regression loop and CSV write.
+if (exists("SKIP_RUN") && isTRUE(SKIP_RUN)) {
+  cat("SKIP_RUN flag set; main robustness loop skipped.\n")
+} else {
 out_rows <- list()
 cat("\nRunning census panel...\n")
 out_rows[[1]] <- run_outcomes(cdf, CENSUS_OUTCOMES, mode = "dname", refyr = 2011L, ds_label = "census")
@@ -501,6 +507,7 @@ write_csv(out, "district-analysis/output/tab/robustness_all_panels.csv")
 
 cat(sprintf("\nSaved %d rows to district-analysis/output/tab/robustness_all_panels.csv\n", nrow(out)))
 cat(sprintf("Elapsed: %.1f min\n", as.numeric(Sys.time() - t0, units = "mins")))
+}  # end !SKIP_RUN
 
 cat("\nSummary by dataset / scaling / model:\n")
 print(out %>% group_by(dataset, scaling, model) %>%
