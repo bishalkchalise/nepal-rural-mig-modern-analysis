@@ -163,147 +163,205 @@ ggsave("district-analysis/output/fig/fig2_migration_forest.png",
 cat("Wrote fig2_migration_forest.png\n")
 
 # ============================================================================
-# Plot 3 -- sectoral reallocation forest (industry + occupation)
+# Plot 3 -- sectoral reallocation: Industry & Occupation in SEPARATE panels
 # ============================================================================
-sec_outc <- tribble(
-  ~category, ~ds, ~outcome, ~label,
-  "Industry",   "census", "ind_agri_forestry_fish",      "Industry: Agriculture",
-  "Industry",   "census", "ind_construction",            "Industry: Construction",
-  "Industry",   "census", "ind_manufacturing",           "Industry: Manufacturing",
-  "Industry",   "census", "ind_wholesale_retail",        "Industry: Wholesale/retail",
-  "Industry",   "census", "ind_transport_accommodation", "Industry: Transport/accomm.",
-  "Industry",   "census", "ind_education",               "Industry: Education",
-  "Occupation", "census", "occ_share_agriculture",       "Occ: Skilled agri",
-  "Occupation", "census", "occ_share_service_sales",     "Occ: Service & sales",
-  "Occupation", "census", "occ_share_technicians",       "Occ: Technicians",
-  "Occupation", "census", "occ_share_professionals",     "Occ: Professionals",
-  "Occupation", "census", "occ_share_managers",          "Occ: Managers"
+ind_outc <- tribble(
+  ~ds, ~outcome, ~label,
+  "census", "ind_agri_forestry_fish",      "Agriculture",
+  "census", "ind_manufacturing",           "Manufacturing",
+  "census", "ind_construction",            "Construction",
+  "census", "ind_wholesale_retail",        "Wholesale & retail",
+  "census", "ind_transport_accommodation", "Transport & accomm.",
+  "census", "ind_finance_real_estate_prof","Finance / RE / prof.",
+  "census", "ind_public_admin_defence",    "Public admin & defence",
+  "census", "ind_education",               "Education",
+  "census", "ind_health",                  "Health",
+  "census", "ind_arts_recreation",         "Arts & recreation",
+  "census", "ind_others",                  "Other industry"
 )
-sec_df <- sec_outc %>%
-  rowwise() %>%
-  mutate(r = list(get_row(ds, outcome))) %>%
-  ungroup() %>%
-  mutate(beta = map_dbl(r, ~ if (is.null(.x)) NA else .x$beta),
-         se   = map_dbl(r, ~ if (is.null(.x)) NA else .x$se),
-         lo   = beta - 1.96*se, hi = beta + 1.96*se,
-         sig  = map_chr(r, ~ if (is.null(.x)) "" else (.x$sig %||% "")),
-         signed = if_else(beta < 0, "negative", "positive")) %>%
-  filter(!is.na(beta)) %>%
-  arrange(beta) %>%
-  mutate(label = factor(label, levels = label))
+occ_outc <- tribble(
+  ~ds, ~outcome, ~label,
+  "census", "occ_share_managers",          "Managers",
+  "census", "occ_share_professionals",     "Professionals",
+  "census", "occ_share_technicians",       "Technicians",
+  "census", "occ_share_office_assistants", "Office assistants",
+  "census", "occ_share_service_sales",     "Service & sales",
+  "census", "occ_share_agriculture",       "Skilled agri",
+  "census", "occ_share_craft_trades",      "Craft & trades",
+  "census", "occ_share_machine_operators", "Machine operators",
+  "census", "occ_share_elementary",        "Elementary",
+  "census", "occ_share_armed_forces",      "Armed forces"
+)
 
-p3 <- ggplot(sec_df, aes(beta, label, colour = signed)) +
-  geom_vline(xintercept = 0, colour = "#999", linewidth = 0.4) +
-  geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0.22, linewidth = 0.7) +
-  geom_point(size = 2.6) +
-  geom_text(aes(label = sprintf("β=%+0.3f%s", beta, sig)),
-            hjust = -0.18, vjust = -0.6, size = 2.9, colour = "black") +
-  scale_colour_manual(values = c(negative = "#9d2918", positive = "#0e5a2d"),
-                      guide = "none") +
-  labs(title = "Workers exit agriculture into services and skilled occupations",
-       subtitle = "Census 2011-2021 industry & occupation shares; A4 lag-2 log-z. 95% CI.",
-       x = "β on z(log mig/1000)", y = NULL,
-       caption = "Top = workers leaving; bottom = workers entering.  *** p<0.01, ** p<0.05, * p<0.10.") +
-  theme_minimal(base_size = 11) +
-  theme(plot.title = element_text(face = "bold"),
-        plot.caption = element_text(hjust = 0, face = "italic"),
-        panel.grid.minor = element_blank())
+make_coef <- function(tbl) {
+  tbl %>%
+    rowwise() %>%
+    mutate(r = list(get_row(ds, outcome))) %>%
+    ungroup() %>%
+    mutate(beta = map_dbl(r, ~ if (is.null(.x)) NA else .x$beta),
+           se   = map_dbl(r, ~ if (is.null(.x)) NA else .x$se),
+           lo   = beta - 1.96*se, hi = beta + 1.96*se,
+           sig  = map_chr(r, ~ if (is.null(.x)) "" else (.x$sig %||% "")),
+           signed = if_else(beta < 0, "negative", "positive")) %>%
+    filter(!is.na(beta)) %>%
+    arrange(beta) %>%
+    mutate(label = factor(label, levels = label))
+}
 
-ggsave("district-analysis/output/fig/fig3_sectoral_forest.png",
-       p3, width = 8.5, height = 5.4, dpi = 200, bg = "white")
+ind_df <- make_coef(ind_outc)
+occ_df <- make_coef(occ_outc)
+
+forest <- function(df, title) {
+  ggplot(df, aes(beta, label, colour = signed)) +
+    geom_vline(xintercept = 0, colour = "#999", linewidth = 0.4) +
+    geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0.22, linewidth = 0.65) +
+    geom_point(size = 2.4) +
+    geom_text(aes(label = sprintf("β=%+0.3f%s", beta, sig)),
+              hjust = -0.18, vjust = -0.55, size = 2.7, colour = "black") +
+    scale_colour_manual(values = c(negative = "#9d2918", positive = "#0e5a2d"),
+                        guide = "none") +
+    labs(title = title, x = "β on z(log mig/1000)", y = NULL) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(face = "bold"),
+          panel.grid.minor = element_blank())
+}
+
+# Compute shared x range for fair comparison
+xrange_pad <- function(...) {
+  dfs <- list(...)
+  all_lo <- min(map_dbl(dfs, ~ min(.x$lo, na.rm = TRUE)))
+  all_hi <- max(map_dbl(dfs, ~ max(.x$hi, na.rm = TRUE)))
+  pad <- (all_hi - all_lo) * 0.15
+  c(all_lo - pad, all_hi + pad)
+}
+xr <- xrange_pad(ind_df, occ_df)
+
+p3a <- forest(ind_df, "Industry shares") +
+       coord_cartesian(xlim = xr) +
+       theme(plot.title = element_text(size = 12))
+p3b <- forest(occ_df, "Occupation shares") +
+       coord_cartesian(xlim = xr) +
+       theme(plot.title = element_text(size = 12))
+
+if (requireNamespace("patchwork", quietly = TRUE)) {
+  library(patchwork)
+  p3 <- p3a + p3b +
+    plot_annotation(
+      title = "Workers reallocate out of agriculture into services & skilled occupations",
+      subtitle = "Census 2011-2021 district panel; spec A4 (saturated), lag-2 log-z. 95% CI.",
+      caption = "*** p<0.01, ** p<0.05, * p<0.10.")
+  ggsave("district-analysis/output/fig/fig3_sectoral_forest.png",
+         p3, width = 12, height = 5.6, dpi = 200, bg = "white")
+} else {
+  ggsave("district-analysis/output/fig/fig3a_industry.png",  p3a,
+         width = 6.5, height = 5.0, dpi = 200, bg = "white")
+  ggsave("district-analysis/output/fig/fig3b_occupation.png",p3b,
+         width = 6.5, height = 5.0, dpi = 200, bg = "white")
+}
 cat("Wrote fig3_sectoral_forest.png\n")
 
 # ============================================================================
-# Plot 4 -- firm-side response (2 panels: NEC cs + NEC panel by size)
+# Plot 4 -- firm-side response: 4 separate panels (don't mix metric types)
+#   4a: NEC scale         -- n_firms, emp_total, mean_emp_per_firm
+#   4b: NEC size mix      -- share micro/small/medium/large
+#   4c: NEC formality     -- formality_index, share registered/tax/accounts/credit
+#   4d: NEC panel entry   -- log new firms by size cohort
 # ============================================================================
-nec_cs_outc <- tribble(
+nec_scale <- tribble(
   ~ds, ~outcome, ~label,
-  "nec_cs", "n_firms",            "# firms",
-  "nec_cs", "emp_total",          "Total employment",
-  "nec_cs", "mean_emp_per_firm",  "Mean emp / firm",
-  "nec_cs", "formality_index",    "Formality index",
-  "nec_cs", "share_firms_size_micro_1",    "Share micro (1 worker)",
-  "nec_cs", "share_firms_size_large_51p",  "Share large (51+)"
+  "nec_cs", "n_firms",           "# firms",
+  "nec_cs", "emp_total",         "Total employment",
+  "nec_cs", "mean_emp_per_firm", "Mean emp / firm"
 )
-nec_cs_df <- nec_cs_outc %>%
-  rowwise() %>%
-  mutate(r = list(get_row(ds, outcome))) %>%
-  ungroup() %>%
-  mutate(beta = map_dbl(r, ~ if (is.null(.x)) NA else .x$beta),
-         se   = map_dbl(r, ~ if (is.null(.x)) NA else .x$se),
-         lo   = beta - 1.96*se, hi = beta + 1.96*se,
-         sig  = map_chr(r, ~ if (is.null(.x)) "" else (.x$sig %||% ""))) %>%
-  filter(!is.na(beta)) %>%
-  # Standardise: report as % of mean for level outcomes (n_firms, emp_total)
-  mutate(mean_y = map_dbl(r, ~ if (is.null(.x)) NA else (.x$mean %||% NA)),
-         beta_std = if_else(abs(mean_y) > 10, beta/mean_y * 100, beta * 100),
-         se_std   = if_else(abs(mean_y) > 10, se/abs(mean_y) * 100, se * 100),
-         lo_std = beta_std - 1.96*se_std, hi_std = beta_std + 1.96*se_std) %>%
-  arrange(beta_std) %>%
-  mutate(label = factor(label, levels = label))
-
-p4a <- ggplot(nec_cs_df, aes(beta_std, label)) +
-  geom_vline(xintercept = 0, colour = "#999", linewidth = 0.4) +
-  geom_errorbarh(aes(xmin = lo_std, xmax = hi_std), height = 0.22,
-                 colour = "#0d3b66", linewidth = 0.7) +
-  geom_point(size = 2.6, colour = "#0d3b66") +
-  geom_text(aes(label = sprintf("%+0.1f%%%s", beta_std, sig)),
-            hjust = -0.18, vjust = -0.6, size = 2.9, colour = "black") +
-  labs(title = "(a) NEC 2018 cross-section",
-       x = "β as % of mean (or pp for shares)", y = NULL) +
-  theme_minimal(base_size = 10) +
-  theme(plot.title = element_text(face = "bold"),
-        panel.grid.minor = element_blank())
-
-# Right panel: NEC panel entry by size cohort
-nec_panel_outc <- tribble(
+nec_size <- tribble(
   ~ds, ~outcome, ~label,
-  "nec_panel", "log_n_new_firms_size_micro_1",     "Micro (1 worker)",
+  "nec_cs", "share_firms_size_micro_1",     "Micro (1)",
+  "nec_cs", "share_firms_size_small_2_9",   "Small (2-9)",
+  "nec_cs", "share_firms_size_medium_10_50","Medium (10-50)",
+  "nec_cs", "share_firms_size_large_51p",   "Large (51+)"
+)
+nec_formal <- tribble(
+  ~ds, ~outcome, ~label,
+  "nec_cs", "formality_index",     "Formality index",
+  "nec_cs", "share_registered",    "Share registered",
+  "nec_cs", "share_tax_registered","Share tax-registered",
+  "nec_cs", "share_keeps_accounts","Share keeps accounts",
+  "nec_cs", "share_formal_credit", "Share formal credit",
+  "nec_cs", "share_borrowed_any",  "Share borrowed (any)"
+)
+nec_entry_size <- tribble(
+  ~ds, ~outcome, ~label,
+  "nec_panel", "log_n_new_firms_size_micro_1",     "Micro (1)",
   "nec_panel", "log_n_new_firms_size_small_2_9",   "Small (2-9)",
   "nec_panel", "log_n_new_firms_size_medium_10_50","Medium (10-50)",
   "nec_panel", "log_n_new_firms_size_large_51p",   "Large (51+)"
 )
-nec_panel_df <- nec_panel_outc %>%
-  rowwise() %>%
-  mutate(r = list(get_row(ds, outcome))) %>%
-  ungroup() %>%
-  mutate(beta = map_dbl(r, ~ if (is.null(.x)) NA else .x$beta),
-         se   = map_dbl(r, ~ if (is.null(.x)) NA else .x$se),
-         lo   = beta - 1.96*se, hi = beta + 1.96*se,
-         sig  = map_chr(r, ~ if (is.null(.x)) "" else (.x$sig %||% ""))) %>%
-  filter(!is.na(beta)) %>%
-  mutate(label = factor(label, levels = label),
-         signed = if_else(beta < 0, "negative", "positive"))
 
-p4b <- ggplot(nec_panel_df, aes(beta, label, colour = signed)) +
-  geom_vline(xintercept = 0, colour = "#999", linewidth = 0.4) +
-  geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0.22, linewidth = 0.7) +
-  geom_point(size = 2.6) +
-  geom_text(aes(label = sprintf("β=%+0.2f%s", beta, sig)),
-            hjust = -0.18, vjust = -0.6, size = 2.9, colour = "black") +
-  scale_colour_manual(values = c(negative = "#9d2918", positive = "#0e5a2d"),
-                      guide = "none") +
-  labs(title = "(b) NEC entry-cohort panel, 2011-2018 (log)",
-       x = "β on z(log mig/1000)", y = NULL) +
-  theme_minimal(base_size = 10) +
-  theme(plot.title = element_text(face = "bold"),
-        panel.grid.minor = element_blank())
+# For NEC scale, rescale as % of mean so all three fit on a comparable axis
+make_coef_scaled <- function(tbl) {
+  tbl %>%
+    rowwise() %>%
+    mutate(r = list(get_row(ds, outcome))) %>%
+    ungroup() %>%
+    mutate(beta = map_dbl(r, ~ if (is.null(.x)) NA else .x$beta),
+           se   = map_dbl(r, ~ if (is.null(.x)) NA else .x$se),
+           mean_y = map_dbl(r, ~ if (is.null(.x)) NA else (.x$mean %||% NA)),
+           sig  = map_chr(r, ~ if (is.null(.x)) "" else (.x$sig %||% "")),
+           beta_pct = beta / mean_y * 100,
+           se_pct   = se / abs(mean_y) * 100,
+           lo = beta_pct - 1.96*se_pct, hi = beta_pct + 1.96*se_pct,
+           signed = if_else(beta_pct < 0, "negative", "positive")) %>%
+    filter(!is.na(beta_pct)) %>%
+    arrange(beta_pct) %>%
+    mutate(label = factor(label, levels = label))
+}
 
-# Combine via patchwork if available; else save separately
+scale_df  <- make_coef_scaled(nec_scale)
+size_df   <- make_coef(nec_size)
+formal_df <- make_coef(nec_formal)
+entry_df  <- make_coef(nec_entry_size)
+
+forest_pct <- function(df, title) {
+  ggplot(df, aes(beta_pct, label, colour = signed)) +
+    geom_vline(xintercept = 0, colour = "#999", linewidth = 0.4) +
+    geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0.22, linewidth = 0.7) +
+    geom_point(size = 2.5) +
+    geom_text(aes(label = sprintf("%+0.0f%%%s", beta_pct, sig)),
+              hjust = -0.18, vjust = -0.55, size = 2.8, colour = "black") +
+    scale_colour_manual(values = c(negative = "#9d2918", positive = "#0e5a2d"),
+                        guide = "none") +
+    labs(title = title, x = "β as % of mean", y = NULL) +
+    theme_minimal(base_size = 10) +
+    theme(plot.title = element_text(face = "bold", size = 12),
+          panel.grid.minor = element_blank())
+}
+
+p4a <- forest_pct(scale_df,   "(a) NEC scale (cross-section)")
+p4b <- forest(size_df,        "(b) NEC size mix (pp)") +
+       theme(plot.title = element_text(size = 12))
+p4c <- forest(formal_df,      "(c) NEC formality (pp)") +
+       theme(plot.title = element_text(size = 12))
+p4d <- forest(entry_df,       "(d) NEC entry by size (log, 2011-2018 panel)") +
+       theme(plot.title = element_text(size = 12))
+
 if (requireNamespace("patchwork", quietly = TRUE)) {
   library(patchwork)
-  p4 <- p4a + p4b +
+  p4 <- (p4a + p4b) / (p4c + p4d) +
     plot_annotation(
-      title = "Firm-side response: smaller, fewer firms, but medium-size entry rises",
-      subtitle = "Saturated A4, lag-2 log-z. 95% CI.",
-      caption = "(a) % of mean for counts (firms, emp); pp for shares.  (b) log new-firm count by size cohort.")
+      title = "Firm-side response: fewer, smaller, less formal firms",
+      subtitle = "NEC 2018 cross-section + NEC panel 2011-2018; A4 saturated, lag-2 log-z. 95% CI.",
+      caption = "(a) % of mean.  (b,c) percentage points (pp).  (d) log new-firm count by cohort.")
   ggsave("district-analysis/output/fig/fig4_firm_response.png",
-         p4, width = 11, height = 5.4, dpi = 200, bg = "white")
+         p4, width = 13, height = 8.8, dpi = 200, bg = "white")
 } else {
-  ggsave("district-analysis/output/fig/fig4a_firm_cs.png",
-         p4a, width = 6.5, height = 4.5, dpi = 200, bg = "white")
-  ggsave("district-analysis/output/fig/fig4b_firm_entry.png",
-         p4b, width = 6.5, height = 4.0, dpi = 200, bg = "white")
+  ggsave("district-analysis/output/fig/fig4a_scale.png",   p4a,
+         width = 6.5, height = 3.2, dpi = 200, bg = "white")
+  ggsave("district-analysis/output/fig/fig4b_size.png",    p4b,
+         width = 6.5, height = 3.2, dpi = 200, bg = "white")
+  ggsave("district-analysis/output/fig/fig4c_formal.png",  p4c,
+         width = 6.5, height = 4.0, dpi = 200, bg = "white")
+  ggsave("district-analysis/output/fig/fig4d_entry.png",   p4d,
+         width = 6.5, height = 3.2, dpi = 200, bg = "white")
 }
 cat("Wrote fig4_firm_response.png\n")
 cat("\nDone. View PNGs in district-analysis/output/fig/\n")
