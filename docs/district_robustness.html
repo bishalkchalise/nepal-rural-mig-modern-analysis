@@ -186,11 +186,12 @@ window.MathJax = {
 
 <script>
 let DATA = null;
-const MODELS = ["A2","A3","A4"];
+const MODELS = ["A2","A3","A4","A5"];
 const MODEL_DESC = {
   "A2": "+ year × mig_int",
   "A3": "+ year × fx",
-  "A4": "+ year × baseline X (saturated)"
+  "A4": "+ year × baseline X (saturated)",
+  "A5": "+ year × y(2001)  [census only]"
 };
 
 function fmtCoef(b, p, digits=4){
@@ -261,7 +262,7 @@ function rowFor(yKey, outcMeta, scaling, lag, variant, display){
   }).join("");
   // N: pull from any populated cell (prefer A4)
   let nCell = "—", nUnitCell = "—";
-  for (const m of ["A4","A3","A2"]) {
+  for (const m of ["A4","A3","A2","A5"]) {
     const r = getCell(outcMeta, scaling, lag, m, variant);
     if (r && r.cell.n) { nCell = r.cell.n.toLocaleString(); break; }
   }
@@ -310,13 +311,16 @@ function render(){
            \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_1'\\bigl(\\mathrm{mig\\_int}\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_{\\text{mig}}\\,:\\,\\text{year}\\times\\text{mig-intensity}}
            \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_2'\\bigl(\\mathrm{fx}_z\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_{\\text{fx}}\\,:\\,\\text{year}\\times\\text{fx}}
            \\;+\\; \\underbrace{\\boldsymbol{\\delta}'\\bigl(\\mathbf{X}_{d,0}\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_X\\,:\\,\\text{year}\\times\\text{baseline X (destination-region shares)}}
+           \\;+\\; \\underbrace{\\boldsymbol{\\rho}'\\bigl(y_{d,2001}\\,\\boldsymbol{\\tau}_t\\bigr)}_{\\text{A5 only}\\,:\\,\\text{year}\\times\\text{2001 outcome value}}
            \\;+\\; \\alpha_d + \\gamma_t + \\varepsilon_{dt} \\]
       </div>
       <div class="note">
-        Columns A2 → A4 add the control blocks one at a time; the same parameter $\\beta$ is reported in each.
+        Columns A2 → A5 add the control blocks one at a time; the same parameter $\\beta$ is reported in each.
         $\\phi$ is the scaling of mig_int: <strong>${scaling}</strong>. FX shifter lag $L$ = <strong>${lag}</strong>.
         District subset = <strong>${variant}</strong>.
         $\\alpha_d$ = district FE; $\\gamma_t$ = year FE. SE clustered at district.
+        A5 adds the 2001 baseline of the outcome itself, interacted with year — absorbs district-specific pre-trends.
+        Available for census outcomes that have a 2001 measurement; "—" otherwise.
         *** $p&lt;0.01$, ** $p&lt;0.05$, * $p&lt;0.10$. Click an outcome name for its definition.
       </div>
     </div>
