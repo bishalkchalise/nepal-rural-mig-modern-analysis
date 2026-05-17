@@ -274,11 +274,14 @@ run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
 # ---- outcome lists (trimmed per user request) ----
 CENSUS_OUTCOMES <- c(
   # Out-migration (built by outcome_census_outmig.R; omitted automatically if CSV missing)
-  # Population-denominator out/in/net internal-migration rates -- consistent
-  # birth-district definitions across 2011 and 2021.
+  # PERMANENT (lifetime / birth district) — 2011 Q16, 2021 q19/q20
   'mig_out_internal_share','mig_in_internal_share','net_internal_mig_share',
   'mig_out_economic_share','mig_out_noneconomic_share',
   'mig_in_economic_share','mig_in_noneconomic_share',
+  # TEMPORARY (5-year window) — 2011 Q19A/Q19B/Q18, 2021 q21/q22/q25
+  'mig_out_temp_share','mig_in_temp_share','net_temp_mig_share',
+  'mig_out_temp_economic_share','mig_out_temp_noneconomic_share',
+  'mig_in_temp_economic_share','mig_in_temp_noneconomic_share',
   # Note: `mig_in_share` (outcome_census.R) is DROPPED from the headline list
   #   because its definition differs across rounds (2011: 5-year residents only,
   #   age >= 5, codes {2,3}; 2021: full sample, codes {2,3,4} incl. abroad).

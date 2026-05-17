@@ -162,7 +162,8 @@ mig_out_2011 <- native_pop_11 %>%
     net_internal_mig_share = if_else(native_pop > 0,
                                      net_internal_mig_count / native_pop,
                                      NA_real_),
-    # Reason splits not available in 2011 with this pipeline
+    # Reason splits not available with Q16 (no paired reason question);
+    # filled below from the 5-year (Q19A/Q19B/Q18) build instead.
     mig_out_economic_share    = NA_real_,
     mig_out_noneconomic_share = NA_real_,
     mig_in_economic_share     = NA_real_,
@@ -173,7 +174,104 @@ mig_out_2011 <- native_pop_11 %>%
 cat(sprintf("  2011: %d districts, total inter-dist migrants = %s\n",
             nrow(mig_out_2011), format(sum(mig_out_2011$outmig_count), big.mark = ",")))
 
-rm(census_ind_11, c11, mig_11, inmig_11, outmig_11, native_pop_11); gc(verbose = FALSE)
+# ----- 2011: 5-YEAR (TEMPORARY) MIGRATION via Q19A / Q19B / Q18 -------------
+# Different concept from Q16: Q19A asks place lived 5 years ago; this picks up
+# recent moves only. Q18 gives reason -> economic / noneconomic split.
+cat("  -- 2011 5-yr (temp) build --\n")
+q19a_fct <- as_factor(col(census_ind_11, "Q19A"))
+is_other_dist_5yr <- grepl("other.*district", as.character(q19a_fct),
+                           ignore.case = TRUE)
+q18_raw <- tryCatch(col(census_ind_11, "Q18"), error = function(e) NA_integer_)
+
+c11_5yr <- tibble(
+    district       = tc_dname(as_factor(col(census_ind_11, "DIST"))),
+    birth_district = tc_dname(as_factor(col(census_ind_11, "Q19B"))),
+    is_other_dist  = is_other_dist_5yr,
+    reason_code    = suppressWarnings(as.integer(q18_raw))
+  ) %>%
+  mutate(
+    district       = as.character(collapse_splits(factor(district))),
+    birth_district = as.character(collapse_splits(factor(birth_district))),
+    birth_district = if_else(!is_other_dist & is.na(birth_district),
+                             district, birth_district),
+    reason_cat = case_when(
+      reason_code %in% c(1L, 2L, 3L)              ~ "economic",
+      reason_code %in% c(4L, 5L, 6L, 7L, 8L)      ~ "noneconomic",
+      TRUE                                        ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(district), district != "Not Stated")
+
+mig_11_5yr <- c11_5yr %>%
+  filter(is_other_dist,
+         district       != birth_district,
+         !district       %in% JUNK_DNAMES,
+         !birth_district %in% JUNK_DNAMES)
+
+# Denominator: stayers in d (Q19A = same district)
+native_pop_11_5yr <- c11_5yr %>%
+  filter(!is_other_dist) %>%
+  count(district, name = "native_pop_5yr")
+
+# In/out totals
+inmig_11_5yr  <- mig_11_5yr %>% count(district,       name = "inmig_count_5yr")
+outmig_11_5yr <- mig_11_5yr %>% count(birth_district, name = "outmig_count_5yr") %>%
+                 rename(district = birth_district)
+
+# Reason splits
+inmig_reason_11_5yr <- mig_11_5yr %>%
+  filter(!is.na(reason_cat)) %>%
+  count(district, reason_cat) %>%
+  pivot_wider(names_from = reason_cat, values_from = n,
+              values_fill = 0, names_prefix = "inmig_5yr_")
+outmig_reason_11_5yr <- mig_11_5yr %>%
+  filter(!is.na(reason_cat)) %>%
+  count(birth_district, reason_cat) %>%
+  pivot_wider(names_from = reason_cat, values_from = n,
+              values_fill = 0, names_prefix = "outmig_5yr_") %>%
+  rename(district = birth_district)
+
+mig_out_2011_5yr <- native_pop_11_5yr %>%
+  full_join(inmig_11_5yr,         by = "district") %>%
+  full_join(outmig_11_5yr,        by = "district") %>%
+  full_join(inmig_reason_11_5yr,  by = "district") %>%
+  full_join(outmig_reason_11_5yr, by = "district") %>%
+  mutate(across(c(native_pop_5yr, inmig_count_5yr, outmig_count_5yr,
+                  matches("^inmig_5yr_(economic|noneconomic)$"),
+                  matches("^outmig_5yr_(economic|noneconomic)$")),
+                ~ replace_na(.x, 0L))) %>%
+  mutate(
+    year                          = 2011L,
+    net_temp_mig_count            = inmig_count_5yr - outmig_count_5yr,
+    mig_in_temp_share             = if_else(native_pop_5yr > 0, inmig_count_5yr  / native_pop_5yr, NA_real_),
+    mig_out_temp_share            = if_else(native_pop_5yr > 0, outmig_count_5yr / native_pop_5yr, NA_real_),
+    net_temp_mig_share            = if_else(native_pop_5yr > 0,
+                                            net_temp_mig_count / native_pop_5yr, NA_real_),
+    mig_out_temp_economic_share   = if_else(native_pop_5yr > 0,
+                                            outmig_5yr_economic    / native_pop_5yr, NA_real_),
+    mig_out_temp_noneconomic_share= if_else(native_pop_5yr > 0,
+                                            outmig_5yr_noneconomic / native_pop_5yr, NA_real_),
+    mig_in_temp_economic_share    = if_else(native_pop_5yr > 0,
+                                            inmig_5yr_economic     / native_pop_5yr, NA_real_),
+    mig_in_temp_noneconomic_share = if_else(native_pop_5yr > 0,
+                                            inmig_5yr_noneconomic  / native_pop_5yr, NA_real_)
+  ) %>%
+  rename(dname = district) %>%
+  select(dname, year,
+         mig_in_temp_share, mig_out_temp_share, net_temp_mig_share,
+         mig_out_temp_economic_share, mig_out_temp_noneconomic_share,
+         mig_in_temp_economic_share,  mig_in_temp_noneconomic_share)
+
+mig_out_2011 <- mig_out_2011 %>% left_join(mig_out_2011_5yr, by = c("dname","year"))
+
+cat(sprintf("  2011 5-yr: %d districts, total temp migrants = %s\n",
+            nrow(mig_out_2011_5yr),
+            format(sum(mig_11_5yr$is_other_dist, na.rm = TRUE), big.mark = ",")))
+
+rm(census_ind_11, c11, c11_5yr, mig_11, mig_11_5yr,
+   inmig_11, outmig_11, native_pop_11,
+   inmig_11_5yr, outmig_11_5yr, native_pop_11_5yr,
+   inmig_reason_11_5yr, outmig_reason_11_5yr); gc(verbose = FALSE)
 
 # ============================================================================
 #  CENSUS 2021 — weighted lifetime out-migration by birth district
@@ -279,6 +377,117 @@ mig_out_2021 <- native_pop_21 %>%
 cat(sprintf("  2021: %d districts, total inter-dist migrants (wt) = %s\n",
             nrow(mig_out_2021), format(round(sum(mig_out_2021$outmig_count)), big.mark = ",")))
 
+# ----- 2021: 5-YEAR (TEMPORARY) MIGRATION via q21 / q22 / q25 ---------------
+# Parallel to 2011 Q19A/B/Q18. q21 = "place lived X years ago", q22 = origin
+# district code, q25 = reason. If q21/q22 are absent from this export, the
+# temp outcomes are filled with NA.
+cat("  -- 2021 5-yr (temp) build --\n")
+has_q21 <- "q21" %in% tolower(names(census_ind_21))
+has_q22 <- "q22" %in% tolower(names(census_ind_21))
+if (has_q21 && has_q22) {
+  q21_fct <- as_factor(col(census_ind_21, "q21"))
+  is_other_dist_21_5yr <- grepl("other.*district", as.character(q21_fct),
+                                ignore.case = TRUE)
+  c21_5yr <- tibble(
+      district       = as.character(collapse_splits(as_factor(col(census_ind_21, "dist")))),
+      place_5yr      = q21_fct,
+      birth_district = as.character(collapse_splits(as_factor(col(census_ind_21, "q22")))),
+      reason         = as_factor(col(census_ind_21, "q25")),
+      individual_wt  = wt_21,
+      is_other_dist  = is_other_dist_21_5yr
+    ) %>%
+    mutate(
+      reason_cat = case_when(
+        reason %in% c("Work/employment", "Trade/business", "Agriculture")    ~ "economic",
+        reason %in% c("Marriage", "Study/training", "Natural calamities",
+                      "Returning back", "Dependent")                          ~ "noneconomic",
+        TRUE                                                                  ~ NA_character_
+      )
+    )
+
+  mig_21_5yr <- c21_5yr %>%
+    filter(is_other_dist, district != birth_district,
+           !is.na(district), !is.na(birth_district),
+           !district       %in% JUNK_DNAMES,
+           !birth_district %in% JUNK_DNAMES)
+
+  native_pop_21_5yr <- c21_5yr %>%
+    filter(!is_other_dist) %>%
+    group_by(district) %>%
+    summarise(native_pop_5yr = sum(individual_wt, na.rm = TRUE), .groups = "drop")
+
+  inmig_21_5yr <- mig_21_5yr %>%
+    group_by(district) %>%
+    summarise(inmig_count_5yr = sum(individual_wt, na.rm = TRUE), .groups = "drop")
+
+  outmig_21_5yr <- mig_21_5yr %>%
+    group_by(birth_district) %>%
+    summarise(outmig_count_5yr = sum(individual_wt, na.rm = TRUE), .groups = "drop") %>%
+    rename(district = birth_district)
+
+  outmig_reason_21_5yr <- mig_21_5yr %>%
+    filter(!is.na(reason_cat)) %>%
+    group_by(birth_district, reason_cat) %>%
+    summarise(n = sum(individual_wt, na.rm = TRUE), .groups = "drop") %>%
+    pivot_wider(names_from = reason_cat, values_from = n,
+                values_fill = 0, names_prefix = "outmig_5yr_") %>%
+    rename(district = birth_district)
+  inmig_reason_21_5yr <- mig_21_5yr %>%
+    filter(!is.na(reason_cat)) %>%
+    group_by(district, reason_cat) %>%
+    summarise(n = sum(individual_wt, na.rm = TRUE), .groups = "drop") %>%
+    pivot_wider(names_from = reason_cat, values_from = n,
+                values_fill = 0, names_prefix = "inmig_5yr_")
+
+  mig_out_2021_5yr <- native_pop_21_5yr %>%
+    full_join(inmig_21_5yr,         by = "district") %>%
+    full_join(outmig_21_5yr,        by = "district") %>%
+    full_join(outmig_reason_21_5yr, by = "district") %>%
+    full_join(inmig_reason_21_5yr,  by = "district") %>%
+    filter(str_detect(district, "^[A-Za-z ]+$")) %>%
+    mutate(across(c(native_pop_5yr, inmig_count_5yr, outmig_count_5yr,
+                    matches("^outmig_5yr_(economic|noneconomic)$"),
+                    matches("^inmig_5yr_(economic|noneconomic)$")),
+                  ~ replace_na(.x, 0))) %>%
+    mutate(
+      year                          = 2021L,
+      net_temp_mig_count            = inmig_count_5yr - outmig_count_5yr,
+      mig_in_temp_share             = if_else(native_pop_5yr > 0, inmig_count_5yr  / native_pop_5yr, NA_real_),
+      mig_out_temp_share            = if_else(native_pop_5yr > 0, outmig_count_5yr / native_pop_5yr, NA_real_),
+      net_temp_mig_share            = if_else(native_pop_5yr > 0,
+                                              net_temp_mig_count / native_pop_5yr, NA_real_),
+      mig_out_temp_economic_share   = if_else(native_pop_5yr > 0,
+                                              outmig_5yr_economic    / native_pop_5yr, NA_real_),
+      mig_out_temp_noneconomic_share= if_else(native_pop_5yr > 0,
+                                              outmig_5yr_noneconomic / native_pop_5yr, NA_real_),
+      mig_in_temp_economic_share    = if_else(native_pop_5yr > 0,
+                                              inmig_5yr_economic     / native_pop_5yr, NA_real_),
+      mig_in_temp_noneconomic_share = if_else(native_pop_5yr > 0,
+                                              inmig_5yr_noneconomic  / native_pop_5yr, NA_real_)
+    ) %>%
+    rename(dname = district) %>%
+    select(dname, year,
+           mig_in_temp_share, mig_out_temp_share, net_temp_mig_share,
+           mig_out_temp_economic_share, mig_out_temp_noneconomic_share,
+           mig_in_temp_economic_share,  mig_in_temp_noneconomic_share)
+
+  mig_out_2021 <- mig_out_2021 %>% left_join(mig_out_2021_5yr, by = c("dname","year"))
+  cat(sprintf("  2021 5-yr: %d districts attached\n", nrow(mig_out_2021_5yr)))
+  rm(c21_5yr, mig_21_5yr, native_pop_21_5yr,
+     inmig_21_5yr, outmig_21_5yr,
+     outmig_reason_21_5yr, inmig_reason_21_5yr,
+     mig_out_2021_5yr); gc(verbose = FALSE)
+} else {
+  cat("  q21/q22 not found in 2021 file; temp outcomes set to NA.\n")
+  mig_out_2021 <- mig_out_2021 %>%
+    mutate(mig_in_temp_share = NA_real_, mig_out_temp_share = NA_real_,
+           net_temp_mig_share = NA_real_,
+           mig_out_temp_economic_share = NA_real_,
+           mig_out_temp_noneconomic_share = NA_real_,
+           mig_in_temp_economic_share = NA_real_,
+           mig_in_temp_noneconomic_share = NA_real_)
+}
+
 rm(census_ind_21, c21, mig_21, inmig_21, outmig_21,
    outmig_reason_21, inmig_reason_21, native_pop_21); gc(verbose = FALSE)
 
@@ -288,9 +497,14 @@ rm(census_ind_21, c21, mig_21, inmig_21, outmig_21,
 
 outmig_long <- bind_rows(mig_out_2011, mig_out_2021) %>%
   select(dname, year, native_pop, inmig_count, outmig_count, net_internal_mig_count,
+         # Permanent (lifetime / birth district) - Q16 in 2011, q19/q20 in 2021
          mig_in_internal_share, mig_out_internal_share, net_internal_mig_share,
          mig_out_economic_share, mig_out_noneconomic_share,
-         mig_in_economic_share,  mig_in_noneconomic_share) %>%
+         mig_in_economic_share,  mig_in_noneconomic_share,
+         # Temporary (5-year) - Q19A/Q19B/Q18 in 2011, q21/q22/q25 in 2021
+         mig_in_temp_share, mig_out_temp_share, net_temp_mig_share,
+         mig_out_temp_economic_share, mig_out_temp_noneconomic_share,
+         mig_in_temp_economic_share,  mig_in_temp_noneconomic_share) %>%
   arrange(dname, year)
 
 write_csv(outmig_long, file.path(OUT_DIR, "outmig_district_long.csv"))
