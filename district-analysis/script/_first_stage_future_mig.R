@@ -175,7 +175,88 @@ for (sc in names(SCALING_COLS)) {
   }
 }
 
-out <- bind_rows(results) %>% arrange(period, model)
+# ============================================================================
+# Annual panel 2011-2022 (district x year, with year FE)
+# Stronger first-stage spec: within-time variation. Treats permits as annual
+# rather than period-summed. SE clustered at district.
+# ============================================================================
+ann_data <- dofe %>%
+  filter(year >= 2011, year <= 2022) %>%
+  group_by(dname, year) %>%
+  summarise(permits_year = sum(permits, na.rm = TRUE), .groups = "drop") %>%
+  inner_join(pop, by = "dname") %>%
+  inner_join(mi,  by = "dname") %>%
+  left_join(regions, by = "dname") %>%
+  fill_region_na() %>%
+  inner_join(z_v2, by = c("dname","year")) %>%
+  mutate(
+    permits_per_1000 = permits_year / pop_2011 * 1000,
+    log_permits_per_1000 = log(pmax(permits_per_1000, 1e-6)),
+    z_std = (z_v2 - mean(z_v2, na.rm = TRUE)) / sd(z_v2, na.rm = TRUE)
+  )
+
+cat(sprintf("\nAnnual panel: %d (dname x year) rows | districts: %d | years: %d\n",
+            nrow(ann_data), n_distinct(ann_data$dname),
+            n_distinct(ann_data$year)))
+
+run_annual_panel <- function(panel, drop_districts = NULL,
+                              scaling_col = "log_mi_z") {
+  if (length(drop_districts)) panel <- panel %>% filter(!dname %in% drop_districts)
+  panel$mig_var <- panel[[scaling_col]]
+  panel$z_inter <- panel$z_std
+  # A2: y ~ z + mig_var + year FE
+  # A3: y ~ z + mig_var + year FE  (cluster ~ dname; no district FE so z varies)
+  # A4: + region shares interacted with year (Block A)
+  region_terms <- paste(sprintf("i(year, %s, ref = 2011L)", REGION_COLS),
+                        collapse = " + ")
+  f_A2 <- as.formula("log_permits_per_1000 ~ z_inter + mig_var | year")
+  f_A3 <- as.formula("log_permits_per_1000 ~ z_inter + mig_var | year")
+  f_A4 <- as.formula(sprintf(
+    "log_permits_per_1000 ~ z_inter + mig_var + %s | year",
+    region_terms))
+  out <- list()
+  for (mdl in c("A2","A3","A4")) {
+    f <- list(A2 = f_A2, A3 = f_A3, A4 = f_A4)[[mdl]]
+    fit <- tryCatch(feols(f, data = panel, cluster = ~dname),
+                    error = function(e) NULL)
+    if (is.null(fit)) next
+    s <- summary(fit)$coeftable
+    if (!"z_inter" %in% rownames(s)) next
+    out[[length(out)+1]] <- tibble(
+      model = mdl,
+      beta  = s["z_inter","Estimate"],
+      se    = s["z_inter","Std. Error"],
+      p     = s["z_inter","Pr(>|t|)"],
+      sig   = stars(s["z_inter","Pr(>|t|)"]),
+      n     = nobs(fit),
+      mean_y = mean(panel$log_permits_per_1000, na.rm = TRUE),
+      mean_permits_per_1000 = mean(panel$permits_per_1000, na.rm = TRUE)
+    )
+  }
+  bind_rows(out)
+}
+
+# Loop over both scalings + 3 variants (baseline + 2 drops)
+annual_results <- list()
+for (sc in names(SCALING_COLS)) {
+  mig_col <- SCALING_COLS[[sc]]
+  # baseline
+  r <- run_annual_panel(ann_data, scaling_col = mig_col) %>%
+    mutate(period = "2011-2022 (annual panel, year FE)", scaling = sc)
+  annual_results[[length(annual_results)+1]] <- r
+  # A4 drop variants
+  for (variant_model in names(DROP_VARIANTS)) {
+    drop <- DROP_VARIANTS[[variant_model]]
+    r <- run_annual_panel(ann_data, drop_districts = drop, scaling_col = mig_col)
+    r <- r %>% filter(model == "A4") %>%
+      mutate(model = variant_model,
+             period = "2011-2022 (annual panel, year FE)", scaling = sc)
+    annual_results[[length(annual_results)+1]] <- r
+  }
+}
+annual_out <- bind_rows(annual_results)
+
+out <- bind_rows(results, annual_out) %>% arrange(period, scaling, model)
 dir.create("district-analysis/output/tab", recursive = TRUE, showWarnings = FALSE)
 write_csv(out, "district-analysis/output/tab/first_stage_future_mig.csv")
 

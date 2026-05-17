@@ -313,8 +313,10 @@ def render_first_stage():
     by_pm = {}
     for r in FIRST_STAGE:
         by_pm[(r["period"], r["model"])] = r
-    # Order: full window first, then the sub-periods chronologically
-    PERIOD_ORDER = ["2011-2022", "2011-2015", "2015-2019", "2019-2022"]
+    # Order: annual panel first (headline spec), then full-period sum,
+    # then chronological sub-periods.
+    PERIOD_ORDER = ["2011-2022 (annual panel, year FE)",
+                    "2011-2022", "2011-2015", "2015-2019", "2019-2022"]
     seen = {r["period"] for r in FIRST_STAGE}
     periods = [p for p in PERIOD_ORDER if p in seen] + \
               sorted(p for p in seen if p not in PERIOD_ORDER)
