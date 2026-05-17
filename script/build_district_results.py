@@ -313,7 +313,11 @@ def render_first_stage():
     by_pm = {}
     for r in FIRST_STAGE:
         by_pm[(r["period"], r["model"])] = r
-    periods = sorted({r["period"] for r in FIRST_STAGE})
+    # Order: full window first, then the sub-periods chronologically
+    PERIOD_ORDER = ["2011-2022", "2011-2015", "2015-2019", "2019-2022"]
+    seen = {r["period"] for r in FIRST_STAGE}
+    periods = [p for p in PERIOD_ORDER if p in seen] + \
+              sorted(p for p in seen if p not in PERIOD_ORDER)
     col_specs = [("A2", "A2"), ("A3", "A3"),
                  ("A4 (saturated)", "A4"),
                  ("A4, drop KTM",   "A4_dropKTM")]
@@ -448,19 +452,65 @@ TITLE_AND_SPEC = """
 # ============================================================================
 # Assemble: head + body wrapper from muni; slides between
 # ============================================================================
+MOBILE_CSS = """
+  /* Mobile / small-screen tuning */
+  @media (max-width: 900px) {
+    .reveal table { font-size: 0.42em; }
+    .reveal h2 { font-size: 1.0em; }
+    .reveal section { padding: 16px 24px 12px 24px; }
+  }
+  /* Portrait orientation hint on phones */
+  @media (orientation: portrait) and (max-width: 900px) {
+    body::before {
+      content: "↺  Rotate to landscape for best view";
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(20, 30, 40, 0.97); color: #fff; z-index: 9999;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px; padding: 2em; text-align: center;
+    }
+  }
+"""
+
+MOBILE_JS = """
+<script>
+// On the FIRST tap (any-where on the deck), request full-screen landscape.
+// Browsers require a user gesture to enter fullscreen / lock orientation.
+(function () {
+  function tryFullscreen () {
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+    if (req) { req.call(el).catch(function(){}); }
+    // Lock to landscape if supported (Android Chrome / Firefox)
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock("landscape").catch(function(){});
+    }
+  }
+  // Only auto-prompt on touch devices (skip desktops)
+  if (matchMedia("(pointer: coarse)").matches) {
+    document.addEventListener("click", function once () {
+      tryFullscreen();
+      document.removeEventListener("click", once);
+    }, { once: true });
+  }
+})();
+</script>
+"""
+
 def render_doc():
     muni = Path("docs/presentation.html").read_text()
-    # Take everything up to <div class="slides">
     head_end = muni.index('<div class="slides">') + len('<div class="slides">')
     head = muni[:head_end]
-    # Replace title
     head = head.replace(
         "<title>Presentation — Nepal migration / FX shock</title>",
         "<title>District results — Nepal migration / FX shock</title>"
     )
-    # Body close: from </div></div> wrapper + script block
+    # Inject mobile CSS right before the closing </style>
+    head = head.replace("</style>", MOBILE_CSS + "\n</style>", 1)
     tail_start = muni.rindex("</div>\n</div>")
     tail = muni[tail_start:]
+    # Inject mobile JS right before </body>
+    tail = tail.replace("</body>", MOBILE_JS + "\n</body>", 1)
     return head + "\n\n" + TITLE_AND_SPEC + "\n\n" + slides_html + "\n\n" + tail
 
 doc = render_doc()

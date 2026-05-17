@@ -223,7 +223,44 @@
       font-size: 0.33em; color: var(--muted);
       margin: 0.2em 0 0 0; text-align: left; line-height: 1.5;
     }
-  </style>
+
+    /* Mobile / small-screen tuning */
+    @media (max-width: 900px) {
+      .reveal table { font-size: 0.42em; }
+      .reveal h2 { font-size: 1.0em; }
+      .reveal section { padding: 16px 24px 12px 24px; }
+    }
+    /* Portrait orientation hint on phones */
+    @media (orientation: portrait) and (max-width: 900px) {
+      body::before {
+        content: "↺  Rotate to landscape for best view";
+        position: fixed; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(20, 30, 40, 0.97); color: #fff; z-index: 9999;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 18px; padding: 2em; text-align: center;
+      }
+    }
+  
+  /* Mobile / small-screen tuning */
+  @media (max-width: 900px) {
+    .reveal table { font-size: 0.42em; }
+    .reveal h2 { font-size: 1.0em; }
+    .reveal section { padding: 16px 24px 12px 24px; }
+  }
+  /* Portrait orientation hint on phones */
+  @media (orientation: portrait) and (max-width: 900px) {
+    body::before {
+      content: "↺  Rotate to landscape for best view";
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(20, 30, 40, 0.97); color: #fff; z-index: 9999;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 18px; padding: 2em; text-align: center;
+    }
+  }
+
+</style>
 </head>
 <body>
 <div class="reveal">
@@ -786,8 +823,49 @@
   }
 </script>
 
+<script>
+// Mobile: on first tap, request full-screen + lock to landscape.
+(function () {
+  function tryFullscreen () {
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+    if (req) { req.call(el).catch(function(){}); }
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock("landscape").catch(function(){});
+    }
+  }
+  if (matchMedia("(pointer: coarse)").matches) {
+    document.addEventListener("click", function once () {
+      tryFullscreen();
+      document.removeEventListener("click", once);
+    }, { once: true });
+  }
+})();
+</script>
 
 
+<script>
+// On the FIRST tap (any-where on the deck), request full-screen landscape.
+// Browsers require a user gesture to enter fullscreen / lock orientation.
+(function () {
+  function tryFullscreen () {
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+    if (req) { req.call(el).catch(function(){}); }
+    // Lock to landscape if supported (Android Chrome / Firefox)
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock("landscape").catch(function(){});
+    }
+  }
+  // Only auto-prompt on touch devices (skip desktops)
+  if (matchMedia("(pointer: coarse)").matches) {
+    document.addEventListener("click", function once () {
+      tryFullscreen();
+      document.removeEventListener("click", once);
+    }, { once: true });
+  }
+})();
+</script>
 
 </body>
 </html>
