@@ -37,6 +37,7 @@ suppressMessages(suppressWarnings({
 
 stars <- function(p) ifelse(is.na(p), "",
   ifelse(p<0.01,"***", ifelse(p<0.05,"**", ifelse(p<0.10,"*",""))))
+`%||%` <- function(a, b) if (is.null(a)) b else a
 
 # ---- Thin-coverage flag ---------------------------------------------------
 # Count distinct 2009-10 destinations per district (after positivity filter)
@@ -50,22 +51,25 @@ cat(sprintf("Thin-coverage cutoff (Q1 of n_dest): %.0f\n", q1))
 cat(sprintf("Thin-coverage districts (%d): %s\n",
             length(thin_districts), paste(thin_districts, collapse = ", ")))
 
-# ---- Headline outcome list -----------------------------------------------
+# ---- Build dynamic HEADLINE list from outcomes that are significant at the
+# ---- baseline (M4, scaling=log, lag=2, p<0.10) in the main robustness CSV.
+sig_outcomes <- list()
+main_csv <- "district-analysis/output/tab/robustness_all_panels.csv"
+if (file.exists(main_csv)) {
+  rg <- read_csv(main_csv, show_col_types = FALSE) %>%
+    filter(model == "M4", scaling == "log", lag == 2L, !is.na(p), p < 0.10)
+  for (ds in unique(rg$dataset)) {
+    sig_outcomes[[ds]] <- rg %>% filter(dataset == ds) %>% pull(outcome) %>% unique()
+  }
+  cat("Outcomes per dataset significant at baseline M4/log/lag2 (p<0.10):\n")
+  for (ds in names(sig_outcomes)) cat(sprintf("  %s: %d\n", ds, length(sig_outcomes[[ds]])))
+}
+
 HEADLINE <- list(
-  list(ds = "census", panel = cdf, mode = "dname", refyr = 2011L, outs = c(
-    "mig_in_internal_share","mig_in_temp_share",
-    "net_internal_mig_share","net_temp_mig_share",
-    "mig_in_temp_noneconomic_share","mig_out_internal_share",
-    "amen_assets_landline","amen_assets_mobile","amen_assets_car",
-    "amen_cooking_kerosene")),
-  list(ds = "hh", panel = hh,  mode = "hhid",  refyr = 2016L, outs = c(
-    "input_intensity_per_sqm","nonfood_exp_12m",
-    "edu_spend_total_12m","profit_12m")),
-  list(ds = "nec_cs", panel = ncs, mode = "cs", refyr = NA_integer_, outs = c(
-    "n_firms","emp_total","formality_index","share_keeps_accounts")),
-  list(ds = "nec_panel", panel = npd, mode = "dname", refyr = 2011L, outs = c(
-    "log_n_new_firms","log_n_new_firms_size_medium_10_50",
-    "log_n_new_firms_size_micro_1"))
+  list(ds = "census",    panel = cdf, mode = "dname", refyr = 2011L, outs = sig_outcomes$census    %||% character()),
+  list(ds = "hh",        panel = hh,  mode = "hhid",  refyr = 2016L, outs = sig_outcomes$hh        %||% character()),
+  list(ds = "nec_cs",    panel = ncs, mode = "cs",    refyr = NA_integer_, outs = sig_outcomes$nec_cs %||% character()),
+  list(ds = "nec_panel", panel = if (exists("npd")) npd else NULL, mode = "dname", refyr = 2011L, outs = sig_outcomes$nec_panel %||% character())
 )
 
 run_one <- function(panel, ycol, mode, refyr) {

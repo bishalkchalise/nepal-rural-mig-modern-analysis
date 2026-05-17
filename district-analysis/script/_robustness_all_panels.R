@@ -507,7 +507,6 @@ write_csv(out, "district-analysis/output/tab/robustness_all_panels.csv")
 
 cat(sprintf("\nSaved %d rows to district-analysis/output/tab/robustness_all_panels.csv\n", nrow(out)))
 cat(sprintf("Elapsed: %.1f min\n", as.numeric(Sys.time() - t0, units = "mins")))
-}  # end !SKIP_RUN
 
 cat("\nSummary by dataset / scaling / model:\n")
 print(out %>% group_by(dataset, scaling, model) %>%
@@ -515,3 +514,4 @@ print(out %>% group_by(dataset, scaling, model) %>%
                   pct_pos    = round(mean(beta > 0, na.rm = TRUE) * 100, 1),
                   pct_sig    = round(mean(p < 0.05, na.rm = TRUE) * 100, 1),
                   .groups = "drop"))
+}  # end !SKIP_RUN

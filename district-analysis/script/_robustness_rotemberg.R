@@ -121,12 +121,26 @@ cat(sprintf("Top 5 destinations carry %.1f%% combined\n",
 # replace the aggregate z with destination-k's contribution. Use baseline
 # lag = 2, scaling = log. Cluster ~ dname.
 
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
+# ---- Dynamic HEADLINE list = outcomes significant at baseline (M4, log, lag2)
+sig_outcomes <- list()
+main_csv <- "district-analysis/output/tab/robustness_all_panels.csv"
+if (file.exists(main_csv)) {
+  rg <- read_csv(main_csv, show_col_types = FALSE) %>%
+    filter(model == "M4", scaling == "log", lag == 2L, !is.na(p), p < 0.10)
+  for (ds in unique(rg$dataset)) {
+    sig_outcomes[[ds]] <- rg %>% filter(dataset == ds) %>% pull(outcome) %>% unique()
+  }
+  cat("Outcomes per dataset significant at baseline:\n")
+  for (ds in names(sig_outcomes)) cat(sprintf("  %s: %d\n", ds, length(sig_outcomes[[ds]])))
+}
+
 HEADLINE <- list(
-  list(ds="census", panel=cdf, mode="dname", refyr=2011L, outs=c(
-    "mig_in_internal_share","mig_in_temp_share","net_internal_mig_share",
-    "net_temp_mig_share","mig_in_temp_noneconomic_share")),
-  list(ds="nec_cs", panel=ncs, mode="cs",    refyr=NA_integer_, outs=c(
-    "n_firms","emp_total"))
+  list(ds="census",    panel=cdf, mode="dname", refyr=2011L,        outs=sig_outcomes$census    %||% character()),
+  list(ds="hh",        panel=hh,  mode="hhid",  refyr=2016L,        outs=sig_outcomes$hh        %||% character()),
+  list(ds="nec_cs",    panel=ncs, mode="cs",    refyr=NA_integer_,  outs=sig_outcomes$nec_cs    %||% character()),
+  list(ds="nec_panel", panel=if (exists("npd")) npd else NULL, mode="dname", refyr=2011L, outs=sig_outcomes$nec_panel %||% character())
 )
 
 run_destk_one <- function(panel, ycol, mode, refyr, zk_panel) {
