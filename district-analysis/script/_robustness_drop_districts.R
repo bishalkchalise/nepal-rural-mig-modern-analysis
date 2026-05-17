@@ -68,17 +68,19 @@ cat(sprintf("Low-mig districts (%d): %s\n",
 # ---- KTM valley -----------------------------------------------------------
 ktm_valley <- c("Kathmandu", "Lalitpur", "Bhaktapur")
 
-# ---- Build dynamic HEADLINE list from outcomes that are significant at the
-# ---- baseline (M4, scaling=log, lag=2, p<0.10) in the main robustness CSV.
+# ---- Build HEADLINE list = ALL outcomes used in the main robustness grid
+# ---- (was previously limited to baseline-significant outcomes; expanded
+# ---- so the portal's "district subset" filter shows actual changes for
+# ---- every outcome, not just a small subset).
 sig_outcomes <- list()
 main_csv <- "district-analysis/output/tab/robustness_all_panels.csv"
 if (file.exists(main_csv)) {
   rg <- read_csv(main_csv, show_col_types = FALSE) %>%
-    filter(model == "M4", scaling == "log", lag == 2L, !is.na(p), p < 0.10)
+    filter(model == "M4", scaling == "log", lag == 2L)   # no significance filter
   for (ds in unique(rg$dataset)) {
     sig_outcomes[[ds]] <- rg %>% filter(dataset == ds) %>% pull(outcome) %>% unique()
   }
-  cat("Outcomes per dataset significant at baseline M4/log/lag2 (p<0.10):\n")
+  cat("Outcomes per dataset (all in the main robustness grid):\n")
   for (ds in names(sig_outcomes)) cat(sprintf("  %s: %d\n", ds, length(sig_outcomes[[ds]])))
 }
 
@@ -130,35 +132,41 @@ for (variant in names(PORTAL_VARIANTS)) {
   }
 }
 
-# Keep LOO at M4 only (the headline) — separate computation kept for the
-# diagnostic; not part of the per-variant portal grid.
-cat("\n========== LOO at M4 baseline (separate) ==========\n")
-all_dist <- sort(unique(mi$dname))
-cat(sprintf("LOO across %d districts...\n", length(all_dist)))
-loo_rows <- list()
-i <- 0
-for (d in all_dist) {
-  i <- i + 1
-  if (i %% 10 == 0) cat(sprintf("  ... %d/%d (%s)\n", i, length(all_dist), d))
-  for (h in HEADLINE) {
-    if (is.null(h$panel)) next
-    pn <- h$panel %>% filter(dname != d)
-    for (yc in h$outs) {
-      if (!yc %in% names(pn)) next
-      r <- run_models(pn, yc, h$mode, h$refyr)
-      if (is.null(r)) next
-      m4 <- r[r$model == "M4", ]
-      if (nrow(m4) == 0) next
-      loo_rows[[length(loo_rows)+1]] <- tibble(
-        dataset = h$ds, outcome = yc, variant = "loo",
-        dropped_dname = d, model = "M4",
-        beta = m4$beta, se = m4$se, p = m4$p, sig = stars(m4$p),
-        mean_y = m4$mean_y, n = m4$n
-      )
+# LOO disabled by default -- with the headline expanded to ALL outcomes,
+# LOO would be 75 districts x ~225 outcomes x ~4 models x ~4 panels which is
+# prohibitively slow. Set RUN_LOO <- TRUE to enable (diagnostic only;
+# not used by the portal).
+if (exists("RUN_LOO") && isTRUE(RUN_LOO)) {
+  cat("\n========== LOO at M4 baseline (separate, slow) ==========\n")
+  all_dist <- sort(unique(mi$dname))
+  cat(sprintf("LOO across %d districts...\n", length(all_dist)))
+  loo_rows <- list()
+  i <- 0
+  for (d in all_dist) {
+    i <- i + 1
+    if (i %% 10 == 0) cat(sprintf("  ... %d/%d (%s)\n", i, length(all_dist), d))
+    for (h in HEADLINE) {
+      if (is.null(h$panel)) next
+      pn <- h$panel %>% filter(dname != d)
+      for (yc in h$outs) {
+        if (!yc %in% names(pn)) next
+        r <- run_models(pn, yc, h$mode, h$refyr)
+        if (is.null(r)) next
+        m4 <- r[r$model == "M4", ]
+        if (nrow(m4) == 0) next
+        loo_rows[[length(loo_rows)+1]] <- tibble(
+          dataset = h$ds, outcome = yc, variant = "loo",
+          dropped_dname = d, model = "M4",
+          beta = m4$beta, se = m4$se, p = m4$p, sig = stars(m4$p),
+          mean_y = m4$mean_y, n = m4$n
+        )
+      }
     }
   }
+  out_rows <- c(out_rows, loo_rows)
+} else {
+  cat("\nLOO skipped (set RUN_LOO <- TRUE to enable; only needed for diagnostic).\n")
 }
-out_rows <- c(out_rows, loo_rows)
 
 out <- bind_rows(out_rows)
 dir.create("district-analysis/output/tab", recursive = TRUE, showWarnings = FALSE)
