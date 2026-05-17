@@ -14,8 +14,9 @@ Uses district-analysis/output/tab/district_robustness_grid.csv (no R re-run).
 import csv, json, os
 from collections import defaultdict
 
-GRID = "district-analysis/output/tab/district_robustness_grid.csv"
-OUT  = "docs/district_robustness.json"
+GRID_MAIN = "district-analysis/output/tab/robustness_all_panels.csv"
+GRID_DROP = "district-analysis/output/tab/robustness_drop_districts.csv"
+OUT       = "docs/district_robustness.json"
 
 # === Outcome -> (group, label) mapping ===
 # Match muni group naming convention exactly. District-specific outcomes
@@ -222,8 +223,29 @@ DS_MAP = {"census": CENSUS_MAP, "hh": HH_MAP, "nec_cs": NEC_CS_MAP, "nec_panel":
 # ============================================================================
 # Build
 # ============================================================================
-rows = list(csv.DictReader(open(GRID)))
-print(f"Grid rows in: {len(rows)}")
+# Source CSVs (both written by the R pipeline)
+rows_main = list(csv.DictReader(open(GRID_MAIN)))
+for r in rows_main:
+    r.setdefault("variant", "baseline")
+rows_drop = []
+if os.path.exists(GRID_DROP):
+    rows_drop = list(csv.DictReader(open(GRID_DROP)))
+    # drop CSV lacks `scaling` / `lag` columns -- the R script always runs
+    # the drop variants at the baseline spec (scaling=log, lag=2). Fill in.
+    for r in rows_drop:
+        r["scaling"] = r.get("scaling") or "log"
+        r["lag"]     = r.get("lag")     or "2"
+    # Skip LOO rows (they're per-district drops, not the 3 portal variants)
+    rows_drop = [r for r in rows_drop if r.get("variant") != "loo"]
+print(f"Main rows: {len(rows_main):,} | drop rows: {len(rows_drop):,}")
+
+# Build stats lookup from main CSV (mean_y, sd_y not yet in CSV columns
+# uniformly -- pull whatever's there).
+# The R aggregator stitches sd_y + n_unit into the merged grid; we don't
+# have that on this side, but mean_y and n are available from the main CSV.
+# sd_y and n_unit fall back to None when not available; the portal handles
+# null mean/sd gracefully (skips % rescalings).
+rows = rows_main + rows_drop
 
 # Drop raw scaling. Rename M2->A2, M3->A3, M4->A4. KEEP M5 as A5 (the
 # 2001-baseline control extension; census-only).
@@ -250,9 +272,10 @@ for r in keep:
     if k in stats: continue
     try: my = float(r["mean_y"])
     except: my = None
-    try: sdy = float(r["sd_y"])
+    # sd_y / n_unit not present in raw source CSVs; default to None
+    try: sdy = float(r.get("sd_y", ""))
     except: sdy = None
-    try: nu = int(float(r["n_unit"]))
+    try: nu = int(float(r.get("n_unit", "")))
     except: nu = None
     stats[k] = (my, sdy, nu)
 
