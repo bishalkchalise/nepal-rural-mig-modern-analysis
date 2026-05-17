@@ -110,18 +110,25 @@ CENSUS_MAP <- list(
 )
 
 HH_MAP <- list(
-  # Migration -- HH
-  has_migrant_intl           = c("Migration -- HH", "Has international migrant"),
-  n_intl_migrants            = c("Migration -- HH", "# international migrants"),
-  remit_amount_intl_12m_rs   = c("Migration -- HH", "Intl remittance, 12m (Rs)"),
-  remit_received             = c("Migration -- HH", "Any remittance received"),
-  # HH spending (merges food / non-food / education / health)
-  food_exp_total_7day        = c("HH spending", "Food exp, total 7d"),
-  food_exp_purchased_7day    = c("HH spending", "Food exp, purchased 7d"),
-  food_exp_homeprod_7day     = c("HH spending", "Food exp, home-produced 7d"),
-  nonfood_exp_12m            = c("HH spending", "Non-food exp, 12m"),
-  edu_spend_total_12m        = c("HH spending", "Education spend, 12m"),
-  hlt_spend_total            = c("HH spending", "Health spend"),
+  # Migration -- HH (raw + log of remittance amount)
+  has_migrant_intl              = c("Migration -- HH", "Has international migrant"),
+  n_intl_migrants               = c("Migration -- HH", "# international migrants"),
+  remit_amount_intl_12m_rs      = c("Migration -- HH", "Intl remittance, 12m (Rs)"),
+  log_remit_amount_intl_12m_rs  = c("Migration -- HH", "log Intl remittance, 12m"),
+  remit_received                = c("Migration -- HH", "Any remittance received"),
+  # HH spending: raw + log
+  food_exp_total_7day            = c("HH spending", "Food exp, total 7d"),
+  log_food_exp_total_7day        = c("HH spending", "log Food exp, total 7d"),
+  food_exp_purchased_7day        = c("HH spending", "Food exp, purchased 7d"),
+  log_food_exp_purchased_7day    = c("HH spending", "log Food exp, purchased 7d"),
+  food_exp_homeprod_7day         = c("HH spending", "Food exp, home-produced 7d"),
+  log_food_exp_homeprod_7day     = c("HH spending", "log Food exp, home-produced 7d"),
+  nonfood_exp_12m                = c("HH spending", "Non-food exp, 12m"),
+  log_nonfood_exp_12m            = c("HH spending", "log Non-food exp, 12m"),
+  edu_spend_total_12m            = c("HH spending", "Education spend, 12m"),
+  log_edu_spend_total_12m        = c("HH spending", "log Education spend, 12m"),
+  hlt_spend_total                = c("HH spending", "Health spend"),
+  log_hlt_spend_total            = c("HH spending", "log Health spend"),
   # Land use -- wet/dry
   share_self_wet             = c("Land use -- wet/dry", "Own-cultivated, wet"),
   share_self_dry             = c("Land use -- wet/dry", "Own-cultivated, dry"),
@@ -129,7 +136,7 @@ HH_MAP <- list(
   share_fallow_wet           = c("Land use -- wet/dry", "Fallow, wet"),
   share_fallow_dry           = c("Land use -- wet/dry", "Fallow, dry"),
   share_rented_out_wet       = c("Land use -- wet/dry", "Rented out, wet"),
-  # Land -- agriculture
+  # Land -- agriculture: indicators (no log)
   owns_plough                = c("Land -- agriculture", "Owns plough"),
   owns_powered_machinery     = c("Land -- agriculture", "Owns powered machinery"),
   owns_irrigation_kit        = c("Land -- agriculture", "Owns irrigation kit"),
@@ -137,30 +144,46 @@ HH_MAP <- list(
   owns_transport             = c("Land -- agriculture", "Owns transport"),
   n_equip_categories         = c("Land -- agriculture", "# equipment categories"),
   n_powered_types            = c("Land -- agriculture", "# powered equipment types"),
-  equip_stock_value_rs       = c("Land -- agriculture", "Equipment stock value (Rs)"),
-  total_input_cost_rs        = c("Land -- agriculture", "Total input cost (Rs)"),
   input_intensity_per_sqm    = c("Land -- agriculture", "Input intensity / sqm"),
-  wet_cost_seed              = c("Land -- agriculture", "Wet: seed cost"),
-  dry_cost_seed              = c("Land -- agriculture", "Dry: seed cost"),
-  wet_cost_fert              = c("Land -- agriculture", "Wet: fertilizer cost"),
-  dry_cost_fert              = c("Land -- agriculture", "Dry: fertilizer cost"),
-  wet_cost_labour            = c("Land -- agriculture", "Wet: labour cost"),
-  dry_cost_labour            = c("Land -- agriculture", "Dry: labour cost"),
-  wet_cost_insect            = c("Land -- agriculture", "Wet: insecticide cost"),
-  dry_cost_insect            = c("Land -- agriculture", "Dry: insecticide cost"),
-  # Enterprise
+  # Land -- agriculture: amounts (raw + log)
+  equip_stock_value_rs           = c("Land -- agriculture", "Equipment stock value (Rs)"),
+  log_equip_stock_value_rs       = c("Land -- agriculture", "log Equipment stock value"),
+  total_input_cost_rs            = c("Land -- agriculture", "Total input cost (Rs)"),
+  log_total_input_cost_rs        = c("Land -- agriculture", "log Total input cost"),
+  wet_cost_seed                  = c("Land -- agriculture", "Wet: seed cost"),
+  log_wet_cost_seed              = c("Land -- agriculture", "log Wet: seed cost"),
+  dry_cost_seed                  = c("Land -- agriculture", "Dry: seed cost"),
+  log_dry_cost_seed              = c("Land -- agriculture", "log Dry: seed cost"),
+  wet_cost_fert                  = c("Land -- agriculture", "Wet: fertilizer cost"),
+  log_wet_cost_fert              = c("Land -- agriculture", "log Wet: fertilizer cost"),
+  dry_cost_fert                  = c("Land -- agriculture", "Dry: fertilizer cost"),
+  log_dry_cost_fert              = c("Land -- agriculture", "log Dry: fertilizer cost"),
+  wet_cost_labour                = c("Land -- agriculture", "Wet: labour cost"),
+  log_wet_cost_labour            = c("Land -- agriculture", "log Wet: labour cost"),
+  dry_cost_labour                = c("Land -- agriculture", "Dry: labour cost"),
+  log_dry_cost_labour            = c("Land -- agriculture", "log Dry: labour cost"),
+  wet_cost_insect                = c("Land -- agriculture", "Wet: insecticide cost"),
+  log_wet_cost_insect            = c("Land -- agriculture", "log Wet: insecticide cost"),
+  dry_cost_insect                = c("Land -- agriculture", "Dry: insecticide cost"),
+  log_dry_cost_insect            = c("Land -- agriculture", "log Dry: insecticide cost"),
+  # Enterprise: indicators / counts (no log)
   has_enterprise             = c("Enterprise", "HH operates enterprise"),
   n_enterprises              = c("Enterprise", "# enterprises"),
   n_workers_total            = c("Enterprise", "# workers"),
-  revenue_12m                = c("Enterprise", "Revenue, 12m"),
-  profit_12m                 = c("Enterprise", "Profit, 12m"),
-  expenses_12m               = c("Enterprise", "Expenses, 12m"),
-  capex_12m                  = c("Enterprise", "Capex, 12m"),
   sector_trade               = c("Enterprise", "Sector: trade"),
   sector_manufacturing       = c("Enterprise", "Sector: manufacturing"),
   sector_services            = c("Enterprise", "Sector: services"),
   sector_hotels              = c("Enterprise", "Sector: hospitality"),
-  sector_transport           = c("Enterprise", "Sector: transport")
+  sector_transport           = c("Enterprise", "Sector: transport"),
+  # Enterprise: amounts (raw + log)
+  revenue_12m                = c("Enterprise", "Revenue, 12m"),
+  log_revenue_12m            = c("Enterprise", "log Revenue, 12m"),
+  profit_12m                 = c("Enterprise", "Profit, 12m"),
+  log_profit_12m             = c("Enterprise", "log Profit, 12m"),
+  expenses_12m               = c("Enterprise", "Expenses, 12m"),
+  log_expenses_12m           = c("Enterprise", "log Expenses, 12m"),
+  capex_12m                  = c("Enterprise", "Capex, 12m"),
+  log_capex_12m              = c("Enterprise", "log Capex, 12m")
 )
 
 NEC_CS_MAP <- list(
@@ -218,6 +241,14 @@ NEC_PANEL_MAP <- list(
 )
 
 DS_MAPS <- list(census = CENSUS_MAP, hh = HH_MAP, nec_cs = NEC_CS_MAP, nec_panel = NEC_PANEL_MAP)
+
+# First-stage validation: outcomes per future-migration window
+FIRST_STAGE_MAP <- list(
+  log_permits_2011_2015 = c("Future DOFE migration", "log permits per 1k pop, 2011-2015"),
+  log_permits_2015_2019 = c("Future DOFE migration", "log permits per 1k pop, 2015-2019"),
+  log_permits_2019_2022 = c("Future DOFE migration", "log permits per 1k pop, 2019-2022"),
+  log_permits_2011_2022 = c("Future DOFE migration", "log permits per 1k pop, 2011-2022 (full)")
+)
 
 # ---- Load source CSVs ------------------------------------------------------
 GRID_MAIN <- "district-analysis/output/tab/robustness_all_panels.csv"
@@ -308,18 +339,82 @@ build_dataset <- function(ds_label, mp) {
   list(outcomes = outs, groups = groups)
 }
 
+# ---- First-stage validation dataset ----------------------------------------
+# Reads first_stage_future_mig.csv directly (separate from main grid) and
+# emits a 4th portal dataset 'first_stage' with 3 outcomes (one per period).
+# Cells stored at key log|2|<model>|<variant> to fit the existing schema --
+# scaling/lag dropdowns are not meaningful for this dataset but the values
+# show under the default (log, lag 2).
+build_first_stage <- function() {
+  fs_path <- "district-analysis/output/tab/first_stage_future_mig.csv"
+  if (!file.exists(fs_path)) return(list(outcomes = list(), groups = character()))
+  fs <- read_csv(fs_path, show_col_types = FALSE)
+  PERIOD_TO_OUTCOME <- c(
+    "2011-2015" = "log_permits_2011_2015",
+    "2015-2019" = "log_permits_2015_2019",
+    "2019-2022" = "log_permits_2019_2022",
+    "2011-2022" = "log_permits_2011_2022"
+  )
+  outs <- list()
+  for (oc in names(FIRST_STAGE_MAP)) {
+    per <- names(PERIOD_TO_OUTCOME)[PERIOD_TO_OUTCOME == oc]
+    sub <- fs[fs$period == per, ]
+    if (!nrow(sub)) next
+    cells <- list()
+    any_nonnull <- FALSE
+    for (i in seq_len(nrow(sub))) {
+      mdl <- sub$model[i]
+      # Map A4_drop<X> -> variant=<X>, model=A4. Others baseline.
+      if (mdl == "A4_dropKTM") {
+        model_key <- "A4"; variant <- "drop_ktm_valley"
+      } else if (mdl == "A4_dropLowMig") {
+        model_key <- "A4"; variant <- "drop_low_mig"
+      } else {
+        model_key <- mdl;   variant <- "baseline"
+      }
+      # scaling column is present after first-stage script gained log+lin
+      # loop; fall back to "log" for backwards compatibility with older CSVs.
+      sc <- if ("scaling" %in% names(sub)) sub$scaling[i] else "log"
+      if (is.na(sc) || !nzchar(sc)) sc <- "log"
+      k <- sprintf("%s|2|%s|%s", sc, model_key, variant)
+      b  <- sub$beta[i]; se <- sub$se[i]; p <- sub$p[i]; n <- sub$n[i]
+      cells[[k]] <- list(
+        beta = if (is.na(b))  NULL else unbox(b),
+        se   = if (is.na(se)) NULL else unbox(se),
+        p    = if (is.na(p))  NULL else unbox(p),
+        n    = if (is.na(n))  NULL else unbox(as.integer(n)),
+        sig  = unbox(clean_sig(sub$sig[i]))
+      )
+      if (!is.na(b)) any_nonnull <- TRUE
+    }
+    if (!any_nonnull) next
+    my <- suppressWarnings(as.numeric(sub$mean_y[1]))
+    outs[[oc]] <- list(
+      label  = unbox(FIRST_STAGE_MAP[[oc]][2]),
+      group  = unbox(FIRST_STAGE_MAP[[oc]][1]),
+      mean_y = if (is.na(my)) NA else unbox(my),
+      cells  = cells
+    )
+    outs[[oc]]$n_unit <- unbox(suppressWarnings(as.integer(sub$n[1])))
+  }
+  list(outcomes = outs,
+       groups   = if (length(outs)) "Future DOFE migration" else character())
+}
+
 out_json <- list(
   datasets_meta = list(
-    census    = list(label = unbox("Census district panel (2011, 2021)")),
-    hh        = list(label = unbox("HRVS HH panel (2016-18, district x year residualised)")),
-    nec_cs    = list(label = unbox("NEC 2018 district cross-section")),
-    nec_panel = list(label = unbox("NEC entry-cohort panel (2011-2018)"))
+    census      = list(label = unbox("Census district panel (2011, 2021)")),
+    hh          = list(label = unbox("HRVS HH panel (2016-18, district x year residualised)")),
+    nec_cs      = list(label = unbox("NEC 2018 district cross-section")),
+    nec_panel   = list(label = unbox("NEC entry-cohort panel (2011-2018)")),
+    first_stage = list(label = unbox("First stage: future DOFE migration (district cross-section by period)"))
   ),
   datasets = list(
-    census    = build_dataset("census",    CENSUS_MAP),
-    hh        = build_dataset("hh",        HH_MAP),
-    nec_cs    = build_dataset("nec_cs",    NEC_CS_MAP),
-    nec_panel = build_dataset("nec_panel", NEC_PANEL_MAP)
+    census      = build_dataset("census",    CENSUS_MAP),
+    hh          = build_dataset("hh",        HH_MAP),
+    nec_cs      = build_dataset("nec_cs",    NEC_CS_MAP),
+    nec_panel   = build_dataset("nec_panel", NEC_PANEL_MAP),
+    first_stage = build_first_stage()
   )
 )
 
