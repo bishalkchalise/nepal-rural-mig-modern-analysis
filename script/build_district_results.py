@@ -453,27 +453,16 @@ TITLE_AND_SPEC = """
 # Assemble: head + body wrapper from muni; slides between
 # ============================================================================
 MOBILE_CSS = """
-  /* Mobile / small-screen tuning */
+  /* Mobile / small-screen tuning: just responsive font sizing, no overlay */
   @media (max-width: 900px) {
     .reveal table { font-size: 0.45em; }
     .reveal h2 { font-size: 1.0em; }
     .reveal section { padding: 16px 24px 12px 24px; }
     .reveal .eq-cap { font-size: 0.42em; }
   }
-  /* Portrait orientation hint on phones (CSS-only; no JS button) */
-  @media (orientation: portrait) and (max-width: 900px) {
-    body::before {
-      content: "↺  Rotate to landscape for best view";
-      position: fixed; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(20, 30, 40, 0.97); color: #fff; z-index: 9999;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 18px; padding: 2em; text-align: center;
-    }
-  }
 """
 
-MOBILE_JS = ""   # no JS overlay; simple CSS hint above is enough
+MOBILE_JS = ""   # no mobile-specific JS
 
 def render_doc():
     muni = Path("docs/presentation.html").read_text()
