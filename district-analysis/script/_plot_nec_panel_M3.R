@@ -20,6 +20,9 @@ if (!file.exists(OUT_FILE)) {
 df <- read_csv(OUT_FILE, show_col_types = FALSE) %>%
   filter(dataset == "nec_panel", model == "M3", scaling == "log")
 
+# Robustness grid added (scaling, lag). Keep only baseline lag for plotting.
+if ("lag" %in% names(df)) df <- df %>% filter(lag == 2L)
+
 if (nrow(df) == 0) stop("No nec_panel/M3/log rows in output CSV.")
 
 df <- df %>%
