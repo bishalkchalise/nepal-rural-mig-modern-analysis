@@ -324,8 +324,15 @@ fit_one <- function(panel, ycol, scaling = BASELINE_SCALING,
 
 run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
   rows <- list()
+  n_total <- sum(outcomes %in% names(panel))
+  i <- 0L
   for (yc in outcomes) {
     if (!yc %in% names(panel)) next
+    i <- i + 1L
+    if (i %% 10L == 0L || i == n_total) {
+      cat(sprintf("  [%s] %d/%d  (%s)\n", ds_label, i, n_total, yc))
+      gc(verbose = FALSE)   # free memory periodically to prevent RStudio crashes
+    }
     for (slbl in SCALINGS) {
       for (lag in LAGS) {
         r <- fit_one(panel, yc, slbl, lag, mode, refyr)
@@ -375,10 +382,26 @@ NEC_CS_OUTCOMES <- c('n_firms','emp_total','mean_emp_per_firm','formality_index'
   'share_firms_size_medium_10_50','share_firms_size_large_51p',
   'share_borrowed_any','share_formal_credit','share_any_foreign_cap')
 
-# HH_OUTCOMES is built DYNAMICALLY after the HH panel loads (see below) so
-# the portal covers every numeric outcome in the source RVS files, not just a
-# curated headline subset.
-HH_OUTCOMES <- character()
+# HH_OUTCOMES: curated list (full RVS expansion caused memory blow-up).
+HH_OUTCOMES <- c(
+  # Migration / remittance
+  'has_migrant_intl','n_intl_migrants',
+  'remit_amount_intl_12m_rs','remit_received',
+  # Agriculture (kept)
+  'share_self_wet','share_self_dry','share_both_seasons','share_fallow_wet',
+  'share_fallow_dry','share_rented_out_wet','owns_plough','owns_powered_machinery',
+  'owns_irrigation_kit','owns_storage_struct','owns_transport',
+  'n_equip_categories','n_powered_types','equip_stock_value_rs',
+  'total_input_cost_rs','wet_cost_seed','dry_cost_seed','wet_cost_fert','dry_cost_fert',
+  'wet_cost_labour','dry_cost_labour','wet_cost_insect','dry_cost_insect',
+  'input_intensity_per_sqm',
+  # Spending (trimmed to 6 specific items)
+  'food_exp_total_7day','food_exp_purchased_7day','food_exp_homeprod_7day',
+  'nonfood_exp_12m','edu_spend_total_12m','hlt_spend_total',
+  # Enterprise (kept)
+  'has_enterprise','n_enterprises','n_workers_total','revenue_12m','profit_12m',
+  'expenses_12m','capex_12m',
+  'sector_trade','sector_manufacturing','sector_services','sector_hotels','sector_transport')
 
 # Source paths to look for HH files (district-analysis first, then archive)
 HH_FILE_PATHS <- c(
@@ -442,8 +465,8 @@ if (!is.null(nec_cs)) {
   ncs <- NULL
 }
 
-# 3. HH panel: merge across all RVS files; outer join on (hhid, year).
-# Keep every numeric column from each file -- the portal needs full coverage.
+# 3. HH panel: merge across files; outer join on (hhid, year).
+# Reverted to curated HH_OUTCOMES (full RVS expansion caused memory crash).
 load_hh <- function() {
   hh <- NULL
   loaded <- character()
@@ -452,18 +475,9 @@ load_hh <- function() {
     base <- basename(p)
     if (base %in% loaded) next
     df <- read_csv(p, show_col_types = FALSE, progress = FALSE)
-    if (!all(c("hhid","year") %in% names(df))) next
-    # Keep hhid + year + all numeric columns
-    num_cols <- names(df)[vapply(df, is.numeric, logical(1))]
-    keep <- c("hhid","year", setdiff(num_cols, c("hhid","year")))
-    df <- df[, intersect(keep, names(df)), drop = FALSE]
-    if (is.null(hh)) {
-      hh <- df
-    } else {
-      # Avoid duplicate column names across files; suffix collisions if any
-      hh <- full_join(hh, df, by = c("hhid","year"), suffix = c("", "_DUP"))
-      hh <- hh[, !grepl("_DUP$", names(hh))]
-    }
+    keep <- intersect(c("hhid","year", HH_OUTCOMES), names(df))
+    df <- df[, keep, drop = FALSE]
+    if (is.null(hh)) hh <- df else hh <- full_join(hh, df, by = c("hhid","year"))
     loaded <- c(loaded, base)
   }
   hh
@@ -475,18 +489,6 @@ hh <- hh %>%
   inner_join(mi, by = "dname") %>%
   left_join(regions, by = "dname") %>% fill_region_na() %>%
   attach_z_lags(z_v2)
-
-# Expand HH_OUTCOMES dynamically -- everything numeric except identifiers,
-# the joined mi/region/z columns, and obvious denominator/admin fields.
-HH_NON_OUTCOME <- c(
-  "hhid","year","dname","weight","district","district_code",
-  "log_mi_z","lin_mi_z","mi_raw",
-  REGION_COLS,
-  grep("^z_lag", names(hh), value = TRUE)
-)
-HH_OUTCOMES <- setdiff(names(hh)[vapply(hh, is.numeric, logical(1))],
-                       HH_NON_OUTCOME)
-cat(sprintf("HH_OUTCOMES: %d outcomes after expansion\n", length(HH_OUTCOMES)))
 cat(sprintf("HH panel: %d obs over %d districts, %d HH\n",
             nrow(hh), n_distinct(hh$dname), n_distinct(hh$hhid)))
 
