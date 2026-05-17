@@ -62,17 +62,31 @@ GROUP_OF <- function(o, ds) {
     return("census_other")
   }
   if (ds == "hh") {
-    if (o %in% c("has_migrant_intl","n_intl_migrants","remit_received",
-                  "remit_amount_intl_12m_rs")) return("hh_migration")
+    # Migration / remittance
+    if (grepl("migrant|remit", o)) return("hh_migration")
+    # Agriculture: ag share/cost/equipment/input outcomes
     if (startsWith(o, "share_self_") || startsWith(o, "share_fallow_") ||
         startsWith(o, "share_rented_") || startsWith(o, "share_both_") ||
         startsWith(o, "owns_") || startsWith(o, "n_equip") || startsWith(o, "n_powered") ||
-        grepl("^(wet|dry)_cost", o) || o %in% c("equip_stock_value_rs",
-        "total_input_cost_rs","input_intensity_per_sqm")) return("hh_ag")
-    if (grepl("^food_", o) || grepl("^nonfood_", o) || o == "edu_spend_total_12m" ||
-        o == "hlt_spend_total") return("hh_consumption")
+        startsWith(o, "equip_") ||
+        grepl("^(wet|dry)_cost", o) ||
+        o %in% c("total_input_cost_rs","input_intensity_per_sqm",
+                 "rented_in_wet","rented_in_dry","irrig_share_wet","irrig_share_dry",
+                 "land_total_sqm","land_rented_in_sqm")) return("hh_ag")
+    # Consumption: food and non-food
+    if (grepl("^food_|^nonfood_|^cons_", o)) return("hh_consumption")
+    # Education spending and outcomes
+    if (grepl("edu_spend|^school_|^edu_", o)) return("hh_education")
+    # Health spending and outcomes
+    if (grepl("^hlt_|^health_", o)) return("hh_health")
+    # Shocks / coping
+    if (grepl("^shock_|^coping_|^shocked_|^any_shock", o)) return("hh_shocks")
+    # Social protection
+    if (grepl("^protect|^social_|^benefit_|^transfer_", o)) return("hh_protection")
+    # Enterprise
     if (o %in% c("has_enterprise","n_enterprises","n_workers_total","revenue_12m",
-                 "profit_12m","expenses_12m","capex_12m") || startsWith(o, "sector_"))
+                 "profit_12m","expenses_12m","capex_12m","tax_paid_12m") ||
+        startsWith(o, "sector_") || startsWith(o, "ent_"))
       return("hh_enterprise")
     return("hh_other")
   }
@@ -200,6 +214,10 @@ GROUP_LABEL <- c(
   hh_ag              = "HH agriculture",
   hh_consumption     = "HH consumption (food / non-food)",
   hh_enterprise      = "HH enterprise",
+  hh_education       = "HH education",
+  hh_health          = "HH health",
+  hh_shocks          = "HH shocks & coping",
+  hh_protection      = "HH social protection",
   hh_other           = "HH other",
   nec_scale          = "Firm scale & size",
   nec_workforce      = "Firm workforce & capital",
