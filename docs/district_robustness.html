@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>District robustness — Nepal SSIV</title>
+<title>District explorer — Nepal SSIV</title>
 <link rel="stylesheet" href="style.css">
 <script>
 window.MathJax = {
@@ -13,10 +13,8 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
 <style>
-  /* Slight darken + bump font size for this page (per user request).
-     Overrides only what's needed; falls through to style.css for everything else. */
   body { color:#0e1419; font-size:19px; }
-  .reveal nav.sidebar, nav.sidebar { font-size:14px; }
+  nav.sidebar { font-size:14px; }
   table.results { font-size:14.5px; }
   table.results th { color:#0e1419; font-weight:600; }
   table.results td { color:#181c20; }
@@ -52,6 +50,7 @@ window.MathJax = {
   .outcome-cell{ font-weight:500; }
   .outcome-cell a{ color:#0e1419; }
   .outcome-cell a:hover{ color:#2780e3; text-decoration:underline; }
+  .fallback-cell { font-style: italic; opacity: 0.65; }
   .meta-spec {
     background:var(--panel); border:1px solid var(--rule);
     border-radius:3px; padding:1rem 1.2rem; margin-bottom:1rem;
@@ -98,14 +97,13 @@ window.MathJax = {
 <main class="content-wide">
 
 <header class="page-header">
-  <h1>District robustness</h1>
+  <h1>District explorer</h1>
   <div class="sub">
-    Stargazer-style robustness table for the district-level analysis. Columns
-    show the <strong>Khanna control ladder</strong> (gradual addition of
-    controls: M2 → M3 → M4 → M5). Rows are outcomes in the selected group.
-    Use the dropdowns to switch dataset, outcome group, lag of the FX
-    shifter, scaling of the migration intensity term, district-subset
-    variant, and how β is displayed.
+    District-level SSIV results across the four data panels.
+    Rows are outcomes; columns A2 → A4 add control blocks one at a time,
+    so the same β is identified under progressively tighter controls.
+    Dropdowns vary lag of the FX shifter, scaling of the migration term,
+    and a district-subset robustness check.
   </div>
 </header>
 
@@ -132,32 +130,31 @@ window.MathJax = {
     <div class="desc">Year-offset of FX shifter relative to outcome.</div>
   </div>
   <div class="ctrl">
-    <label for="scale">Scale (mig intensity)</label>
+    <label for="scale">Mig intensity</label>
     <select id="scale">
-      <option value="log" selected>log — z(log mig/1000) (baseline)</option>
-      <option value="lin">lin — z(mig/1000)</option>
-      <option value="raw">raw — mig/1000 (no z)</option>
+      <option value="log" selected>log</option>
+      <option value="lin">lin</option>
     </select>
-    <div class="desc">Functional form / standardisation of mig_int.</div>
+    <div class="desc">log = z of log(mig/1000); lin = z of mig/1000.</div>
   </div>
   <div class="ctrl">
     <label for="variant">District subset</label>
     <select id="variant">
       <option value="baseline" selected>baseline (all 75)</option>
-      <option value="drop_ktm_valley">drop KTM valley (-3)</option>
-      <option value="drop_low_mig">drop low-mig (-7)</option>
+      <option value="drop_ktm_valley">drop KTM valley (−3)</option>
+      <option value="drop_low_mig">drop low-mig (−7)</option>
     </select>
-    <div class="desc">Drop selected districts before estimating.</div>
+    <div class="desc">Drop selected districts. Cells fall back to baseline (italic) where variant not computed.</div>
   </div>
   <div class="ctrl">
     <label for="display">Display</label>
     <select id="display">
       <option value="raw" selected>β (raw)</option>
-      <option value="pp">β as pp (×100)</option>
-      <option value="pct_mean">β as % of mean(y)</option>
-      <option value="pct_sd">β as % of sd(y)</option>
+      <option value="pp">β (pp)</option>
+      <option value="pct_mean">β (% of mean)</option>
+      <option value="pct_sd">β (% of SD)</option>
     </select>
-    <div class="desc">Cell formatting (β / SE rescaled in place).</div>
+    <div class="desc">Cell formatting only; underlying β unchanged.</div>
   </div>
 </div>
 
@@ -176,19 +173,17 @@ window.MathJax = {
 </div>
 
 <footer>
-  Generated from <code>output/tab/district_robustness_grid.csv</code> /
-  <code>docs/district_robustness.json</code> by
-  <code>script/build_district_robustness_json.R</code>.
+  Generated from <code>district-analysis/output/tab/district_robustness_grid.csv</code> by
+  <code>script/build_district_robustness_json.py</code>.
 </footer>
 
 <script>
 let DATA = null;
-const MODELS = ["M2","M3","M4","M5"];
-const MODEL_LABEL = {
-  "M2": "(1) + C<sub>mig</sub>",
-  "M3": "(2) + C<sub>fx</sub>",
-  "M4": "(3) + C<sub>X</sub>",
-  "M5": "(4) + y<sub>2001</sub>"
+const MODELS = ["A2","A3","A4"];
+const MODEL_DESC = {
+  "A2": "+ year × mig_int",
+  "A3": "+ year × fx",
+  "A4": "+ year × baseline X (saturated)"
 };
 
 function fmtCoef(b, p, digits=4){
@@ -226,8 +221,22 @@ function ds(){ return DATA.datasets[document.getElementById("dataset").value]; }
 function unitWord(){
   return ({census:"dist", hh:"HH", nec_panel:"dist", nec_cs:"dist"})[document.getElementById("dataset").value] || "unit";
 }
-function specKey(scaling, lag, model, variant){
+function key(scaling, lag, model, variant){
   return `${scaling}|${lag}|${model}|${variant}`;
+}
+
+// Get cell with variant fallback: try (scaling, lag, model, variant), then
+// fall back to (scaling, lag, model, "baseline"). The fallback flag tells
+// the renderer to display italicised (so user knows the variant didn't
+// actually drop those districts for this outcome).
+function getCell(outcMeta, scaling, lag, model, variant){
+  const c = outcMeta.cells[key(scaling, lag, model, variant)];
+  if (c != null && c.beta != null) return { cell: c, fallback: false };
+  if (variant !== "baseline") {
+    const b = outcMeta.cells[key(scaling, lag, model, "baseline")];
+    if (b != null && b.beta != null) return { cell: b, fallback: true };
+  }
+  return null;
 }
 
 function rowFor(yKey, outcMeta, scaling, lag, variant, display){
@@ -235,18 +244,19 @@ function rowFor(yKey, outcMeta, scaling, lag, variant, display){
   const cellLabel = `<td><span class="outcome-cell"><a href="definitions.html#${yKey}">${label}</a></span><br><code style="font-size:11.5px;color:#4a5360">${yKey}</code></td>`;
   const meanCell = `<td>${fmtMean(outcMeta.mean_y)}</td>`;
   const modelCells = MODELS.map(m => {
-    const k = specKey(scaling, lag, m, variant);
-    const c = outcMeta.cells[k];
-    if (!c || c.beta == null) return `<td><span class="se">—</span></td>`;
+    const r = getCell(outcMeta, scaling, lag, m, variant);
+    if (!r) return `<td><span class="se">—</span></td>`;
+    const c = r.cell;
     const [b, se, dig] = transformBeta(c, outcMeta, display);
     if (b == null) return `<td><span class="se">—</span></td>`;
-    return `<td>${fmtCoef(b, c.p, dig)}<br>${fmtSE(se, dig)}</td>`;
+    const wrap = r.fallback ? "fallback-cell" : "";
+    return `<td><div class="${wrap}">${fmtCoef(b, c.p, dig)}<br>${fmtSE(se, dig)}</div></td>`;
   }).join("");
-  // Sample size: use M4 row's N as default (most likely populated)
+  // N: pull from any populated cell (prefer A4)
   let nCell = "—", nUnitCell = "—";
-  for (const m of ["M4","M3","M2","M5"]) {
-    const c = outcMeta.cells[specKey(scaling, lag, m, variant)];
-    if (c && c.n) { nCell = c.n.toLocaleString(); break; }
+  for (const m of ["A4","A3","A2"]) {
+    const r = getCell(outcMeta, scaling, lag, m, variant);
+    if (r && r.cell.n) { nCell = r.cell.n.toLocaleString(); break; }
   }
   if (outcMeta.n_unit) nUnitCell = outcMeta.n_unit.toLocaleString();
   return `<tr>${cellLabel}${meanCell}${modelCells}<td>${nCell}</td><td>${nUnitCell}</td></tr>`;
@@ -261,14 +271,14 @@ function render(){
   const variant = document.getElementById("variant").value;
   const display = document.getElementById("display").value;
 
-  const grpMeta = DATA.groups_meta[grp] || {label:grp};
   document.getElementById("dataset-desc").textContent = DATA.datasets_meta[document.getElementById("dataset").value]?.label || "";
-  document.getElementById("group-desc").textContent = grpMeta.label;
+  document.getElementById("group-desc").textContent = grp;
   document.getElementById("nav-dataset").textContent = "Dataset: " + (DATA.datasets_meta[document.getElementById("dataset").value]?.label || "—");
-  document.getElementById("nav-group").textContent   = "Group: " + grpMeta.label;
+  document.getElementById("nav-group").textContent   = "Group: " + grp;
 
-  // Header
-  const modelHead = MODELS.map(m => `<th>${MODEL_LABEL[m]}</th>`).join("");
+  // Header: A2/A3/A4 columns with control description as subhead
+  const modelHead = MODELS.map(m =>
+    `<th>${m}<br><span class="se" style="font-weight:400">${MODEL_DESC[m]}</span></th>`).join("");
   document.getElementById("thead-row").innerHTML = `
     <th style="text-align:left">Outcome</th>
     <th>mean(y)</th>
@@ -276,32 +286,31 @@ function render(){
     <th>N</th>
     <th>N ${unitWord()}</th>`;
 
-  // Rows: filter outcomes by group
+  // Rows: outcomes in selected group (alphabetical by label)
   const outcomesInGrp = Object.keys(D.outcomes).filter(k => D.outcomes[k].group === grp);
   outcomesInGrp.sort((a,b) => (D.outcomes[a].label||a).localeCompare(D.outcomes[b].label||b));
   document.getElementById("tbody").innerHTML =
     outcomesInGrp.length === 0
-      ? `<tr><td colspan="${4 + MODELS.length}" class="se" style="text-align:center;padding:20px">No outcomes in this group for this dataset.</td></tr>`
+      ? `<tr><td colspan="${4 + MODELS.length}" class="se" style="text-align:center;padding:20px">No outcomes in this group.</td></tr>`
       : outcomesInGrp.map(k => rowFor(k, D.outcomes[k], scaling, lag, variant, display)).join("");
 
-  // Meta spec panel
+  // Spec equation (muni-style)
   document.getElementById("meta-spec-host").innerHTML = `
     <div class="meta-spec">
       <div class="head">Specification — what each column adds</div>
       <div class="eq">
-        \\[ y_{dt} \\;=\\; \\beta\\,\\bigl(z_{d,t-L} \\cdot \\phi(\\mathrm{mig}_d)\\bigr)
-           \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_1' \\bigl(\\phi(\\mathrm{mig}_d)\\,\\tau_t\\bigr)}_{C_{\\mathrm{mig}} \\text{ — col (1)}}
-           \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_2'\\,z_{d,t-L}}_{C_{\\mathrm{fx}} \\text{ — col (2)}}
-           \\;+\\; \\underbrace{\\boldsymbol{\\delta}'\\bigl(\\mathbf{X}_{d,0}\\,\\tau_t\\bigr)}_{C_X \\text{ — col (3)}}
-           \\;+\\; \\underbrace{\\boldsymbol{\\rho}'\\bigl(y_{d,2001}\\,\\tau_t\\bigr)}_{\\text{2001-baseline — col (4)}}
+        \\[ y_{dt} \\;=\\; \\underbrace{\\beta\\bigl[\\mathrm{fx}_z \\cdot \\phi(\\mathrm{mig\\_int})\\bigr]}_{\\text{heterogeneous slope (reported)}}
+           \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_1'\\bigl(\\mathrm{mig\\_int}\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_{\\text{mig}}\\,:\\,\\text{year}\\times\\text{mig-intensity}}
+           \\;+\\; \\underbrace{\\boldsymbol{\\lambda}_2'\\bigl(\\mathrm{fx}_z\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_{\\text{fx}}\\,:\\,\\text{year}\\times\\text{fx}}
+           \\;+\\; \\underbrace{\\boldsymbol{\\delta}'\\bigl(\\mathbf{X}_{d,0}\\,\\boldsymbol{\\tau}_t\\bigr)}_{C_X\\,:\\,\\text{year}\\times\\text{baseline X (destination-region shares)}}
            \\;+\\; \\alpha_d + \\gamma_t + \\varepsilon_{dt} \\]
       </div>
       <div class="note">
-        $\\alpha_d$ = district fixed effect. $\\gamma_t$ = year FE. $\\phi$ scaling of mig intensity = <strong>${scaling}</strong>;
-        FX shifter lag $L$ = <strong>${lag}</strong>. District subset = <strong>${variant}</strong>.
-        SE clustered at district. *** $p&lt;0.01$, ** $p&lt;0.05$, * $p&lt;0.10$.
-        Col (4) (M5) only applies to census outcomes that have a 2001 baseline.
-        Click an outcome name for its definition.
+        Columns A2 → A4 add the control blocks one at a time; the same parameter $\\beta$ is reported in each.
+        $\\phi$ is the scaling of mig_int: <strong>${scaling}</strong>. FX shifter lag $L$ = <strong>${lag}</strong>.
+        District subset = <strong>${variant}</strong>.
+        $\\alpha_d$ = district FE; $\\gamma_t$ = year FE. SE clustered at district.
+        *** $p&lt;0.01$, ** $p&lt;0.05$, * $p&lt;0.10$. Click an outcome name for its definition.
       </div>
     </div>
   `;
@@ -311,12 +320,12 @@ function render(){
 
   // Table note
   const dsLab = DATA.datasets_meta[document.getElementById("dataset").value]?.label || "";
-  document.getElementById("table-note").innerHTML = `
-    <strong>Reading.</strong> Dataset = ${dsLab}. Each cell shows β + significance stars (top)
-    and SE in parens (bottom) under the indicated column of the Khanna control ladder.
-    Switch <em>Treatment lag</em>, <em>Scale</em>, or <em>District subset</em> to vary
-    the underlying specification; the column structure (M2 → M5) is constant.
-  `;
+  let note = `<strong>Reading.</strong> Dataset = ${dsLab}.
+    Each cell: β + stars (top) / SE (bottom).`;
+  if (variant !== "baseline") {
+    note += ` <em>Italic cells</em> indicate the drop-variant was not separately computed for that outcome; baseline value shown as fallback.`;
+  }
+  document.getElementById("table-note").innerHTML = note;
 }
 
 function fillSelect(id, items, selected){
@@ -328,19 +337,14 @@ function repopulateGroupsForDataset(){
   const dsKey = document.getElementById("dataset").value;
   const D = DATA.datasets[dsKey];
   if (!D) return;
-  // Groups present in this dataset (with counts)
+  // Use the dataset's pre-sorted groups list, with outcome counts
   const groupCounts = {};
   for (const k of Object.keys(D.outcomes)) {
     const g = D.outcomes[k].group;
     groupCounts[g] = (groupCounts[g] || 0) + 1;
   }
-  const groupsSorted = Object.keys(groupCounts).sort((a,b)=>{
-    const la = (DATA.groups_meta[a]?.label || a).toLowerCase();
-    const lb = (DATA.groups_meta[b]?.label || b).toLowerCase();
-    return la.localeCompare(lb);
-  });
-  fillSelect("group", groupsSorted.map(g =>
-    [g, (DATA.groups_meta[g]?.label || g) + ` (${groupCounts[g]})`]));
+  const groupsSorted = (D.groups || Object.keys(groupCounts)).slice().sort();
+  fillSelect("group", groupsSorted.map(g => [g, `${g} (${groupCounts[g] || 0})`]));
 }
 
 async function init(){
@@ -353,23 +357,18 @@ async function init(){
     document.body.innerHTML = `<p style="color:red;padding:2rem">Could not load district_robustness.json: ${e}</p>`;
     return;
   }
-  // Populate dataset dropdown
   const dsKeys = Object.keys(DATA.datasets_meta);
   fillSelect("dataset", dsKeys.map(k => [k, DATA.datasets_meta[k].label]),
              dsKeys.includes("census") ? "census" : dsKeys[0]);
   repopulateGroupsForDataset();
-  // Default group: pick one with results (prefer migration_temp if available)
+  // Default group: Migration if present
   const grpSel = document.getElementById("group");
-  if ([...grpSel.options].some(o => o.value === "migration_temp"))
-    grpSel.value = "migration_temp";
+  for (const opt of grpSel.options) {
+    if (opt.value === "Migration") { grpSel.value = "Migration"; break; }
+  }
 
   document.getElementById("dataset").addEventListener("change", () => {
     repopulateGroupsForDataset();
-    // Default group: pick the first populated one
-    if (!document.getElementById("group").value) {
-      const gs = document.getElementById("group");
-      if (gs.options.length) gs.value = gs.options[0].value;
-    }
     render();
   });
   ["group","lag","scale","variant","display"].forEach(id =>
