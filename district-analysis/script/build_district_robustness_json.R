@@ -110,18 +110,25 @@ CENSUS_MAP <- list(
 )
 
 HH_MAP <- list(
-  # Migration -- HH
-  has_migrant_intl           = c("Migration -- HH", "Has international migrant"),
-  n_intl_migrants            = c("Migration -- HH", "# international migrants"),
-  remit_amount_intl_12m_rs   = c("Migration -- HH", "Intl remittance, 12m (Rs)"),
-  remit_received             = c("Migration -- HH", "Any remittance received"),
-  # HH spending (merges food / non-food / education / health)
-  food_exp_total_7day        = c("HH spending", "Food exp, total 7d"),
-  food_exp_purchased_7day    = c("HH spending", "Food exp, purchased 7d"),
-  food_exp_homeprod_7day     = c("HH spending", "Food exp, home-produced 7d"),
-  nonfood_exp_12m            = c("HH spending", "Non-food exp, 12m"),
-  edu_spend_total_12m        = c("HH spending", "Education spend, 12m"),
-  hlt_spend_total            = c("HH spending", "Health spend"),
+  # Migration -- HH (raw + log of remittance amount)
+  has_migrant_intl              = c("Migration -- HH", "Has international migrant"),
+  n_intl_migrants               = c("Migration -- HH", "# international migrants"),
+  remit_amount_intl_12m_rs      = c("Migration -- HH", "Intl remittance, 12m (Rs)"),
+  log_remit_amount_intl_12m_rs  = c("Migration -- HH", "log Intl remittance, 12m"),
+  remit_received                = c("Migration -- HH", "Any remittance received"),
+  # HH spending: raw + log
+  food_exp_total_7day            = c("HH spending", "Food exp, total 7d"),
+  log_food_exp_total_7day        = c("HH spending", "log Food exp, total 7d"),
+  food_exp_purchased_7day        = c("HH spending", "Food exp, purchased 7d"),
+  log_food_exp_purchased_7day    = c("HH spending", "log Food exp, purchased 7d"),
+  food_exp_homeprod_7day         = c("HH spending", "Food exp, home-produced 7d"),
+  log_food_exp_homeprod_7day     = c("HH spending", "log Food exp, home-produced 7d"),
+  nonfood_exp_12m                = c("HH spending", "Non-food exp, 12m"),
+  log_nonfood_exp_12m            = c("HH spending", "log Non-food exp, 12m"),
+  edu_spend_total_12m            = c("HH spending", "Education spend, 12m"),
+  log_edu_spend_total_12m        = c("HH spending", "log Education spend, 12m"),
+  hlt_spend_total                = c("HH spending", "Health spend"),
+  log_hlt_spend_total            = c("HH spending", "log Health spend"),
   # Land use -- wet/dry
   share_self_wet             = c("Land use -- wet/dry", "Own-cultivated, wet"),
   share_self_dry             = c("Land use -- wet/dry", "Own-cultivated, dry"),
@@ -129,7 +136,7 @@ HH_MAP <- list(
   share_fallow_wet           = c("Land use -- wet/dry", "Fallow, wet"),
   share_fallow_dry           = c("Land use -- wet/dry", "Fallow, dry"),
   share_rented_out_wet       = c("Land use -- wet/dry", "Rented out, wet"),
-  # Land -- agriculture
+  # Land -- agriculture: indicators (no log)
   owns_plough                = c("Land -- agriculture", "Owns plough"),
   owns_powered_machinery     = c("Land -- agriculture", "Owns powered machinery"),
   owns_irrigation_kit        = c("Land -- agriculture", "Owns irrigation kit"),
@@ -137,30 +144,46 @@ HH_MAP <- list(
   owns_transport             = c("Land -- agriculture", "Owns transport"),
   n_equip_categories         = c("Land -- agriculture", "# equipment categories"),
   n_powered_types            = c("Land -- agriculture", "# powered equipment types"),
-  equip_stock_value_rs       = c("Land -- agriculture", "Equipment stock value (Rs)"),
-  total_input_cost_rs        = c("Land -- agriculture", "Total input cost (Rs)"),
   input_intensity_per_sqm    = c("Land -- agriculture", "Input intensity / sqm"),
-  wet_cost_seed              = c("Land -- agriculture", "Wet: seed cost"),
-  dry_cost_seed              = c("Land -- agriculture", "Dry: seed cost"),
-  wet_cost_fert              = c("Land -- agriculture", "Wet: fertilizer cost"),
-  dry_cost_fert              = c("Land -- agriculture", "Dry: fertilizer cost"),
-  wet_cost_labour            = c("Land -- agriculture", "Wet: labour cost"),
-  dry_cost_labour            = c("Land -- agriculture", "Dry: labour cost"),
-  wet_cost_insect            = c("Land -- agriculture", "Wet: insecticide cost"),
-  dry_cost_insect            = c("Land -- agriculture", "Dry: insecticide cost"),
-  # Enterprise
+  # Land -- agriculture: amounts (raw + log)
+  equip_stock_value_rs           = c("Land -- agriculture", "Equipment stock value (Rs)"),
+  log_equip_stock_value_rs       = c("Land -- agriculture", "log Equipment stock value"),
+  total_input_cost_rs            = c("Land -- agriculture", "Total input cost (Rs)"),
+  log_total_input_cost_rs        = c("Land -- agriculture", "log Total input cost"),
+  wet_cost_seed                  = c("Land -- agriculture", "Wet: seed cost"),
+  log_wet_cost_seed              = c("Land -- agriculture", "log Wet: seed cost"),
+  dry_cost_seed                  = c("Land -- agriculture", "Dry: seed cost"),
+  log_dry_cost_seed              = c("Land -- agriculture", "log Dry: seed cost"),
+  wet_cost_fert                  = c("Land -- agriculture", "Wet: fertilizer cost"),
+  log_wet_cost_fert              = c("Land -- agriculture", "log Wet: fertilizer cost"),
+  dry_cost_fert                  = c("Land -- agriculture", "Dry: fertilizer cost"),
+  log_dry_cost_fert              = c("Land -- agriculture", "log Dry: fertilizer cost"),
+  wet_cost_labour                = c("Land -- agriculture", "Wet: labour cost"),
+  log_wet_cost_labour            = c("Land -- agriculture", "log Wet: labour cost"),
+  dry_cost_labour                = c("Land -- agriculture", "Dry: labour cost"),
+  log_dry_cost_labour            = c("Land -- agriculture", "log Dry: labour cost"),
+  wet_cost_insect                = c("Land -- agriculture", "Wet: insecticide cost"),
+  log_wet_cost_insect            = c("Land -- agriculture", "log Wet: insecticide cost"),
+  dry_cost_insect                = c("Land -- agriculture", "Dry: insecticide cost"),
+  log_dry_cost_insect            = c("Land -- agriculture", "log Dry: insecticide cost"),
+  # Enterprise: indicators / counts (no log)
   has_enterprise             = c("Enterprise", "HH operates enterprise"),
   n_enterprises              = c("Enterprise", "# enterprises"),
   n_workers_total            = c("Enterprise", "# workers"),
-  revenue_12m                = c("Enterprise", "Revenue, 12m"),
-  profit_12m                 = c("Enterprise", "Profit, 12m"),
-  expenses_12m               = c("Enterprise", "Expenses, 12m"),
-  capex_12m                  = c("Enterprise", "Capex, 12m"),
   sector_trade               = c("Enterprise", "Sector: trade"),
   sector_manufacturing       = c("Enterprise", "Sector: manufacturing"),
   sector_services            = c("Enterprise", "Sector: services"),
   sector_hotels              = c("Enterprise", "Sector: hospitality"),
-  sector_transport           = c("Enterprise", "Sector: transport")
+  sector_transport           = c("Enterprise", "Sector: transport"),
+  # Enterprise: amounts (raw + log)
+  revenue_12m                = c("Enterprise", "Revenue, 12m"),
+  log_revenue_12m            = c("Enterprise", "log Revenue, 12m"),
+  profit_12m                 = c("Enterprise", "Profit, 12m"),
+  log_profit_12m             = c("Enterprise", "log Profit, 12m"),
+  expenses_12m               = c("Enterprise", "Expenses, 12m"),
+  log_expenses_12m           = c("Enterprise", "log Expenses, 12m"),
+  capex_12m                  = c("Enterprise", "Capex, 12m"),
+  log_capex_12m              = c("Enterprise", "log Capex, 12m")
 )
 
 NEC_CS_MAP <- list(

@@ -510,8 +510,27 @@ hh <- hh %>%
   inner_join(mi, by = "dname") %>%
   left_join(regions, by = "dname") %>% fill_region_na() %>%
   attach_z_lags(z_v2)
-cat(sprintf("HH panel: %d obs over %d districts, %d HH\n",
-            nrow(hh), n_distinct(hh$dname), n_distinct(hh$hhid)))
+
+# Add log() versions of amount-based HH outcomes (remittance, spending,
+# costs, enterprise revenue/profit/etc.). Standard log(1+x) on max(x, 0)
+# so negative values (rare; e.g. enterprise losses) coerce to 0 before log.
+HH_LOG_BASES <- c(
+  "remit_amount_intl_12m_rs",
+  "food_exp_total_7day","food_exp_purchased_7day","food_exp_homeprod_7day",
+  "nonfood_exp_12m","edu_spend_total_12m","hlt_spend_total",
+  "equip_stock_value_rs","total_input_cost_rs",
+  "wet_cost_seed","dry_cost_seed","wet_cost_fert","dry_cost_fert",
+  "wet_cost_labour","dry_cost_labour","wet_cost_insect","dry_cost_insect",
+  "revenue_12m","profit_12m","expenses_12m","capex_12m"
+)
+for (c in HH_LOG_BASES) {
+  if (c %in% names(hh)) {
+    hh[[paste0("log_", c)]] <- log(pmax(hh[[c]], 0, na.rm = FALSE) + 1)
+  }
+}
+HH_OUTCOMES <- c(HH_OUTCOMES, paste0("log_", intersect(HH_LOG_BASES, names(hh))))
+cat(sprintf("HH panel: %d obs over %d districts, %d HH (%d outcomes incl. logs)\n",
+            nrow(hh), n_distinct(hh$dname), n_distinct(hh$hhid), length(HH_OUTCOMES)))
 
 # ---- RUN ----
 # Other scripts (e.g. _robustness_drop_districts.R) may source this file just
