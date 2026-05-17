@@ -285,14 +285,24 @@ build_dataset <- function(ds_label, mp) {
     # Skip outcomes whose every cell is null
     if (!any_nonnull) next
     my <- suppressWarnings(as.numeric(s$mean_y[1]))
+    # Number of unique entities (districts/HHs) backing the regression.
+    # Census/NEC panel: n / 2 (district x year, 2 years for census, ~8 for nec_panel)
+    # HH: too noisy to back out -- omit
+    # NEC cs: equals N
+    sample_n <- suppressWarnings(as.integer(s$n[1]))
+    n_unit_val <- NA_integer_
+    if (!is.na(sample_n) && sample_n > 0) {
+      if (ds_label == "census")    n_unit_val <- as.integer(sample_n / 2)
+      else if (ds_label == "nec_cs") n_unit_val <- sample_n
+      # else leave as NA (hh, nec_panel: not reliably derivable)
+    }
     outs[[oc]] <- list(
       label  = unbox(mp[[oc]][2]),
       group  = unbox(mp[[oc]][1]),
-      mean_y = if (is.na(my)) NULL else unbox(my),
-      sd_y   = NULL,    # not in source CSVs
-      n_unit = NULL,    # not in source CSVs
+      mean_y = if (is.na(my)) NA else unbox(my),
       cells  = cells
     )
+    if (!is.na(n_unit_val)) outs[[oc]]$n_unit <- unbox(n_unit_val)
   }
   groups <- sort(unique(vapply(outs, function(o) as.character(o$group), character(1))))
   list(outcomes = outs, groups = groups)

@@ -151,7 +151,10 @@ window.MathJax = {
       <option value="drop_ktm_valley">drop KTM valley (−3)</option>
       <option value="drop_low_mig">drop low-mig (−7)</option>
     </select>
-    <div class="desc">Drop selected districts. Cells fall back to baseline (italic) where variant not computed.</div>
+    <div class="desc" id="variant-desc">
+      Drop selected districts before estimating.
+      Computed only at lag=2, scaling=log — other settings show baseline (italic).
+    </div>
   </div>
   <div class="ctrl">
     <label for="display">Display</label>
@@ -265,7 +268,9 @@ function rowFor(yKey, outcMeta, scaling, lag, variant, display){
     const r = getCell(outcMeta, scaling, lag, m, variant);
     if (r && r.cell.n) { nCell = r.cell.n.toLocaleString(); break; }
   }
-  if (outcMeta.n_unit) nUnitCell = outcMeta.n_unit.toLocaleString();
+  if (typeof outcMeta.n_unit === "number" && !isNaN(outcMeta.n_unit)) {
+    nUnitCell = outcMeta.n_unit.toLocaleString();
+  }
   return `<tr>${cellLabel}${meanCell}${modelCells}<td>${nCell}</td><td>${nUnitCell}</td></tr>`;
 }
 
@@ -327,10 +332,14 @@ function render(){
 
   // Table note
   const dsLab = DATA.datasets_meta[document.getElementById("dataset").value]?.label || "";
+  const dsKey = document.getElementById("dataset").value;
   let note = `<strong>Reading.</strong> Dataset = ${dsLab}.
     Each cell: β + stars (top) / SE (bottom).`;
   if (variant !== "baseline") {
-    note += ` <em>Italic cells</em> indicate the drop-variant was not separately computed for that outcome; baseline value shown as fallback.`;
+    note += ` <em>Italic cells</em> = drop-variant not computed for this (lag, scaling); baseline shown as fallback.`;
+  }
+  if (variant === "drop_ktm_valley" && dsKey === "hh") {
+    note += ` <br><strong>Note:</strong> the HRVS sample contains no KTM-valley districts (rural-focused survey), so this filter has <em>no effect</em> on HH outcomes — β values are identical to baseline.`;
   }
   document.getElementById("table-note").innerHTML = note;
 }
