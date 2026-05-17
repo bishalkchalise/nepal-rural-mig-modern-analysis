@@ -100,38 +100,44 @@ cat(sprintf("Panel: %d (dname x period) rows | districts: %d | periods: %d\n",
 #      there is no panel year so the year x z control collapses; reported
 #      identically for layout symmetry with the rest of the deck)
 # A4: y ~ z + baseline mig intensity + region shares
+# Loop over both mig-intensity scalings (log + lin) so the portal's
+# "Mig intensity" dropdown has cells under both options.
+SCALING_COLS <- c(log = "log_mi_z", lin = "lin_mi_z")
+
 results <- list()
-for (p in names(PERIODS)) {
-  pp <- panel %>% filter(period == p)
-  if (!nrow(pp)) next
-  pp$mig_var <- pp$log_mi_z
-  pp$z_inter <- pp$z_std    # in CS this is just z (no interaction needed
-                            # for first-stage validation)
-  f_A2 <- log_permits_per_1000 ~ z_inter + mig_var
-  f_A3 <- log_permits_per_1000 ~ z_inter + mig_var
-  f_A4 <- as.formula(paste("log_permits_per_1000 ~ z_inter + mig_var +",
-                           paste(REGION_COLS, collapse = " + ")))
-  for (mdl in c("A2","A3","A4")) {
-    f <- list(A2 = f_A2, A3 = f_A3, A4 = f_A4)[[mdl]]
-    fit <- tryCatch(feols(f, data = pp, vcov = "hetero"),
-                    error = function(e) NULL)
-    if (is.null(fit)) next
-    s <- summary(fit)$coeftable
-    if (!"z_inter" %in% rownames(s)) next
-    results[[length(results)+1]] <- tibble(
-      period = p, model = mdl,
-      beta   = s["z_inter","Estimate"],
-      se     = s["z_inter","Std. Error"],
-      p      = s["z_inter","Pr(>|t|)"],
-      sig    = stars(s["z_inter","Pr(>|t|)"]),
-      n      = nobs(fit),
-      mean_y = mean(pp$log_permits_per_1000, na.rm = TRUE),
-      mean_permits_per_1000 = mean(pp$permits_per_1000, na.rm = TRUE)
-    )
+for (sc in names(SCALING_COLS)) {
+  mig_col <- SCALING_COLS[[sc]]
+  for (p in names(PERIODS)) {
+    pp <- panel %>% filter(period == p)
+    if (!nrow(pp)) next
+    pp$mig_var <- pp[[mig_col]]
+    pp$z_inter <- pp$z_std
+    f_A2 <- log_permits_per_1000 ~ z_inter + mig_var
+    f_A3 <- log_permits_per_1000 ~ z_inter + mig_var
+    f_A4 <- as.formula(paste("log_permits_per_1000 ~ z_inter + mig_var +",
+                             paste(REGION_COLS, collapse = " + ")))
+    for (mdl in c("A2","A3","A4")) {
+      f <- list(A2 = f_A2, A3 = f_A3, A4 = f_A4)[[mdl]]
+      fit <- tryCatch(feols(f, data = pp, vcov = "hetero"),
+                      error = function(e) NULL)
+      if (is.null(fit)) next
+      s <- summary(fit)$coeftable
+      if (!"z_inter" %in% rownames(s)) next
+      results[[length(results)+1]] <- tibble(
+        period = p, scaling = sc, model = mdl,
+        beta   = s["z_inter","Estimate"],
+        se     = s["z_inter","Std. Error"],
+        p      = s["z_inter","Pr(>|t|)"],
+        sig    = stars(s["z_inter","Pr(>|t|)"]),
+        n      = nobs(fit),
+        mean_y = mean(pp$log_permits_per_1000, na.rm = TRUE),
+        mean_permits_per_1000 = mean(pp$permits_per_1000, na.rm = TRUE)
+      )
+    }
   }
 }
 
-# Also run A4 under district-drop variants (for the portal's variant filter)
+# A4 under district-drop variants (for the portal's variant filter), both scalings
 ktm_valley <- c("Kathmandu","Lalitpur","Bhaktapur")
 low_mig_districts <- mi %>% arrange(log_mi_z) %>%
   slice_head(n = 7) %>% pull(dname)
@@ -139,30 +145,33 @@ DROP_VARIANTS <- list(
   A4_dropKTM    = ktm_valley,
   A4_dropLowMig = low_mig_districts
 )
-for (variant_model in names(DROP_VARIANTS)) {
-  drop <- DROP_VARIANTS[[variant_model]]
-  for (p in names(PERIODS)) {
-    pp <- panel %>% filter(period == p, !dname %in% drop)
-    if (!nrow(pp)) next
-    pp$mig_var <- pp$log_mi_z
-    pp$z_inter <- pp$z_std
-    f_A4 <- as.formula(paste("log_permits_per_1000 ~ z_inter + mig_var +",
-                             paste(REGION_COLS, collapse = " + ")))
-    fit <- tryCatch(feols(f_A4, data = pp, vcov = "hetero"),
-                    error = function(e) NULL)
-    if (is.null(fit)) next
-    s <- summary(fit)$coeftable
-    if (!"z_inter" %in% rownames(s)) next
-    results[[length(results)+1]] <- tibble(
-      period = p, model = variant_model,
-      beta   = s["z_inter","Estimate"],
-      se     = s["z_inter","Std. Error"],
-      p      = s["z_inter","Pr(>|t|)"],
-      sig    = stars(s["z_inter","Pr(>|t|)"]),
-      n      = nobs(fit),
-      mean_y = mean(pp$log_permits_per_1000, na.rm = TRUE),
-      mean_permits_per_1000 = mean(pp$permits_per_1000, na.rm = TRUE)
-    )
+for (sc in names(SCALING_COLS)) {
+  mig_col <- SCALING_COLS[[sc]]
+  for (variant_model in names(DROP_VARIANTS)) {
+    drop <- DROP_VARIANTS[[variant_model]]
+    for (p in names(PERIODS)) {
+      pp <- panel %>% filter(period == p, !dname %in% drop)
+      if (!nrow(pp)) next
+      pp$mig_var <- pp[[mig_col]]
+      pp$z_inter <- pp$z_std
+      f_A4 <- as.formula(paste("log_permits_per_1000 ~ z_inter + mig_var +",
+                               paste(REGION_COLS, collapse = " + ")))
+      fit <- tryCatch(feols(f_A4, data = pp, vcov = "hetero"),
+                      error = function(e) NULL)
+      if (is.null(fit)) next
+      s <- summary(fit)$coeftable
+      if (!"z_inter" %in% rownames(s)) next
+      results[[length(results)+1]] <- tibble(
+        period = p, scaling = sc, model = variant_model,
+        beta   = s["z_inter","Estimate"],
+        se     = s["z_inter","Std. Error"],
+        p      = s["z_inter","Pr(>|t|)"],
+        sig    = stars(s["z_inter","Pr(>|t|)"]),
+        n      = nobs(fit),
+        mean_y = mean(pp$log_permits_per_1000, na.rm = TRUE),
+        mean_permits_per_1000 = mean(pp$permits_per_1000, na.rm = TRUE)
+      )
+    }
   }
 }
 

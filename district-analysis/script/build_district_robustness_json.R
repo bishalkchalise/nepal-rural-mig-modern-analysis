@@ -372,7 +372,11 @@ build_first_stage <- function() {
       } else {
         model_key <- mdl;   variant <- "baseline"
       }
-      k <- sprintf("log|2|%s|%s", model_key, variant)
+      # scaling column is present after first-stage script gained log+lin
+      # loop; fall back to "log" for backwards compatibility with older CSVs.
+      sc <- if ("scaling" %in% names(sub)) sub$scaling[i] else "log"
+      if (is.na(sc) || !nzchar(sc)) sc <- "log"
+      k <- sprintf("%s|2|%s|%s", sc, model_key, variant)
       b  <- sub$beta[i]; se <- sub$se[i]; p <- sub$p[i]; n <- sub$n[i]
       cells[[k]] <- list(
         beta = if (is.na(b))  NULL else unbox(b),
