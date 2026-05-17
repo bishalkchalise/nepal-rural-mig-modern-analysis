@@ -374,13 +374,22 @@ async function init(){
     return;
   }
   const dsKeys = Object.keys(DATA.datasets_meta);
+  // Default landing dataset: First stage (validates the SSIV) -- if present.
+  const defaultDs = dsKeys.includes("first_stage") ? "first_stage"
+                    : (dsKeys.includes("census") ? "census" : dsKeys[0]);
   fillSelect("dataset", dsKeys.map(k => [k, DATA.datasets_meta[k].label]),
-             dsKeys.includes("census") ? "census" : dsKeys[0]);
+             defaultDs);
   repopulateGroupsForDataset();
-  // Default group: Migration if present
+  // Default group: Future DOFE migration (first-stage's group) if present;
+  // else Migration; else first available.
   const grpSel = document.getElementById("group");
-  for (const opt of grpSel.options) {
-    if (opt.value === "Migration") { grpSel.value = "Migration"; break; }
+  const wantGroups = ["Future DOFE migration", "Migration"];
+  for (const want of wantGroups) {
+    let found = false;
+    for (const opt of grpSel.options) {
+      if (opt.value === want) { grpSel.value = want; found = true; break; }
+    }
+    if (found) break;
   }
 
   document.getElementById("dataset").addEventListener("change", () => {

@@ -455,44 +455,77 @@ TITLE_AND_SPEC = """
 MOBILE_CSS = """
   /* Mobile / small-screen tuning */
   @media (max-width: 900px) {
-    .reveal table { font-size: 0.42em; }
+    .reveal table { font-size: 0.45em; }
     .reveal h2 { font-size: 1.0em; }
     .reveal section { padding: 16px 24px 12px 24px; }
+    .reveal .eq-cap { font-size: 0.42em; }
   }
-  /* Portrait orientation hint on phones */
-  @media (orientation: portrait) and (max-width: 900px) {
-    body::before {
-      content: "↺  Rotate to landscape for best view";
-      position: fixed; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(20, 30, 40, 0.97); color: #fff; z-index: 9999;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 18px; padding: 2em; text-align: center;
-    }
+  /* Mobile overlay: shown on small portrait phones. Tapping the big button
+     requests fullscreen + tries to lock landscape on browsers that allow
+     it (Android Chrome / Firefox). On iOS Safari the APIs are blocked, so
+     we display the rotate-phone instruction instead. */
+  #mobile-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+    color: #fff; text-align: center;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 Helvetica, sans-serif;
+  }
+  #mobile-overlay h3 {
+    font-size: 24px; font-weight: 600; margin: 0 0 0.6em 0;
+  }
+  #mobile-overlay p { font-size: 16px; margin: 0.4em 0 1.2em 0;
+                      opacity: 0.92; max-width: 320px; }
+  #mobile-overlay button {
+    background: #fff; color: #1a365d; border: none; border-radius: 8px;
+    padding: 14px 28px; font-size: 18px; font-weight: 600;
+    cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  #mobile-overlay button:active { transform: scale(0.97); }
+  #mobile-overlay .rotate-icon { font-size: 48px; margin-bottom: 0.4em; }
+  @media (max-width: 900px) and (pointer: coarse) {
+    #mobile-overlay { display: flex; }
   }
 """
 
 MOBILE_JS = """
+<div id="mobile-overlay" role="dialog" aria-label="Enter presentation mode">
+  <div class="rotate-icon">↺</div>
+  <h3>Slides work best in landscape</h3>
+  <p>Tap the button to enter full-screen landscape, or rotate your phone
+     and tap the screen anywhere.</p>
+  <button id="mobile-enter-btn" type="button">Enter presentation mode</button>
+</div>
 <script>
-// On the FIRST tap (any-where on the deck), request full-screen landscape.
-// Browsers require a user gesture to enter fullscreen / lock orientation.
 (function () {
-  function tryFullscreen () {
+  var overlay = document.getElementById("mobile-overlay");
+  var btn     = document.getElementById("mobile-enter-btn");
+  if (!overlay || !btn) return;
+
+  function enter () {
     var el = document.documentElement;
-    var req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
-    if (req) { req.call(el).catch(function(){}); }
-    // Lock to landscape if supported (Android Chrome / Firefox)
+    var req = el.requestFullscreen || el.webkitRequestFullscreen
+              || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if (req) { try { req.call(el); } catch(e){} }
     if (screen.orientation && screen.orientation.lock) {
       screen.orientation.lock("landscape").catch(function(){});
     }
+    overlay.style.display = "none";
   }
-  // Only auto-prompt on touch devices (skip desktops)
-  if (matchMedia("(pointer: coarse)").matches) {
-    document.addEventListener("click", function once () {
-      tryFullscreen();
-      document.removeEventListener("click", once);
-    }, { once: true });
+  btn.addEventListener("click", enter);
+  // Also dismiss overlay if the user manually rotates to landscape.
+  function onOrientChange () {
+    if (matchMedia("(orientation: landscape)").matches) {
+      overlay.style.display = "none";
+    }
   }
+  window.addEventListener("orientationchange", onOrientChange);
+  window.addEventListener("resize", onOrientChange);
+  onOrientChange();
 })();
 </script>
 """
