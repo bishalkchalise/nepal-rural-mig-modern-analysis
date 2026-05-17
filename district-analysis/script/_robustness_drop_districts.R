@@ -1,16 +1,20 @@
 ################################################################################
-# Robustness: drop-district checks
+# Robustness: drop-district checks (portal grid + LOO + thin-cov diagnostic)
 # ---------------------------------------------------------------------------
-# Runs the headline spec (scaling = log, lag = 2, model = M4) under two
-# district-set variants, on a short list of headline outcomes:
+# Runs the baseline spec (scaling = log, lag = 2) under three portal variants
+# at all four models (M2/M3/M4/M5):
 #
-#   1) thin_cov: drop districts in the bottom quartile by # destinations
-#                appearing in the 2009-10 DOFE share data
-#   2) loo     : leave-one-out (drop each of 75 districts in turn, fit, record)
+#   1) baseline        : all 75 districts
+#   2) drop_ktm_valley : drop Kathmandu, Lalitpur, Bhaktapur
+#   3) drop_low_mig    : drop the 7 districts with the lowest baseline log_mi_z
+#
+# Plus a parallel LOO computation at M4 (separate output rows, model="M4",
+# variant="loo") for the diagnostic max-swing table.
 #
 # Output:
 #   district-analysis/output/tab/robustness_drop_districts.csv
-#     cols: dataset, outcome, variant, dropped_dname, beta, se, p, sig, n
+#     cols: dataset, outcome, variant, dropped_dname, model, beta, se, p,
+#           sig, mean_y, n
 #
 # Run: source("district-analysis/script/_robustness_drop_districts.R")
 ################################################################################
@@ -51,6 +55,19 @@ cat(sprintf("Thin-coverage cutoff (Q1 of n_dest): %.0f\n", q1))
 cat(sprintf("Thin-coverage districts (%d): %s\n",
             length(thin_districts), paste(thin_districts, collapse = ", ")))
 
+# ---- Low-baseline-migration districts -------------------------------------
+# 7 districts with the lowest baseline log_mi_z (the bottom of the FX-shock
+# distribution; tests whether the headline survives removing the LOW end).
+low_mig_districts <- mi %>%
+  arrange(log_mi_z) %>%
+  slice_head(n = 7) %>%
+  pull(dname)
+cat(sprintf("Low-mig districts (%d): %s\n",
+            length(low_mig_districts), paste(low_mig_districts, collapse = ", ")))
+
+# ---- KTM valley -----------------------------------------------------------
+ktm_valley <- c("Kathmandu", "Lalitpur", "Bhaktapur")
+
 # ---- Build dynamic HEADLINE list from outcomes that are significant at the
 # ---- baseline (M4, scaling=log, lag=2, p<0.10) in the main robustness CSV.
 sig_outcomes <- list()
@@ -72,54 +89,53 @@ HEADLINE <- list(
   list(ds = "nec_panel", panel = if (exists("npd")) npd else NULL, mode = "dname", refyr = 2011L, outs = sig_outcomes$nec_panel %||% character())
 )
 
-run_one <- function(panel, ycol, mode, refyr) {
-  # Single-cell wrapper around fit_one for baseline spec (log, lag=2, M4).
+run_models <- function(panel, ycol, mode, refyr) {
+  # Wrapper around fit_one that returns ALL models (M2/M3/M4/M5 if available)
+  # at the baseline scaling=log, lag=2 spec.
   out <- tryCatch(
     fit_one(panel, ycol, BASELINE_SCALING, BASELINE_LAG, mode, refyr),
     error = function(e) NULL)
   if (is.null(out) || nrow(out) == 0) return(NULL)
-  m4 <- out[out$model == "M4", ]
-  if (nrow(m4) == 0) return(NULL)
-  tibble(beta = m4$beta, se = m4$se, p = m4$p, n = m4$n)
+  out
 }
+
+PORTAL_VARIANTS <- list(
+  baseline        = character(),
+  drop_ktm_valley = ktm_valley,
+  drop_low_mig    = low_mig_districts
+)
 
 out_rows <- list()
-
-cat("\n========== Variant: thin_cov (drop thin-coverage districts) ==========\n")
-for (h in HEADLINE) {
-  if (is.null(h$panel)) next
-  pn <- h$panel %>% filter(!dname %in% thin_districts)
-  for (yc in h$outs) {
-    if (!yc %in% names(pn)) next
-    r <- run_one(pn, yc, h$mode, h$refyr)
-    if (is.null(r)) next
-    out_rows[[length(out_rows)+1]] <- tibble(
-      dataset = h$ds, outcome = yc, variant = "thin_cov",
-      dropped_dname = paste(thin_districts, collapse = "|"),
-      beta = r$beta, se = r$se, p = r$p, sig = stars(r$p), n = r$n
-    )
+for (variant in names(PORTAL_VARIANTS)) {
+  drop <- PORTAL_VARIANTS[[variant]]
+  cat(sprintf("\n========== Variant: %s (drop %d) ==========\n",
+              variant, length(drop)))
+  for (h in HEADLINE) {
+    if (is.null(h$panel)) next
+    pn <- if (length(drop)) h$panel %>% filter(!dname %in% drop) else h$panel
+    for (yc in h$outs) {
+      if (!yc %in% names(pn)) next
+      r <- run_models(pn, yc, h$mode, h$refyr)
+      if (is.null(r)) next
+      for (i in seq_len(nrow(r))) {
+        out_rows[[length(out_rows)+1]] <- tibble(
+          dataset = h$ds, outcome = yc, variant = variant,
+          dropped_dname = paste(drop, collapse = "|"),
+          model = r$model[i],
+          beta = r$beta[i], se = r$se[i], p = r$p[i],
+          sig  = stars(r$p[i]), mean_y = r$mean_y[i], n = r$n[i]
+        )
+      }
+    }
   }
 }
 
-cat("\n========== Variant: baseline (all districts) ==========\n")
-for (h in HEADLINE) {
-  if (is.null(h$panel)) next
-  for (yc in h$outs) {
-    if (!yc %in% names(h$panel)) next
-    r <- run_one(h$panel, yc, h$mode, h$refyr)
-    if (is.null(r)) next
-    out_rows[[length(out_rows)+1]] <- tibble(
-      dataset = h$ds, outcome = yc, variant = "baseline",
-      dropped_dname = NA_character_,
-      beta = r$beta, se = r$se, p = r$p, sig = stars(r$p), n = r$n
-    )
-  }
-}
-
-cat("\n========== Variant: loo (leave-one-out) ==========\n")
-# Get district list (use mi dnames as the canonical set)
+# Keep LOO at M4 only (the headline) — separate computation kept for the
+# diagnostic; not part of the per-variant portal grid.
+cat("\n========== LOO at M4 baseline (separate) ==========\n")
 all_dist <- sort(unique(mi$dname))
 cat(sprintf("LOO across %d districts...\n", length(all_dist)))
+loo_rows <- list()
 i <- 0
 for (d in all_dist) {
   i <- i + 1
@@ -129,16 +145,20 @@ for (d in all_dist) {
     pn <- h$panel %>% filter(dname != d)
     for (yc in h$outs) {
       if (!yc %in% names(pn)) next
-      r <- run_one(pn, yc, h$mode, h$refyr)
+      r <- run_models(pn, yc, h$mode, h$refyr)
       if (is.null(r)) next
-      out_rows[[length(out_rows)+1]] <- tibble(
+      m4 <- r[r$model == "M4", ]
+      if (nrow(m4) == 0) next
+      loo_rows[[length(loo_rows)+1]] <- tibble(
         dataset = h$ds, outcome = yc, variant = "loo",
-        dropped_dname = d,
-        beta = r$beta, se = r$se, p = r$p, sig = stars(r$p), n = r$n
+        dropped_dname = d, model = "M4",
+        beta = m4$beta, se = m4$se, p = m4$p, sig = stars(m4$p),
+        mean_y = m4$mean_y, n = m4$n
       )
     }
   }
 }
+out_rows <- c(out_rows, loo_rows)
 
 out <- bind_rows(out_rows)
 dir.create("district-analysis/output/tab", recursive = TRUE, showWarnings = FALSE)
