@@ -268,7 +268,9 @@ function rowFor(yKey, outcMeta, scaling, lag, variant, display){
     const r = getCell(outcMeta, scaling, lag, m, variant);
     if (r && r.cell.n) { nCell = r.cell.n.toLocaleString(); break; }
   }
-  if (outcMeta.n_unit) nUnitCell = outcMeta.n_unit.toLocaleString();
+  if (typeof outcMeta.n_unit === "number" && !isNaN(outcMeta.n_unit)) {
+    nUnitCell = outcMeta.n_unit.toLocaleString();
+  }
   return `<tr>${cellLabel}${meanCell}${modelCells}<td>${nCell}</td><td>${nUnitCell}</td></tr>`;
 }
 
