@@ -364,9 +364,11 @@ build_first_stage <- function() {
     any_nonnull <- FALSE
     for (i in seq_len(nrow(sub))) {
       mdl <- sub$model[i]
-      # Map A4_dropKTM -> variant=drop_ktm_valley, model=A4. Others baseline.
+      # Map A4_drop<X> -> variant=<X>, model=A4. Others baseline.
       if (mdl == "A4_dropKTM") {
         model_key <- "A4"; variant <- "drop_ktm_valley"
+      } else if (mdl == "A4_dropLowMig") {
+        model_key <- "A4"; variant <- "drop_low_mig"
       } else {
         model_key <- mdl;   variant <- "baseline"
       }

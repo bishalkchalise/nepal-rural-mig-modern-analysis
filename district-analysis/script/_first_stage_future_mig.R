@@ -131,30 +131,39 @@ for (p in names(PERIODS)) {
   }
 }
 
-# Also run A4 with drop-KTM-valley sample (4th column)
+# Also run A4 under district-drop variants (for the portal's variant filter)
 ktm_valley <- c("Kathmandu","Lalitpur","Bhaktapur")
-for (p in names(PERIODS)) {
-  pp <- panel %>% filter(period == p, !dname %in% ktm_valley)
-  if (!nrow(pp)) next
-  pp$mig_var <- pp$log_mi_z
-  pp$z_inter <- pp$z_std
-  f_A4 <- as.formula(paste("log_permits_per_1000 ~ z_inter + mig_var +",
-                           paste(REGION_COLS, collapse = " + ")))
-  fit <- tryCatch(feols(f_A4, data = pp, vcov = "hetero"),
-                  error = function(e) NULL)
-  if (is.null(fit)) next
-  s <- summary(fit)$coeftable
-  if (!"z_inter" %in% rownames(s)) next
-  results[[length(results)+1]] <- tibble(
-    period = p, model = "A4_dropKTM",
-    beta   = s["z_inter","Estimate"],
-    se     = s["z_inter","Std. Error"],
-    p      = s["z_inter","Pr(>|t|)"],
-    sig    = stars(s["z_inter","Pr(>|t|)"]),
-    n      = nobs(fit),
-    mean_y = mean(pp$log_permits_per_1000, na.rm = TRUE),
-    mean_permits_per_1000 = mean(pp$permits_per_1000, na.rm = TRUE)
-  )
+low_mig_districts <- mi %>% arrange(log_mi_z) %>%
+  slice_head(n = 7) %>% pull(dname)
+DROP_VARIANTS <- list(
+  A4_dropKTM    = ktm_valley,
+  A4_dropLowMig = low_mig_districts
+)
+for (variant_model in names(DROP_VARIANTS)) {
+  drop <- DROP_VARIANTS[[variant_model]]
+  for (p in names(PERIODS)) {
+    pp <- panel %>% filter(period == p, !dname %in% drop)
+    if (!nrow(pp)) next
+    pp$mig_var <- pp$log_mi_z
+    pp$z_inter <- pp$z_std
+    f_A4 <- as.formula(paste("log_permits_per_1000 ~ z_inter + mig_var +",
+                             paste(REGION_COLS, collapse = " + ")))
+    fit <- tryCatch(feols(f_A4, data = pp, vcov = "hetero"),
+                    error = function(e) NULL)
+    if (is.null(fit)) next
+    s <- summary(fit)$coeftable
+    if (!"z_inter" %in% rownames(s)) next
+    results[[length(results)+1]] <- tibble(
+      period = p, model = variant_model,
+      beta   = s["z_inter","Estimate"],
+      se     = s["z_inter","Std. Error"],
+      p      = s["z_inter","Pr(>|t|)"],
+      sig    = stars(s["z_inter","Pr(>|t|)"]),
+      n      = nobs(fit),
+      mean_y = mean(pp$log_permits_per_1000, na.rm = TRUE),
+      mean_permits_per_1000 = mean(pp$permits_per_1000, na.rm = TRUE)
+    )
+  }
 }
 
 out <- bind_rows(results) %>% arrange(period, model)
