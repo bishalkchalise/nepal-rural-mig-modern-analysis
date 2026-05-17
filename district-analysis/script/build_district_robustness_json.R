@@ -242,6 +242,13 @@ NEC_PANEL_MAP <- list(
 
 DS_MAPS <- list(census = CENSUS_MAP, hh = HH_MAP, nec_cs = NEC_CS_MAP, nec_panel = NEC_PANEL_MAP)
 
+# First-stage validation: 3 outcomes (one per future-migration window)
+FIRST_STAGE_MAP <- list(
+  log_permits_2011_2015 = c("Future DOFE migration", "log permits per 1k pop, 2011-2015"),
+  log_permits_2015_2019 = c("Future DOFE migration", "log permits per 1k pop, 2015-2019"),
+  log_permits_2019_2022 = c("Future DOFE migration", "log permits per 1k pop, 2019-2022")
+)
+
 # ---- Load source CSVs ------------------------------------------------------
 GRID_MAIN <- "district-analysis/output/tab/robustness_all_panels.csv"
 GRID_DROP <- "district-analysis/output/tab/robustness_drop_districts.csv"
@@ -331,18 +338,75 @@ build_dataset <- function(ds_label, mp) {
   list(outcomes = outs, groups = groups)
 }
 
+# ---- First-stage validation dataset ----------------------------------------
+# Reads first_stage_future_mig.csv directly (separate from main grid) and
+# emits a 4th portal dataset 'first_stage' with 3 outcomes (one per period).
+# Cells stored at key log|2|<model>|<variant> to fit the existing schema --
+# scaling/lag dropdowns are not meaningful for this dataset but the values
+# show under the default (log, lag 2).
+build_first_stage <- function() {
+  fs_path <- "district-analysis/output/tab/first_stage_future_mig.csv"
+  if (!file.exists(fs_path)) return(list(outcomes = list(), groups = character()))
+  fs <- read_csv(fs_path, show_col_types = FALSE)
+  PERIOD_TO_OUTCOME <- c(
+    "2011-2015" = "log_permits_2011_2015",
+    "2015-2019" = "log_permits_2015_2019",
+    "2019-2022" = "log_permits_2019_2022"
+  )
+  outs <- list()
+  for (oc in names(FIRST_STAGE_MAP)) {
+    per <- names(PERIOD_TO_OUTCOME)[PERIOD_TO_OUTCOME == oc]
+    sub <- fs[fs$period == per, ]
+    if (!nrow(sub)) next
+    cells <- list()
+    any_nonnull <- FALSE
+    for (i in seq_len(nrow(sub))) {
+      mdl <- sub$model[i]
+      # Map A4_dropKTM -> variant=drop_ktm_valley, model=A4. Others baseline.
+      if (mdl == "A4_dropKTM") {
+        model_key <- "A4"; variant <- "drop_ktm_valley"
+      } else {
+        model_key <- mdl;   variant <- "baseline"
+      }
+      k <- sprintf("log|2|%s|%s", model_key, variant)
+      b  <- sub$beta[i]; se <- sub$se[i]; p <- sub$p[i]; n <- sub$n[i]
+      cells[[k]] <- list(
+        beta = if (is.na(b))  NULL else unbox(b),
+        se   = if (is.na(se)) NULL else unbox(se),
+        p    = if (is.na(p))  NULL else unbox(p),
+        n    = if (is.na(n))  NULL else unbox(as.integer(n)),
+        sig  = unbox(clean_sig(sub$sig[i]))
+      )
+      if (!is.na(b)) any_nonnull <- TRUE
+    }
+    if (!any_nonnull) next
+    my <- suppressWarnings(as.numeric(sub$mean_y[1]))
+    outs[[oc]] <- list(
+      label  = unbox(FIRST_STAGE_MAP[[oc]][2]),
+      group  = unbox(FIRST_STAGE_MAP[[oc]][1]),
+      mean_y = if (is.na(my)) NA else unbox(my),
+      cells  = cells
+    )
+    outs[[oc]]$n_unit <- unbox(suppressWarnings(as.integer(sub$n[1])))
+  }
+  list(outcomes = outs,
+       groups   = if (length(outs)) "Future DOFE migration" else character())
+}
+
 out_json <- list(
   datasets_meta = list(
-    census    = list(label = unbox("Census district panel (2011, 2021)")),
-    hh        = list(label = unbox("HRVS HH panel (2016-18, district x year residualised)")),
-    nec_cs    = list(label = unbox("NEC 2018 district cross-section")),
-    nec_panel = list(label = unbox("NEC entry-cohort panel (2011-2018)"))
+    census      = list(label = unbox("Census district panel (2011, 2021)")),
+    hh          = list(label = unbox("HRVS HH panel (2016-18, district x year residualised)")),
+    nec_cs      = list(label = unbox("NEC 2018 district cross-section")),
+    nec_panel   = list(label = unbox("NEC entry-cohort panel (2011-2018)")),
+    first_stage = list(label = unbox("First stage: future DOFE migration (district cross-section by period)"))
   ),
   datasets = list(
-    census    = build_dataset("census",    CENSUS_MAP),
-    hh        = build_dataset("hh",        HH_MAP),
-    nec_cs    = build_dataset("nec_cs",    NEC_CS_MAP),
-    nec_panel = build_dataset("nec_panel", NEC_PANEL_MAP)
+    census      = build_dataset("census",    CENSUS_MAP),
+    hh          = build_dataset("hh",        HH_MAP),
+    nec_cs      = build_dataset("nec_cs",    NEC_CS_MAP),
+    nec_panel   = build_dataset("nec_panel", NEC_PANEL_MAP),
+    first_stage = build_first_stage()
   )
 )
 
