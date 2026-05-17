@@ -27,10 +27,6 @@ CENSUS_MAP = {
     "mig_in_internal_share":             ("Migration", "In-migrant share (lifetime)"),
     "mig_out_internal_share":            ("Migration", "Out-migrant share (lifetime)"),
     "net_internal_mig_share":            ("Migration", "Net internal migration (lifetime)"),
-    "mig_in_economic_share":             ("Migration", "In-mig, economic reason (lifetime)"),
-    "mig_in_noneconomic_share":          ("Migration", "In-mig, non-economic reason (lifetime)"),
-    "mig_out_economic_share":            ("Migration", "Out-mig, economic reason (lifetime)"),
-    "mig_out_noneconomic_share":         ("Migration", "Out-mig, non-economic reason (lifetime)"),
     # -- temporary (5-year)
     "mig_in_temp_share":                 ("Migration", "In-mig (5-yr, temporary)"),
     "mig_out_temp_share":                ("Migration", "Out-mig (5-yr, temporary)"),
@@ -39,8 +35,8 @@ CENSUS_MAP = {
     "mig_in_temp_noneconomic_share":     ("Migration", "In-mig 5-yr, non-economic reason"),
     "mig_out_temp_economic_share":       ("Migration", "Out-mig 5-yr, economic reason"),
     "mig_out_temp_noneconomic_share":    ("Migration", "Out-mig 5-yr, non-economic reason"),
-    # Absent HH (from muni)
-    "absent_hh_share":                   ("Absent HH", "HH share with absentee"),
+    # NB: lifetime economic/noneconomic reason splits dropped (no 2011 data;
+    #     all panel-fit cells are NaN -- outcome would show only mean_y)
     # ASSETS
     "amen_assets_radio":      ("Assets", "Radio"),
     "amen_assets_tv":         ("Assets", "Television"),
@@ -101,33 +97,11 @@ CENSUS_MAP = {
     "occ_share_craft_trades":      ("Occupation", "Craft & trades"),
     "occ_share_machine_operators": ("Occupation", "Machine operators"),
     "occ_share_elementary":        ("Occupation", "Elementary occupations"),
-    # WORK ACTIVITY
-    "work_share_agriculture":       ("Work Activity", "Agri share of work"),
-    "work_share_nonagriculture":    ("Work Activity", "Non-agri share of work"),
-    "work_share_wage_nonagri":      ("Work Activity", "Wage non-agri"),
-    "work_share_own_nonagri":       ("Work Activity", "Own-account non-agri"),
-    "work_share_job_seeking":       ("Work Activity", "Job seeking"),
-    "work_share_household_chores":  ("Work Activity", "Chores only"),
-    "work_share_student":           ("Work Activity", "Student"),
-    "work_share_no_work":           ("Work Activity", "No work"),
     # EMPLOYMENT STATUS
     "emp_share_employee":              ("Employment Status", "Wage employee"),
     "emp_share_employer":              ("Employment Status", "Employer"),
     "emp_share_self_employed":         ("Employment Status", "Self-employed"),
     "emp_share_unpaid_family_worker":  ("Employment Status", "Unpaid family worker"),
-    # FEMALE LABOR
-    "flfp_all":                ("Female Labor", "Female LFP, all"),
-    "flfp_agri":               ("Female Labor", "Female LFP, agri"),
-    "flfp_nonagri":            ("Female Labor", "Female LFP, non-agri"),
-    "flfp_wage":               ("Female Labor", "Female LFP, wage"),
-    "flfp_chores_only":        ("Female Labor", "Female: chores only"),
-    "fem_employment_rate":     ("Female Labor", "Female employment rate"),
-    # MALE LABOR
-    "mlfp_all":                ("Male Labor", "Male LFP, all"),
-    "mlfp_agri":               ("Male Labor", "Male LFP, agri"),
-    "mlfp_nonagri":            ("Male Labor", "Male LFP, non-agri"),
-    # GENDER GAPS
-    "gap_lfp_m_minus_f":       ("Gender Gaps", "LFP gap (M - F)"),
     # EDUCATION
     "edu_literate":                  ("Education", "Literacy"),
     "edu_literate_female":           ("Education", "Female literacy"),
@@ -135,12 +109,8 @@ CENSUS_MAP = {
     "edu_school_attend_6_16":        ("Education", "School attendance (6-16)"),
     "edu_school_attend_6_16_female": ("Education", "School attendance (6-16) — female"),
     "edu_school_attend_6_16_male":   ("Education", "School attendance (6-16) — male"),
-    # MARRIAGE
-    "mar_ever_married_15_60":     ("Marriage", "Ever married 15-60"),
-    "mar_never_married_15_60":    ("Marriage", "Never married 15-60"),
-    "mar_female_age_first_mean":  ("Marriage", "Female age at first marriage"),
-    "mar_female_married_by_18":   ("Marriage", "Female married by 18"),
-    "mar_female_married_by_20":   ("Marriage", "Female married by 20"),
+    # DROPPED (per user): Marriage, Female Labor, Male Labor, Gender Gaps,
+    #                     Work Activity, Female Ownership, Absent HH
 }
 
 HH_MAP = {
@@ -149,16 +119,13 @@ HH_MAP = {
     "n_intl_migrants":             ("Migration — HH", "# international migrants"),
     "remit_amount_intl_12m_rs":    ("Migration — HH", "Intl remittance, 12m (Rs)"),
     "remit_received":              ("Migration — HH", "Any remittance received"),
-    # Consumption -- food
-    "food_exp_total_7day":         ("Consumption — food", "Total food exp, 7d"),
-    "food_exp_purchased_7day":     ("Consumption — food", "Purchased food, 7d"),
-    "food_exp_homeprod_7day":      ("Consumption — food", "Home-produced food, 7d"),
-    # Consumption -- non-food
-    "nonfood_exp_12m":             ("Consumption — non-food", "Total non-food, 12m"),
-    # Education spending
-    "edu_spend_total_12m":         ("Education spending", "Total education spend, 12m"),
-    # Health
-    "hlt_spend_total":             ("Health", "Total health spend"),
+    # HH spending (merges food, non-food, education, health spending)
+    "food_exp_total_7day":         ("HH spending", "Food exp, total 7d"),
+    "food_exp_purchased_7day":     ("HH spending", "Food exp, purchased 7d"),
+    "food_exp_homeprod_7day":      ("HH spending", "Food exp, home-produced 7d"),
+    "nonfood_exp_12m":             ("HH spending", "Non-food exp, 12m"),
+    "edu_spend_total_12m":         ("HH spending", "Education spend, 12m"),
+    "hlt_spend_total":             ("HH spending", "Health spend"),
     # Land use -- wet/dry (ag)
     "share_self_wet":              ("Land use — wet/dry", "Own-cultivated, wet"),
     "share_self_dry":              ("Land use — wet/dry", "Own-cultivated, dry"),
@@ -319,6 +286,9 @@ for ds in ("census","hh","nec_cs","nec_panel"):
     for k, (g, lbl) in DS_MAP[ds].items():
         full_key = (ds, k)
         if full_key not in cells: continue
+        # Drop outcomes whose cells are ALL null (no panel fits succeeded)
+        any_nonnull = any(c.get("beta") is not None for c in cells[full_key].values())
+        if not any_nonnull: continue
         my, sdy, nu = stats.get(full_key, (None, None, None))
         outs[k] = {
             "label": lbl, "group": g,
