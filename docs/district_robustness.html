@@ -300,7 +300,9 @@ function render(){
 
   // Rows: outcomes in selected group (alphabetical by label)
   const outcomesInGrp = Object.keys(D.outcomes).filter(k => D.outcomes[k].group === grp);
-  outcomesInGrp.sort((a,b) => (D.outcomes[a].label||a).localeCompare(D.outcomes[b].label||b));
+  // Preserve insertion order from the JSON (builder controls the meaningful
+  // sequence -- e.g. annual-panel first for the first-stage group). Object
+  // property enumeration order is guaranteed for string keys.
   document.getElementById("tbody").innerHTML =
     outcomesInGrp.length === 0
       ? `<tr><td colspan="${4 + MODELS.length}" class="se" style="text-align:center;padding:20px">No outcomes in this group.</td></tr>`
