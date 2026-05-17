@@ -225,8 +225,9 @@ DS_MAP = {"census": CENSUS_MAP, "hh": HH_MAP, "nec_cs": NEC_CS_MAP, "nec_panel":
 rows = list(csv.DictReader(open(GRID)))
 print(f"Grid rows in: {len(rows)}")
 
-# Drop raw scaling, drop M5
-def map_model(m): return {"M2":"A2","M3":"A3","M4":"A4"}.get(m)
+# Drop raw scaling. Rename M2->A2, M3->A3, M4->A4. KEEP M5 as A5 (the
+# 2001-baseline control extension; census-only).
+def map_model(m): return {"M2":"A2","M3":"A3","M4":"A4","M5":"A5"}.get(m)
 keep = []
 for r in rows:
     if r["scaling"] == "raw": continue
@@ -234,7 +235,7 @@ for r in rows:
     if nm is None: continue
     r["model"] = nm
     keep.append(r)
-print(f"After dropping raw + M5: {len(keep)}")
+print(f"After dropping raw: {len(keep)}")
 
 # Filter to outcomes in our maps
 def in_map(r):
