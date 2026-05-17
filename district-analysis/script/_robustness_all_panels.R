@@ -264,6 +264,14 @@ fit_one <- function(panel, ycol, scaling = BASELINE_SCALING,
   # (only available for the census panel; absorbed by district FE otherwise).
   base01_col <- paste0(ycol, "_2001")
   has_M5 <- (mode == "dname") && (base01_col %in% names(panel))
+  if (has_M5) {
+    # Defensive: M5 needs non-degenerate variation in the 2001 baseline,
+    # else feols can segfault on the singular i(year, y_2001) interaction.
+    v01 <- panel[[base01_col]]
+    v01 <- v01[!is.na(v01)]
+    if (length(v01) < 10 || (length(unique(v01)) < 3) ||
+        (sd(v01) < 1e-9)) has_M5 <- FALSE
+  }
 
   if (mode == "cs") {
     # cross-section, HC1 SE
