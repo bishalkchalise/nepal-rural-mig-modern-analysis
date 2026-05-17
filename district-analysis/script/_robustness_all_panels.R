@@ -16,6 +16,10 @@
 #   scalings: log (baseline z of log(mig/1000)), lin (z linear), raw (no z)
 #   lags:     0, 1, 2 (baseline), 3, 5 years
 #   models:   M2 / M3 / M4 (Khanna control ladder)
+#             M5 = M4 + i(year, y_2001, ref=refyr) -- adds the 2001 baseline of
+#                  the outcome itself as a time-varying control to soak up
+#                  pre-trend correlation flagged by the pre-2001 placebo.
+#                  Only available for the census panel (where y_2001 exists).
 #
 # Run: source("district-analysis/script/_robustness_all_panels.R")
 ################################################################################
@@ -256,6 +260,11 @@ fit_one <- function(panel, ycol, scaling = BASELINE_SCALING,
   panel$z_inter <- panel$z_L_std * panel$mig_var
   panel$z_bare  <- panel$z_L_std
 
+  # M5 control: 2001-baseline of THIS outcome, interacted with year
+  # (only available for the census panel; absorbed by district FE otherwise).
+  base01_col <- paste0(ycol, "_2001")
+  has_M5 <- (mode == "dname") && (base01_col %in% names(panel))
+
   if (mode == "cs") {
     # cross-section, HC1 SE
     f_M2 <- as.formula(sprintf("%s ~ z_inter + mig_var", ycol))
@@ -272,6 +281,12 @@ fit_one <- function(panel, ycol, scaling = BASELINE_SCALING,
                                ycol, refyr, mode))
     f_M4 <- as.formula(sprintf("%s ~ z_inter + i(year, mig_var, ref = %d) + z_bare + %s | %s + year",
                                ycol, refyr, region_terms, mode))
+    if (has_M5) {
+      # M5 = M4 + 2001-baseline of the outcome itself, year-interacted
+      f_M5 <- as.formula(sprintf(
+        "%s ~ z_inter + i(year, mig_var, ref = %d) + z_bare + %s + i(year, %s, ref = %d) | %s + year",
+        ycol, refyr, region_terms, base01_col, refyr, mode))
+    }
     vcov_arg <- NULL
   }
 
@@ -292,12 +307,19 @@ fit_one <- function(panel, ycol, scaling = BASELINE_SCALING,
 
   m2 <- do_fit(f_M2); m3 <- do_fit(f_M3); m4 <- do_fit(f_M4)
   mean_y <- mean(panel[[ycol]], na.rm = TRUE)
-  tibble(model = c("M2","M3","M4"),
-         beta = c(m2[1], m3[1], m4[1]),
-         se   = c(m2[2], m3[2], m4[2]),
-         p    = c(m2[3], m3[3], m4[3]),
-         mean_y = mean_y,
-         n    = c(m2[4], m3[4], m4[4]))
+  out <- tibble(model = c("M2","M3","M4"),
+                beta = c(m2[1], m3[1], m4[1]),
+                se   = c(m2[2], m3[2], m4[2]),
+                p    = c(m2[3], m3[3], m4[3]),
+                mean_y = mean_y,
+                n    = c(m2[4], m3[4], m4[4]))
+  if (has_M5) {
+    m5 <- do_fit(f_M5)
+    out <- bind_rows(out, tibble(model = "M5",
+                                  beta = m5[1], se = m5[2], p = m5[3],
+                                  mean_y = mean_y, n = m5[4]))
+  }
+  out
 }
 
 run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
@@ -397,7 +419,17 @@ HH_FILE_PATHS <- c(
 
 # ---- prep each panel (attach multi-lag z columns for robustness grid) ----
 # 1. census
+# 1a. Attach 2001 baseline of each outcome as `<outcome>_2001` so M5 can use it
+#     as an additional time-varying control (interacted with year, to avoid
+#     absorption by district FE). This addresses the pre-2001 placebo failure.
+baseline_2001 <- census %>% filter(year == 2001) %>%
+  select(-year) %>%
+  rename_with(~ paste0(.x, "_2001"), -dname)
+cat(sprintf("Baseline (2001) coverage: %d districts, %d outcome columns\n",
+            nrow(baseline_2001), ncol(baseline_2001) - 1))
+
 cdf <- census %>% filter(year %in% c(2011, 2021)) %>%
+  left_join(baseline_2001, by = "dname") %>%
   inner_join(mi, by = "dname") %>%
   left_join(regions, by = "dname") %>% fill_region_na() %>%
   attach_z_lags(z_v2)
