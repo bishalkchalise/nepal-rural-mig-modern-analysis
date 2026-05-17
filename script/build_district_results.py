@@ -23,6 +23,17 @@ from pathlib import Path
 DATA = json.load(open("docs/district_robustness.json"))
 
 # ============================================================================
+# First-stage validation data (one row per period x model)
+# Source: district-analysis/output/tab/first_stage_future_mig.csv
+# ============================================================================
+import csv
+FIRST_STAGE = []
+fs_path = "district-analysis/output/tab/first_stage_future_mig.csv"
+if Path(fs_path).exists():
+    FIRST_STAGE = list(csv.DictReader(open(fs_path)))
+    print(f"Loaded {len(FIRST_STAGE)} first-stage rows from {fs_path}")
+
+# ============================================================================
 # Slide structure: one slide per (group, dataset). Title and outcome list
 # explicit so the slide reads coherently.
 # ============================================================================
@@ -291,7 +302,92 @@ def render_slide(title, ds_key, group, outcome_keys):
 </section>
 """
 
-slides_html = "\n".join(render_slide(t, ds, g, outs) for t, ds, g, outs in SLIDES)
+# ============================================================================
+# First-stage slide: 3 periods (rows) x 4 specs (cols)
+# Uses FIRST_STAGE loaded from first_stage_future_mig.csv
+# ============================================================================
+def render_first_stage():
+    if not FIRST_STAGE:
+        return ""
+    # Pivot by (period, model)
+    by_pm = {}
+    for r in FIRST_STAGE:
+        by_pm[(r["period"], r["model"])] = r
+    periods = sorted({r["period"] for r in FIRST_STAGE})
+    col_specs = [("A2", "A2"), ("A3", "A3"),
+                 ("A4 (saturated)", "A4"),
+                 ("A4, drop KTM",   "A4_dropKTM")]
+    rows = []
+    for i, per in enumerate(periods, 1):
+        cells = [by_pm.get((per, m)) for _, m in col_specs]
+        mean_y = next((c["mean_y"] for c in cells if c), None)
+        mean_p = next((c.get("mean_permits_per_1000") for c in cells if c), None)
+        try: mean_p_disp = f"{float(mean_p):.1f}/1000" if mean_p else ""
+        except: mean_p_disp = ""
+        # outcomehead
+        beta_cells = "".join(
+            f"<td>{fmt_beta(c.get('beta') if c else None, c.get('p') if c else None)}</td>"
+            for c in cells)
+        rows.append(
+            f'<tr class="outcomehead">'
+            f'<td><strong>({i}) log(permits per 1000), {per}</strong></td>'
+            f'{beta_cells}</tr>'
+        )
+        # outcomesub (mean of log permits + raw mean permits per 1000)
+        se_cells = "".join(
+            f"<td>{fmt_se(c.get('se') if c else None)}</td>" for c in cells)
+        try: my_disp = f"mean log {float(mean_y):.2f}"
+        except: my_disp = ""
+        rows.append(
+            f'<tr class="outcomesub"><td>District cross-section &mdash; {my_disp} &middot; raw {mean_p_disp}</td>'
+            f'{se_cells}</tr>'
+        )
+        # pct (% of mean log)
+        pct_cells = "".join(
+            f"<td>{fmt_pct(c.get('beta') if c else None, mean_y)}</td>" for c in cells)
+        rows.append(f'<tr class="pct"><td></td>{pct_cells}</tr>')
+        # N row
+        n_cells = "".join(
+            f"<td>{fmt_n_clusters(c.get('n') if c else None, c.get('n') if c else None)}</td>"
+            for c in cells)
+        rows.append(f'<tr><td>$N$ districts</td>{n_cells}</tr>')
+    threshold_th = "".join(f"<th>{lbl}</th>" for lbl, _ in col_specs)
+    return f"""
+<section>
+  <h2>First-stage: future DOFE migration</h2>
+  <p class="eq-cap" style="margin-bottom:0.4em">
+    Outcome: $\\log\\!\\bigl(\\text{{DOFE permits per 1{{,}}000 pop}}\\bigr)$ summed
+    over the indicated post-baseline window. Regressor: the same SSIV
+    $z_d$ averaged over the window's years. A positive significant
+    $\\beta$ says the 2009-10 shares $\\times$ FX shifter construction
+    actually predicts where post-baseline migration flows.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2" class="outcome-span">Period (outcome window)</th>
+        <th colspan="{len(col_specs)}" class="sample-span">District sample &mdash; control progression + drop-KTM robustness</th>
+      </tr>
+      <tr class="threshold-row">
+        {threshold_th}
+      </tr>
+    </thead>
+    <tbody>
+      {''.join(rows)}
+    </tbody>
+  </table>
+  <p class="eq-cap" style="margin-top:0.6em">
+    Reported $\\beta$: SSIV $z$ (standardised within period). SE in (),
+    \\% of log-mean in []. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.
+    HC1 SE (cross-section, one obs per district per period).
+    A2 = $z$ + baseline mig intensity; A3 same in cross-section (kept for symmetry);
+    A4 adds 6 destination-region shares; col 4 also drops Kathmandu valley.
+  </p>
+</section>
+"""
+
+slides_html = render_first_stage() + "\n" + \
+              "\n".join(render_slide(t, ds, g, outs) for t, ds, g, outs in SLIDES)
 
 # ============================================================================
 # Title / spec / first-stage slides (modelled exactly on muni)
