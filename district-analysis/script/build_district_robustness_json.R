@@ -242,11 +242,12 @@ NEC_PANEL_MAP <- list(
 
 DS_MAPS <- list(census = CENSUS_MAP, hh = HH_MAP, nec_cs = NEC_CS_MAP, nec_panel = NEC_PANEL_MAP)
 
-# First-stage validation: 3 outcomes (one per future-migration window)
+# First-stage validation: outcomes per future-migration window
 FIRST_STAGE_MAP <- list(
   log_permits_2011_2015 = c("Future DOFE migration", "log permits per 1k pop, 2011-2015"),
   log_permits_2015_2019 = c("Future DOFE migration", "log permits per 1k pop, 2015-2019"),
-  log_permits_2019_2022 = c("Future DOFE migration", "log permits per 1k pop, 2019-2022")
+  log_permits_2019_2022 = c("Future DOFE migration", "log permits per 1k pop, 2019-2022"),
+  log_permits_2011_2022 = c("Future DOFE migration", "log permits per 1k pop, 2011-2022 (full)")
 )
 
 # ---- Load source CSVs ------------------------------------------------------
@@ -351,7 +352,8 @@ build_first_stage <- function() {
   PERIOD_TO_OUTCOME <- c(
     "2011-2015" = "log_permits_2011_2015",
     "2015-2019" = "log_permits_2015_2019",
-    "2019-2022" = "log_permits_2019_2022"
+    "2019-2022" = "log_permits_2019_2022",
+    "2011-2022" = "log_permits_2011_2022"
   )
   outs <- list()
   for (oc in names(FIRST_STAGE_MAP)) {

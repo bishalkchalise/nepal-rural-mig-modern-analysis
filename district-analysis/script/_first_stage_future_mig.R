@@ -43,7 +43,8 @@ stars <- function(p) ifelse(is.na(p), "",
 PERIODS <- list(
   "2011-2015" = 2011:2015,
   "2015-2019" = 2016:2019,
-  "2019-2022" = 2020:2022
+  "2019-2022" = 2020:2022,
+  "2011-2022" = 2011:2022     # full post-baseline window (summary check)
 )
 
 # ---- Outcome: district-period log permits per 1000 baseline population ----

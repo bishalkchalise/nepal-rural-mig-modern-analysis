@@ -313,7 +313,11 @@ def render_first_stage():
     by_pm = {}
     for r in FIRST_STAGE:
         by_pm[(r["period"], r["model"])] = r
-    periods = sorted({r["period"] for r in FIRST_STAGE})
+    # Order: full window first, then the sub-periods chronologically
+    PERIOD_ORDER = ["2011-2022", "2011-2015", "2015-2019", "2019-2022"]
+    seen = {r["period"] for r in FIRST_STAGE}
+    periods = [p for p in PERIOD_ORDER if p in seen] + \
+              sorted(p for p in seen if p not in PERIOD_ORDER)
     col_specs = [("A2", "A2"), ("A3", "A3"),
                  ("A4 (saturated)", "A4"),
                  ("A4, drop KTM",   "A4_dropKTM")]
