@@ -499,51 +499,95 @@ cat(sprintf("HH panel: %d obs over %d districts, %d HH\n",
 if (exists("SKIP_RUN") && isTRUE(SKIP_RUN)) {
   cat("SKIP_RUN flag set; main robustness loop skipped.\n")
 } else {
-out_rows <- list()
-cat("\nRunning census panel...\n")
-out_rows[[1]] <- run_outcomes(cdf, CENSUS_OUTCOMES, mode = "dname", refyr = 2011L, ds_label = "census")
 
-cat("Running HH panel...\n")
-out_rows[[2]] <- run_outcomes(hh, HH_OUTCOMES, mode = "hhid", refyr = 2016L, ds_label = "hh")
+# RUN_ONLY: set to one or more of c("census","hh","nec_cs","nec_panel") to
+# limit the run to those datasets only. Lets you run one dataset at a time
+# in a fresh R session (recommended for memory safety -- the full grid can
+# crash RStudio).
+#   RUN_ONLY <- "census"   ; source(...)
+#   RUN_ONLY <- "hh"       ; source(...)
+#   RUN_ONLY <- "nec_cs"   ; source(...)
+#   RUN_ONLY <- "nec_panel"; source(...)
+# After each run, the partial CSV for that dataset is saved under
+# output/tab/_partial/ . The final robustness_all_panels.csv is REBUILT
+# from all partials on disk, so previous datasets are preserved.
+if (!exists("RUN_ONLY")) RUN_ONLY <- c("census","hh","nec_cs","nec_panel")
+cat(sprintf("RUN_ONLY = %s\n", paste(RUN_ONLY, collapse = ", ")))
 
-if (!is.null(ncs)) {
-  cat("Running NEC cs...\n")
-  out_rows[[3]] <- run_outcomes(ncs, NEC_CS_OUTCOMES, mode = "cs", refyr = NA_integer_, ds_label = "nec_cs")
+PART_DIR <- "district-analysis/output/tab/_partial"
+dir.create(PART_DIR, recursive = TRUE, showWarnings = FALSE)
+save_partial <- function(df_rows, ds_label) {
+  out <- bind_rows(df_rows) %>%
+    select(dataset, outcome, scaling, lag, model, beta, se, p, sig, mean_y, n) %>%
+    arrange(dataset, outcome, scaling, lag, model)
+  fp <- file.path(PART_DIR, sprintf("rob_%s.csv", ds_label))
+  write_csv(out, fp)
+  cat(sprintf("  -> checkpoint: wrote %d rows to %s\n", nrow(out), fp))
 }
 
-# ---- NEC panel (entry-cohort: n_new_firms by founding year × district) ----
+# === 1. Census ===
+if ("census" %in% RUN_ONLY) {
+  cat("\nRunning census panel...\n")
+  res <- run_outcomes(cdf, CENSUS_OUTCOMES, mode = "dname", refyr = 2011L, ds_label = "census")
+  save_partial(res, "census"); rm(res); gc(verbose = FALSE)
+}
+
+# === 2. HH ===
+if ("hh" %in% RUN_ONLY) {
+  cat("\nRunning HH panel...\n")
+  res <- run_outcomes(hh, HH_OUTCOMES, mode = "hhid", refyr = 2016L, ds_label = "hh")
+  save_partial(res, "hh"); rm(res); gc(verbose = FALSE)
+}
+
+# === 3. NEC cs ===
+if ("nec_cs" %in% RUN_ONLY && !is.null(ncs)) {
+  cat("\nRunning NEC cs...\n")
+  res <- run_outcomes(ncs, NEC_CS_OUTCOMES, mode = "cs", refyr = NA_integer_, ds_label = "nec_cs")
+  save_partial(res, "nec_cs"); rm(res); gc(verbose = FALSE)
+}
+
+# === 4. NEC panel ===
 NEC_PANEL_FILE <- "district-analysis/data/clean/nec/nec_panel_district.csv"
 NEC_PANEL_OUTCOMES <- c(
   "log_n_new_firms","log_emp_new_firms","log_rev_new_firms","log_cap_new_firms",
   "log_n_new_firms_size_micro_1","log_n_new_firms_size_small_2_9",
   "log_n_new_firms_size_medium_10_50","log_n_new_firms_size_large_51p"
 )
-if (file.exists(NEC_PANEL_FILE)) {
+NEC_PANEL_OUTCOMES_FULL <- character()  # populated below if file exists
+if ("nec_panel" %in% RUN_ONLY && file.exists(NEC_PANEL_FILE)) {
   npd <- read_csv(NEC_PANEL_FILE, show_col_types = FALSE) %>%
-    filter(year >= 2011, year <= 2018) %>%   # restrict to post-2010 cohort years
+    filter(year >= 2011, year <= 2018) %>%
     inner_join(mi, by = "dname") %>%
     left_join(regions, by = "dname") %>% fill_region_na() %>%
     attach_z_lags(z_v2)
-  # Append all log_n_new_firms_<sector> outcomes that exist in the data
   sector_log_cols <- grep("^log_n_new_firms_(?!size_)", names(npd),
                           value = TRUE, perl = TRUE)
   NEC_PANEL_OUTCOMES_FULL <- c(NEC_PANEL_OUTCOMES, sector_log_cols)
-  cat(sprintf("Running NEC panel (%d obs, %d outcomes)...\n",
+  cat(sprintf("\nRunning NEC panel (%d obs, %d outcomes)...\n",
               nrow(npd), length(NEC_PANEL_OUTCOMES_FULL)))
-  out_rows[[4]] <- run_outcomes(npd, NEC_PANEL_OUTCOMES_FULL, mode = "dname",
-                                refyr = 2011L, ds_label = "nec_panel")
-} else {
-  cat(sprintf("Skipping NEC panel: %s not found.\nRun district-analysis/script/_build_nec_panel_district.R first.\n", NEC_PANEL_FILE))
+  res <- run_outcomes(npd, NEC_PANEL_OUTCOMES_FULL, mode = "dname",
+                      refyr = 2011L, ds_label = "nec_panel")
+  save_partial(res, "nec_panel"); rm(res); gc(verbose = FALSE)
+} else if ("nec_panel" %in% RUN_ONLY) {
+  cat(sprintf("Skipping NEC panel: %s not found.\n", NEC_PANEL_FILE))
 }
 
-out <- bind_rows(out_rows) %>%
-  select(dataset, outcome, scaling, lag, model, beta, se, p, sig, mean_y, n) %>%
-  arrange(dataset, outcome, scaling, lag, model)
-
-dir.create("district-analysis/output/tab", recursive = TRUE, showWarnings = FALSE)
-write_csv(out, "district-analysis/output/tab/robustness_all_panels.csv")
-
-cat(sprintf("\nSaved %d rows to district-analysis/output/tab/robustness_all_panels.csv\n", nrow(out)))
+# ---- Combine ALL partials on disk into the headline CSV ------------------
+partials <- list.files(PART_DIR, pattern = "^rob_.*\\.csv$", full.names = TRUE)
+if (length(partials)) {
+  out <- bind_rows(lapply(partials, function(p) {
+    suppressMessages(read_csv(p, show_col_types = FALSE))
+  })) %>%
+    select(dataset, outcome, scaling, lag, model, beta, se, p, sig, mean_y, n) %>%
+    arrange(dataset, outcome, scaling, lag, model) %>%
+    distinct()
+  dir.create("district-analysis/output/tab", recursive = TRUE, showWarnings = FALSE)
+  write_csv(out, "district-analysis/output/tab/robustness_all_panels.csv")
+  cat(sprintf("\nCombined %d partials -> %d rows in robustness_all_panels.csv\n",
+              length(partials), nrow(out)))
+} else {
+  cat("\nNo partials found under output/tab/_partial; nothing written.\n")
+}
 cat(sprintf("Elapsed: %.1f min\n", as.numeric(Sys.time() - t0, units = "mins")))
 
 cat("\nSummary by dataset / scaling / model:\n")
