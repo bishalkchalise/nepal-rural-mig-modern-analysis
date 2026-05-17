@@ -43,7 +43,9 @@ suppressMessages(suppressWarnings({
 # Hand-curated to match the analysis story; extend as needed.
 GROUP_OF <- function(o, ds) {
   if (ds == "census") {
-    if (startsWith(o, "mig_") && grepl("temp_", o)) return("migration_temp")
+    # Migration: classify temp / 5-year migration BEFORE the perm branch,
+    # so net_temp_mig_share and friends land in migration_temp.
+    if (grepl("temp", o, fixed = TRUE)) return("migration_temp")
     if (startsWith(o, "mig_") || startsWith(o, "net_") || o == "absent_hh_share") return("migration_perm")
     if (startsWith(o, "ind_"))   return("industry")
     if (startsWith(o, "occ_"))   return("occupation")
