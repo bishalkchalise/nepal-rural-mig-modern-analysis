@@ -106,14 +106,29 @@ cat("Wrote fig1_first_stage_scatter.png\n")
 # ============================================================================
 rg <- read_csv("district-analysis/output/tab/robustness_all_panels.csv",
                show_col_types = FALSE) %>%
-  filter(scaling == "log", lag == 2L, model == "M4")
+  filter(scaling == "log", lag == 2L, model == "M4") %>%
+  mutate(sig = if_else(is.na(sig) | sig %in% c("NA","NaN"), "", sig))
 get_row <- function(ds, oc) {
   r <- rg %>% filter(dataset == ds, outcome == oc) %>% slice(1)
   if (!nrow(r)) return(NULL)
   list(beta = r$beta, se = r$se, p = r$p, sig = r$sig, n = r$n, mean = r$mean_y)
 }
 
-ci95 <- function(b, se) c(b - 1.96 * se, b + 1.96 * se)
+# Significance-aware colour helper: red=neg-sig, green=pos-sig, grey=not-sig.
+sig_colour <- function(beta, sig_str) {
+  case_when(
+    is.na(beta) ~ "grey",
+    sig_str == "" ~ "grey",
+    beta < 0      ~ "negative",
+    TRUE          ~ "positive"
+  )
+}
+
+# β label that omits the "NA" suffix when not significant
+beta_lab <- function(beta, sig_str, fmt = "β=%+0.3f") {
+  s <- sprintf(fmt, beta)
+  if_else(is.na(sig_str) | sig_str == "", s, paste0(s, sig_str))
+}
 
 # ============================================================================
 # Plot 2 -- migration forest (6 rows, perm/temp x in/out/net)
@@ -131,35 +146,40 @@ mig_df <- mig_outc %>%
   rowwise() %>%
   mutate(r = list(get_row(ds, outcome))) %>%
   ungroup() %>%
-  mutate(beta = map_dbl(r, ~ if (is.null(.x)) NA else .x$beta),
-         se   = map_dbl(r, ~ if (is.null(.x)) NA else .x$se),
-         lo   = beta - 1.96*se, hi = beta + 1.96*se,
-         sig  = map_chr(r, ~ if (is.null(.x)) "" else (.x$sig %||% ""))) %>%
-  mutate(row_label = sprintf("%s -- %s", group, label),
-         row_label = factor(row_label, levels = rev(row_label)))
+  mutate(beta  = map_dbl(r, ~ if (is.null(.x)) NA else .x$beta),
+         se    = map_dbl(r, ~ if (is.null(.x)) NA else .x$se),
+         lo    = beta - 1.96*se, hi = beta + 1.96*se,
+         sig   = map_chr(r, ~ if (is.null(.x)) "" else (.x$sig %||% "")),
+         sig   = if_else(is.na(sig) | sig %in% c("NA","NaN"), "", sig),
+         colour_grp = sig_colour(beta, sig)) %>%
+  # Order panels: In, Out, Net (clear left-to-right reading)
+  mutate(side = factor(side, levels = c("In","Out","Net")),
+         group = factor(group, levels = c("Permanent","Temp (5-yr)")))
 
-p2 <- ggplot(mig_df, aes(beta, row_label, colour = side)) +
+p2 <- ggplot(mig_df, aes(beta, group, colour = colour_grp)) +
+  facet_wrap(~ side, ncol = 1, scales = "free_y",
+             strip.position = "top") +
   geom_vline(xintercept = 0, colour = "#999", linewidth = 0.4) +
-  geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0.18, linewidth = 0.7) +
-  geom_point(size = 2.7) +
-  geom_text(aes(label = sprintf("β=%+0.3f%s", beta, sig)),
-            hjust = -0.18, vjust = -0.6, size = 3.0, colour = "black") +
-  scale_colour_manual(values = c("In"  = "#9d2918",
-                                  "Out" = "#1e6e3a",
-                                  "Net" = "#0d3b66"),
-                      guide = guide_legend(reverse = TRUE)) +
+  geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0.25, linewidth = 0.7) +
+  geom_point(size = 3) +
+  geom_text(aes(label = beta_lab(beta, sig)),
+            hjust = -0.15, vjust = -0.7, size = 3.1, colour = "black") +
+  scale_colour_manual(values = c(positive = "#0e5a2d",
+                                  negative = "#9d2918",
+                                  grey     = "#888888"),
+                      guide = "none") +
   labs(title = "Migration response: blocked inflow, not extra outflow",
        subtitle = "Census 2011-2021 district panel; spec A4 (saturated), lag-2 log-z. 95% CI.",
-       x = "β on z(log mig/1000)", y = NULL, colour = NULL,
-       caption = "Net = In - Out. *** p<0.01, ** p<0.05, * p<0.10.") +
+       x = "β on z(log mig/1000)", y = NULL,
+       caption = "Net = In - Out.  Grey = not significant (p≥0.10). *** p<0.01, ** p<0.05, * p<0.10.") +
   theme_minimal(base_size = 11) +
-  theme(legend.position = "top",
-        plot.title = element_text(face = "bold"),
+  theme(plot.title = element_text(face = "bold"),
         plot.caption = element_text(hjust = 0, face = "italic"),
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(face = "bold", hjust = 0))
 
 ggsave("district-analysis/output/fig/fig2_migration_forest.png",
-       p2, width = 8.0, height = 5.0, dpi = 200, bg = "white")
+       p2, width = 8.0, height = 5.6, dpi = 200, bg = "white")
 cat("Wrote fig2_migration_forest.png\n")
 
 # ============================================================================
@@ -202,7 +222,8 @@ make_coef <- function(tbl) {
            se   = map_dbl(r, ~ if (is.null(.x)) NA else .x$se),
            lo   = beta - 1.96*se, hi = beta + 1.96*se,
            sig  = map_chr(r, ~ if (is.null(.x)) "" else (.x$sig %||% "")),
-           signed = if_else(beta < 0, "negative", "positive")) %>%
+           sig  = if_else(is.na(sig) | sig %in% c("NA","NaN"), "", sig),
+           colour_grp = sig_colour(beta, sig)) %>%
     filter(!is.na(beta)) %>%
     arrange(beta) %>%
     mutate(label = factor(label, levels = label))
@@ -212,13 +233,15 @@ ind_df <- make_coef(ind_outc)
 occ_df <- make_coef(occ_outc)
 
 forest <- function(df, title) {
-  ggplot(df, aes(beta, label, colour = signed)) +
+  ggplot(df, aes(beta, label, colour = colour_grp)) +
     geom_vline(xintercept = 0, colour = "#999", linewidth = 0.4) +
     geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0.22, linewidth = 0.65) +
     geom_point(size = 2.4) +
-    geom_text(aes(label = sprintf("β=%+0.3f%s", beta, sig)),
+    geom_text(aes(label = beta_lab(beta, sig)),
               hjust = -0.18, vjust = -0.55, size = 2.7, colour = "black") +
-    scale_colour_manual(values = c(negative = "#9d2918", positive = "#0e5a2d"),
+    scale_colour_manual(values = c(negative = "#9d2918",
+                                    positive = "#0e5a2d",
+                                    grey     = "#888888"),
                         guide = "none") +
     labs(title = title, x = "β on z(log mig/1000)", y = NULL) +
     theme_minimal(base_size = 10) +
@@ -270,8 +293,9 @@ cat("Wrote fig3_sectoral_forest.png\n")
 nec_scale <- tribble(
   ~ds, ~outcome, ~label,
   "nec_cs", "n_firms",           "# firms",
-  "nec_cs", "emp_total",         "Total employment",
-  "nec_cs", "mean_emp_per_firm", "Mean emp / firm"
+  "nec_cs", "emp_total",         "Total employment"
+  # mean_emp_per_firm dropped from this panel -- its mean (~3.2) makes the
+  # % of mean misleadingly tiny next to # firms / total emp. Goes into (b).
 )
 nec_size <- tribble(
   ~ds, ~outcome, ~label,
@@ -307,10 +331,11 @@ make_coef_scaled <- function(tbl) {
            se   = map_dbl(r, ~ if (is.null(.x)) NA else .x$se),
            mean_y = map_dbl(r, ~ if (is.null(.x)) NA else (.x$mean %||% NA)),
            sig  = map_chr(r, ~ if (is.null(.x)) "" else (.x$sig %||% "")),
+           sig  = if_else(is.na(sig) | sig %in% c("NA","NaN"), "", sig),
            beta_pct = beta / mean_y * 100,
            se_pct   = se / abs(mean_y) * 100,
            lo = beta_pct - 1.96*se_pct, hi = beta_pct + 1.96*se_pct,
-           signed = if_else(beta_pct < 0, "negative", "positive")) %>%
+           colour_grp = sig_colour(beta_pct, sig)) %>%
     filter(!is.na(beta_pct)) %>%
     arrange(beta_pct) %>%
     mutate(label = factor(label, levels = label))
@@ -322,13 +347,15 @@ formal_df <- make_coef(nec_formal)
 entry_df  <- make_coef(nec_entry_size)
 
 forest_pct <- function(df, title) {
-  ggplot(df, aes(beta_pct, label, colour = signed)) +
+  ggplot(df, aes(beta_pct, label, colour = colour_grp)) +
     geom_vline(xintercept = 0, colour = "#999", linewidth = 0.4) +
     geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0.22, linewidth = 0.7) +
     geom_point(size = 2.5) +
-    geom_text(aes(label = sprintf("%+0.0f%%%s", beta_pct, sig)),
+    geom_text(aes(label = beta_lab(beta_pct, sig, "%+0.0f%%")),
               hjust = -0.18, vjust = -0.55, size = 2.8, colour = "black") +
-    scale_colour_manual(values = c(negative = "#9d2918", positive = "#0e5a2d"),
+    scale_colour_manual(values = c(negative = "#9d2918",
+                                    positive = "#0e5a2d",
+                                    grey     = "#888888"),
                         guide = "none") +
     labs(title = title, x = "β as % of mean", y = NULL) +
     theme_minimal(base_size = 10) +
