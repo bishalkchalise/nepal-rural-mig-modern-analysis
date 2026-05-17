@@ -337,22 +337,35 @@ run_outcomes <- function(panel, outcomes, mode, refyr, ds_label) {
   for (yc in outcomes) {
     if (!yc %in% names(panel)) next
     i <- i + 1L
-    if (i %% 10L == 0L || i == n_total) {
-      cat(sprintf("  [%s] %d/%d  (%s)\n", ds_label, i, n_total, yc))
-      gc(verbose = FALSE)   # free memory periodically to prevent RStudio crashes
-    }
-    for (slbl in SCALINGS) {
-      for (lag in LAGS) {
-        r <- fit_one(panel, yc, slbl, lag, mode, refyr)
-        if (is.null(r)) next
-        r$dataset <- ds_label
-        r$outcome <- yc
-        r$scaling <- slbl
-        r$lag     <- lag
-        r$sig     <- stars(r$p)
-        rows[[length(rows)+1]] <- r
+    cat(sprintf("  [%s] %d/%d  (%s)\n", ds_label, i, n_total, yc))
+    gc(verbose = FALSE)
+
+    # Defensive: skip outcomes whose values are degenerate (all-NA, constant,
+    # or fewer than 3 unique values). Avoids feols singularity / segfault.
+    v <- panel[[yc]]; v <- v[!is.na(v)]
+    if (length(v) < 10) { cat("    -> skip (n<10)\n"); next }
+    if (length(unique(v)) < 3) { cat("    -> skip (<3 unique values)\n"); next }
+    if (sd(v) < 1e-12) { cat("    -> skip (sd~0)\n"); next }
+
+    # Wrap the entire outcome's spec sweep so a feols crash in one cell
+    # doesn't take down the session.
+    tryCatch({
+      for (slbl in SCALINGS) {
+        for (lag in LAGS) {
+          r <- tryCatch(fit_one(panel, yc, slbl, lag, mode, refyr),
+                        error = function(e) NULL)
+          if (is.null(r)) next
+          r$dataset <- ds_label
+          r$outcome <- yc
+          r$scaling <- slbl
+          r$lag     <- lag
+          r$sig     <- stars(r$p)
+          rows[[length(rows)+1]] <- r
+        }
       }
-    }
+    }, error = function(e) {
+      cat(sprintf("    -> ERROR on %s: %s\n", yc, conditionMessage(e)))
+    })
   }
   bind_rows(rows)
 }
